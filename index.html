@@ -1,0 +1,94 @@
+<h1>Galactic View</h1>
+
+<canvas style="border: solid"></canvas>
+<script>
+    window.mouse = { x: 0, y: 0 };
+    systemA = {};
+    systemA.id = 1;
+    systemA.x = 2;
+    systemA.y = 2;
+    systemA.connections = [2]
+
+    systemB = {};
+    systemB.id = 2;
+    systemB.x = 4;
+    systemB.y = 3;
+    systemA.connections = [1, 3]
+
+    systemC = {};
+    systemC.id = 3;
+    systemC.x = 6;
+    systemC.y = 3;
+    systemA.connections = [2]
+
+    window.systems = [ systemA, systemB, systemC ];
+
+    window.requestAnimationFrame(redraw);
+
+    function redraw() {
+        let cx = document.querySelector("canvas").getContext("2d");
+        cx.strokeStyle = "blue";
+
+        for (let i = 0; i < systems.length; i++) {
+            system = systems[i];
+
+            let cx = document.querySelector("canvas").getContext("2d");
+
+            const transform = cx.getTransform();
+
+            let lengthOfRect = 20;
+            let displacement = 22;
+            let offsetX = system.x * displacement - 2; // idk why it's -2 yet...
+            let offsetY = system.y * displacement - 2;
+
+            // If Hovered!
+            if (     window.mouse.x > system.x + offsetX
+                  && window.mouse.x < system.x + offsetX + lengthOfRect
+                  && window.mouse.y > system.y + offsetY
+                  && window.mouse.y < system.y + offsetY + lengthOfRect) {
+                console.log("window.mouse.x, y: " + window.mouse.x + ", " + window.mouse.y);
+                console.log("system.x, y: " + system.x + ", " + system.y);
+
+                // console.log("Hovered! i: " + i);
+                cx.strokeStyle = "green";
+            }
+            else {
+                cx.strokeStyle = "blue";
+            }
+
+            cx.strokeRect(system.x*displacement, system.y*displacement, lengthOfRect, lengthOfRect);
+
+            cx.strokeStyle = "blue";
+            let thisX = system.x + offsetX;
+            let thisY = system.y + offsetY;
+            cx.moveTo(thisX, thisY);
+            cx.lineTo(20, 20);
+            cx.stroke();
+        }
+
+        window.requestAnimationFrame(redraw);
+    }
+
+    function getTransformedPoint(x, y) {
+        let cx = document.querySelector("canvas").getContext("2d");
+
+        const transform = cx.getTransform();
+        const transformedX = x - transform.e;
+        const transformedY = y - transform.f;
+        return { x: transformedX, y: transformedY };
+    }
+
+    let canvas = document.querySelector("canvas");
+
+    // We can use our function with a canvas event
+    canvas.addEventListener('mousemove', event => {
+        const transformedCursorPosition = getTransformedPoint(event.offsetX, event.offsetY);
+
+        window.mouse = transformedCursorPosition;
+        // window.systems[0].hovered = true;
+        // console.log(window.systems[0].x);
+        // console.log(transformedCursorPosition);
+    });
+
+
+</script>
