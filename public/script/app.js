@@ -1,14 +1,8 @@
 import { System } from './models/system.js';
 import { SystemShape } from './models/systemShape.js';
 
-// generateSystems()
-let systemA = new System(1, { x: 2, y: 2}, [2]    );
-let systemB = new System(2, { x: 4, y: 3}, [1,3,4]);
-let systemC = new System(3, { x: 6, y: 3}, [2,4]  );
-let systemD = new System(4, { x: 5, y: 2}, [2,3]  );
-let systemZ = new System(5, { x: 8, y: 3}, [3]    );
+window.systems = generateSystems();
 
-window.systems = [ systemA, systemB, systemC, systemD, systemZ ];
 
 // Globals
 window.mouse = { x: 0, y: 0 };
@@ -19,6 +13,16 @@ drawBackground();
 
 window.requestAnimationFrame(redraw);
 
+
+function generateSystems() {
+    let systemA = new System(1, { x: 2, y: 2}, [2]    );
+    let systemB = new System(2, { x: 4, y: 3}, [1,3,4]);
+    let systemC = new System(3, { x: 6, y: 3}, [2,4]  );
+    let systemD = new System(4, { x: 5, y: 2}, [2,3]  );
+    let systemZ = new System(5, { x: 8, y: 3}, [3]    );
+
+    return [ systemA, systemB, systemC, systemD, systemZ ];
+}
 
 function getSystemById(id) {
     for (let i = 0; i < window.systems.length; i++) {
@@ -125,6 +129,12 @@ function getTransformedPoint(x, y) {
     const transformedY = y - transform.f;
     return { x: transformedX, y: transformedY };
 }
+
+
+
+/////////////////////
+// DOM Connections //
+/////////////////////
 
 
 // We can use our function with a canvas event
