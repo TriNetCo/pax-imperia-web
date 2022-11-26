@@ -2,25 +2,10 @@ import { System } from './models/system.js';
 import { SystemShape } from './models/systemShape.js';
 
 // generateSystems()
-let systemA = {};
-systemA.id = 1;
-systemA.x = 2;
-systemA.y = 2;
-systemA.connections = [2]
-
-let systemB = {};
-systemB.id = 2;
-systemB.x = 4;
-systemB.y = 3;
-systemA.connections = [1, 3]
-
-let systemC = {};
-systemC.id = 3;
-systemC.x = 6;
-systemC.y = 3;
-systemA.connections = [2,4]
-
-let systemZ = new System(4, 8, 3, [3]);
+let systemA = new System(1, { x: 2, y: 2}, [2]);
+let systemB = new System(2, { x: 4, y: 3}, [1,3]);
+let systemC = new System(3, { x: 6, y: 3}, [2,4]);
+let systemZ = new System(4, { x: 8, y: 3}, [3]);
 
 window.systems = [ systemA, systemB, systemC, systemZ ];
 
@@ -57,13 +42,13 @@ function redraw() {
         cx.stroke();
 
         // Draw Circles
-        drawSystem(cx, system, ss);
+        drawSystem(cx, ss);
     }
 
     window.requestAnimationFrame(redraw);
 }
 
-function drawSystem(cx, system, ss) {
+function drawSystem(cx, ss) {
     cx.beginPath();
         let x = ss.x * ss.scale;
         let y = ss.y * ss.scale;

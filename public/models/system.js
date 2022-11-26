@@ -1,8 +1,8 @@
 export class System {
-    constructor(id, x, y, connections) {
+    constructor(id, point, connections) {
         this.id = id;
-        this.x = x;
-        this.y = y;
+        this.x = point.x;
+        this.y = point.y;
         this.connections = connections;
       }
 }
