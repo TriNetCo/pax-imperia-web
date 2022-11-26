@@ -7,6 +7,9 @@ export class SystemShape {
         this.radius = 10;
         this.offsetX = this.x * (this.scale-1) - this.radius;
         this.offsetY = this.y * (this.scale-1) - this.radius;
+
+        this.canvasX = this.x * this.scale;
+        this.canvasY = this.y * this.scale;
     }
 
     isMouseHovering() {

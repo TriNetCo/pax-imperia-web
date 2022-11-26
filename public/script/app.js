@@ -129,22 +129,17 @@ function getTransformedPoint(x, y) {
 
 // We can use our function with a canvas event
 canvas.addEventListener('mousemove', event => {
-    const transformedCursorPosition = getTransformedPoint(event.offsetX, event.offsetY);
-
-    window.mouse = transformedCursorPosition;
+    window.mouse = getTransformedPoint(event.offsetX, event.offsetY);
 });
 
 canvas.addEventListener('click', event => {
-    const transformedCursorPosition = getTransformedPoint(event.offsetX, event.offsetY);
-
+    window.mouse = getTransformedPoint(event.offsetX, event.offsetY);
     // check if we're clicking a star system
-
     systems.forEach( system => {
         let ss = system.getSystemShape();
         
         if (ss.isMouseHovering()) {
-            alert('clicked system ' + system.id);
-            l
+            window.location.href = "systems/" + system.id + ".html";
         }
 
     });
