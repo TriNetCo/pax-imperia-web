@@ -1,4 +1,5 @@
 import { System } from './models/system.js';
+import { SystemShape } from './models/systemShape.js';
 
 // generateSystems()
 let systemA = {};
@@ -34,9 +35,6 @@ window.requestAnimationFrame(redraw);
 
 
 
-
-
-
 function redraw() {
     let cx = document.querySelector("canvas").getContext("2d");
 
@@ -47,32 +45,7 @@ function redraw() {
 
         let cx = document.querySelector("canvas").getContext("2d");
 
-        class SystemShape {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.lengthOfRect = 20;
-                this.scale = 22;
-                this.radius = 10;
-                this.offsetX = this.x * (this.scale-1) - this.radius;
-                this.offsetY = this.y * (this.scale-1) - this.radius;
-            }
-
-            isMouseHovering() {
-                return (window.mouse.x > ss.x + ss.offsetX
-                     && window.mouse.x < ss.x + ss.offsetX + ss.lengthOfRect
-                     && window.mouse.y > ss.y + ss.offsetY
-                     && window.mouse.y < ss.y + ss.offsetY + ss.lengthOfRect);
-            }
-        }
-
         let ss = new SystemShape(system.x, system.y);
-
-        // let lengthOfRect = 20;
-        // let scale = 22;
-        // let radius = 10;
-        // let offsetX = system.x * (scale-1) - radius;
-        // let offsetY = system.y * (scale-1) - radius;
 
         // Draw lines
         cx.beginPath();
