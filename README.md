@@ -26,6 +26,6 @@ Run these commands to start the server
   npm start
 ```
 
-Now navigate to [http://localhost](http://localhost) to play the game!
+Now navigate to [http://localhost:3000](http://localhost:3000) to play the game!
 
 The main file to edit is of course `public/index.html` for getting at the front end.  
