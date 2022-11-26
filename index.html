@@ -25,8 +25,20 @@
 
     window.requestAnimationFrame(redraw);
 
+    
+
+    function drawBackground() {
+        let cx = document.querySelector("canvas").getContext("2d");
+
+        cx.fillStyle = "Black";
+        cx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        drawStars(20);
+    }
+
     function redraw() {
         let cx = document.querySelector("canvas").getContext("2d");
+
         cx.strokeStyle = "blue";
 
         for (let i = 0; i < systems.length; i++) {
@@ -40,6 +52,7 @@
             let displacement = 22;
             let offsetX = system.x * displacement - 2; // idk why it's -2 yet...
             let offsetY = system.y * displacement - 2;
+            let radius = 10;
 
             // If Hovered!
             if (     window.mouse.x > system.x + offsetX
@@ -56,17 +69,49 @@
                 cx.strokeStyle = "blue";
             }
 
-            cx.strokeRect(system.x*displacement, system.y*displacement, lengthOfRect, lengthOfRect);
+            //cx.strokeRect(system.x*displacement, system.y*displacement, lengthOfRect, lengthOfRect);
+
+            cx.beginPath();
+            
+            let scale = 22;
+            let x = system.x * scale;
+            let y = system.y * scale;
+
+            cx.arc(x, y, radius, 0, 2 * Math.PI);
 
             cx.strokeStyle = "blue";
             let thisX = system.x + offsetX;
             let thisY = system.y + offsetY;
             cx.moveTo(thisX, thisY);
             cx.lineTo(20, 20);
+
             cx.stroke();
+
         }
 
         window.requestAnimationFrame(redraw);
+    }
+
+    function drawStars(starCount){
+        let cx = document.querySelector("canvas").getContext("2d");
+        
+        cx.fillStyle = "rgb(200, 200, 200)";
+
+        let width = canvas.width;
+        let height = canvas.height;
+
+        for (let i = 0; i < starCount; i++){
+            x = Math.random() * width;
+            y = Math.random() * height;
+            
+            drawDot(x, y, 2);
+        }
+    }
+
+    function drawDot(x, y, size){
+        let cx = document.querySelector("canvas").getContext("2d");
+        cx.fillRect(x, y, size, size);
+        cx.fill();
     }
 
     function getTransformedPoint(x, y) {
@@ -90,5 +135,5 @@
         // console.log(transformedCursorPosition);
     });
 
-
+    drawBackground();
 </script>
