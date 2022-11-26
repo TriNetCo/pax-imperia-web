@@ -1,18 +1,17 @@
 import { System } from './models/system.js';
 import { SystemShape } from './models/systemShape.js';
 
-window.systems = generateSystems();
 
 
 // Globals
 window.mouse = { x: 0, y: 0 };
 window.canvas = document.querySelector("canvas");
 
+// window.systems = generateSystems();
 
 drawBackground();
 
 window.requestAnimationFrame(redraw);
-
 
 function generateSystems() {
     let systemA = new System(1, { x: 2, y: 2}, [2]    );
@@ -50,7 +49,10 @@ function redraw() {
 
         for (let i = 0; i < system.connections.length; i++) {
             cx.moveTo(ss.canvasX, ss.canvasY);
-            let connectedSystemShape = getSystemById(system.connections[i]).getSystemShape();
+            let connectedSystem = getSystemById(system.connections[i]);
+            if (connectedSystem == undefined) // this indicates a bug upstream from here in generating the systems correctly
+                continue;
+            let connectedSystemShape = connectedSystem.getSystemShape();
             cx.lineTo(connectedSystemShape.canvasX, connectedSystemShape.canvasY);
         }
 
@@ -60,8 +62,10 @@ function redraw() {
     for (let i = 0; i < systems.length; i++) {
         let ss = systems[i].getSystemShape();
 
-        // Draw Circles
-        drawSystem(cx, ss);
+        drawDot(ss.x, ss.y, 2);
+
+
+        // drawSystem(cx, ss);
     }
 
     window.requestAnimationFrame(redraw);
@@ -95,11 +99,15 @@ function drawBackground() {
 
     cx.fillStyle = "Black";
     cx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // parameters of galaxies:
+    //   How many systems
+    //   how linear/ branchy (connectivity) is everything?
     
-    drawStars(20);
+    window.systems = generateStars(20);
 }
 
-function drawStars(starCount){
+function generateStars(starCount){
     let cx = document.querySelector("canvas").getContext("2d");
     
     cx.fillStyle = "rgb(200, 200, 200)";
@@ -107,12 +115,29 @@ function drawStars(starCount){
     let width = canvas.width;
     let height = canvas.height;
 
+    window.systems = [];
+
+    // Define systems/ coordinates
     for (let i = 0; i < starCount; i++){
         let x = Math.random() * width;
         let y = Math.random() * height;
-        
-        drawDot(x, y, 2);
+
+        let system = new System(i+1, { x: x, y: y}, [] );
+        systems.push(system);
     }
+
+    // Define Connections between systems
+    systems.forEach( system => {
+        let connectingSystemId = 2+system.id;
+        let connectingSystem = getSystemById(connectingSystemId);
+
+        if (connectingSystem != undefined) { // if the connectingSystem exists
+            console.log(connectingSystem.id);
+            system.connections.push(connectingSystem.id);
+        }
+    });
+
+    return systems;
 }
 
 function drawDot(x, y, size){
@@ -131,11 +156,9 @@ function getTransformedPoint(x, y) {
 }
 
 
-
 /////////////////////
 // DOM Connections //
 /////////////////////
-
 
 // We can use our function with a canvas event
 canvas.addEventListener('mousemove', event => {

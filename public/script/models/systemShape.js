@@ -3,7 +3,7 @@ export class SystemShape {
         this.x = x;
         this.y = y;
         this.lengthOfRect = 20;
-        this.scale = 22;
+        this.scale = 1; //22;
         this.radius = 10;
         this.offsetX = this.x * (this.scale-1) - this.radius;
         this.offsetY = this.y * (this.scale-1) - this.radius;
