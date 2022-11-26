@@ -48,14 +48,43 @@
 
             const transform = cx.getTransform();
 
+            let cWidth = canvas.width;
+            let cHeight = canvas.height;
+
             let lengthOfRect = 20;
             let displacement = 22;
-            let offsetX = system.x * displacement - 2; // idk why it's -2 yet...
-            let offsetY = system.y * displacement - 2;
+            let scale = 22;
             let radius = 10;
+            let offsetX = system.x * (scale-1) - radius;
+            let offsetY = system.y * (scale-1) - radius;
 
-            // If Hovered!
-            if (     window.mouse.x > system.x + offsetX
+            // Draw lines
+            cx.beginPath();
+            cx.strokeStyle = "orange";
+            let thisX = system.x + offsetX + radius;
+            let thisY = system.y + offsetY + radius;
+            cx.moveTo(thisX, thisY);
+            cx.lineTo(20, 20);
+            cx.stroke();
+
+            // Draw Circles
+            cx.beginPath();
+            let x = system.x * scale;
+            let y = system.y * scale;
+            cx.arc(x, y, radius, 0, 2 * Math.PI);
+            cx.fillStyle = "black";
+            colorCircle(cx, offsetX, offsetY, lengthOfRect);
+            cx.fill();
+            cx.stroke();
+            
+        }
+
+        window.requestAnimationFrame(redraw);
+    }
+
+    function colorCircle(cx, offsetX, offsetY, lengthOfRect) {
+        // If Hovered!
+        if (     window.mouse.x > system.x + offsetX
                   && window.mouse.x < system.x + offsetX + lengthOfRect
                   && window.mouse.y > system.y + offsetY
                   && window.mouse.y < system.y + offsetY + lengthOfRect) {
@@ -64,32 +93,10 @@
 
                 // console.log("Hovered! i: " + i);
                 cx.strokeStyle = "green";
-            }
-            else {
-                cx.strokeStyle = "blue";
-            }
-
-            //cx.strokeRect(system.x*displacement, system.y*displacement, lengthOfRect, lengthOfRect);
-
-            cx.beginPath();
-            
-            let scale = 22;
-            let x = system.x * scale;
-            let y = system.y * scale;
-
-            cx.arc(x, y, radius, 0, 2 * Math.PI);
-
-            cx.strokeStyle = "blue";
-            let thisX = system.x + offsetX;
-            let thisY = system.y + offsetY;
-            cx.moveTo(thisX, thisY);
-            cx.lineTo(20, 20);
-
-            cx.stroke();
-
         }
-
-        window.requestAnimationFrame(redraw);
+        else {
+            cx.strokeStyle = "blue";
+        }
     }
 
     function drawStars(starCount){
