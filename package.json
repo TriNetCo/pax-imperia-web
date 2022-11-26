@@ -1,0 +1,24 @@
+{
+    "name": "pax-imperia-clone",
+    "version": "1.0.0",
+    "description": "A clone of an old game",
+    "main": "backend.js",
+    "scripts": {
+      "start": "node backend.js",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/TriNetCo/pax-imperia-clone.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/TriNetCo/pax-imperia-clone/issues"
+    },
+    "homepage": "https://github.com/TriNetCo/pax-imperia-clone#readme",
+    "dependencies": {
+      "express": "^4.18.1",
+      "mongodb": "^4.8.0"
+    }
+  }
