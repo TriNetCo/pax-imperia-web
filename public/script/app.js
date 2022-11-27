@@ -1,6 +1,6 @@
 import { System } from './models/system.js';
 import { SystemShape } from './models/systemShape.js';
-
+import { StarName } from './models/starName.js'
 
 // Globals
 window.mouse = { x: 0, y: 0 };
@@ -11,16 +11,6 @@ window.canvas = document.querySelector("canvas");
 drawBackground();
 
 window.requestAnimationFrame(redraw);
-
-function generateSystems() {
-    let systemA = new System(1, { x: 2, y: 2}, [2]    );
-    let systemB = new System(2, { x: 4, y: 3}, [1,3,4]);
-    let systemC = new System(3, { x: 6, y: 3}, [2,4]  );
-    let systemD = new System(4, { x: 5, y: 2}, [2,3]  );
-    let systemZ = new System(5, { x: 8, y: 3}, [3]    );
-
-    return [ systemA, systemB, systemC, systemD, systemZ ];
-}
 
 function getSystemById(id) {
     for (let i = 0; i < window.systems.length; i++) {
@@ -47,11 +37,10 @@ function redraw() {
         cx.strokeStyle = "orange";
         cx.lineWidth = 0.;            
         
-
         for (let i = 0; i < system.connections.length; i++) {
             cx.moveTo(ss.canvasX, ss.canvasY);
             let connectedSystem = getSystemById(system.connections[i]);
-            if (connectedSystem == undefined) // this indicates a bug upstream from here in generating the systems correctly
+            if (connectedSystem == undefined) // FIXME: this indicates a bug upstream from here in generating the systems correctly
                 continue;
             let connectedSystemShape = connectedSystem.getSystemShape();
             cx.lineTo(connectedSystemShape.canvasX, connectedSystemShape.canvasY);
@@ -66,7 +55,7 @@ function redraw() {
         let ss = system.getSystemShape();
 
         if (ss.isMouseHovering()) {
-            systemNameLabel.innerHTML = system.id;
+            systemNameLabel.innerHTML = system.name;
             nothingIsHovered = false;
         }
 
@@ -128,12 +117,14 @@ function generateStars(starCount){
 
     window.systems = [];
 
+    let starName = new StarName();
+
     // Define systems/ coordinates
     for (let i = 0; i < starCount; i++){
         let x = Math.random() * width;
         let y = Math.random() * height;
 
-        let system = new System(i+1, { x: x, y: y}, [] );
+        let system = new System(i+1, { x: x, y: y}, starName.pick() );
         systems.push(system);
     }
 
@@ -147,18 +138,22 @@ function generateConnections(systems){
     let connections = [];
     let connectedSystems = [];
     while (connectedSystems.length < systems.length){
+        console.log("Looped");
         let minDist = Infinity;
         let minI;
         let minJ;
     
-        // Find the shortest distance pair that includes a point that's not already connected
-        for (let i = 0; i < systems.length - 1; i++){
-            for (let j = i + 1; j < systems.length; j++){
+        // 1. Loop through all pairings of the systems to find the two closest systems
+        for (let i = 0; i < systems.length - 1; i++) {
+            for (let j = i + 1; j < systems.length; j++) {
                 // console.log("i = " + i);
                 // console.log("j = " + j);
+                // If this is our first connection, or if i is connected while j is not, or vice versa
+                // then we should see if they're a minimal distance from each other so that they can be
+                // connected.
                 if (        connections.length == 0 
                         || (connectedSystems.includes(i) && !connectedSystems.includes(j)) 
-                        || (connectedSystems.includes(j) && !connectedSystems.includes(i)) ){
+                        || (connectedSystems.includes(j) && !connectedSystems.includes(i)) ) {
                     let dist = (systems[i].x - systems[j].x)**2 + (systems[i].y - systems[j].y)**2;
                     if (dist < minDist) {
                         minDist = dist;
@@ -179,34 +174,6 @@ function generateConnections(systems){
         systems[minI].connections.push(systems[minJ].id)
         systems[minJ].connections.push(systems[minI].id)
     };
-
-
-    return systems;
-}
-
-
-function generateConnectionsOld(systems){
-
-    // Define Connections between systems
-    systems.forEach( system => {
-        let minDist = Infinity;
-        let minSystem = undefined;
-        // Loop through all the other systems without connections to find closest
-        systems.forEach( otherSystem => {
-            if (system.id != otherSystem.id && otherSystem.connections.length == 0) {
-                let dist = (system.x - otherSystem.x)^2 + (system.y - otherSystem.y)^2;
-                if (dist < minDist) {
-                    minDist = dist;
-                    minSystem = otherSystem;
-                }
-            }
-        });
-            
-        if (minSystem != undefined) {
-            system.connections.push(minSystem.id);
-            minSystem.connections.push(system.id);
-        }
-    });
 
     return systems;
 }
