@@ -5,8 +5,10 @@ A clone of an old game
 ## TODO
 
 - Flesh out Galactic view
-  - Draw the star systems cooler
-  - Connect systems to each other with a line
+  - Draw a pretty star instead of squares
+  - investigate original connection algo
+  - set minimum distance between stars
+  x Connect systems to each other with a line
   - Allow opening a system by clicking it
 
 - Flesh out system view

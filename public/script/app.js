@@ -2,7 +2,6 @@ import { System } from './models/system.js';
 import { SystemShape } from './models/systemShape.js';
 
 
-
 // Globals
 window.mouse = { x: 0, y: 0 };
 window.canvas = document.querySelector("canvas");
@@ -46,6 +45,8 @@ function redraw() {
         // Draw lines
         cx.beginPath();
         cx.strokeStyle = "orange";
+        cx.lineWidth = 0.;            
+        
 
         for (let i = 0; i < system.connections.length; i++) {
             cx.moveTo(ss.canvasX, ss.canvasY);
@@ -59,13 +60,22 @@ function redraw() {
         cx.stroke();
     }
 
+    let nothingIsHovered = true;
     for (let i = 0; i < systems.length; i++) {
-        let ss = systems[i].getSystemShape();
+        let system = systems[i];
+        let ss = system.getSystemShape();
 
-        drawDot(ss.x, ss.y, 2);
+        if (ss.isMouseHovering()) {
+            systemNameLabel.innerHTML = system.id;
+            nothingIsHovered = false;
+        }
 
+        drawDot(ss.x, ss.y, 8);
 
         // drawSystem(cx, ss);
+    }
+    if (nothingIsHovered) {
+        systemNameLabel.innerHTML = "";
     }
 
     window.requestAnimationFrame(redraw);
@@ -79,8 +89,9 @@ function drawSystem(cx, ss) {
         cx.fillStyle = "black";
 
         // printDebugMouseInfo(ss);
-        if ( ss.isMouseHovering() )
+        if ( ss.isMouseHovering() ) {
             cx.strokeStyle = "green";
+        }
         else
             cx.strokeStyle = "blue";
 
@@ -126,14 +137,74 @@ function generateStars(starCount){
         systems.push(system);
     }
 
+    systems = generateConnections(systems);
+
+    return systems;
+}
+
+function generateConnections(systems){
+    // Constellation Algorithm
+    let connections = [];
+    let connectedSystems = [];
+    while (connectedSystems.length < systems.length){
+        let minDist = Infinity;
+        let minI;
+        let minJ;
+    
+        // Find the shortest distance pair that includes a point that's not already connected
+        for (let i = 0; i < systems.length - 1; i++){
+            for (let j = i + 1; j < systems.length; j++){
+                // console.log("i = " + i);
+                // console.log("j = " + j);
+                if (        connections.length == 0 
+                        || (connectedSystems.includes(i) && !connectedSystems.includes(j)) 
+                        || (connectedSystems.includes(j) && !connectedSystems.includes(i)) ){
+                    let dist = (systems[i].x - systems[j].x)**2 + (systems[i].y - systems[j].y)**2;
+                    if (dist < minDist) {
+                        minDist = dist;
+                        minI = i;
+                        minJ = j;
+                    };
+                };
+            };
+        };
+        // console.log("Min Distance: " + minDist);
+        connections.push([minI,minJ])
+        if (!connectedSystems.includes(minI)){
+            connectedSystems.push(minI)
+        }
+        if (!connectedSystems.includes(minJ)){
+            connectedSystems.push(minJ)
+        }
+        systems[minI].connections.push(systems[minJ].id)
+        systems[minJ].connections.push(systems[minI].id)
+    };
+
+
+    return systems;
+}
+
+
+function generateConnectionsOld(systems){
+
     // Define Connections between systems
     systems.forEach( system => {
-        let connectingSystemId = 2+system.id;
-        let connectingSystem = getSystemById(connectingSystemId);
-
-        if (connectingSystem != undefined) { // if the connectingSystem exists
-            console.log(connectingSystem.id);
-            system.connections.push(connectingSystem.id);
+        let minDist = Infinity;
+        let minSystem = undefined;
+        // Loop through all the other systems without connections to find closest
+        systems.forEach( otherSystem => {
+            if (system.id != otherSystem.id && otherSystem.connections.length == 0) {
+                let dist = (system.x - otherSystem.x)^2 + (system.y - otherSystem.y)^2;
+                if (dist < minDist) {
+                    minDist = dist;
+                    minSystem = otherSystem;
+                }
+            }
+        });
+            
+        if (minSystem != undefined) {
+            system.connections.push(minSystem.id);
+            minSystem.connections.push(system.id);
         }
     });
 
@@ -160,6 +231,8 @@ function getTransformedPoint(x, y) {
 // DOM Connections //
 /////////////////////
 
+let systemNameLabel = document.getElementById("system-name");
+
 // We can use our function with a canvas event
 canvas.addEventListener('mousemove', event => {
     window.mouse = getTransformedPoint(event.offsetX, event.offsetY);
@@ -172,6 +245,8 @@ canvas.addEventListener('click', event => {
         let ss = system.getSystemShape();
         
         if (ss.isMouseHovering()) {
+            alert('clicked system ' + system.id);
+
             window.location.href = "systems/" + system.id + ".html";
         }
 
