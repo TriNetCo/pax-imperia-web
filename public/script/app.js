@@ -1,16 +1,50 @@
 import { System } from './models/system.js';
-import { SystemShape } from './models/systemShape.js';
 import { StarName } from './models/starName.js'
 
-// Globals
-window.mouse = { x: 0, y: 0 };
-window.canvas = document.querySelector("canvas");
 
-// window.systems = generateSystems();
+/////////////
+// Globals //
+/////////////
+
+window.mouse = { x: 0, y: 0 };
+let canvas = document.querySelector("canvas");
+let cx = document.querySelector("canvas").getContext("2d");
+let systemNameLabel = document.getElementById("system-name");
+
+
+/////////////////////
+// DOM Connections //
+/////////////////////
+
+// We can use our function with a canvas event
+canvas.addEventListener('mousemove', event => {
+    window.mouse = getTransformedPoint(event.offsetX, event.offsetY);
+});
+
+canvas.addEventListener('click', event => {
+    window.mouse = getTransformedPoint(event.offsetX, event.offsetY);
+
+    // check if we're clicking a star system
+    systems.forEach( system => {
+        let ss = system.getSystemShape();
+        if (ss.isMouseHovering()) {
+            alert('clicked system ' + system.id);
+
+            window.location.href = "systems/" + 1 + ".html";
+        }
+
+    });
+
+});
+
+
+//////////
+// main //
+//////////
 
 drawBackground();
-
-window.requestAnimationFrame(redraw);
+// window.requestAnimationFrame(drawLoop);
+drawLoop();
 
 function getSystemById(id) {
     for (let i = 0; i < window.systems.length; i++) {
@@ -23,9 +57,7 @@ function getSystemById(id) {
     return undefined;
 }
 
-function redraw() {
-    let cx = document.querySelector("canvas").getContext("2d");
-
+function drawLoop() {
     cx.strokeStyle = "blue";
 
     for (let i = 0; i < systems.length; i++) {
@@ -67,7 +99,7 @@ function redraw() {
         systemNameLabel.innerHTML = "";
     }
 
-    window.requestAnimationFrame(redraw);
+    window.requestAnimationFrame(drawLoop);
 }
 
 function drawSystem(cx, ss) {
@@ -95,8 +127,6 @@ function printDebugMouseInfo(ss) {
 }
 
 function drawBackground() {
-    let cx = document.querySelector("canvas").getContext("2d");
-
     cx.fillStyle = "Black";
     cx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -108,8 +138,6 @@ function drawBackground() {
 }
 
 function generateStars(starCount){
-    let cx = document.querySelector("canvas").getContext("2d");
-    
     cx.fillStyle = "rgb(200, 200, 200)";
 
     let width = canvas.width;
@@ -179,46 +207,15 @@ function generateConnections(systems){
 }
 
 function drawDot(x, y, size){
-    let cx = document.querySelector("canvas").getContext("2d");
     cx.fillRect(x, y, size, size);
     cx.fill();
 }
 
 function getTransformedPoint(x, y) {
-    let cx = document.querySelector("canvas").getContext("2d");
-
     const transform = cx.getTransform();
     const transformedX = x - transform.e;
     const transformedY = y - transform.f;
     return { x: transformedX, y: transformedY };
 }
 
-
-/////////////////////
-// DOM Connections //
-/////////////////////
-
-let systemNameLabel = document.getElementById("system-name");
-
-// We can use our function with a canvas event
-canvas.addEventListener('mousemove', event => {
-    window.mouse = getTransformedPoint(event.offsetX, event.offsetY);
-});
-
-canvas.addEventListener('click', event => {
-    window.mouse = getTransformedPoint(event.offsetX, event.offsetY);
-    // check if we're clicking a star system
-    systems.forEach( system => {
-        let ss = system.getSystemShape();
-        
-        if (ss.isMouseHovering()) {
-            alert('clicked system ' + system.id);
-
-            window.location.href = "systems/" + system.id + ".html";
-        }
-
-    });
-
-
-});
 
