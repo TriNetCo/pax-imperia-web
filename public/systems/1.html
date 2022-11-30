@@ -46,42 +46,11 @@
         Lower Console
     </div>
 
-        
-
-
-
-
-    <script>
-        function main() {
-
-            const canvas = document.querySelector("#canvas");
-            const gl = canvas.getContext("webgl");
-            if (gl === null) {
-                alert("Unable to initialize WebGL. Your browser or machine may not support it.");
-                return;
-            }
-
-            // Set clear color to black, fully opaque
-            gl.clearColor(0.0, 0.0, 0.0, 1.0);
-            // Clear the color buffer with specified clear color
-            gl.clear(gl.COLOR_BUFFER_BIT);
-        }
-
-        // window.onload = main;
-
-    </script>
-
-
 
 <script type="module">
 
     import * as THREE from 'three';
     import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/jsm/loaders/GLTFLoader.js";
-
-
-    var x = 0;
-
-
 
 
     const renderer = new THREE.WebGLRenderer();
@@ -92,8 +61,90 @@
     renderer.shadowMap.enabled = true;
     renderer.gammaOutput = true;
     document.getElementById("canvas-div").appendChild( renderer.domElement );
+    
 
     
+    const scene = new THREE.Scene();
+
+    ////////////////
+    // Add Lights //
+    ////////////////
+
+    var light = new THREE.DirectionalLight( 0xffffff, 1 );
+    light.position.set(22, 22, 25);
+    light.lookAt(0,0,0);
+    scene.add( light );
+    
+    light = new THREE.DirectionalLight( 0xffffff, 1 );
+    light.position.set(2, 2, 5);
+    light.lookAt(0,0,0);
+    scene.add( light );
+
+    light = new THREE.AmbientLight( 0xffffff, 0.1 );
+    //light.position.set(-10, -10, 5);
+    //light.lookAt(0,0,0);
+    scene.add( light );
+
+    ///////////////////
+    // Add    Camera //
+    ///////////////////
+
+    const camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 1000 );
+    camera.position.set( 0, 10, 0 );
+    // camera.position.set( 0, 1, 10 );
+    camera.lookAt( 0, 0, 0 );
+
+
+    const loader = new GLTFLoader();
+    loader.load( '/public/script/assets/planet_earth/scene.gltf', function ( gltf ) {
+
+        // Question:
+        //   How do I load all the files, and only start the scene after everything is loaded up?
+        ////
+
+        ///////////////
+        // Add earth //
+        ///////////////
+
+        const earthScene = gltf.scene;
+        // earthScene.position.x = -2;
+        scene.add( earthScene );
+
+
+        // This is just debug code
+        const obj = scene.getObjectByName("Earth_Scene");
+        obj.traverse((o) => {
+            if (o.isMesh) {
+                //o.material = newMaterial;
+                console.log(o);
+                o.flatShading = false;
+            } 
+            
+        });
+
+        console.log("Finished loading!");
+
+    }, function ( xhr ) {
+        console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+    }, function ( error ) {
+        console.error( error );
+    } );
+
+
+    function draw() {
+        const earth = scene.getObjectByName("Earth_Scene");
+        if (earth != undefined) {
+            earth.position.x += 0.01;
+            earth.rotation.y += 0.001;
+        }
+        renderer.render( scene, camera );
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+
+
+
 
     // DRAW BOX
 
@@ -119,78 +170,6 @@
     // const sphere = new THREE.Mesh( geometry, material );
     // scene.add( sphere );
 
-
-    
-
-    // Add earth
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 1000 );
-
-    const loader = new GLTFLoader();
-    loader.load( '/public/script/assets/planet_earth/scene.gltf', function ( gltf ) {
-
-        camera.position.set( 0, 10, 0 );
-        // camera.position.set( 0, 1, 10 );
-        camera.lookAt( 0, 0, 0 );
-
-        const root = gltf.scene;
-        // root.material.shading = THREE.SmoothShading;
-        x += 0.000001;
-        root.position.x = -2;
-
-        scene.add( root );
-
-        // Add Lights
-
-        var light = new THREE.DirectionalLight( 0xffffff, 1 );
-        light.position.set(22, 22, 25);
-        light.lookAt(0,0,0);
-        scene.add( light );
-
-        
-        light = new THREE.DirectionalLight( 0xffffff, 1 );
-        light.position.set(2, 2, 5);
-        light.lookAt(0,0,0);
-        scene.add( light );
-
-        light = new THREE.AmbientLight( 0xffffff, 0.1 );
-        //light.position.set(-10, -10, 5);
-        //light.lookAt(0,0,0);
-        scene.add( light );
-
-        const obj = scene.getObjectByName("Sketchfab_Scene");
-        obj.traverse((o) => {
-            if (o.isMesh) {
-                //o.material = newMaterial;
-                console.log(o);
-                o.flatShading = false;
-            } 
-            
-        });
-
-        console.log("Finished loading!");
-
-    }, function ( xhr ) {
-        console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-        renderer.render( scene, camera );
-
-    }, function ( error ) {
-        console.error( error );
-    } );
-
-
-
-    function draw() {
-        const earth = scene.getObjectByName("Sketchfab_Scene");
-        if (earth != undefined) {
-            earth.position.x += 0.01;
-            earth.rotation.y += 0.001;
-        }
-        renderer.render( scene, camera );
-        requestAnimationFrame(draw);
-    }
-
-    draw();
 
 
   </script>
