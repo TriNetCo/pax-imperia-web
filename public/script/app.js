@@ -134,7 +134,7 @@ function drawBackground() {
     //   How many systems
     //   how linear/ branchy (connectivity) is everything?
     
-    window.systems = generateStars(20);
+    window.systems = generateStars(100);
 }
 
 function generateStars(starCount){
