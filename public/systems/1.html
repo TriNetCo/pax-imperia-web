@@ -124,12 +124,13 @@
 
     // Add earth
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera( 75, width / height, 0.1, 1000 );
+    const camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 1000 );
 
     const loader = new GLTFLoader();
     loader.load( '/public/script/assets/planet_earth/scene.gltf', function ( gltf ) {
 
-        camera.position.set( 0, 1, 2 );
+        camera.position.set( 0, 10, 0 );
+        // camera.position.set( 0, 1, 10 );
         camera.lookAt( 0, 0, 0 );
 
         const root = gltf.scene;
@@ -143,16 +144,29 @@
 
         var light = new THREE.DirectionalLight( 0xffffff, 1 );
         light.position.set(22, 22, 25);
+        light.lookAt(0,0,0);
         scene.add( light );
 
+        
         light = new THREE.DirectionalLight( 0xffffff, 1 );
         light.position.set(2, 2, 5);
+        light.lookAt(0,0,0);
         scene.add( light );
 
-        light = new THREE.DirectionalLight( 0xffffff, 1 );
-        light.position.set(-10, -10, 5);
+        light = new THREE.AmbientLight( 0xffffff, 0.1 );
+        //light.position.set(-10, -10, 5);
+        //light.lookAt(0,0,0);
         scene.add( light );
 
+        const obj = scene.getObjectByName("Sketchfab_Scene");
+        obj.traverse((o) => {
+            if (o.isMesh) {
+                //o.material = newMaterial;
+                console.log(o);
+                o.flatShading = false;
+            } 
+            
+        });
 
         console.log("Finished loading!");
 
@@ -167,11 +181,10 @@
 
 
     function draw() {
-        const obj = scene.getObjectByName("Sketchfab_Scene");
-        if (obj != undefined) {
-            obj.position.x += 0.01;
-
-            // debugger;
+        const earth = scene.getObjectByName("Sketchfab_Scene");
+        if (earth != undefined) {
+            earth.position.x += 0.01;
+            earth.rotation.y += 0.001;
         }
         renderer.render( scene, camera );
         requestAnimationFrame(draw);
