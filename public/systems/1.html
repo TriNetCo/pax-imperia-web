@@ -1,26 +1,136 @@
 <html>
+    <head>
+        <script type="importmap">
+            {
+              "imports": {
+                "three": "https://unpkg.com/three@0.147.0/build/three.module.js"
+              }
+            }
+          </script>
+
+        <link rel="stylesheet" href="../css/style.css">
+    </head>
     <h1>System: Sol</h1>
 
-    <div class="planet-list">
-        <h3>Planets:</h3>
-        <ul>
-            <li>Mercury</li>
-            <li>Venus</li>
-            <li>Earth</li>
-            <li>Mars</li>
-            <li>Jupiter</li>
-            <li>Saturn</li>
-            <li>Uranus</li>
-            <li>Neptune</li>
-            <li>Pluto</li>
-        </ul>
+    <div>
+        <span class="console-message">
+            Game Paused
+        </span></div>
+
+    <div class="flex-container">
+        <div class="planet-list">
+            <h3>Planets:</h3>
+            <ul>
+                <li>Mercury</li>
+                <li>Venus</li>
+                <li>Earth</li>
+                <li>Mars</li>
+                <li>Jupiter</li>
+                <li>Saturn</li>
+                <li>Uranus</li>
+                <li>Neptune</li>
+                <li>Pluto</li>
+            </ul>
+            <button>Govorner</button>
+        </div>
+
+        <div>
+            <div id="canvas-div"></div>
+            <!-- <canvas id="canvas" width="800" height="600" style="border: solid 1px;"></canvas> -->
+        </div>
+
+        
     </div>
+
+    <div>
+        Lower Console
+    </div>
+
+        
+
 
 
 
     <script>
-        
+        function main() {
+
+            const canvas = document.querySelector("#canvas");
+            const gl = canvas.getContext("webgl");
+            if (gl === null) {
+                alert("Unable to initialize WebGL. Your browser or machine may not support it.");
+                return;
+            }
+
+            // Set clear color to black, fully opaque
+            gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            // Clear the color buffer with specified clear color
+            gl.clear(gl.COLOR_BUFFER_BIT);
+        }
+
+        // window.onload = main;
+
     </script>
+
+
+
+<script type="module">
+
+    import * as THREE from 'three';
+    import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/loaders/GLTFLoader.js";
+
+
+
+
+
+
+    const renderer = new THREE.WebGLRenderer();
+
+    const width = 800;
+    const height = 600;
+    renderer.setSize( width, height );
+    document.getElementById("canvas-div").appendChild( renderer.domElement );
+    // document.body.appendChild( renderer.domElement );
+
+    const camera = new THREE.PerspectiveCamera( 120, width / height, 1, 500 );
+    camera.position.set( 0, 0, 100 );
+    camera.lookAt( 0, 0, 0 );
+  
+    const scene = new THREE.Scene();
+
+    const points = [];
+    points.push( new THREE.Vector3( - 10, 0, 0 ) );
+    points.push( new THREE.Vector3( 0, 10, 0 ) );
+    points.push( new THREE.Vector3( 10, 0, 0 ) );
+
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints( points );
+    const lineMaterial = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+    const line = new THREE.Line( lineGeometry, matlineMaterialerial );
+    scene.add( line );
+
+    // const geometry = new THREE.SphereGeometry( 15, 32, 16 );
+    // const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+    // const sphere = new THREE.Mesh( geometry, material );
+    // scene.add( sphere );
+
+
+    // const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+    // scene.add( light );
+
+
+    // // Add earth
+    // const loader = new GLTFLoader();
+    // loader.load( '/public/script/assets/planet_earth/scene.gltf', function ( gltf ) {
+    //     scene.add( gltf.scene );
+    // }, undefined, function ( error ) {
+    //     console.error( error );
+    // } );
+
+
+    renderer.render( scene, camera );
+
+
+  </script>
+  
     
 
 </html>

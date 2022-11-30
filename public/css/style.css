@@ -1,9 +1,20 @@
 
-
 .flex-container {
-    
+    display: flex;
+}
+.planet-list {
+    padding: 20px;
+    margin: 20px;
 }
 
-.planet-list {
 
+
+
+/* HDMI */
+
+.console-message {
+    background-color: black;
+    color: greenyellow;
+    width: 800px;
+    height: 1em;
 }

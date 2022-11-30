@@ -12,6 +12,7 @@ A clone of an old game
   - Allow opening a system by clicking it
 
 - Flesh out system view
+  - learn webGL and draw some spheres
   - Add stars to systems
   - Add planets to systems
 
