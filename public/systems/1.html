@@ -52,6 +52,8 @@
     import * as THREE from 'three';
     import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/jsm/loaders/GLTFLoader.js";
 
+    var t = 0;
+
 
     const renderer = new THREE.WebGLRenderer();
 
@@ -90,7 +92,7 @@
     ///////////////////
 
     const camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 1000 );
-    camera.position.set( 0, 10, 0 );
+    camera.position.set( 0, 50, 0 );
     // camera.position.set( 0, 1, 10 );
     camera.lookAt( 0, 0, 0 );
 
@@ -107,20 +109,9 @@
         ///////////////
 
         const earthScene = gltf.scene;
-        // earthScene.position.x = -2;
+        // earthScene.scale.set(1.1,1.1,1.1)
+        earthScene.position.set(0,0,2)
         scene.add( earthScene );
-
-
-        // This is just debug code
-        const obj = scene.getObjectByName("Earth_Scene");
-        obj.traverse((o) => {
-            if (o.isMesh) {
-                //o.material = newMaterial;
-                console.log(o);
-                o.flatShading = false;
-            } 
-            
-        });
 
         console.log("Finished loading!");
 
@@ -131,12 +122,37 @@
     } );
 
 
+    loader.load( '/public/script/assets/planet_earth/Planet.glb', function ( gltf ) {
+        const whitePlanetScene = gltf.scene;
+        whitePlanetScene.position.set(0, 0, 0);
+        scene.add( whitePlanetScene );
+
+    }, function ( xhr ) {
+        console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+    }, function ( error ) {
+        console.error( error );
+    } );
+
+
+
+
+
     function draw() {
+        t += 1/60;
         const earth = scene.getObjectByName("Earth_Scene");
         if (earth != undefined) {
-            earth.position.x += 0.01;
-            earth.rotation.y += 0.001;
+            earth.position.x = 20*Math.cos(t) + 0;
+            earth.position.z = 20*Math.cos(t) + 0;
+
+            earth.rotation.y += 0.005;
         }
+
+        // const whitePlanet = scene.getObjectByName('Scene');
+        // if (whitePlanet != undefined) {
+        //     whitePlanet.position.x += 0.01;
+        //     whitePlanet.rotation.y += 0.005;
+        // }
+
         renderer.render( scene, camera );
         requestAnimationFrame(draw);
     }
