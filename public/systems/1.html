@@ -13,7 +13,7 @@
     <h1>System: Sol</h1>
 
     <div>
-        <span class="console-message">
+        <span class="console-message" id="console-message">
             Game Paused
         </span></div>
 
@@ -63,8 +63,15 @@
     renderer.shadowMap.enabled = true;
     renderer.gammaOutput = true;
     document.getElementById("canvas-div").appendChild( renderer.domElement );
-    
 
+
+    const consoleSpan = document.getElementById("console-message");
+
+
+    // Click detection
+    const raycaster = new THREE.Raycaster();
+    window.pointer = new THREE.Vector2(1,1);
+    
     
     const scene = new THREE.Scene();
 
@@ -91,8 +98,8 @@
     // Add    Camera //
     ///////////////////
 
-    const camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 1000 );
-    camera.position.set( 0, 40, 0 );
+    const camera = new THREE.PerspectiveCamera( 15, width / height, 0.1, 1000 );
+    camera.position.set( 0, 100, 0 );
     // camera.position.set( 0, 1, 10 );
     //camera.rotation.set( -90, 0, 0);
 
@@ -137,8 +144,35 @@
         console.error( error );
     } );
 
+    // Add Box for Mouse...
+    const boxGeometry = new THREE.BoxGeometry(1,1,1);
+    const boxMaterial = new THREE.LineBasicMaterial( { color: 'red' } );
+    const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
+    scene.add( boxMesh );
+
+
+
+
 
     function draw() {
+        raycaster.setFromCamera( pointer, camera );
+        const intersects = raycaster.intersectObjects( scene.children, false );
+        
+        boxMesh.position.set(pointer.x, 0, pointer.y);
+        // boxMesh.position.set(-17, 0, -12.5);   // this is my X, Y browser mouse translation for (184 / 1472) || 0.125 || top left corner of screen
+
+        // -17 = (184 / 1472) * g
+        // g = (-17 * 1472) / 184
+        // g = -136
+
+        // debugger;
+
+        for ( let i = 0; i < intersects.length; i ++ ) {
+            // alert('hit');
+            // debugger;
+            // intersects[ i ].object.material.color.set( 0xff0000 );
+        }
+
         t += 1/480;
         if (earthScene != undefined) {
             earthScene.position.x = 10*Math.cos(t) + 0;
@@ -160,7 +194,79 @@
 
     draw();
 
+    function onPointerMove( event ) {
+        // calculate pointer position in normalized device coordinates
+        // (-1 to +1) for both components
+        renderer.domElement;
 
+        const h = renderer.domElement.height;
+        const w = renderer.domElement.width;
+        const mx = event.clientX -182;
+        const my = event.clientY - 85;
+
+        // pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        // pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+        pointer.x = ( mx/ w ) * 35 - 17;
+        pointer.y = ( my/ h ) * 26 - 12.5;
+
+
+        // Position to top left:
+        // pointer.x = -17;
+        // pointer.y = -12.5;
+
+        // position to bottom right
+        // pointer.x = 18;
+        // pointer.y = 13.5;
+
+        // x range:  35
+        // x offset: -17
+        // y range:  26
+        // y offset: -12.5
+
+        // g = (-17 * 1472) / mouse
+        // FIXME / TODO: this doesn't work... but I thought it would 
+        // pointer.x = (-17 * window.innerWidth ) / event.clientX;
+        // pointer.x = (event.clientX * window.innerWidth ) / -136;
+        
+
+        // pointer.x = -163 / (event.clientX * window.innerWidth);
+        // pointer.y =  -12.5 + (event.clientY * window.innerHeight ) / 130;
+
+
+
+        // pointer.y = (event.clientY * window.innerHeight ) / g-y
+        // g-y = (-12.5 * 783 ) / 88
+        // g-y = -111
+
+
+        // TODO: finish equation for pointer to x,y,z mapping
+        // ( event.clientX / window.innerWidth ) + xOffsetOfCanvas
+
+
+        // top left is -1, 1
+        // consoleSpan.innerHTML = "Pointer {" + pointer.x + ", " + pointer.y + "}";
+        // consoleSpan.innerHTML = "event.clientX / window.innerWidth:  {" + event.clientX + " / " + window.innerWidth + "}";
+        var msg = "";
+        // msg = "my / h:  {" + my + " / " + h + "} = " + my / h;
+        // msg += " | g = " + -12.5 / (my / h);
+        msg = "mx / w:  {" + mx + " / " + w + "} = " + mx / w;
+        // msg += " | g = " + -12.5 / (mx / w);
+
+        // msg = "event.clientY / window.innerHeight:  {" + event.clientY + " / " + window.innerHeight + "} = " + event.clientY / window.innerHeight;
+        // msg += " | g = " + -12.5 / (event.clientY / window.innerHeight);
+
+        // msg = "event.clientX / window.innerWidth:  {" + event.clientX + " / " + window.innerWidth + "} = " + event.clientX / window.innerWidth;
+        // msg += " | g = " + -17 / (event.clientX / window.innerWidth);
+        
+        // msg = "pointer.x, y = { " + pointer.x + ", " + pointer.y + " }";
+        consoleSpan.innerHTML = msg;
+
+        // pointer.x = ( event.clientX / renderer.domElement.width ) * 20 - 20;
+        // pointer.y = - ( event.clientY / renderer.domElement.height ) * 20 + 20;
+    }
+
+    renderer.domElement.addEventListener( 'pointermove', onPointerMove );
 
 
     // DRAW BOX
