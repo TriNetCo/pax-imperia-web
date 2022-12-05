@@ -2,24 +2,21 @@
 
 A clone of an old game
 
-## TODO
+## TODO Galactic View
 
-- Flesh out Galactic view
-  - Draw a pretty star instead of squares
-  - investigate original connection algo
-  - set minimum distance between stars
-  x Connect systems to each other with a line
-  - Allow opening a system by clicking it
-
-- Flesh out system view
-  - learn webGL and draw some spheres
-  - Add stars to systems
-  - Add planets to systems
-
-- Create a ship you can control and move to planets
-
+- Draw a pretty star instead of squares
+- Extract constellation algo into it's own module
+- Set minimum distance between stars
+x Connect systems to each other with a line
+x Allow opening a system by clicking it
 - Flesh out Main Menu links
 
+## TODO System View
+x Add stars to systems
+x Add planets to systems
+- Tech Debt: Load models cleanly
+- Flesh out HUD buttons
+- Create a ship you can control and move to planets
 
 ## Getting Started
 

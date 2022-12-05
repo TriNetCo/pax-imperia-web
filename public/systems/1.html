@@ -42,7 +42,7 @@
         
     </div>
 
-    <div>
+    <div id="lower-console">
         Lower Console
     </div>
 
@@ -51,6 +51,7 @@
 
     import * as THREE from 'three';
     import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/jsm/loaders/GLTFLoader.js";
+    import { FBXLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/jsm/loaders/FBXLoader.js";
 
     var t = 0;
 
@@ -60,19 +61,17 @@
     const width = 800;
     const height = 600;
     renderer.setSize( width, height );
-    renderer.shadowMap.enabled = true;
-    renderer.gammaOutput = true;
+    renderer.setPixelRatio( renderer.domElement.devicePixelRatio );
     document.getElementById("canvas-div").appendChild( renderer.domElement );
 
-
     const consoleSpan = document.getElementById("console-message");
-
+    const lowerConsoleSpan = document.getElementById("lower-console");
 
     // Click detection
-    const raycaster = new THREE.Raycaster();
-    window.pointer = new THREE.Vector2(1,1);
+    let raycaster = new THREE.Raycaster();
+    window.pointer = new THREE.Vector2(0,0);
     
-    
+
     const scene = new THREE.Scene();
 
     ////////////////
@@ -90,37 +89,34 @@
     scene.add( light );
 
     light = new THREE.AmbientLight( 0xffffff, 0.1 );
-    //light.position.set(-10, -10, 5);
-    //light.lookAt(0,0,0);
     scene.add( light );
 
     ///////////////////
     // Add    Camera //
     ///////////////////
 
-    const camera = new THREE.PerspectiveCamera( 15, width / height, 0.1, 1000 );
+    const camera = new THREE.PerspectiveCamera( 15, width / height, 1, 10000 );
     camera.position.set( 0, 100, 0 );
-    // camera.position.set( 0, 1, 10 );
-    //camera.rotation.set( -90, 0, 0);
-
-    camera.lookAt( 0, 0, 0 );
+    camera.lookAt( scene.position );
+    camera.aspect = 800 / 600;
+    camera.updateProjectionMatrix();
 
     var earthScene;
 
     const loader = new GLTFLoader();
+    
+    
     loader.load( '/public/assets/CloudyPlanet.gltf', function ( gltf ) {
-
-        // Question:
-        //   How do I load all the files, and only start the scene after everything is loaded up?
-        ////
 
         ///////////////
         // Add earth //
         ///////////////
-
+        const objName = "earth";
         earthScene = gltf.scene;
         // earthScene.scale.set(1.1,1.1,1.1)
-        earthScene.position.set(0,0,20)
+        earthScene.position.set(0,0,20);
+        earthScene.name = objName;
+        earthScene.children[0].name = objName
         scene.add( earthScene );
 
         console.log("Finished loading!");
@@ -131,10 +127,67 @@
         console.error( error );
     } );
 
+    loader.load( '/public/assets/CloudyPlanet.gltf', function ( gltf ) {
+
+        ///////////////
+        // Add earth //
+        ///////////////
+        const objName = "earth2";
+        const earth2Scene = gltf.scene;
+        // earth2Scene.scale.set(1.1,1.1,1.1)
+        earth2Scene.position.set(1,0,1);
+        earth2Scene.name = objName;
+        earth2Scene.children[0].name = objName
+        scene.add( earth2Scene );
+
+        console.log("Finished loading!");
+
+    }, function ( xhr ) {
+        console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+    }, function ( error ) {
+        console.error( error );
+    } );
+
+
+    const fbxLoader = new FBXLoader()
+    fbxLoader.load(
+        '/public/script/assets/GalacticLeopard6.fbx',
+        (object) => {
+            // object.traverse(function (child) {
+            //     if ((child as THREE.Mesh).isMesh) {
+            //         // (child as THREE.Mesh).material = material
+            //         if ((child as THREE.Mesh).material) {
+            //             ((child as THREE.Mesh).material as THREE.MeshBasicMaterial).transparent = false
+            //         }
+            //     }
+            // })
+            let scale = 0.0002;
+            object.name = "ship";
+            object.scale.set(scale, scale, scale);
+            object.rotation.set(2* Math.PI, 1.5708 ,2*Math.PI/4);
+            object.position.set(0,1,0);
+            scene.add(object);
+            console.log("finished loading!");
+        },
+        (xhr) => {
+            console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
+        },
+        (error) => {
+            console.log(error);
+        }
+    )
+
+
+
+
+
     var sunScene;
 
     loader.load( '/public/assets/Sun.gltf', function ( gltf ) {
+        const objName = "sun";
         sunScene = gltf.scene;
+        sunScene.name = objName + "Scene";
+        sunScene.children[0].name = objName
         sunScene.position.set(0, 0, 0);
         scene.add( sunScene );
 
@@ -148,30 +201,13 @@
     const boxGeometry = new THREE.BoxGeometry(1,1,1);
     const boxMaterial = new THREE.LineBasicMaterial( { color: 'red' } );
     const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-    scene.add( boxMesh );
-
-
-
+    // scene.add( boxMesh );
 
 
     function draw() {
-        raycaster.setFromCamera( pointer, camera );
-        const intersects = raycaster.intersectObjects( scene.children, false );
+        //boxMesh.position.set(pointer.x, 0, pointer.y);
+
         
-        boxMesh.position.set(pointer.x, 0, pointer.y);
-        // boxMesh.position.set(-17, 0, -12.5);   // this is my X, Y browser mouse translation for (184 / 1472) || 0.125 || top left corner of screen
-
-        // -17 = (184 / 1472) * g
-        // g = (-17 * 1472) / 184
-        // g = -136
-
-        // debugger;
-
-        for ( let i = 0; i < intersects.length; i ++ ) {
-            // alert('hit');
-            // debugger;
-            // intersects[ i ].object.material.color.set( 0xff0000 );
-        }
 
         t += 1/480;
         if (earthScene != undefined) {
@@ -201,73 +237,69 @@
 
         const h = renderer.domElement.height;
         const w = renderer.domElement.width;
-        const mx = event.clientX -182;
-        const my = event.clientY - 85;
+        pointer.x = (event.offsetX / w) * 2 - 1;
+        pointer.y = -(event.offsetY / h) * 2 + 1;
 
-        // pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        // pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
-        pointer.x = ( mx/ w ) * 35 - 17;
-        pointer.y = ( my/ h ) * 26 - 12.5;
-
-
-        // Position to top left:
-        // pointer.x = -17;
-        // pointer.y = -12.5;
-
-        // position to bottom right
-        // pointer.x = 18;
-        // pointer.y = 13.5;
-
-        // x range:  35
-        // x offset: -17
-        // y range:  26
-        // y offset: -12.5
-
-        // g = (-17 * 1472) / mouse
-        // FIXME / TODO: this doesn't work... but I thought it would 
-        // pointer.x = (-17 * window.innerWidth ) / event.clientX;
-        // pointer.x = (event.clientX * window.innerWidth ) / -136;
-        
-
-        // pointer.x = -163 / (event.clientX * window.innerWidth);
-        // pointer.y =  -12.5 + (event.clientY * window.innerHeight ) / 130;
-
-
-
-        // pointer.y = (event.clientY * window.innerHeight ) / g-y
-        // g-y = (-12.5 * 783 ) / 88
-        // g-y = -111
-
-
-        // TODO: finish equation for pointer to x,y,z mapping
-        // ( event.clientX / window.innerWidth ) + xOffsetOfCanvas
-
-
-        // top left is -1, 1
-        // consoleSpan.innerHTML = "Pointer {" + pointer.x + ", " + pointer.y + "}";
-        // consoleSpan.innerHTML = "event.clientX / window.innerWidth:  {" + event.clientX + " / " + window.innerWidth + "}";
+        // console.log("x : " + pointer.x + " y : " + pointer.y);
         var msg = "";
-        // msg = "my / h:  {" + my + " / " + h + "} = " + my / h;
-        // msg += " | g = " + -12.5 / (my / h);
-        msg = "mx / w:  {" + mx + " / " + w + "} = " + mx / w;
-        // msg += " | g = " + -12.5 / (mx / w);
-
-        // msg = "event.clientY / window.innerHeight:  {" + event.clientY + " / " + window.innerHeight + "} = " + event.clientY / window.innerHeight;
-        // msg += " | g = " + -12.5 / (event.clientY / window.innerHeight);
-
-        // msg = "event.clientX / window.innerWidth:  {" + event.clientX + " / " + window.innerWidth + "} = " + event.clientX / window.innerWidth;
-        // msg += " | g = " + -17 / (event.clientX / window.innerWidth);
-        
-        // msg = "pointer.x, y = { " + pointer.x + ", " + pointer.y + " }";
+        msg = "pointer.x, y = { " + pointer.x + ", " + pointer.y + " }";
         consoleSpan.innerHTML = msg;
 
-        // pointer.x = ( event.clientX / renderer.domElement.width ) * 20 - 20;
-        // pointer.y = - ( event.clientY / renderer.domElement.height ) * 20 + 20;
+        raycaster.setFromCamera( pointer, camera );
+        const intersects = raycaster.intersectObjects( scene.children );
+
+
+        // if ( intersects.length > 0) {
+        //     let msg = "HIT: ";
+        //     for ( let i = 0; i < intersects.length; i ++ ) {
+        //         const obj = intersects[i].object;
+
+        //         // debugger;
+        //         console.log(obj);
+        //         console.log(obj.name);
+
+        //         msg +=  ", " + obj.name ;
+
+        //         // intersects[ i ].object.material.color.set( 0xff0000 );
+        //     }
+        //     lowerConsoleSpan.innerHTML = msg + " {" + pointer.x + ", " + pointer.y + "}";
+        // } else {
+        //     lowerConsoleSpan.innerHTML = "Lower Console";
+        // }
+
+    }
+
+
+    function onPointerClick( event ) {
+        event.preventDefault();
+        raycaster.setFromCamera( pointer, camera );
+        const intersects = raycaster.intersectObjects( scene.children );
+
+        if ( intersects.length > 0) {
+            let msg = "HIT: ";
+
+            const firstObj = intersects[0].object;
+
+            if (firstObj.name == "GalacticLeopard6") {
+                alert('draw selection');
+            }
+
+            for ( let i = 0; i < intersects.length; i ++ ) {
+                const obj = intersects[i].object;
+                msg +=  ", " + obj.name ;
+                // intersects[ i ].object.material.color.set( 0xff0000 );
+            }
+            lowerConsoleSpan.innerHTML = msg + " {" + pointer.x + ", " + pointer.y + "}";
+        } else {
+            lowerConsoleSpan.innerHTML = "Lower Console";
+        }
+        
+        console.log("CLICKED");
     }
 
     renderer.domElement.addEventListener( 'pointermove', onPointerMove );
 
+    renderer.domElement.addEventListener( 'click', onPointerClick );
 
     // DRAW BOX
 
