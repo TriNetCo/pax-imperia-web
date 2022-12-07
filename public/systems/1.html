@@ -106,7 +106,7 @@
     const loader = new GLTFLoader();
     
     
-    loader.load( '/public/assets/CloudyPlanet.gltf', function ( gltf ) {
+    loader.load( '/assets/CloudyPlanet.gltf', function ( gltf ) {
 
         ///////////////
         // Add earth //
@@ -127,7 +127,7 @@
         console.error( error );
     } );
 
-    loader.load( '/public/assets/CloudyPlanet.gltf', function ( gltf ) {
+    loader.load( '/assets/CloudyPlanet.gltf', function ( gltf ) {
 
         ///////////////
         // Add earth //
@@ -151,7 +151,7 @@
 
     const fbxLoader = new FBXLoader()
     fbxLoader.load(
-        '/public/script/assets/GalacticLeopard6.fbx',
+        '/script/assets/GalacticLeopard6.fbx',
         (object) => {
             // object.traverse(function (child) {
             //     if ((child as THREE.Mesh).isMesh) {
@@ -183,7 +183,7 @@
 
     var sunScene;
 
-    loader.load( '/public/assets/Sun.gltf', function ( gltf ) {
+    loader.load( '/assets/Sun.gltf', function ( gltf ) {
         const objName = "sun";
         sunScene = gltf.scene;
         sunScene.name = objName + "Scene";

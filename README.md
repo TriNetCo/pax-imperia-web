@@ -23,10 +23,9 @@ x Add planets to systems
 
 Run these commands to start the server
 ```
-  npm install
-  npm start
+  go run main.go
 ```
 
 Now navigate to [http://localhost:3000](http://localhost:3000) to play the game!
 
-The main file to edit is of course `public/index.html` for getting at the front end.  
+The main file to edit is of course `./public/index.html` for getting at the front end at the moment.  
