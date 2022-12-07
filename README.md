@@ -15,6 +15,7 @@ x Allow opening a system by clicking it
 x Add stars to systems
 x Add planets to systems
 - Tech Debt: Load models cleanly
+  - Do I copy models after they're loaded?
 - Flesh out HUD buttons
 - Create a ship you can control and move to planets
 
