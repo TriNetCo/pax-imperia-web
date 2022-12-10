@@ -53,6 +53,8 @@
     import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/jsm/loaders/GLTFLoader.js";
     import { FBXLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/jsm/loaders/FBXLoader.js";
 
+    import { SpriteFlipbook } from '/script/models/spriteFlipbook.js'
+
     var t = 0;
 
 
@@ -178,9 +180,6 @@
     )
 
 
-
-
-
     var sunScene;
 
     loader.load( '/assets/Sun.gltf', function ( gltf ) {
@@ -197,6 +196,14 @@
         console.error( error );
     } );
 
+    
+    const selectionSprite = new SpriteFlipbook(
+        scene,
+        '/script/assets/sprite_sheets/selection_sprite_sheet.png', 
+        1,  // nCols in sprite sheet
+        10, // nRows
+        0.04); // loopFrameDuration
+
     // Add Box for Mouse...
     const boxGeometry = new THREE.BoxGeometry(1,1,1);
     const boxMaterial = new THREE.LineBasicMaterial( { color: 'red' } );
@@ -204,10 +211,12 @@
     // scene.add( boxMesh );
 
 
-    function draw() {
+    const clock = new THREE.Clock();
+    function animate() {
+        let deltaTime = clock.getDelta();
         //boxMesh.position.set(pointer.x, 0, pointer.y);
 
-        
+        selectionSprite.update(deltaTime);
 
         t += 1/480;
         if (earthScene != undefined) {
@@ -225,10 +234,10 @@
         // }
 
         renderer.render( scene, camera );
-        requestAnimationFrame(draw);
+        requestAnimationFrame(animate);
     }
 
-    draw();
+    animate();
 
     function onPointerMove( event ) {
         // calculate pointer position in normalized device coordinates
