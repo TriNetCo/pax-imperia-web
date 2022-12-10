@@ -23,9 +23,9 @@ export class SpriteFlipbook {
 
         this.material = new THREE.SpriteMaterial( { map: map } );
         this.sprite = new THREE.Sprite( this.material );
-        this.sprite.position.set(0,20,0);
         let scale = 4;
         this.sprite.scale.set(scale,scale);
+        this.sprite.name = "selectionSprite";
         scene.add( this.sprite );
     }
 
@@ -36,10 +36,14 @@ export class SpriteFlipbook {
             this.elapsedTime = 0;
             this.currentTile = (this.currentTile + 1 ) % this.tilesVert;
             this.map.offset.y = (this.tilesVert - this.currentTile - 1 ) / this.tilesVert;
-            console.log("currentTile: " + this.currentTile);
-            console.log("map.offset.y: " + this.map.offset.y);
         }
 
+    }
+
+    setPosition(x, y, z) {
+        this.sprite.position.x = x;
+        this.sprite.position.y = y;
+        this.sprite.position.z = z;
     }
 
 }

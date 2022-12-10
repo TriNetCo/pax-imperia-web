@@ -204,6 +204,9 @@
         10, // nRows
         0.04); // loopFrameDuration
 
+    // earth2Scene.position
+    selectionSprite.setPosition(0,20,0);
+
     // Add Box for Mouse...
     const boxGeometry = new THREE.BoxGeometry(1,1,1);
     const boxMaterial = new THREE.LineBasicMaterial( { color: 'red' } );
@@ -289,13 +292,33 @@
 
             const firstObj = intersects[0].object;
 
+
+            // This works, but only on the cursor
+            scene.remove(firstObj);
+
+
+            if (firstObj.name == "earth") {
+                // TODO: move the selectionSprite to be around the fucking thing I clicked...
+                selectionSprite.setPosition(0,20,0);
+            }
+
+
             if (firstObj.name == "GalacticLeopard6") {
-                alert('draw selection');
+                alert('The ship was clicked!');
             }
 
             for ( let i = 0; i < intersects.length; i ++ ) {
                 const obj = intersects[i].object;
                 msg +=  ", " + obj.name ;
+
+                // FIXME: this needs to be changed from deleting objects to change to 
+                // have them selected instead
+                if (obj.parent != null) {
+                    console.log("Deleting object at (" + obj.parent.position.x 
+                        + ", " + obj.parent.position.y
+                        + ", " + obj.parent.position.z + ")");
+                    obj.parent.remove(obj);
+                }
                 // intersects[ i ].object.material.color.set( 0xff0000 );
             }
             lowerConsoleSpan.innerHTML = msg + " {" + pointer.x + ", " + pointer.y + "}";
