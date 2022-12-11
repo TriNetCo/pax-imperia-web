@@ -29,3 +29,9 @@ Run these commands to start the server
 Now navigate to [http://localhost:3000](http://localhost:3000) to play the game!
 
 The main file to edit is of course `./public/index.html` for getting at the front end at the moment.  
+
+## References
+
+- Three JS raycaster/ click detection stuff:  
+- Three JS Sprite stuff:  https://www.youtube.com/watch?v=pGO1Hm-JB90
+- Restful GoLang:  https://go.dev/doc/tutorial/web-service-gin

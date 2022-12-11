@@ -5,31 +5,45 @@ import * as THREE from 'three';
  */
 export class SpriteFlipbook {
 
+    currentTile = 0;
+    elapsedTime = 0;
+    map;
+    material;
+    sprite;
+    selectionTarget = null;
+
     constructor(scene, spriteTexture, tilesHoriz, tilesVert, loopFrameDuration) {
-        this.currentTile = 0;
         this.tilesHoriz = tilesHoriz;
         this.tilesVert = tilesVert;
         this.scene = scene;
-
         this.loopFrameDuration = loopFrameDuration;
-        this.elapsedTime = 0;
 
-        let map = new THREE.TextureLoader().load( spriteTexture );
+        const map = new THREE.TextureLoader().load( spriteTexture );
         this.map = map;
         map.magFilter = THREE.NearestFilter;
         map.repeat.set(1/tilesHoriz, 1/tilesVert);
         map.offset.x = 0;
         map.offset.y = (this.currentTile % tilesVert) / tilesVert;
 
-        this.material = new THREE.SpriteMaterial( { map: map } );
-        this.sprite = new THREE.Sprite( this.material );
+        const material = new THREE.SpriteMaterial( { map: map } );
+        this.material = material;
+        const sprite = new THREE.Sprite( material );
+        this.sprite = sprite;
         let scale = 4;
-        this.sprite.scale.set(scale,scale);
-        this.sprite.name = "selectionSprite";
-        scene.add( this.sprite );
+        sprite.scale.set(scale,scale);
+        sprite.name = "selectionSprite";
+        scene.add( sprite );
     }
 
     update(deltaTime) {
+        // UpdateSelectionTarget
+        const selectionTarget = this.selectionTarget;
+        if (selectionTarget != null) {
+            const p = selectionTarget.position;
+            this.setPosition(p.x, p.y, p.z);
+        }
+            
+        // cycleSpriteFlipbook
         this.elapsedTime += deltaTime;
         if (  this.loopFrameDuration > 0 && 
               this.elapsedTime >= this.loopFrameDuration ) {
@@ -44,6 +58,14 @@ export class SpriteFlipbook {
         this.sprite.position.x = x;
         this.sprite.position.y = y;
         this.sprite.position.z = z;
+    }
+
+    setPositionVector3(vector3) {
+        this.sprite.position = vector3;
+    }
+
+    select(selectionTarget) {
+        this.selectionTarget = selectionTarget;
     }
 
 }
