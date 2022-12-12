@@ -4,8 +4,27 @@ import { FBXLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/j
 
 import { SpriteFlipbook } from '/script/models/spriteFlipbook.js'
 
-var t = 0;
 
+///////////////////////
+// Connect DOM Stuff //
+///////////////////////
+
+const upperConsole = {
+    print(msg) {
+        document.getElementById("console-message").innerHTML = msg;
+    }
+}
+
+const lowerConsole = {
+    print(msg) {
+        document.getElementById("lower-console").innerHTML = msg;
+    }
+}
+
+
+////////////////////
+// Setup Renderer //
+////////////////////
 
 const renderer = new THREE.WebGLRenderer();
 
@@ -15,18 +34,18 @@ renderer.setSize( width, height );
 renderer.setPixelRatio( renderer.domElement.devicePixelRatio );
 document.getElementById("canvas-div").appendChild( renderer.domElement );
 
-const consoleSpan = document.getElementById("console-message");
-const lowerConsoleSpan = document.getElementById("lower-console");
-
 // Click detection
 let raycaster = new THREE.Raycaster();
 window.pointer = new THREE.Vector2(0,0);
 
+
+////////////////////////////////////////
+// Setup the Scene with Basic Objects //
+////////////////////////////////////////
+
 const scene = new THREE.Scene();
 
-////////////////
-// Add Lights //
-////////////////
+// Add Lights
 
 var light = new THREE.DirectionalLight( 0xffffff, 1 );
 light.position.set(22, 22, 25);
@@ -41,9 +60,7 @@ scene.add( light );
 light = new THREE.AmbientLight( 0xffffff, 0.1 );
 scene.add( light );
 
-///////////////////
-// Add    Camera //
-///////////////////
+// Add Camera
 
 const camera = new THREE.PerspectiveCamera( 15, width / height, 1, 10000 );
 camera.position.set( 0, 100, 0 );
@@ -51,16 +68,21 @@ camera.lookAt( scene.position );
 camera.aspect = 800 / 600;
 camera.updateProjectionMatrix();
 
-var earthScene;
+
+/////////////////
+// Load Models //
+/////////////////
 
 const loader = new GLTFLoader();
+const fbxLoader = new FBXLoader()
 
+// Tracked models
+var earthScene;
+var sunScene;
+
+// Add earth
 
 loader.load( '/assets/CloudyPlanet.gltf', function ( gltf ) {
-
-    ///////////////
-    // Add earth //
-    ///////////////
     const objName = "earth";
     earthScene = gltf.scene;
     // earthScene.scale.set(1.1,1.1,1.1)
@@ -70,18 +92,15 @@ loader.load( '/assets/CloudyPlanet.gltf', function ( gltf ) {
     scene.add( earthScene );
 
     console.log("Finished loading!");
-
 }, function ( xhr ) {
     console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
 }, function ( error ) {
     console.error( error );
 } );
 
-loader.load( '/assets/CloudyPlanet.gltf', function ( gltf ) {
+// Load earth2
 
-    ///////////////
-    // Add earth //
-    ///////////////
+loader.load( '/assets/CloudyPlanet.gltf', function ( gltf ) {
     const objName = "earth2";
     const earth2Scene = gltf.scene;
     // earth2Scene.scale.set(1.1,1.1,1.1)
@@ -98,19 +117,11 @@ loader.load( '/assets/CloudyPlanet.gltf', function ( gltf ) {
     console.error( error );
 } );
 
+// Load Ship
 
-const fbxLoader = new FBXLoader()
 fbxLoader.load(
     '/script/assets/GalacticLeopard6.fbx',
     (object) => {
-        // object.traverse(function (child) {
-        //     if ((child as THREE.Mesh).isMesh) {
-        //         // (child as THREE.Mesh).material = material
-        //         if ((child as THREE.Mesh).material) {
-        //             ((child as THREE.Mesh).material as THREE.MeshBasicMaterial).transparent = false
-        //         }
-        //     }
-        // })
         let scale = 0.0002;
         object.name = "ship";
         object.scale.set(scale, scale, scale);
@@ -127,8 +138,7 @@ fbxLoader.load(
     }
 )
 
-
-var sunScene;
+// Load sun
 
 loader.load( '/assets/Sun.gltf', function ( gltf ) {
     const objName = "sun";
@@ -145,6 +155,7 @@ loader.load( '/assets/Sun.gltf', function ( gltf ) {
     console.error( error );
 } );
 
+// Load sprites
 
 const selectionSprite = new SpriteFlipbook(
     scene,
@@ -155,74 +166,54 @@ const selectionSprite = new SpriteFlipbook(
 
 window.selectionSprite = selectionSprite;
 
-// Add Box for Mouse...
-const boxGeometry = new THREE.BoxGeometry(1,1,1);
-const boxMaterial = new THREE.LineBasicMaterial( { color: 'red' } );
-const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-// scene.add( boxMesh );
 
+//////////////////////////////////
+// Setup Animation/ Update Loop //
+//////////////////////////////////
 
+let spinTime = 0;
 const clock = new THREE.Clock();
 function animate() {
     let deltaTime = clock.getDelta();
-    //boxMesh.position.set(pointer.x, 0, pointer.y);
 
     selectionSprite.update(deltaTime);
 
-    t += 1/480;
+    spinTime += deltaTime/9 ;
     if (earthScene != undefined) {
-        earthScene.position.x = 10*Math.cos(t) + 0;
-        //earthScene.position.y = 5*Math.cos(t) + 0;
-        earthScene.position.z = 10*Math.sin(t) + 0;
+        earthScene.position.x = 10*Math.cos(spinTime) + 0;
+        earthScene.position.z = 10*Math.sin(spinTime) + 0;
 
-        //earthScene.rotation.y += 0.005;
+        earthScene.rotation.y += 0.005;
     }
 
     renderer.render( scene, camera );
     requestAnimationFrame(animate);
 }
 
+
+/////////////
+// Main... //
+/////////////
+
+upperConsole.print("Resume");
+
 animate();
 
 function onPointerMove( event ) {
+    trackMousePosition(event)
+}
+
+/* This method runs whenever the pointer move event fires so 
+ * we can tell canvas where our mouse is
+ */ 
+function trackMousePosition(event) {
     // calculate pointer position in normalized device coordinates
     // (-1 to +1) for both components
-    renderer.domElement;
-
     const h = renderer.domElement.height;
     const w = renderer.domElement.width;
     pointer.x = (event.offsetX / w) * 2 - 1;
     pointer.y = -(event.offsetY / h) * 2 + 1;
-
-    // console.log("x : " + pointer.x + " y : " + pointer.y);
-    var msg = "";
-    msg = "pointer.x, y = { " + pointer.x + ", " + pointer.y + " }";
-    // consoleSpan.innerHTML = msg;
-
-    raycaster.setFromCamera( pointer, camera );
-    const intersects = raycaster.intersectObjects( scene.children );
-
-
-    // if ( intersects.length > 0) {
-    //     let msg = "HIT: ";
-    //     for ( let i = 0; i < intersects.length; i ++ ) {
-    //         const obj = intersects[i].object;
-
-    //         // debugger;
-    //         console.log(obj);
-    //         console.log(obj.name);
-
-    //         msg +=  ", " + obj.name ;
-
-    //         // intersects[ i ].object.material.color.set( 0xff0000 );
-    //     }
-    //     lowerConsoleSpan.innerHTML = msg + " {" + pointer.x + ", " + pointer.y + "}";
-    // } else {
-    //     lowerConsoleSpan.innerHTML = "Lower Console";
-    // }
-
 }
-
 
 function onPointerClick( event ) {
     event.preventDefault();
@@ -238,30 +229,23 @@ function onPointerClick( event ) {
         let msg = "HIT: ";
         for ( let i = 0; i < uniqueIntersects.length; i ++ ) {
             const obj = uniqueIntersects[i].object;
-            if (obj.name == "selectionSprite") continue;
             msg +=  ", " + obj.name + " (" + obj.id + ")";
-
-            // if (obj.name == "GalacticLeopard6") {
-            //     alert('The ship was clicked!');
-            // }
 
             // removeContainerFromScene(obj);
             putCursorOverContainer(obj);
         }
-        // lowerConsoleSpan.innerHTML = msg + " {" + pointer.x + ", " + pointer.y + "}";
+        // lowerConsole.print(msg + " {" + pointer.x + ", " + pointer.y + "}");
     } else {
-        // lowerConsoleSpan.innerHTML = "Lower Console";
+        // lowerConsole.print("Lower Console");
     }
     
-    console.log("CLICKED");
 }
 
 
 /* This function recursively walks up the tree of parents until it finds the root scene
-    * and removes the highest order group from that scene.  
-    */
+ * and removes the highest order group from that scene.  
+ */
 function removeContainerFromScene(container) {
-    if (container == null) return;
     let parent = container.parent;
 
     if (parent.type == "Scene") {
@@ -269,17 +253,18 @@ function removeContainerFromScene(container) {
         + ", " + container.position.y
         + ", " + container.position.z + ")");
         parent.remove(container);
+    } else {
+        removeContainerFromScene(container.parent);
     }
-    removeContainerFromScene(container.parent);
 }
 
 function putCursorOverContainer(container) {
-    if (container == null) return;
+    if (container.name == "selectionSprite") return; // Never put a cursor over the cursor itself
     let parent = container.parent;
 
     if (parent.type == "Scene") {
         selectionSprite.select(container);
-        lowerConsoleSpan.innerHTML = "Selected: " + container.name;
+        lowerConsole.print("Selected: " + container.name);
     } else {
         putCursorOverContainer(parent)
     }
