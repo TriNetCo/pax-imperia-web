@@ -284,7 +284,6 @@
         if ( intersects.length > 0) {
 
             let uniqueIntersects = intersects.filter( (value, index, self) => {
-                // debugger;
                 return self.findIndex(v => v.object.id === value.object.id) === index;
             });
 
@@ -313,45 +312,32 @@
     /* This function recursively walks up the tree of parents until it finds the root scene
      * and removes the highest order group from that scene.  
      */
-    function removeContainerFromScene(obj) {
-        let container = obj
-        while (true) {
-            if (container == null) return;
-            let p = container.parent;
+    function removeContainerFromScene(container) {
+        if (container == null) return;
+        let parent = container.parent;
 
-            if (p.type == "Scene") {
-                console.log("Deleting object at (" + container.position.x 
-                + ", " + container.position.y
-                + ", " + container.position.z + ")");
-                p.remove(container);
-            }
-            container = container.parent // recurse
+        if (parent.type == "Scene") {
+            console.log("Deleting object at (" + container.position.x 
+            + ", " + container.position.y
+            + ", " + container.position.z + ")");
+            parent.remove(container);
         }
+        removeContainerFromScene(container.parent);
     }
 
-    function putCursorOverContainer(obj) {
-        let container = obj
-        while (true) {
-            if (container == null) return;
-            let p = container.parent;
+    function putCursorOverContainer(container) {
+        if (container == null) return;
+        let parent = container.parent;
 
-            if (p.type == "Scene") {
-                console.log("Detected container at (" + container.position.x 
-                + ", " + container.position.y
-                + ", " + container.position.z + ")");
-                const cp = container.position;
-
-                selectionSprite.select(container);
-
-                lowerConsoleSpan.innerHTML = "Selected: " + container.name;
-                return;
-            }
-            container = container.parent // recurse
+        if (parent.type == "Scene") {
+            selectionSprite.select(container);
+            lowerConsoleSpan.innerHTML = "Selected: " + container.name;
+        } else {
+            putCursorOverContainer(parent)
         }
     }
 
     renderer.domElement.addEventListener( 'pointermove', onPointerMove );
-
     renderer.domElement.addEventListener( 'click', onPointerClick );
 
     // DRAW BOX
@@ -378,10 +364,6 @@
     // const sphere = new THREE.Mesh( geometry, material );
     // scene.add( sphere );
 
-
-
   </script>
-  
-    
 
 </html>
