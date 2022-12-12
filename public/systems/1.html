@@ -249,7 +249,7 @@
         // console.log("x : " + pointer.x + " y : " + pointer.y);
         var msg = "";
         msg = "pointer.x, y = { " + pointer.x + ", " + pointer.y + " }";
-        consoleSpan.innerHTML = msg;
+        // consoleSpan.innerHTML = msg;
 
         raycaster.setFromCamera( pointer, camera );
         const intersects = raycaster.intersectObjects( scene.children );
@@ -291,15 +291,8 @@
             let msg = "HIT: ";
             for ( let i = 0; i < uniqueIntersects.length; i ++ ) {
                 const obj = uniqueIntersects[i].object;
+                if (obj.name == "selectionSprite") continue;
                 msg +=  ", " + obj.name + " (" + obj.id + ")";
-
-                // FIXME: this needs to be changed from deleting objects to change to 
-                // have them selected instead
-
-                if (obj.name == "earth") {
-                    // TODO: move the selectionSprite to be around the fucking thing I clicked...
-                    selectionSprite.setPosition(0,20,0);
-                }
 
                 // if (obj.name == "GalacticLeopard6") {
                 //     alert('The ship was clicked!');
@@ -308,9 +301,9 @@
                 // removeContainerFromScene(obj);
                 putCursorOverContainer(obj);
             }
-            lowerConsoleSpan.innerHTML = msg + " {" + pointer.x + ", " + pointer.y + "}";
+            // lowerConsoleSpan.innerHTML = msg + " {" + pointer.x + ", " + pointer.y + "}";
         } else {
-            lowerConsoleSpan.innerHTML = "Lower Console";
+            // lowerConsoleSpan.innerHTML = "Lower Console";
         }
         
         console.log("CLICKED");
@@ -346,15 +339,11 @@
                 console.log("Detected container at (" + container.position.x 
                 + ", " + container.position.y
                 + ", " + container.position.z + ")");
-                // p.remove(container);
                 const cp = container.position;
 
-
-                // selectionSprite.setPosition(cp.x, cp.y, cp.z);
-                // debugger;
-                // selectionSprite.setPositionVector3(cp);
                 selectionSprite.select(container);
 
+                lowerConsoleSpan.innerHTML = "Selected: " + container.name;
                 return;
             }
             container = container.parent // recurse
