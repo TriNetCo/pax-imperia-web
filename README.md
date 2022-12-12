@@ -15,9 +15,14 @@ x Allow opening a system by clicking it
 x Add stars to systems
 x Add planets to systems
 - Tech Debt: Load models cleanly
-  - Do I copy models after they're loaded?
+- Drive solar system contents off of JS data
+
 - Flesh out HUD buttons
 - Create a ship you can control and move to planets
+
+## TODO Backend
+- Define golang struct for solar system data
+- pump out solar system data to the backend
 
 ## Getting Started
 

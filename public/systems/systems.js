@@ -22,6 +22,65 @@ const lowerConsole = {
 }
 
 
+const slider = document.getElementById("slider");
+
+
+/////////////////////////////
+// Model Loading Functions //
+/////////////////////////////
+// TODO: Move to their own class...
+
+/* 
+ * Load Planet
+ */
+function loadPlanet(name, modelPath, x, y, z) {
+    return new Promise(function(resolve, reject) {
+        loader.load(modelPath, function ( gltf ) {
+            let obj = gltf.scene;
+            // obj.scale.set(1.1,1.1,1.1)
+            obj.position.set(x,y,z);
+            obj.name = name;
+            obj.children[0].name = name
+            scene.add( obj );
+            console.log("Finished loading!");
+            resolve(obj);
+        }, function ( xhr ) {
+            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+        }, function ( error ) {
+            console.error( error );
+        } );
+
+    });
+}
+
+/* 
+ * Load Ship
+ */
+function loadShip(name, modelPath, x, y, z) {
+    return new Promise(function(resolve, reject) {
+        fbxLoader.load(
+            modelPath,
+            (object) => {
+                let scale = 0.0002;
+                object.name = name;
+                object.scale.set(scale, scale, scale);
+                object.rotation.set(2* Math.PI, 1.5708 ,2*Math.PI/4);
+                object.position.set(x,y,z);
+                scene.add(object);
+                console.log("finished loading!");
+                resolve(object)
+            },
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
+            },
+            (error) => {
+                console.log(error);
+            }
+        )
+    });
+}
+
+
 ////////////////////
 // Setup Renderer //
 ////////////////////
@@ -65,8 +124,6 @@ scene.add( light );
 const camera = new THREE.PerspectiveCamera( 15, width / height, 1, 10000 );
 camera.position.set( 0, 100, 0 );
 camera.lookAt( scene.position );
-camera.aspect = 800 / 600;
-camera.updateProjectionMatrix();
 
 
 /////////////////
@@ -76,84 +133,24 @@ camera.updateProjectionMatrix();
 const loader = new GLTFLoader();
 const fbxLoader = new FBXLoader()
 
-// Tracked models
-var earthScene;
-var sunScene;
-
 // Add earth
 
-loader.load( '/assets/CloudyPlanet.gltf', function ( gltf ) {
-    const objName = "earth";
-    earthScene = gltf.scene;
-    // earthScene.scale.set(1.1,1.1,1.1)
-    earthScene.position.set(0,0,20);
-    earthScene.name = objName;
-    earthScene.children[0].name = objName
-    scene.add( earthScene );
+var earthScene = await loadPlanet("earth", '/assets/CloudyPlanet.gltf', 0,0,20);
+var earth2Scene = await loadPlanet("earth2", '/assets/CloudyPlanet.gltf', 1,0,1);
+var sunScene = await loadPlanet("sun", '/assets/Sun.gltf', 0,0,0);
 
-    console.log("Finished loading!");
-}, function ( xhr ) {
-    console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-}, function ( error ) {
-    console.error( error );
-} );
+var ship = await loadShip('ship', '/script/assets/GalacticLeopard6.fbx', 0, 1, 0)
 
-// Load earth2
+function doRotationsAndOrbits(deltaTime) {
+    spinTime += deltaTime/9 ;
+    earthScene.position.x = 10*Math.cos(spinTime) + 0;
+    earthScene.position.z = 10*Math.sin(spinTime) + 0;
 
-loader.load( '/assets/CloudyPlanet.gltf', function ( gltf ) {
-    const objName = "earth2";
-    const earth2Scene = gltf.scene;
-    // earth2Scene.scale.set(1.1,1.1,1.1)
-    earth2Scene.position.set(1,0,1);
-    earth2Scene.name = objName;
-    earth2Scene.children[0].name = objName
-    scene.add( earth2Scene );
+    earthScene.rotation.y += 0.005;
 
-    console.log("Finished loading!");
-
-}, function ( xhr ) {
-    console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-}, function ( error ) {
-    console.error( error );
-} );
-
-// Load Ship
-
-fbxLoader.load(
-    '/script/assets/GalacticLeopard6.fbx',
-    (object) => {
-        let scale = 0.0002;
-        object.name = "ship";
-        object.scale.set(scale, scale, scale);
-        object.rotation.set(2* Math.PI, 1.5708 ,2*Math.PI/4);
-        object.position.set(0,1,0);
-        scene.add(object);
-        console.log("finished loading!");
-    },
-    (xhr) => {
-        console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
-    },
-    (error) => {
-        console.log(error);
-    }
-)
-
-// Load sun
-
-loader.load( '/assets/Sun.gltf', function ( gltf ) {
-    const objName = "sun";
-    sunScene = gltf.scene;
-    sunScene.name = objName + "Scene";
-    sunScene.children[0].name = objName
-    sunScene.position.set(0, 0, 0);
-    scene.add( sunScene );
-    selectionSprite.select(sunScene);
-
-}, function ( xhr ) {
-    console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-}, function ( error ) {
-    console.error( error );
-} );
+    sunScene.rotation.y += 0.005;
+    sunScene.rotation.x += 0.005;
+}
 
 // Load sprites
 
@@ -174,17 +171,21 @@ window.selectionSprite = selectionSprite;
 let spinTime = 0;
 const clock = new THREE.Clock();
 function animate() {
+
+    // Reset camera in real time
+    //////////////////////////////
+
+    // let myVal = slider.value;
+    // let dist = 0.5;
+    // camera.position.set( dist * 150, dist * 100, dist * 179 );
+    // camera.lookAt( scene.position );
+    // camera.updateProjectionMatrix();
+
     let deltaTime = clock.getDelta();
 
-    selectionSprite.update(deltaTime);
+    selectionSprite.update(deltaTime); // UpdateSpriteFrame
 
-    spinTime += deltaTime/9 ;
-    if (earthScene != undefined) {
-        earthScene.position.x = 10*Math.cos(spinTime) + 0;
-        earthScene.position.z = 10*Math.sin(spinTime) + 0;
-
-        earthScene.rotation.y += 0.005;
-    }
+    doRotationsAndOrbits(deltaTime);
 
     renderer.render( scene, camera );
     requestAnimationFrame(animate);
