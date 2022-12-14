@@ -11,50 +11,62 @@
         <link rel="stylesheet" href="../css/style.css">
     </head>
 
-    <div id="app-parent">
-        <div id="console-div">
-            <span class="console-message" id="console-message">
-                Game Paused
-            </span>
-        </div>
+    <body id="system-body">
+        <div class="page-wrap">
 
-        <div class="flex-container">
-            <div id="planet-list">
-                <h3>Planets:</h3>
-                <ul>
-                    <li>Mercury</li>
-                    <li>Venus</li>
-                    <li>Earth</li>
-                    <li>Mars</li>
-                    <li>Jupiter</li>
-                    <li>Saturn</li>
-                    <li>Uranus</li>
-                    <li>Neptune</li>
-                    <li>Pluto</li>
-                </ul>
-                <button>Governor</button>
-            </div>
+            <div id="app-parent">
+                <div id="console-div" class="flex-container">
+                    <div class="console-message" id="console-message">
+                        Game Paused
+                    </div>
 
-            <div id="canvas-and-buttons">
-                <div id="canvas-div"></div>
-                <!-- <canvas id="canvas" width="800" height="600" style="border: solid 1px;"></canvas> -->
-                <div id="lower-console">
-                    Lower Console
+                    <div class="console-message" id="time">
+                        403.1
+                    </div>
+                </div>
+
+                <div class="flex-container">
+                    
+                    <div class="flex-container-left">
+                        <div id="planet-list">
+                            <h3>Planets:</h3>
+                            <ul>
+                                <li>Earth</li>
+                                <li>Earth2</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <button id="btnGovernor">Governor</button>
+                        </div>
+
+                    </div>
+
+                    <div id="canvas-and-buttons">
+                        <div id="canvas-div"></div>
+                        <!-- <canvas id="canvas" width="800" height="600" style="border: solid 1px;"></canvas> -->
+                        
+                        <div id="galaxy-and-console" class="flex-container">
+                            <div id="galaxy">
+                                Galaxy
+                            </div>
+
+                            <div id="lower-console">
+                                <div>
+                                    Lower Console
+                                </div>
+                                <input type="range" min="0" max="300" value="0" class="slider" id="slider">
+
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
-
             
         </div>
-
-        
-        
-        
-    </div>
-
-    
-
-    <input type="range" min="0" max="300" value="0" class="slider" id="slider">
+    </body>
 
 
     <script type="module" src="systems.js"></script>
