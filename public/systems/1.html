@@ -10,40 +10,49 @@
 
         <link rel="stylesheet" href="../css/style.css">
     </head>
-    <h1>System: Sol</h1>
 
-    <div>
-        <span class="console-message" id="console-message">
-            Game Paused
-        </span></div>
-
-    <div class="flex-container">
-        <div id="planet-list">
-            <h3>Planets:</h3>
-            <ul>
-                <li>Mercury</li>
-                <li>Venus</li>
-                <li>Earth</li>
-                <li>Mars</li>
-                <li>Jupiter</li>
-                <li>Saturn</li>
-                <li>Uranus</li>
-                <li>Neptune</li>
-                <li>Pluto</li>
-            </ul>
-            <button>Governor</button>
+    <div id="app-parent">
+        <div id="console-div">
+            <span class="console-message" id="console-message">
+                Game Paused
+            </span>
         </div>
 
-        <div>
-            <div id="canvas-div"></div>
-            <!-- <canvas id="canvas" width="800" height="600" style="border: solid 1px;"></canvas> -->
+        <div class="flex-container">
+            <div id="planet-list">
+                <h3>Planets:</h3>
+                <ul>
+                    <li>Mercury</li>
+                    <li>Venus</li>
+                    <li>Earth</li>
+                    <li>Mars</li>
+                    <li>Jupiter</li>
+                    <li>Saturn</li>
+                    <li>Uranus</li>
+                    <li>Neptune</li>
+                    <li>Pluto</li>
+                </ul>
+                <button>Governor</button>
+            </div>
+
+            <div id="canvas-and-buttons">
+                <div id="canvas-div"></div>
+                <!-- <canvas id="canvas" width="800" height="600" style="border: solid 1px;"></canvas> -->
+                <div id="lower-console">
+                    Lower Console
+                </div>
+
+            </div>
+
+            
         </div>
+
+        
+        
         
     </div>
 
-    <div id="lower-console">
-        Lower Console
-    </div>
+    
 
     <input type="range" min="0" max="300" value="0" class="slider" id="slider">
 

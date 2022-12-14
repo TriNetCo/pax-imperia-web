@@ -1,22 +1,44 @@
 
+#app-parent {
+    width: 1050px;
+}
+
 .flex-container {
     display: flex;
+    /* border: solid; */
+    width: 100%;
 }
-.planet-list {
+
+#planet-list {
+    background: grey;
+    flex-grow:1;
     padding: 20px;
-    margin: 20px;
+    margin: 0px;
+    width: 150px;
 }
 
-/*div#canvas-div canvas {cursor: none;}*/
+/* #planet-list ul { 
+    width: 150px;
+} */
+
+#canvas-holder {
+    /* flex-grow:3; */
+    width: 800px;
+    background: green;
+}
 
 
-
-
-/* HDMI */
+#console-div {
+    background-color: black;
+    width: 1050px;
+}
 
 .console-message {
-    background-color: black;
     color: greenyellow;
-    width: 800px;
     height: 1em;
+}
+
+#lower-console {
+    background:red;
+    height: 200px;
 }

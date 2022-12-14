@@ -88,7 +88,7 @@ function loadShip(name, modelPath, x, y, z) {
 const renderer = new THREE.WebGLRenderer();
 
 const width = 800;
-const height = 600;
+const height = 500;
 renderer.setSize( width, height );
 renderer.setPixelRatio( renderer.domElement.devicePixelRatio );
 document.getElementById("canvas-div").appendChild( renderer.domElement );
