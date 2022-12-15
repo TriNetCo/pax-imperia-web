@@ -6,6 +6,67 @@ import { SpriteFlipbook } from '/script/models/spriteFlipbook.js'
 
 
 ///////////////////////
+// Input System Data //
+///////////////////////
+
+var system = {
+    "id": "1",
+    "name": "Rigel",
+    "position": { "x": 1, "y": 1 },
+    "star_type": "red_dwarf",
+    "planets": [
+        {
+            "index": 1,
+            "atmosphere": "nitrogen",
+            "size": 5,
+            "distance_from_star": 1
+        },
+        {
+            "index": 2,
+            "atmosphere": "gas_giant",
+            "size": 5,
+            "distance_from_star": 3
+        },
+        {
+            "index": 3,
+            "atmosphere": "nitrogen",
+            "size": 4,
+            "distance_from_star": 4
+        }
+    ],
+    "connected_systems": [
+        {
+            "id": 2,
+            "name": "berry",
+            "position": { "x": 2, "y": 3 }
+        }
+    ],
+    "squadrons": [
+        {
+            "owner": 1,
+            "system": 1,
+            "image": "meh",
+            "orbit_target": "none",
+            "position": { "x": 2, "y": 3 },
+            
+            "max_jumps": 2,
+            "jumps_remaining": 2,
+
+            "ships": [
+                {
+                    "design": "dd1",
+                    "current_hp": 150,
+                    "max_hp": 200
+                }
+            ]
+
+        }
+    ]
+}
+
+
+
+///////////////////////
 // Connect DOM Stuff //
 ///////////////////////
 
@@ -197,6 +258,34 @@ function animate() {
 /////////////
 
 upperConsole.print("Resume");
+
+
+////////////////////////////////////
+// Populate HTML based on JS data //
+////////////////////////////////////
+
+populatePlanetList(system);
+window.system = system;
+
+function populatePlanetList(system) {
+    let planetListUl = document.getElementById("planet-list");
+    let html = "<h3>Planets:</h3>";
+    html += "<ul>";
+    let name = system["name"];
+
+    system["planets"].forEach( planet => {
+        let index = planet["index"];
+        let planetFullName = name + " " + index;
+
+        html += "<li onclick='alert(\"hi\")''>" + planetFullName + "</li>";
+
+    });
+
+    html += "</ul>";
+    planetListUl.innerHTML = html;
+}
+
+
 
 animate();
 
