@@ -12,26 +12,39 @@ import { SpriteFlipbook } from '/script/models/spriteFlipbook.js'
 var system = {
     "id": "1",
     "name": "Rigel",
-    "position": { "x": 1, "y": 1 },
-    "star_type": "red_dwarf",
+    "g_position": { "x": 1, "y": 1 },
     "planets": [
         {
-            "index": 1,
-            "atmosphere": "nitrogen",
+            "index": 0,
+            "atmosphere": "sun",
             "size": 5,
-            "distance_from_star": 1
+            "distance_from_star": 0,
+            "spin_speed": 1,
+            "rander": 5  /* This is a random number where the planet's orbit begins so they aren't all rotating in sync with each other. */
+        },
+        {
+            "index": 1,
+            "atmosphere": "oxygen",
+            "size": 5,
+            "distance_from_star": 1,
+            "spin_speed": 2,
+            "rander": 10
         },
         {
             "index": 2,
-            "atmosphere": "gas_giant",
+            "atmosphere": "oxygen",
             "size": 5,
-            "distance_from_star": 3
+            "distance_from_star": 2,
+            "spin_speed": 3,
+            "rander": 40
         },
         {
             "index": 3,
-            "atmosphere": "nitrogen",
+            "atmosphere": "oxygen",
             "size": 4,
-            "distance_from_star": 4
+            "distance_from_star": 3,
+            "spin_speed": 4,
+            "rander": 78
         }
     ],
     "connected_systems": [
@@ -48,7 +61,7 @@ var system = {
             "image": "meh",
             "orbit_target": "none",
             "position": { "x": 2, "y": 3 },
-            
+
             "max_jumps": 2,
             "jumps_remaining": 2,
 
@@ -65,10 +78,29 @@ var system = {
 }
 
 
+////////////////////
+// Setup Renderer //
+////////////////////
+
+const renderer = new THREE.WebGLRenderer();
+
+const width = 800;
+const height = 500;
+renderer.setSize( width, height );
+renderer.setPixelRatio( renderer.domElement.devicePixelRatio );
+
+// Click detection
+let raycaster = new THREE.Raycaster();
+window.pointer = new THREE.Vector2(0,0);
+
 
 ///////////////////////
 // Connect DOM Stuff //
 ///////////////////////
+
+document.getElementById("canvas-div").appendChild( renderer.domElement );
+renderer.domElement.addEventListener( 'pointermove', onPointerMove );
+renderer.domElement.addEventListener( 'click', onPointerClick );
 
 const upperConsole = {
     print(msg) {
@@ -82,7 +114,6 @@ const lowerConsole = {
     }
 }
 
-
 const slider = document.getElementById("slider");
 
 
@@ -94,9 +125,9 @@ const slider = document.getElementById("slider");
 /* 
  * Load Planet
  */
-function loadPlanet(name, modelPath, x, y, z) {
+function loadPlanet(name, atmosphere, x, y, z) {
     return new Promise(function(resolve, reject) {
-        loader.load(modelPath, function ( gltf ) {
+        loader.load("/assets/" + atmosphere + ".gltf", function ( gltf ) {
             let obj = gltf.scene;
             // obj.scale.set(1.1,1.1,1.1)
             obj.position.set(x,y,z);
@@ -142,23 +173,6 @@ function loadShip(name, modelPath, x, y, z) {
 }
 
 
-////////////////////
-// Setup Renderer //
-////////////////////
-
-const renderer = new THREE.WebGLRenderer();
-
-const width = 800;
-const height = 500;
-renderer.setSize( width, height );
-renderer.setPixelRatio( renderer.domElement.devicePixelRatio );
-document.getElementById("canvas-div").appendChild( renderer.domElement );
-
-// Click detection
-let raycaster = new THREE.Raycaster();
-window.pointer = new THREE.Vector2(0,0);
-
-
 ////////////////////////////////////////
 // Setup the Scene with Basic Objects //
 ////////////////////////////////////////
@@ -196,21 +210,38 @@ const fbxLoader = new FBXLoader()
 
 // Add earth
 
-var earthScene = await loadPlanet("earth", '/assets/CloudyPlanet.gltf', 0,0,20);
-var earth2Scene = await loadPlanet("earth2", '/assets/CloudyPlanet.gltf', 1,0,1);
-var sunScene = await loadPlanet("sun", '/assets/Sun.gltf', 0,0,0);
+for (const planet of system['planets']) {
+    const z = 2 * planet['distance_from_star'];
+
+    console.log("loading planet with atmosphere: " + planet['atmosphere']);
+    let planetObject = await loadPlanet("" + planet["index"], planet['atmosphere'], 0,0,z);
+    // debugger;
+    planet['planet_object'] = planetObject;
+}
 
 var ship = await loadShip('ship', '/script/assets/GalacticLeopard6.fbx', 0, 1, 0)
 
 function doRotationsAndOrbits(deltaTime) {
     spinTime += deltaTime/9 ;
-    earthScene.position.x = 10*Math.cos(spinTime) + 0;
-    earthScene.position.z = 10*Math.sin(spinTime) + 0;
 
-    earthScene.rotation.y += 0.005;
+    for (const planet of system['planets']) {
+        let planetObject = planet.planet_object;
 
-    sunScene.rotation.y += 0.005;
-    sunScene.rotation.x += 0.005;
+        planetObject.rotation.y += 0.005;
+
+        let d = planet["distance_from_star"];
+        if (d == 0) {
+            planetObject.rotation.x += 0.005;
+            continue;
+        }
+        let r = d*3;
+        let rander = planet["rander"];
+
+        planetObject.position.x = r*Math.cos(spinTime + rander) + 0;
+        planetObject.position.z = r*Math.sin(spinTime + rander) + 0;
+        
+    }
+
 }
 
 // Load sprites
@@ -360,29 +391,4 @@ function putCursorOverContainer(container) {
     }
 }
 
-renderer.domElement.addEventListener( 'pointermove', onPointerMove );
-renderer.domElement.addEventListener( 'click', onPointerClick );
 
-// DRAW BOX
-
-// const boxGeometry = new THREE.BoxGeometry(1,1,1);
-// const boxMaterial = new THREE.LineBasicMaterial( { color: 'red' } );
-// const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-// scene.add( boxMesh );
-
-// // DRAW LINE
-// const points = [];
-// points.push( new THREE.Vector3( - 10, 0, 0 ) );
-// points.push( new THREE.Vector3( 0, 10, 0 ) );
-// points.push( new THREE.Vector3( 10, 0, 0 ) );
-
-// const lineGeometry = new THREE.BufferGeometry().setFromPoints( points );
-// const lineMaterial = new THREE.LineBasicMaterial( { color: 0x0000ff } );
-// const line = new THREE.Line( lineGeometry, lineMaterial );
-// scene.add( line );
-
-// // DRAW SPHERE
-// const geometry = new THREE.SphereGeometry( 15, 32, 16 );
-// const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-// const sphere = new THREE.Mesh( geometry, material );
-// scene.add( sphere );

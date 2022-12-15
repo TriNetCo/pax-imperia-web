@@ -66,7 +66,7 @@
     "materials" : [
         {
             "doubleSided" : true,
-            "name" : "cloudyMaterial",
+            "name" : "oxygenMaterial",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 0
@@ -101,8 +101,8 @@
     "images" : [
         {
             "mimeType" : "image/png",
-            "name" : "Cloudy",
-            "uri" : "Cloudy.png"
+            "name" : "oxygen",
+            "uri" : "oxygen.png"
         }
     ],
     "accessors" : [
