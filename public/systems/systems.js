@@ -208,14 +208,16 @@ camera.lookAt( scene.position );
 const loader = new GLTFLoader();
 const fbxLoader = new FBXLoader()
 
-// Add earth
+
+///////////////////
+// loadPlanets() //
+///////////////////
 
 for (const planet of system['planets']) {
     const z = 2 * planet['distance_from_star'];
 
     console.log("loading planet with atmosphere: " + planet['atmosphere']);
     let planetObject = await loadPlanet("" + planet["index"], planet['atmosphere'], 0,0,z);
-    // debugger;
     planet['planet_object'] = planetObject;
 }
 

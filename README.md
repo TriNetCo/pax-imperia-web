@@ -40,5 +40,6 @@ The main file to edit is of course `./public/index.html` for getting at the fron
 - Three JS raycaster/ click detection stuff:
 - Three JS Sprite stuff:  https://www.youtube.com/watch?v=pGO1Hm-JB90
 - Restful GoLang (skipped):  https://go.dev/doc/tutorial/web-service-gin
+- REST using Gin:  https://go.dev/doc/tutorial/web-service-gin
 - GoLang Packages: https://go.dev/doc/code
 
