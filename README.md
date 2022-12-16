@@ -3,7 +3,6 @@
 A clone of an old game
 
 ## TODO Galactic View
-
 - Draw a pretty star instead of squares
 - Extract constellation algo into it's own module
 - Set minimum distance between stars
@@ -14,9 +13,8 @@ x Allow opening a system by clicking it
 ## TODO System View
 x Add stars to systems
 x Add planets to systems
-- Tech Debt: Load models cleanly
+x Tech Debt: Load models cleanly
 - Drive solar system contents off of JS data
-
 - Flesh out HUD buttons
 - Create a ship you can control and move to planets
 
