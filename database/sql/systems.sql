@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS pax.systems (
+    id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    systemName VARCHAR NOT NULL,
+    gameId INT REFERENCES pax.games(id) ON DELETE SET NULL,
+    created TIMESTAMP DEFAULT NOW(),
+    lastModified TIMESTAMP DEFAULT NOW(),
+    inhabited BOOLEAN DEFAULT 'TRUE'
+);

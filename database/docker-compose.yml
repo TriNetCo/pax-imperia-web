@@ -1,0 +1,12 @@
+services:
+  db:
+    build: .
+    ports:
+      - '5432:5432'
+    expose:
+      - '5432'
+    volumes:
+      - zzpax-db-data:/var/lib/postgresql/data
+
+volumes:
+  zzpax-db-data:

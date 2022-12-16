@@ -21,6 +21,7 @@ x Add planets to systems
 - Create a ship you can control and move to planets
 
 ## TODO Backend
+- Define database using sql
 - Define golang struct for solar system data
 - pump out solar system data to the backend
 
@@ -42,4 +43,4 @@ The main file to edit is of course `./public/index.html` for getting at the fron
 - Restful GoLang (skipped):  https://go.dev/doc/tutorial/web-service-gin
 - REST using Gin:  https://go.dev/doc/tutorial/web-service-gin
 - GoLang Packages: https://go.dev/doc/code
-
+- GoLang Project Layout... https://github.com/golang-standards/project-layout
