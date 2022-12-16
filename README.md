@@ -8,20 +8,35 @@ A clone of an old game
 - Set minimum distance between stars
 x Connect systems to each other with a line
 x Allow opening a system by clicking it
-- Flesh out Main Menu links
+- (CSS) Flesh out Main Menu links
 
 ## TODO System View
 x Add stars to systems
 x Add planets to systems
 x Tech Debt: Load models cleanly
 - Drive solar system contents off of JS data
+- Communicate positions with multiple clients
+
 - Flesh out HUD buttons
 - Create a ship you can control and move to planets
 
 ## TODO Backend
-- Define database using sql
+x Define database using sql
+- Listen for websocket connections from the frontend
+- Get two clients chatting
+- Communicate commands from frontend to backend
 - Define golang struct for solar system data
-- pump out solar system data to the backend
+- pump out solar system data to the backend over websocket
+
+## Overview
+
+This project was built with 3 main technologies:
+
+- Golang (backend)      - Handles all of the communication between the frontend clients over http and websockets.
+- Javascript (frontend) - Handles all of the graphics on the front end as well as plenty of game logic.
+- Postgres   - Allows us to store data if the need should arise...
+
+The backend's data models are created from the postgres database (resume driven design) using "Jet".
 
 ## Getting Started...
 
@@ -37,6 +52,7 @@ jet -source=postgres -host=localhost -port=5432 -user="${GO_DB_USER}" -password=
 
 Run these commands to start the server
 ```
+  cd backend
   go run cmd/pax.go
 ```
 

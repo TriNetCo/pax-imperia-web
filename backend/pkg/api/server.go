@@ -27,7 +27,7 @@ func getAlbums(c *gin.Context) {
 func RunServer() {
 	router := gin.Default()
 
-	router.NoRoute(gin.WrapH(http.FileServer(http.Dir("public"))))
+	router.NoRoute(gin.WrapH(http.FileServer(http.Dir("../frontend"))))
 	router.GET("/albums", getAlbums)
 
 	router.Run("localhost:3000")
