@@ -6,7 +6,7 @@ services:
     expose:
       - '5432'
     volumes:
-      - zzpax-db-data:/var/lib/postgresql/data
+      - pax-db-data:/var/lib/postgresql/data
 
 volumes:
-  zzpax-db-data:
+  pax-db-data:

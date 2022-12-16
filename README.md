@@ -25,7 +25,17 @@ x Add planets to systems
 - Define golang struct for solar system data
 - pump out solar system data to the backend
 
-## Getting Started
+## Getting Started...
+
+### Build Database
+
+go install github.com/go-jet/jet/v2/cmd/jet@latest
+
+```
+jet -source=postgres -host=localhost -port=5432 -user="${GO_DB_USER}" -password=ez -dbname=dbmodels -schema=pax -sslmode=disable
+```
+
+### Boot the App
 
 Run these commands to start the server
 ```
