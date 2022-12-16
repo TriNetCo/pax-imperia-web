@@ -37,7 +37,7 @@ jet -source=postgres -host=localhost -port=5432 -user="${GO_DB_USER}" -password=
 
 Run these commands to start the server
 ```
-  go run main.go
+  go run cmd/pax.go
 ```
 
 Now navigate to [http://localhost:3000](http://localhost:3000) to play the game!

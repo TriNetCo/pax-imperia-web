@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"net/http"
@@ -24,7 +24,7 @@ func getAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, albums)
 }
 
-func main() {
+func RunServer() {
 	router := gin.Default()
 
 	router.NoRoute(gin.WrapH(http.FileServer(http.Dir("public"))))
