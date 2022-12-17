@@ -1,0 +1,92 @@
+#system-body {
+    background:grey;
+    margin:0px;
+}
+
+.flex-container {
+    display: flex;
+    width: 100%;
+}
+
+#console-div {
+    width: 100%;
+    height: 20px;
+    background-color: black;
+
+    background-image:  url("/assets/backgrounds/system_view_top_f.png");
+    background-repeat: no-repeat;
+    background-size:   contain;
+}
+
+#console-message {
+    width: 770px;
+    margin-left: 40px;
+}
+
+#time {
+    width: 44px;
+    padding-top: 3px;
+    margin-left: 120px;
+    font-size: 0.7rem;
+    text-align: right;
+}
+
+.flex-container-left {
+    /* Flex Child Properties... This is both a flex child as well as a parent to others */
+    flex-grow: 1;
+
+    /* Flex Container Properties */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    margin: 0px;
+    width: 150px;
+    height: 708px;
+    color: white;
+
+    background: grey;
+    background-image: url("/assets/backgrounds/system_view_left_f.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+#planet-list {
+    /* flex-grow: 1; */
+    padding-left: 30px;
+    margin: 0px;
+    width: 150px;
+    height: 768px;
+    color: white;
+}
+
+#btnGovernor {
+    margin-left: 72px;
+    margin-bottom: 8px;
+    width: 132px;
+    height: 22px;
+}
+
+#canvas-and-buttons {
+    width: 800px;
+}
+
+#canvas-div {
+    width: 100%;
+    height: 520px;
+    background: black;
+}
+
+#galaxy {
+    background: blue;
+    width: 60%;
+}
+
+#galaxy-and-console {
+    height: 188px;
+}
+
+#lower-console {
+    background:red;
+    width: 40%;
+}
