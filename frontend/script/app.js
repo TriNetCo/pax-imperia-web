@@ -118,8 +118,9 @@ canvas.addEventListener('click', event => {
 // main //
 //////////
 
-window.systems = Galaxy.generateStars(canvas.width, canvas.height, 100);
-Galaxy.generateConnections(systems);
+const galaxy = new Galaxy();
+window.systems = galaxy.generateStars(canvas.width, canvas.height, 100);
+galaxy.generateConnections(systems);
 
 drawBackground();
 drawLoop();

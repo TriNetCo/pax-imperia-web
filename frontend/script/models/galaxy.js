@@ -2,8 +2,17 @@ import { StarName } from './starName.js';
 import { System } from './system.js';
 
 export class Galaxy {
+
+
+    constructor(starCount, canvasWidth, canvasHeight){
+        this.starCount = starCount;
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
+
+        
+    }
     
-    static generateConnections(systems){
+    generateConnections(systems){
         let output = [];
         let connections = [];
         let connectedSystems = [];
@@ -50,14 +59,14 @@ export class Galaxy {
     //   How close can they be to each other?
     //   How far can they be from each other?
     //   how linear/ branchy (connectivity) is everything?
-    static generateStars(maxX, maxY, starCount){
+    generateStars(canvasWidth, canvasHeight, starCount){
         let systems = [];
         let starName = new StarName();
     
         // Define systems/ coordinates
         for (let i = 0; i < starCount; i++){
-            let x = Math.random() * maxX;
-            let y = Math.random() * maxY;
+            let x = Math.random() * canvasWidth;
+            let y = Math.random() * canvasHeight;
     
             let system = new System(i+1, { x: x, y: y}, starName.pick() );
             systems.push(system);

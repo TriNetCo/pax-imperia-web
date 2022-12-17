@@ -25,6 +25,8 @@ func getAlbums(c *gin.Context) {
 }
 
 func RunServer() {
+	// sc, err := subscription.GenerateSubscriptionController()
+
 	router := gin.Default()
 
 	router.NoRoute(gin.WrapH(http.FileServer(http.Dir("../frontend"))))

@@ -2,6 +2,11 @@
 
 A clone of an old game
 
+
+## TODO Generic Frontend
+- Sprinkle in react to make it a SPA
+- Add testing to the frontend
+
 ## TODO Galactic View
 - Draw a pretty star instead of squares
 - Extract constellation algo into it's own module
@@ -16,13 +21,14 @@ x Add planets to systems
 x Tech Debt: Load models cleanly
 - Drive solar system contents off of JS data
 - Communicate positions with multiple clients
-
+- Combine galactic view into system view
 - Flesh out HUD buttons
 - Create a ship you can control and move to planets
 
 ## TODO Backend
 x Define database using sql
 - Listen for websocket connections from the frontend
+- Transmit gametime to subscribed clients
 - Get two clients chatting
 - Communicate commands from frontend to backend
 - Define golang struct for solar system data
