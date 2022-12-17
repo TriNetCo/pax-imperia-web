@@ -1,6 +1,18 @@
 
 export class GalaxyDrawer {
 
+    static drawLoop(cx, galaxy, systemNameLabel) {
+        // Every 60 seconds, redraw everything
+    
+        GalaxyDrawer.drawBackground(cx);
+    
+        GalaxyDrawer.drawConnections(cx, galaxy)
+    
+        GalaxyDrawer.drawSystems(cx, galaxy, systemNameLabel)
+    
+        window.requestAnimationFrame(GalaxyDrawer.drawLoop.bind(null, cx, galaxy, systemNameLabel))
+    }
+    
     static drawBackground(cx) {
         cx.fillStyle = "Black";
         cx.fillRect(0, 0, cx.canvas.width, cx.canvas.height);

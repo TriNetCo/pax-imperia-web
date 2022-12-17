@@ -11,29 +11,6 @@ let canvas = document.querySelector("canvas");
 let cx = canvas.getContext("2d");
 let systemNameLabel = document.getElementById("system-name");
 
-///////////////
-// Draw Loop //
-///////////////
-
-function drawLoop(cx, galaxy, systemNameLabel) {
-    // Every 60 seconds, redraw everything
-
-    GalaxyDrawer.drawBackground(cx);
-
-    GalaxyDrawer.drawConnections(cx, galaxy)
-
-    GalaxyDrawer.drawSystems(cx, galaxy, systemNameLabel)
-
-    window.requestAnimationFrame(drawLoop.bind(null, cx, galaxy, systemNameLabel))
-}
-
-
-///////////////////////
-// Drawing Functions //
-///////////////////////
-
-
-
 /////////////////////
 // DOM Connections //
 /////////////////////
@@ -67,7 +44,7 @@ canvas.addEventListener('click', event => {
 const starCount = 100;
 const galaxy = new Galaxy(canvas.width, canvas.height, starCount);
 
-drawLoop(cx, galaxy, systemNameLabel);
+GalaxyDrawer.drawLoop(cx, galaxy, systemNameLabel);
 
 window.cx = cx;
 window.systems = galaxy.systems;
