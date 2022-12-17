@@ -2,7 +2,7 @@
 export class GalaxyDrawer {
 
     static drawLoop(cx, galaxy, systemNameLabel) {
-        // Every 60 seconds, redraw everything
+        // Redraw everything 60 times a second
     
         GalaxyDrawer.drawBackground(cx);
     
@@ -10,13 +10,16 @@ export class GalaxyDrawer {
     
         GalaxyDrawer.drawSystems(cx, galaxy, systemNameLabel)
     
-        window.requestAnimationFrame(GalaxyDrawer.drawLoop.bind(null, cx, galaxy, systemNameLabel))
+        // bind args to drawLoop so that it can be passed to requestAnimationFrame
+        function boundDrawLoop () {
+            GalaxyDrawer.drawLoop(cx, galaxy, systemNameLabel);
+        }
+        window.requestAnimationFrame(boundDrawLoop)
     }
     
     static drawBackground(cx) {
         cx.fillStyle = "Black";
         cx.fillRect(0, 0, cx.canvas.width, cx.canvas.height);
-        // cx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
     static drawConnections(cx, galaxy) {
@@ -30,12 +33,12 @@ export class GalaxyDrawer {
             cx.lineWidth = 0.;            
             
             for (let i = 0; i < system.connections.length; i++) {
-                cx.moveTo(ss.canvasX, ss.canvasY);
+                cx.moveTo(ss.x, ss.y);
                 let connectedSystem = galaxy.getSystemById(system.connections[i]);
                 if (connectedSystem == undefined) // FIXME: this indicates a bug upstream from here in generating the systems correctly
                     continue;
                 let connectedSystemShape = connectedSystem.getSystemShape();
-                cx.lineTo(connectedSystemShape.canvasX, connectedSystemShape.canvasY);
+                cx.lineTo(connectedSystemShape.x, connectedSystemShape.y);
             }
 
             cx.stroke();
@@ -47,14 +50,16 @@ export class GalaxyDrawer {
         for (let i = 0; i < galaxy.systems.length; i++) {
             let system = galaxy.systems[i];
             let ss = system.getSystemShape();
-            let systemDrawSize = 8;
+            let systemRadius = ss.radius;
+            let systemDrawColor = "rgb(150, 150, 150)";
             if (ss.isMouseHovering()) {
                 systemNameLabel.innerHTML = system.name;
                 nothingIsHovered = false;
-                systemDrawSize = 12;
+                systemRadius = systemRadius + 2;
+                systemDrawColor = "rgb(255, 255, 255)";
             }
 
-        GalaxyDrawer.drawDot(cx, ss.x, ss.y, systemDrawSize);
+        GalaxyDrawer.drawDot(cx, ss.x, ss.y, systemRadius, systemDrawColor);
 
         }
         if (nothingIsHovered) {
@@ -62,9 +67,9 @@ export class GalaxyDrawer {
         }
     }
 
-    static drawDot(cx, x, y, size) {
-        cx.fillStyle = "rgb(200, 200, 200)";
-        cx.fillRect(x, y, size, size);
+    static drawDot(cx, x, y, radius, color) {
+        cx.fillStyle = color;
+        cx.fillRect(x-radius, y-radius, radius*2, radius*2);
         cx.fill();
-    }    
+    }
 }

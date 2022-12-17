@@ -1,7 +1,6 @@
 import { Galaxy } from './models/galaxy.js';
 import { GalaxyDrawer } from './models/galaxyDrawer.js';
 
-
 /////////////
 // Globals //
 /////////////
