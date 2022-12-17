@@ -10,18 +10,6 @@ let canvas = document.querySelector("canvas");
 let cx = document.querySelector("canvas").getContext("2d");
 let systemNameLabel = document.getElementById("system-name");
 
-function getSystemById(id) {
-    for (let i = 0; i < galaxy.systems.length; i++) {
-        let system = galaxy.systems[i];
-
-        if (system.id == id)
-            return system;
-    }
-
-    return undefined;
-}
-
-
 ///////////////
 // Draw Loop //
 ///////////////
@@ -40,7 +28,7 @@ function drawLoop() {
         
         for (let i = 0; i < system.connections.length; i++) {
             cx.moveTo(ss.canvasX, ss.canvasY);
-            let connectedSystem = getSystemById(system.connections[i]);
+            let connectedSystem = galaxy.getSystemById(system.connections[i]);
             if (connectedSystem == undefined) // FIXME: this indicates a bug upstream from here in generating the systems correctly
                 continue;
             let connectedSystemShape = connectedSystem.getSystemShape();
