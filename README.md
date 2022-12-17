@@ -9,6 +9,7 @@ A clone of an old game
 
 ## TODO Galactic View
 - Draw a pretty star instead of squares
+- Center rectangle of star
 - Extract constellation algo into it's own module
 - Set minimum distance between stars
 x Connect systems to each other with a line

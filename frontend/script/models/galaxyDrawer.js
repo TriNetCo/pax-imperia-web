@@ -1,9 +1,10 @@
 
 export class GalaxyDrawer {
 
-    static drawBackground(cx, canvas) {
+    static drawBackground(cx) {
         cx.fillStyle = "Black";
-        cx.fillRect(0, 0, canvas.width, canvas.height);
+        cx.fillRect(0, 0, cx.canvas.width, cx.canvas.height);
+        // cx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
     static drawConnections(cx, galaxy) {
