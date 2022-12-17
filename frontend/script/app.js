@@ -11,8 +11,8 @@ let cx = document.querySelector("canvas").getContext("2d");
 let systemNameLabel = document.getElementById("system-name");
 
 function getSystemById(id) {
-    for (let i = 0; i < window.systems.length; i++) {
-        let system = window.systems[i];
+    for (let i = 0; i < galaxy.systems.length; i++) {
+        let system = galaxy.systems[i];
 
         if (system.id == id)
             return system;
@@ -29,8 +29,8 @@ function getSystemById(id) {
 function drawLoop() {
     cx.strokeStyle = "blue";
 
-    for (let i = 0; i < systems.length; i++) {
-        let system = systems[i];
+    for (let i = 0; i < galaxy.systems.length; i++) {
+        let system = galaxy.systems[i];
         let ss = system.getSystemShape();
 
         // Draw lines
@@ -51,8 +51,8 @@ function drawLoop() {
     }
 
     let nothingIsHovered = true;
-    for (let i = 0; i < systems.length; i++) {
-        let system = systems[i];
+    for (let i = 0; i < galaxy.systems.length; i++) {
+        let system = galaxy.systems[i];
         let ss = system.getSystemShape();
 
         if (ss.isMouseHovering()) {
@@ -118,11 +118,11 @@ canvas.addEventListener('click', event => {
 // main //
 //////////
 
-const galaxy = new Galaxy();
-window.systems = galaxy.generateStars(canvas.width, canvas.height, 100);
-galaxy.generateConnections(systems);
+const starCount = 100;
+const galaxy = new Galaxy(canvas.width, canvas.height, starCount);
 
 drawBackground();
 drawLoop();
 
 window.cx = cx;
+window.systems = galaxy.systems;

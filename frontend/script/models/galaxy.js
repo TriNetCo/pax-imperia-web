@@ -5,33 +5,31 @@ export class Galaxy {
 
 
     constructor(starCount, canvasWidth, canvasHeight){
-        this.starCount = starCount;
-        this.canvasWidth = canvasWidth;
-        this.canvasHeight = canvasHeight;
-
-        
+        this.starCount = starCount
+        this.systems = this.generateStars(starCount, canvasWidth, canvasHeight);
+        this.connections = this.generateConnections();
     }
     
-    generateConnections(systems){
+    generateConnections(){
         let output = [];
         let connections = [];
         let connectedSystems = [];
-        while (connectedSystems.length < systems.length){
+        while (connectedSystems.length < this.systems.length){
             console.log("Looped");
             let minDist = Infinity;
             let minI;
             let minJ;
         
             // 1. Loop through all pairings of the systems to find the two closest systems
-            for (let i = 0; i < systems.length - 1; i++) {
-                for (let j = i + 1; j < systems.length; j++) {
+            for (let i = 0; i < this.systems.length - 1; i++) {
+                for (let j = i + 1; j < this.systems.length; j++) {
                     // If this is our first connection, or if i is connected while j is not, or vice versa
                     // then we should see if they're a minimal distance from each other so that they can be
                     // connected.
                     if (        connections.length == 0 
                             || (connectedSystems.includes(i) && !connectedSystems.includes(j)) 
                             || (connectedSystems.includes(j) && !connectedSystems.includes(i)) ) {
-                        let dist = (systems[i].x - systems[j].x)**2 + (systems[i].y - systems[j].y)**2;
+                        let dist = (this.systems[i].x - this.systems[j].x)**2 + (this.systems[i].y - this.systems[j].y)**2;
                         if (dist < minDist) {
                             minDist = dist;
                             minI = i;
@@ -47,9 +45,9 @@ export class Galaxy {
             if (!connectedSystems.includes(minJ)){
                 connectedSystems.push(minJ)
             }
-            systems[minI].connections.push(systems[minJ].id)
-            systems[minJ].connections.push(systems[minI].id)
-            output.push([systems[minI].id, systems[minJ].id]);
+            this.systems[minI].connections.push(this.systems[minJ].id)
+            this.systems[minJ].connections.push(this.systems[minI].id)
+            output.push([this.systems[minI].id, this.systems[minJ].id]);
         };
         return output;
     }
@@ -59,7 +57,7 @@ export class Galaxy {
     //   How close can they be to each other?
     //   How far can they be from each other?
     //   how linear/ branchy (connectivity) is everything?
-    generateStars(canvasWidth, canvasHeight, starCount){
+    generateStars(canvasWidth, canvasHeight, starCount = 100){
         let systems = [];
         let starName = new StarName();
     
@@ -71,8 +69,7 @@ export class Galaxy {
             let system = new System(i+1, { x: x, y: y}, starName.pick() );
             systems.push(system);
         }
-    
-        return systems;
+        return systems
     }
 
 }
