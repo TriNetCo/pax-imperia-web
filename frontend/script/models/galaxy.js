@@ -44,11 +44,10 @@ export class Galaxy {
             if (!connectedSystems.includes(minJ)){
                 connectedSystems.push(minJ)
             }
-            this.systems[minI].connections.push(this.systems[minJ].id)
-            this.systems[minJ].connections.push(this.systems[minI].id)
-            output.push([this.systems[minI].id, this.systems[minJ].id]);
+            this.systems[minI].connections.push(minJ)
+            this.systems[minJ].connections.push(minI)
         };
-        return output;
+        return connections;
     }
 
     // parameters of galaxies:
