@@ -5,11 +5,8 @@ export class GalaxyDrawer {
         // Redraw everything 60 times a second
     
         this.drawBackground(cx);
-    
         this.drawConnections(cx, galaxy)
-    
         this.drawSystems(cx, galaxy)
-
         this.drawHoveredSystem(cx, galaxy, systemNameLabel)
 
         // bind args to drawLoop so that it can be passed to requestAnimationFrame
@@ -25,24 +22,16 @@ export class GalaxyDrawer {
     }
 
     static drawConnections(cx, galaxy) {
-        for (let i = 0; i < galaxy.systems.length; i++) {
-            let system = galaxy.systems[i];
-
-            // Draw lines
-            cx.beginPath();
-            cx.strokeStyle = "orange";
-            cx.lineWidth = 0.;            
-            
-            for (let i = 0; i < system.connections.length; i++) {
-                cx.moveTo(system.x, system.y);
-                let connectedSystem = galaxy.getSystemById(system.connections[i]);
-                if (connectedSystem == undefined) // FIXME: this indicates a bug upstream from here in generating the systems correctly
-                    continue;
-                cx.lineTo(connectedSystem.x, connectedSystem.y);
-            }
-
-            cx.stroke();
+        cx.strokeStyle = "orange";
+        cx.lineWidth = 0.;
+        cx.beginPath();
+        for (let i = 0; i < galaxy.connections.length; i++) {
+            let startSystem = galaxy.systems[galaxy.connections[i][0]];
+            let endSystem = galaxy.systems[galaxy.connections[i][1]];
+            cx.moveTo(startSystem.x, startSystem.y);
+            cx.lineTo(endSystem.x, endSystem.y);
         }
+        cx.stroke();
     }
 
     static drawSystems(cx, galaxy) {
