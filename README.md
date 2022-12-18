@@ -75,3 +75,4 @@ The main file to edit is of course `./public/index.html` for getting at the fron
 - REST using Gin:  https://go.dev/doc/tutorial/web-service-gin
 - GoLang Packages: https://go.dev/doc/code
 - GoLang Project Layout... https://github.com/golang-standards/project-layout
+- React + WebGL... http://www.petecorey.com/blog/2019/08/19/animating-a-canvas-with-react-hooks/

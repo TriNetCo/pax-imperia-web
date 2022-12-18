@@ -74,4 +74,30 @@ export class GalaxyDrawer {
              && window.mouse.y > system.y - hoverRadius
              && window.mouse.y < system.y + hoverRadius + 2);
     }
+
+    ////////////////////////
+    // DOM Connections... //
+    ////////////////////////
+    static attachDomEventsToCode(cx) {
+        // We can use our function with a canvas event
+        cx.canvas.addEventListener('mousemove', e => {
+            window.mouse =  { x: e.offsetX, y: e.offsetY };
+        });
+    
+        cx.canvas.addEventListener('click', event => {
+            window.mouse = { x: event.offsetX, y: event.offsetY };
+    
+            // check if we're clicking a star system
+            systems.forEach( system => {
+                if (GalaxyDrawer.isMouseHovering(system)) {
+                    alert('clicked system ' + system.id + ' ' + system.name);
+    
+                    window.location.href = "systems/" + 1 + ".html";
+                }
+    
+            });
+    
+        });
+    }
+
 }
