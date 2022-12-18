@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 
+import Circle from './Circle';
+
 const HomePage = () => {
 
     useEffect(() => {
@@ -20,6 +22,9 @@ const HomePage = () => {
             <div>System: <span id="system-name"></span></div>
             <canvas id="galaxy-canvas-large" width="800" height="400"></canvas>
 
+            <Circle/>
+
+
             <div className="links">
                 <h6>Management</h6>
                 <ul>
@@ -38,6 +43,8 @@ const HomePage = () => {
                     <li><a href="species.html">Species Design</a></li>
                 </ul>
             </div>
+
+
 
             <script type="module" src="script/app.js"></script>
         </div>
