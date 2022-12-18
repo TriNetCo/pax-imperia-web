@@ -3,9 +3,9 @@ import { System } from './system.js';
 
 export class Galaxy {
 
-    constructor(canvasWidth, canvasHeight, starCount = 100){
-        this.starCount = starCount
-        this.systems = this.generateStars(canvasWidth, canvasHeight, starCount);
+    constructor(canvasWidth, canvasHeight, systemCount = 100){
+        this.systemCount = systemCount
+        this.systems = this.generateSystems(canvasWidth, canvasHeight, systemCount);
         this.connections = this.generateConnections();
     }
     
@@ -53,30 +53,21 @@ export class Galaxy {
     //   How close can they be to each other?
     //   How far can they be from each other?
     //   how linear/ branchy (connectivity) is everything?
-    generateStars(canvasWidth, canvasHeight, starCount){
+    generateSystems(canvasWidth, canvasHeight, systemCount){
         let systems = [];
         let starName = new StarName();
+        let radius = 5;
     
         // Define systems/ coordinates
-        for (let i = 0; i < starCount; i++){
-            let x = Math.random() * canvasWidth;
-            let y = Math.random() * canvasHeight;
+        for (let i = 0; i < systemCount; i++){
+            // Make sure that no systems are within radius of the edge
+            let x = Math.random() * (canvasWidth - radius * 2) + radius;
+            let y = Math.random() * (canvasHeight - radius * 2) + radius;
     
-            let system = new System(i, { x: x, y: y}, starName.pick() );
+            let system = new System(i, { x: x, y: y}, starName.pick(), radius);
             systems.push(system);
         }
         return systems
-    }
-
-    getSystemById(id) {
-        for (let i = 0; i < this.systems.length; i++) {
-            let system = this.systems[i];
-    
-            if (system.id == id)
-                return system;
-        }
-    
-        return undefined;
     }
     
 }
