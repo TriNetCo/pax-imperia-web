@@ -11,14 +11,17 @@ export class GalaxyWidget {
         let canvas  = this.createCanvas();
         this.container.appendChild(canvas)
 
-        let cx = canvas.getContext("2d");
-        let systemNameLabel = document.getElementById("system-name");
+        this.cx = canvas.getContext("2d");
 
         const starCount = 100;
-        const galaxy = new Galaxy(canvas.width, canvas.height, starCount);
+        this.galaxy = new Galaxy(canvas.width, canvas.height, starCount);
 
-        GalaxyDrawer.attachDomEventsToCode(cx);
-        GalaxyDrawer.drawLoop(cx, galaxy, systemNameLabel);
+        GalaxyDrawer.attachDomEventsToCode(this.cx, this.galaxy.systems);
+        this.systemNameLabel = document.getElementById("system-name");
+    }
+
+    draw() {
+        GalaxyDrawer.drawLoop(this.cx, this.galaxy, this.systemNameLabel);
     }
 
     createCanvas() {

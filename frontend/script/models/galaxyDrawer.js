@@ -3,7 +3,6 @@ export class GalaxyDrawer {
 
     static drawLoop(cx, galaxy, systemNameLabel) {
         // Redraw everything 60 times a second
-    
         this.drawBackground(cx);
         this.drawConnections(cx, galaxy)
         this.drawSystems(cx, galaxy)
@@ -23,15 +22,15 @@ export class GalaxyDrawer {
 
     static drawConnections(cx, galaxy) {
         cx.strokeStyle = "orange";
-        cx.lineWidth = 0.;
-        cx.beginPath();
-        for (let i = 0; i < galaxy.connections.length; i++) {
+        cx.lineWidth = 1;
+        for (let i = 0, n = galaxy.connections.length; i < n; i++) {
             let startSystem = galaxy.systems[galaxy.connections[i][0]];
             let endSystem = galaxy.systems[galaxy.connections[i][1]];
+            cx.beginPath();
             cx.moveTo(startSystem.x, startSystem.y);
             cx.lineTo(endSystem.x, endSystem.y);
+            cx.stroke();
         }
-        cx.stroke();
     }
 
     static drawSystems(cx, galaxy) {
@@ -78,7 +77,7 @@ export class GalaxyDrawer {
     ////////////////////////
     // DOM Connections... //
     ////////////////////////
-    static attachDomEventsToCode(cx) {
+    static attachDomEventsToCode(cx, systems) {
         // We can use our function with a canvas event
         cx.canvas.addEventListener('mousemove', e => {
             window.mouse =  { x: e.offsetX, y: e.offsetY };
