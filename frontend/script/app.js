@@ -24,9 +24,8 @@ canvas.addEventListener('click', event => {
 
     // check if we're clicking a star system
     systems.forEach( system => {
-        let ss = system.getSystemShape();
-        if (ss.isMouseHovering()) {
-            alert('clicked system ' + system.id);
+        if (GalaxyDrawer.isMouseHovering(system)) {
+            alert('clicked system ' + system.id + ' ' + system.name);
 
             window.location.href = "systems/" + 1 + ".html";
         }
