@@ -1,29 +1,15 @@
 import React, { useEffect } from "react";
 
-import Circle from './Circle';
+import Galaxy from '../features/galaxy/Galaxy';
 
 const HomePage = () => {
-
-    useEffect(() => {
-        const script = document.createElement('script');
-        script.type = "module";
-        script.src = "/script/app.js";
-        script.async = true;
-        document.body.appendChild(script);
-      return () => {
-          document.body.removeChild(script);
-        }
-      }, []);
-
 
     return (
         <div className="App">
             <h1>Galactic View</h1>
             <div>System: <span id="system-name"></span></div>
-            <canvas id="galaxy-canvas-large" width="800" height="400"></canvas>
 
-            <Circle/>
-
+            <Galaxy/>
 
             <div className="links">
                 <h6>Management</h6>
@@ -43,8 +29,6 @@ const HomePage = () => {
                     <li><a href="species.html">Species Design</a></li>
                 </ul>
             </div>
-
-
 
             <script type="module" src="script/app.js"></script>
         </div>
