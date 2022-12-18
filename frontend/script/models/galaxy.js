@@ -53,21 +53,49 @@ export class Galaxy {
     //   How close can they be to each other?
     //   How far can they be from each other?
     //   how linear/ branchy (connectivity) is everything?
-    generateSystems(canvasWidth, canvasHeight, systemCount){
+    generateSystems(canvasWidth, canvasHeight, systemCount) {
+        let radius = 5;
+        let proximityRadius = radius * 3;
+
         let systems = [];
         let starName = new StarName();
-        let radius = 5;
-    
+
         // Define systems/ coordinates
         for (let i = 0; i < systemCount; i++){
-            // Make sure that no systems are within radius of the edge
-            let x = Math.random() * (canvasWidth - radius * 2) + radius;
-            let y = Math.random() * (canvasHeight - radius * 2) + radius;
-    
-            let system = new System(i, { x: x, y: y}, starName.pick(), radius);
+            let point = this.generateSystemXY(canvasWidth, canvasHeight, radius);
+            let validDistance = this.isValidDistance(systems, point, proximityRadius);
+            let iter = 0
+            // Try 10 times to find a system far enough away from existing systems
+            while (!validDistance && iter <= 10) {
+                point = this.generateSystemXY(canvasWidth, canvasHeight, radius);
+                validDistance = this.isValidDistance(systems, point, proximityRadius);
+                iter = iter + 1;
+            }
+            let system = new System(i, point, starName.pick(), radius);
             systems.push(system);
         }
-        return systems
+        return systems;
+    }
+
+    generateSystemXY(canvasWidth, canvasHeight, radius) {
+        // Make sure that no systems are too close to the edge of the canvas
+        let buffer = radius * 2
+        let x = Math.round(Math.random() * (canvasWidth - buffer * 2) + buffer);
+        let y = Math.round(Math.random() * (canvasHeight - buffer * 2) + buffer);
+        return {x: x, y: y};
+    }
+
+    isValidDistance(systems, point, proximityRadius) {
+        // Check the distance from the point to every system
+        let isValid = systems.every( system => {
+            let dist = Math.pow(Math.pow(system.x - point.x, 2) + Math.pow(system.y - point.y, 2), 0.5)
+            if (dist < proximityRadius) {
+                return false;
+            } else {
+                return true;
+            }
+        });
+        return isValid;
     }
     
 }
