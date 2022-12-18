@@ -7,12 +7,6 @@ export class GalaxyDrawer {
         this.drawConnections(cx, galaxy)
         this.drawSystems(cx, galaxy)
         this.drawHoveredSystem(cx, galaxy, systemNameLabel)
-
-        // bind args to drawLoop so that it can be passed to requestAnimationFrame
-        function boundDrawLoop () {
-            GalaxyDrawer.drawLoop(cx, galaxy, systemNameLabel);
-        }
-        window.requestAnimationFrame(boundDrawLoop)
     }
     
     static drawBackground(cx) {

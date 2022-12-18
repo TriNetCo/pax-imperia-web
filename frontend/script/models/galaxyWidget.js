@@ -21,6 +21,7 @@ export class GalaxyWidget {
     }
 
     draw() {
+        console.log("Drawing");
         GalaxyDrawer.drawLoop(this.cx, this.galaxy, this.systemNameLabel);
     }
 
