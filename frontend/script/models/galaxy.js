@@ -11,7 +11,6 @@ export class Galaxy {
     }
     
     generateConnections(){
-        let output = [];
         let connections = [];
         let connectedSystems = [];
         while (connectedSystems.length < this.systems.length){
@@ -56,7 +55,7 @@ export class Galaxy {
     //   how linear/ branchy (connectivity) is everything?
     generateSystems(canvasWidth, canvasHeight, systemCount) {
         let systemRadius = 5;
-        let systemBufferRadius = systemRadius * 3;
+        let systemBufferRadius = systemRadius * 6;
         let canvasBufferRadius = systemRadius * 3;
         let systems = [];
         let starName = new StarName();
@@ -70,7 +69,7 @@ export class Galaxy {
                 point = this.generateSystemXY(canvasWidth, canvasHeight, canvasBufferRadius);
                 iter = iter + 1;
                 if (iter == 10){
-                    log.console('systemBufferRadius set too high')
+                    console.log('Generating stars without buffer')
                 }
             }
             let system = new System(i, point, starName.pick(), systemRadius);

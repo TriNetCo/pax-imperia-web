@@ -1,5 +1,4 @@
 export class GalaxyDrawer {
-    static systemRadius = 5;
 
     static drawLoop(cx, galaxy, systemNameLabel) {
         // Redraw everything 60 times a second
@@ -28,24 +27,23 @@ export class GalaxyDrawer {
     }
 
     static drawSystems(cx, galaxy) {
-        let systemDrawRadius = this.systemRadius
         let systemDrawColor = "rgb(150, 150, 150)";
         for (let i = 0; i < galaxy.systems.length; i++) {
             let system = galaxy.systems[i];
-            this.drawDot(cx, system.x, system.y, systemDrawRadius, systemDrawColor);
+            this.drawDot(cx, system.x, system.y, system.radius, systemDrawColor);
         }
     }
 
     static drawHoveredSystem(cx, galaxy, systemNameLabel) {
-        let hoverDrawRadius = this.systemRadius + 2;
         let hoverDrawColor = "rgb(255, 255, 255)";
         let nothingIsHovered = true;
         for (let i = 0; i < galaxy.systems.length; i++) {
             let system = galaxy.systems[i];
             if (this.isMouseHovering(system)) {
                 systemNameLabel.innerHTML = system.name;
-                nothingIsHovered = false;
+                let hoverDrawRadius = system.radius + 2;
                 this.drawDot(cx, system.x, system.y, hoverDrawRadius, hoverDrawColor);
+                nothingIsHovered = false;
                 break;
             }
         }
@@ -61,7 +59,7 @@ export class GalaxyDrawer {
     }
 
     static isMouseHovering(system) {
-        let hoverRadius = this.systemRadius + 1
+        let hoverRadius = system.radius + 1
         return (window.mouse.x > system.x - hoverRadius
              && window.mouse.x < system.x + hoverRadius + 1
              && window.mouse.y > system.y - hoverRadius
