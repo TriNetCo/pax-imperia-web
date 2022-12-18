@@ -3,13 +3,15 @@ import { GalaxyDrawer } from './galaxyDrawer.js';
 
 export class GalaxyWidget {
 
-    constructor(containerId) {
-        this.container = document.getElementById(containerId);
+    constructor(canvas) {
+        this.canvas = canvas;
     }
 
     beginGame() {
-        let canvas  = this.createCanvas();
-        this.container.appendChild(canvas)
+        if (window.mouse == undefined)
+            window.mouse = { x: 0, y: 0 };
+
+        let canvas = this.canvas;
 
         this.cx = canvas.getContext("2d");
 
@@ -21,18 +23,7 @@ export class GalaxyWidget {
     }
 
     draw() {
-        console.log("Drawing");
         GalaxyDrawer.drawLoop(this.cx, this.galaxy, this.systemNameLabel);
-    }
-
-    createCanvas() {
-        var canvas = document.createElement('canvas');
-
-        canvas.id = "galaxy-canvas-large";
-        canvas.width = 800;
-        canvas.height = 400;
-        canvas.style.border = "1px solid";
-        return canvas;
     }
 
 }

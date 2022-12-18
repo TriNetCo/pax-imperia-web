@@ -7,6 +7,7 @@ export class Galaxy {
         this.systemCount = systemCount
         this.systems = this.generateSystems(canvasWidth, canvasHeight, systemCount);
         this.connections = this.generateConnections();
+        console.log("Constructing galaxy");
     }
     
     generateConnections(){
