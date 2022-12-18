@@ -5,7 +5,6 @@ export class System {
         this.x = point.x;
         this.y = point.y;
         this.radius = 5;
-        this.connections = [];
         this.planets = [];
         this.stars = [];
       }

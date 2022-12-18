@@ -44,8 +44,6 @@ export class Galaxy {
             if (!connectedSystems.includes(minJ)){
                 connectedSystems.push(minJ)
             }
-            this.systems[minI].connections.push(minJ)
-            this.systems[minJ].connections.push(minI)
         };
         return connections;
     }
