@@ -16,12 +16,13 @@ export class Galaxy {
     //   How far can they be from each other?
     //   how linear/ branchy (connectivity) is everything?
     generateSystems(galaxyWidgetSettings) {
-        let canvasWidth = galaxyWidgetSettings.width;
-        let canvasHeight = galaxyWidgetSettings.height;
+        let canvasWidth = galaxyWidgetSettings.canvasWidth;
+        let canvasHeight = galaxyWidgetSettings.canvasHeight;
         let systemCount = galaxyWidgetSettings.systemCount;
         let systemRadius = galaxyWidgetSettings.systemRadius;
         let systemBuffer = galaxyWidgetSettings.systemBuffer;
         let canvasBuffer = galaxyWidgetSettings.canvasBuffer;
+        let maxIterations = galaxyWidgetSettings.maxPlacementAttempts;
         let systems = [];
         let starName = new StarName();
 
@@ -29,11 +30,11 @@ export class Galaxy {
         for (let i = 0; i < systemCount; i++){
             let point = this.generateSystemXY(canvasWidth, canvasHeight, canvasBuffer);
             let iter = 0
-            // Try 10 times to find a system far enough away from existing systems
+            // Try n times to find a system far enough away from existing systems
             while (!this.isValidDistance(systems, point, systemBuffer) && iter < 10) {
                 point = this.generateSystemXY(canvasWidth, canvasHeight, canvasBuffer);
                 iter = iter + 1;
-                if (iter == 10){
+                if (iter == maxIterations){
                     console.log('Generating stars without buffer')
                 }
             }
