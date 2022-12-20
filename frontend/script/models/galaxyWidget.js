@@ -19,7 +19,8 @@ export class GalaxyWidget {
         this.canvas = canvas;
         canvas.width = this.width;
         canvas.height = this.height;
-        if (window.mouse == undefined)
+        // TODO: Refactor so window.mouse exists on... GalaxyWidget???
+        if (window.mouse == undefined)  // Here's where the widget store mouse location information when MouseMove events fire
             window.mouse = { x: 0, y: 0 };
 
         this.cx = canvas.getContext("2d");

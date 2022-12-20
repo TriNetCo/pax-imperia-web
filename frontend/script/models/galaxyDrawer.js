@@ -16,7 +16,7 @@ export class GalaxyDrawer {
     static drawConnections(cx, galaxy) {
         cx.strokeStyle = "orange";
         cx.lineWidth = 1;
-        for (let i = 0, n = galaxy.connections.length; i < n; i++) {
+        for (let i = 0, len = galaxy.connections.length; i < len; i++) {
             let startSystem = galaxy.systems[galaxy.connections[i][0]];
             let endSystem = galaxy.systems[galaxy.connections[i][1]];
             cx.beginPath();
