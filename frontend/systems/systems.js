@@ -118,7 +118,10 @@ const lowerConsole = {
     }
 }
 
-const slider = document.getElementById("slider");
+const distanceSlider = document.getElementById("distance-slider");
+const xSlider = document.getElementById("x-slider");
+const ySlider = document.getElementById("y-slider");
+const zSlider = document.getElementById("z-slider");
 
 
 /////////////////////////////
@@ -185,23 +188,30 @@ const scene = new THREE.Scene();
 
 // Add Lights
 
-var light = new THREE.DirectionalLight( 0xffffff, 1 );
-light.position.set(22, 22, 25);
-light.lookAt(0,0,0);
-scene.add( light );
+// var light = new THREE.DirectionalLight( 0xffffff, 1 );
+// light.position.set(22, 22, 25);
+// light.lookAt(0,0,0);
+// scene.add( light );
 
-light = new THREE.DirectionalLight( 0xffffff, 1 );
-light.position.set(2, 2, 5);
-light.lookAt(0,0,0);
-scene.add( light );
+// light = new THREE.DirectionalLight( 0xffffff, 1 );
+// light.position.set(2, 2, 5);
+// light.lookAt(0,0,0);
+// scene.add( light );
 
-light = new THREE.AmbientLight( 0xffffff, 0.1 );
-scene.add( light );
+var sunLight = new THREE.PointLight(new THREE.Color(), 1, 1000);
+scene.add(sunLight);
+
+var ambientLight = new THREE.AmbientLight( 0xffffff, 0.1 );
+scene.add( ambientLight );
 
 // Add Camera
 
+const cameraPivot = new THREE.Group();
+
 const camera = new THREE.PerspectiveCamera( 15, width / height, 1, 10000 );
-camera.position.set( 0, 100, 0 );
+
+cameraPivot.add(camera);
+camera.position.set(0, 0, 50);
 camera.lookAt( scene.position );
 
 
@@ -224,6 +234,16 @@ for (const planet of system['planets']) {
     let planetObject = await loadPlanet("" + planet["index"], planet['atmosphere'], 0,0,z, planet['scale']);
     planet['planet_object'] = planetObject;
     planetObject.gameObject = planet;
+
+    let material = planetObject.children[0].material;
+    material.emissive = new THREE.Color(0.1, 0.15, 0.2);
+
+
+    if (planet["atmosphere"] == "sun") {
+        let texture = planetObject.children[0].material.map;
+        planetObject.children[0].material = new THREE.MeshBasicMaterial();
+        planetObject.children[0].material.map = texture;
+    }
 }
 
 var ship = await loadShip('ship', '/script/assets/GalacticLeopard6.fbx', 0, 4, 4)
@@ -282,11 +302,18 @@ function animate() {
     // Reset camera in real time
     //////////////////////////////
 
-    // let myVal = slider.value;
-    // let dist = 0.5;
-    // camera.position.set( dist * 150, dist * 100, dist * 179 );
-    // camera.lookAt( scene.position );
-    // camera.updateProjectionMatrix();
+    let distance = distanceSlider.value;
+    let xRotation = xSlider.value;
+    let yRotation = ySlider.value;
+    let zRotation = 0.0;
+
+    cameraPivot.rotation.set(xRotation, 0.0, 0.0);
+
+    camera.position.set(0, 0, distance);
+    camera.lookAt( scene.position );
+
+
+    camera.updateProjectionMatrix();
 
     // seconds since getDelta last called
     let deltaTime = clock.getDelta();
