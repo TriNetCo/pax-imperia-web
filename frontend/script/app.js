@@ -8,6 +8,10 @@ const systemBufferSlider = document.getElementById("system-buffer-slider");
 
 let galaxyWidgetSettings = GameSettings.galaxyWidget;
 
+const systemClickHandler = (path) => {
+    window.location.href = path + ".html";
+}
+
 systemCountSlider.value = galaxyWidgetSettings.systemCount;
 systemBufferSlider.value = galaxyWidgetSettings.systemBuffer;
 
@@ -19,7 +23,7 @@ function generateGalaxy() {
     galaxyWidgetSettings.systemCount = systemCountSlider.value;
     galaxyWidgetSettings.systemBuffer = systemBufferSlider.value;
     galaxyWidget = new GalaxyWidget(galaxyWidgetSettings);
-    galaxyWidget.beginGame(canvas);
+    galaxyWidget.beginGame(canvas, systemClickHandler);
 }
 
 generateGalaxy();

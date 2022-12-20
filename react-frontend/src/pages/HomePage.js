@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom'
 
 import Galaxy from '../features/galaxy/Galaxy';
 
@@ -8,8 +9,11 @@ const HomePage = () => {
         <div className="App">
             <h1>Galactic View</h1>
             <div>System: <span id="system-name"></span></div>
+            <div id="lower-console"></div>
 
             <Galaxy/>
+
+            <Link to="/systems/1"> System 1 </Link>
 
             <div className="links">
                 <h6>Management</h6>

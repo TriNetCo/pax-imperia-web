@@ -16,13 +16,6 @@ import 'pax-imperia-js/css/systems.css';
 const container = document.getElementById('root');
 const root = createRoot(container);
 
-let width = 800;
-let height = 400;
-let systemCount = 100;
-let systemRadius = 5;
-let systemBuffer = 30;
-let canvasBuffer = 15;
-
 const data = {
     galaxyWidget :
         new GalaxyWidget(GameSettings.galaxyWidget)

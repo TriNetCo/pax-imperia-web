@@ -1,8 +1,10 @@
 import React from 'react';
 import { useEffect, useRef, useContext } from 'react';
 import { DataContext } from "../../index";
+import { useHistory } from 'react-router-dom';
 
 const Galaxy = () => {
+    const history = useHistory();
     let ref = useRef();
     const data = useContext(DataContext);
 
@@ -10,7 +12,12 @@ const Galaxy = () => {
         let galaxyWidget = data.galaxyWidget;
         let canvas = ref.current;
 
-        galaxyWidget.beginGame(canvas);
+        const systemClickHandler = (path) => {
+            if (history.location.pathname != path)
+                history.push(path);
+        }
+
+        galaxyWidget.beginGame(canvas, systemClickHandler);
 
         let requestId;
         const render = () => {

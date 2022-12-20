@@ -3,6 +3,8 @@ import { GalaxyDrawer } from './galaxyDrawer.js';
 
 export class GalaxyWidget {
 
+    systemClickHandler;
+
     constructor(gameSettings) {
         this.width = gameSettings.canvasWidth;
         this.height = gameSettings.canvasHeight;
@@ -11,8 +13,9 @@ export class GalaxyWidget {
         this.galaxy = new Galaxy(gameSettings);
     }
 
-    beginGame(canvas) {
+    beginGame(canvas, systemClickHandler) {
         this.canvas = canvas;
+        this.systemClickHandler = systemClickHandler;
         canvas.width = this.width;
         canvas.height = this.height;
         // TODO: Refactor so window.mouse exists on... GalaxyWidget???
@@ -53,13 +56,11 @@ export class GalaxyWidget {
         // check if we're clicking a star system
         systems.forEach( system => {
             if (GalaxyDrawer.isMouseHovering(system)) {
-                alert('clicked system ' + system.id + ' ' + system.name);
-
-                window.location.href = "systems/" + 1 + ".html";
+                const path = "/systems/" + system.id;
+                this.systemClickHandler(path);
             }
         });
 
     }
-
 
 }

@@ -27,7 +27,7 @@ export class Galaxy {
         let starName = new StarName();
 
         let lowerConsoleDiv = document.getElementById("lower-console");
-        lowerConsoleDiv.innerHTML = "";
+        if (lowerConsoleDiv) lowerConsoleDiv.innerHTML = "";
 
 
         // Define systems with coordinates
@@ -42,7 +42,7 @@ export class Galaxy {
                 if (iter == maxIterations){
                     let errorMsg = 'Generating stars without buffer';
                     console.log(errorMsg);
-                    lowerConsoleDiv.innerHTML = errorMsg;
+                    if (lowerConsoleDiv) lowerConsoleDiv.innerHTML = errorMsg;
                     break;
                 }
             }
