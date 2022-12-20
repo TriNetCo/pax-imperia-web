@@ -3,16 +3,12 @@ import { GalaxyDrawer } from './galaxyDrawer.js';
 
 export class GalaxyWidget {
 
-    constructor(width, height, systemCount, systemRadius, systemBuffer, canvasBuffer) {
-        this.width = width;
-        this.height = height;
-        this.systemCount = systemCount;
-        this.galaxy = new Galaxy(width,
-            height,
-            systemCount,
-            systemRadius,
-            systemBuffer,
-            canvasBuffer);
+    constructor(gameSettings) {
+        this.width = gameSettings.width;
+        this.height = gameSettings.height;
+        this.systemCount = gameSettings.systemCount;
+        console.log("count: " + gameSettings.systemCount);
+        this.galaxy = new Galaxy(gameSettings);
     }
 
     beginGame(canvas) {

@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from "react-router-dom";
 
 import { GalaxyWidget } from 'pax-imperia-js/script/models/galaxyWidget';
+import { GameSettings } from 'pax-imperia-js/script/gameSettings';
 
 import './index.css';
 import 'pax-imperia-js/css/style.css';
@@ -24,7 +25,7 @@ let canvasBuffer = 15;
 
 const data = {
     galaxyWidget :
-        new GalaxyWidget(width, height, systemCount, systemRadius, systemBuffer, canvasBuffer)
+        new GalaxyWidget(GameSettings.galaxyWidget)
 };
 const DataContext = React.createContext(data);
 
