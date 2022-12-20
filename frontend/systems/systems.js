@@ -223,9 +223,13 @@ for (const planet of system['planets']) {
     console.log("loading planet with atmosphere: " + planet['atmosphere']);
     let planetObject = await loadPlanet("" + planet["index"], planet['atmosphere'], 0,0,z, planet['scale']);
     planet['planet_object'] = planetObject;
+    planetObject.gameObject = planet;
 }
 
 var ship = await loadShip('ship', '/script/assets/GalacticLeopard6.fbx', 0, 4, 4)
+ship.planetObject = {};
+ship.gameObject = {}; // workaround for selectionBox
+
 
 function doRotationsAndOrbits(deltaTime) {
     let speedMultiplier = 1; //1/9 to slow down the whole system

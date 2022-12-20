@@ -41,7 +41,12 @@ export class SpriteFlipbook {
         if (selectionTarget != null) {
             const p = selectionTarget.position;
             this.setPosition(p.x, p.y, p.z);
-            this.setScale(selectionTarget.scale);
+            if (selectionTarget.gameObject.distance_from_star != undefined) {
+                this.setScale(selectionTarget.scale);
+            } else {
+                console.log("Ship selected");
+                this.setScale({ x: 1, y: 1, z: 1});
+            }
         }
 
         // cycleSpriteFlipbook
