@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import Galaxy from '../features/galaxy/Galaxy';
 
@@ -30,7 +30,6 @@ const HomePage = () => {
                 </ul>
             </div>
 
-            <script type="module" src="script/app.js"></script>
         </div>
     );
 };

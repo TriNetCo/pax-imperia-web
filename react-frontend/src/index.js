@@ -4,18 +4,28 @@ import { Provider } from 'react-redux';
 import { store } from './app/store';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import './index.css';
 import { BrowserRouter as Router } from "react-router-dom";
+
+import { GalaxyWidget } from 'pax-imperia-js/script/models/galaxyWidget';
+
+import './index.css';
+import 'pax-imperia-js/css/style.css';
+import 'pax-imperia-js/css/systems.css';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
 
+const data = { galaxyWidget : new GalaxyWidget(800, 400)};
+const DataContext = React.createContext(data);
+
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-    <Router basename={process.env.REACT_APP_PUBLIC_SUFIX}>
-      <App />
-    </Router>
+        <Router basename={process.env.REACT_APP_PUBLIC_SUFIX}>
+            <DataContext.Provider value={data}>
+                <App />
+            </DataContext.Provider>
+        </Router>
     </Provider>
   </React.StrictMode>
 );
@@ -24,3 +34,5 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+export {DataContext};

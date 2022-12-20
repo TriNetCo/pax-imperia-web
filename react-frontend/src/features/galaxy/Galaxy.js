@@ -1,17 +1,17 @@
 import React from 'react';
-import { useEffect, useRef } from 'react';
-import * as THREE from 'three' ;
-
-import { GalaxyWidget } from 'pax-imperia-js/script/models/galaxyWidget';
+import { useEffect, useRef, useContext } from 'react';
+import { DataContext } from "../../index";
 
 const Galaxy = () => {
     let ref = useRef();
+    const data = useContext(DataContext);
 
     useEffect(() => {
-        console.log("Using Effect");
+        let galaxyWidget = data.galaxyWidget;
+        console.log("MOUNTING... " + galaxyWidget);
         let canvas = ref.current;
-        const galaxyWidget = new GalaxyWidget(canvas);
-        galaxyWidget.beginGame();
+
+        galaxyWidget.beginGame(canvas);
 
         let requestId;
         const render = () => {
@@ -28,10 +28,8 @@ const Galaxy = () => {
 
     return (
         <canvas
-            ref={ref} 
+            ref={ref}
             id="galaxy-canvas-large"
-            width='800px'
-            height='400px'
             style={{ border: 'solid' }}
         />
     );

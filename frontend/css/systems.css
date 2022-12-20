@@ -1,8 +1,3 @@
-#system-body {
-    background:grey;
-    margin:0px;
-}
-
 .flex-container {
     display: flex;
     width: 100%;
@@ -13,7 +8,7 @@
     height: 20px;
     background-color: black;
 
-    background-image:  url("/assets/backgrounds/system_view_top_f.png");
+    background-image:  url("../assets/backgrounds/system_view_top_f.png");
     background-repeat: no-repeat;
     background-size:   contain;
 }
@@ -46,7 +41,7 @@
     color: white;
 
     background: grey;
-    background-image: url("/assets/backgrounds/system_view_left_f.png");
+    background-image: url("../assets/backgrounds/system_view_left_f.png");
     background-repeat: no-repeat;
     background-size: contain;
 }

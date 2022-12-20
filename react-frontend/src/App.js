@@ -6,18 +6,17 @@ import Default from './pages/Default';
 import SystemPage from './pages/SystemPage';
 
 function App() {
-  return (
-    <div className="App">
+    return (
+        <div className="App">
+            <Switch>
+                <Route exact path="/" component={HomePage} />
+                <Route exact path="/systems" component={HomePage} />
+                <Route exact path="/systems/:systemId" component={SystemPage} />
+                <Route exact path="/default" component={Default} />
+            </Switch>
 
-        <Switch>
-            <Route exact path="/" component={HomePage} />
-            <Route exact path="/systems" component={HomePage} />
-            <Route exact path="/systems/:systemId" component={SystemPage} />
-            <Route exact path="/default" component={Default} />
-        </Switch>
-      
-    </div>
-  );
+        </div>
+    );
 }
 
 export default App;
