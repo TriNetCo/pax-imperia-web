@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 
+import SpaceView from "../features/space_view/SpaceView"
+
 const SystemPage = () => {
     return (
         <div className="page-wrap">
@@ -32,7 +34,7 @@ const SystemPage = () => {
                     </div>
 
                     <div id="canvas-and-buttons">
-                        <div id="canvas-div"></div>
+                        <SpaceView />
 
                         <div id="galaxy-and-console" className="flex-container">
                             <div id="galaxy">
