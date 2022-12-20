@@ -2,8 +2,16 @@
     <h1>Galactic View</h1>
     <h4>Vanilla JS</h4>
     <div>System: <span id="system-name"></span></div>
-    <div id="galaxy-container" style="width:800px;height:400px;">
-        <canvas id="galaxy-canvas-large" width="800px" height="400px" style="border: solid;"></canvas>
+    <div id="galaxy-container">
+        <canvas id="galaxy-canvas-large" width="800px" height="400px"></canvas>
+    </div>
+
+    <div id="galaxy-settings">
+        <button id="galaxy-regenerate-button">Regenerate Galaxy</button>
+        <div valign="center">
+            <label>System Count</label>
+            <input type="range" id="system-count-slider" min="1" max="200" value="100"></input>
+        </div>
     </div>
 
     <div class="links">

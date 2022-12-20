@@ -7,16 +7,20 @@ export class GalaxyWidget {
         this.canvas = canvas;
     }
 
-    beginGame() {
+    beginGame(systemCount, systemRadius, systemBuffer, canvasBuffer) {
         if (window.mouse == undefined)
             window.mouse = { x: 0, y: 0 };
 
         let canvas = this.canvas;
 
         this.cx = canvas.getContext("2d");
-
-        const starCount = 100;
-        this.galaxy = new Galaxy(canvas.width, canvas.height, starCount);
+        console.log('beginGame systemCount: ' + systemCount)
+        this.galaxy = new Galaxy(canvas.width,
+                                 canvas.height,
+                                 systemCount,
+                                 systemRadius,
+                                 systemBuffer,
+                                 canvasBuffer);
 
         this.attachDomEventsToCode(this.cx, this.galaxy.systems);
         this.systemNameLabel = document.getElementById("system-name");
