@@ -1,20 +1,26 @@
 import { GalaxyWidget } from './models/galaxyWidget.js';
 
-let widht = 800;
+const canvas = document.getElementById("galaxy-canvas-large");
+const regenButton = document.getElementById("galaxy-regenerate-button");
+const systemCountSlider = document.getElementById("system-count-slider");
+
+let width = 800;
 let height = 400;
-let systemCount = 100;
+let systemCount = systemCountSlider.value;
 let systemRadius = 5;
 let systemBuffer = 30;
 let canvasBuffer = 15;
 
-const canvas = document.getElementById("galaxy-canvas-large");
-const regenButton = document.getElementById("galaxy-regenerate-button");
-const systemCountSlider = document.getElementById("system-count-slider");
-const galaxyWidget = new GalaxyWidget(canvas);
+let galaxyWidget;
+function generateGalaxy() {
+    systemCount = systemCountSlider.value;
+    galaxyWidget = new GalaxyWidget(width, height, systemCount, systemRadius, systemBuffer, canvasBuffer);
+    galaxyWidget.beginGame(canvas);
+}
 
-galaxyWidget.beginGame(systemCount, systemRadius, systemBuffer, canvasBuffer);
+generateGalaxy();
 
-regenButton.onclick = function() {galaxyWidget.beginGame(systemCountSlider.value, systemRadius, systemBuffer, canvasBuffer);}
+regenButton.onclick = function() { generateGalaxy(); }
 
 function draw() {
     galaxyWidget.draw();
