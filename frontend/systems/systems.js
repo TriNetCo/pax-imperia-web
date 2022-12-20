@@ -20,31 +20,35 @@ var system = {
             "size": 5,
             "distance_from_star": 0,
             "spin_speed": 1,
-            "rander": 5  /* This is a random number where the planet's orbit begins so they aren't all rotating in sync with each other. */
+            "starting_position": 5,  /* This is a random number where the planet's orbit begins so they aren't all rotating in sync with each other. */
+            "scale": 2
         },
         {
             "index": 1,
             "atmosphere": "oxygen",
             "size": 5,
-            "distance_from_star": 1,
+            "distance_from_star": 2,
             "spin_speed": 2,
-            "rander": 10
+            "starting_position": 10,
+            "scale": 0.4
         },
         {
             "index": 2,
             "atmosphere": "oxygen",
             "size": 5,
-            "distance_from_star": 2,
+            "distance_from_star": 3,
             "spin_speed": 3,
-            "rander": 40
+            "starting_position": 40,
+            "scale": .8
         },
         {
             "index": 3,
             "atmosphere": "oxygen",
             "size": 4,
-            "distance_from_star": 3,
+            "distance_from_star": 4,
             "spin_speed": 4,
-            "rander": 78
+            "starting_position": 180,
+            "scale": 1.25
         }
     ],
     "connected_systems": [
@@ -122,17 +126,17 @@ const slider = document.getElementById("slider");
 /////////////////////////////
 // TODO: Move to their own class...
 
-/* 
+/*
  * Load Planet
  */
-function loadPlanet(name, atmosphere, x, y, z) {
+function loadPlanet(name, atmosphere, x, y, z, scale) {
     return new Promise(function(resolve, reject) {
         loader.load("/assets/" + atmosphere + ".gltf", function ( gltf ) {
             let obj = gltf.scene;
-            // obj.scale.set(1.1,1.1,1.1)
             obj.position.set(x,y,z);
+            obj.scale.set(scale, scale, scale);
             obj.name = name;
-            obj.children[0].name = name
+            obj.children[0].name = name;
             scene.add( obj );
             console.log("Finished loading!");
             resolve(obj);
@@ -145,7 +149,7 @@ function loadPlanet(name, atmosphere, x, y, z) {
     });
 }
 
-/* 
+/*
  * Load Ship
  */
 function loadShip(name, modelPath, x, y, z) {
@@ -156,7 +160,7 @@ function loadShip(name, modelPath, x, y, z) {
                 let scale = 0.0002;
                 object.name = name;
                 object.scale.set(scale, scale, scale);
-                object.rotation.set(2* Math.PI, 1.5708 ,2*Math.PI/4);
+                object.rotation.set(2* Math.PI, 1.5708 ,2*Math.PI/4); // x, y, z radians
                 object.position.set(x,y,z);
                 scene.add(object);
                 console.log("finished loading!");
@@ -217,31 +221,34 @@ for (const planet of system['planets']) {
     const z = 2 * planet['distance_from_star'];
 
     console.log("loading planet with atmosphere: " + planet['atmosphere']);
-    let planetObject = await loadPlanet("" + planet["index"], planet['atmosphere'], 0,0,z);
+    let planetObject = await loadPlanet("" + planet["index"], planet['atmosphere'], 0,0,z, planet['scale']);
     planet['planet_object'] = planetObject;
 }
 
-var ship = await loadShip('ship', '/script/assets/GalacticLeopard6.fbx', 0, 1, 0)
+var ship = await loadShip('ship', '/script/assets/GalacticLeopard6.fbx', 0, 4, 4)
 
 function doRotationsAndOrbits(deltaTime) {
-    spinTime += deltaTime/9 ;
+    let speedMultiplier = 1; //1/9 to slow down the whole system
+    spinTime += deltaTime * speedMultiplier;
 
-    for (const planet of system['planets']) {
+    for (const planet of system.planets) {
         let planetObject = planet.planet_object;
 
         planetObject.rotation.y += 0.005;
 
         let d = planet["distance_from_star"];
-        if (d == 0) {
+        if (d == 0) { // if the planet is the sun
             planetObject.rotation.x += 0.005;
             continue;
         }
         let r = d*3;
-        let rander = planet["rander"];
+        let startingPosition = planet["starting_position"];
 
-        planetObject.position.x = r*Math.cos(spinTime + rander) + 0;
-        planetObject.position.z = r*Math.sin(spinTime + rander) + 0;
-        
+        // square of the planet's orbital period is proportional to the cube of its semimajor axis
+        // pow(d, 3) = pow(period, 2), velocity = pow(1/d, 0.5), Math.pow(1/d, 0.5)
+        planetObject.position.x = r*Math.cos(spinTime * Math.pow(d, -2) + startingPosition) + 0;
+        planetObject.position.z = r*Math.sin(spinTime * Math.pow(d, -2) + startingPosition) + 0;
+
     }
 
 }
@@ -250,7 +257,7 @@ function doRotationsAndOrbits(deltaTime) {
 
 const selectionSprite = new SpriteFlipbook(
     scene,
-    '/script/assets/sprite_sheets/selection_sprite_sheet.png', 
+    '/script/assets/sprite_sheets/selection_sprite_sheet.png',
     1,  // nCols in sprite sheet
     10, // nRows
     0.04); // loopFrameDuration
@@ -263,6 +270,8 @@ window.selectionSprite = selectionSprite;
 //////////////////////////////////
 
 let spinTime = 0;
+// uses client's clock for time info
+// starts the clock when .getDelta() is called for the first time
 const clock = new THREE.Clock();
 function animate() {
 
@@ -275,6 +284,7 @@ function animate() {
     // camera.lookAt( scene.position );
     // camera.updateProjectionMatrix();
 
+    // seconds since getDelta last called
     let deltaTime = clock.getDelta();
 
     selectionSprite.update(deltaTime); // UpdateSpriteFrame
@@ -326,9 +336,9 @@ function onPointerMove( event ) {
     trackMousePosition(event)
 }
 
-/* This method runs whenever the pointer move event fires so 
+/* This method runs whenever the pointer move event fires so
  * we can tell canvas where our mouse is
- */ 
+ */
 function trackMousePosition(event) {
     // calculate pointer position in normalized device coordinates
     // (-1 to +1) for both components
@@ -361,18 +371,18 @@ function onPointerClick( event ) {
     } else {
         // lowerConsole.print("Lower Console");
     }
-    
+
 }
 
 
 /* This function recursively walks up the tree of parents until it finds the root scene
- * and removes the highest order group from that scene.  
+ * and removes the highest order group from that scene.
  */
 function removeContainerFromScene(container) {
     let parent = container.parent;
 
     if (parent.type == "Scene") {
-        console.log("Deleting object at (" + container.position.x 
+        console.log("Deleting object at (" + container.position.x
         + ", " + container.position.y
         + ", " + container.position.z + ")");
         parent.remove(container);

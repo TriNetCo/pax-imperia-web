@@ -41,11 +41,12 @@ export class SpriteFlipbook {
         if (selectionTarget != null) {
             const p = selectionTarget.position;
             this.setPosition(p.x, p.y, p.z);
+            this.setScale(selectionTarget.scale);
         }
-            
+
         // cycleSpriteFlipbook
         this.elapsedTime += deltaTime;
-        if (  this.loopFrameDuration > 0 && 
+        if (  this.loopFrameDuration > 0 &&
               this.elapsedTime >= this.loopFrameDuration ) {
             this.elapsedTime = 0;
             this.currentTile = (this.currentTile + 1 ) % this.tilesVert;
@@ -58,6 +59,10 @@ export class SpriteFlipbook {
         this.sprite.position.x = x;
         this.sprite.position.y = y;
         this.sprite.position.z = z;
+    }
+
+    setScale(scale){
+        this.sprite.scale.set(scale.x*4, scale.y*4, scale.z*4);
     }
 
     setPositionVector3(vector3) {
