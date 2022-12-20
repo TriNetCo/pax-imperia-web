@@ -11,6 +11,9 @@ let galaxyWidgetSettings = GameSettings.galaxyWidget;
 systemCountSlider.value = galaxyWidgetSettings.systemCount;
 systemBufferSlider.value = galaxyWidgetSettings.systemBuffer;
 
+systemCountSlider.onchange = generateGalaxy;
+systemBufferSlider.onchange = generateGalaxy;
+
 let galaxyWidget;
 function generateGalaxy() {
     galaxyWidgetSettings.systemCount = systemCountSlider.value;

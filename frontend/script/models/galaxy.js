@@ -26,16 +26,24 @@ export class Galaxy {
         let systems = [];
         let starName = new StarName();
 
+        let lowerConsoleDiv = document.getElementById("lower-console");
+        lowerConsoleDiv.innerHTML = "";
+
+
         // Define systems with coordinates
         for (let i = 0; i < systemCount; i++){
             let point = this.generateSystemXY(canvasWidth, canvasHeight, canvasBuffer);
             let iter = 0
             // Try n times to find a system far enough away from existing systems
-            while (!this.isValidDistance(systems, point, systemBuffer) && iter < 10) {
+            while (!this.isValidDistance(systems, point, systemBuffer)) {
+                console.log("retrying placement");
                 point = this.generateSystemXY(canvasWidth, canvasHeight, canvasBuffer);
                 iter = iter + 1;
                 if (iter == maxIterations){
-                    console.log('Generating stars without buffer')
+                    let errorMsg = 'Generating stars without buffer';
+                    console.log(errorMsg);
+                    lowerConsoleDiv.innerHTML = errorMsg;
+                    break;
                 }
             }
             let system = new System(i, point, starName.pick(), systemRadius);
