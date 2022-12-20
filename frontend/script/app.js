@@ -1,5 +1,7 @@
 import { GalaxyWidget } from './models/galaxyWidget.js';
 
+let widht = 800;
+let height = 400;
 let systemCount = 100;
 let systemRadius = 5;
 let systemBuffer = 30;

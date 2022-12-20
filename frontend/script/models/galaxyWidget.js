@@ -3,24 +3,27 @@ import { GalaxyDrawer } from './galaxyDrawer.js';
 
 export class GalaxyWidget {
 
-    constructor(canvas) {
-        this.canvas = canvas;
+    constructor(width, height, systemCount, systemRadius, systemBuffer, canvasBuffer) {
+        this.width = width;
+        this.height = height;
+        this.systemCount = systemCount;
+        this.galaxy = new Galaxy(width,
+            height,
+            systemCount,
+            systemRadius,
+            systemBuffer,
+            canvasBuffer);
     }
 
-    beginGame(systemCount, systemRadius, systemBuffer, canvasBuffer) {
+    beginGame(canvas) {
+        this.canvas = canvas;
+        canvas.width = this.width;
+        canvas.height = this.height;
         if (window.mouse == undefined)
             window.mouse = { x: 0, y: 0 };
 
-        let canvas = this.canvas;
-
         this.cx = canvas.getContext("2d");
-        console.log('beginGame systemCount: ' + systemCount)
-        this.galaxy = new Galaxy(canvas.width,
-                                 canvas.height,
-                                 systemCount,
-                                 systemRadius,
-                                 systemBuffer,
-                                 canvasBuffer);
+        console.log('beginGame systemCount: ' + this.systemCount)
 
         this.attachDomEventsToCode(this.cx, this.galaxy.systems);
         this.systemNameLabel = document.getElementById("system-name");

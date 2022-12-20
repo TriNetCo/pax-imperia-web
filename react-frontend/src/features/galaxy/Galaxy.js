@@ -8,7 +8,6 @@ const Galaxy = () => {
 
     useEffect(() => {
         let galaxyWidget = data.galaxyWidget;
-        console.log("MOUNTING... " + galaxyWidget);
         let canvas = ref.current;
 
         galaxyWidget.beginGame(canvas);
