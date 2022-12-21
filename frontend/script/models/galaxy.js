@@ -15,14 +15,7 @@ export class Galaxy {
     //   How close can they be to each other? systemBuffer
     //   How far can they be from each other?
     //   how linear/ branchy (connectivity) is everything?
-    generateSystems(galaxyWidgetSettings) {
-        let canvasWidth = galaxyWidgetSettings.canvasWidth;
-        let canvasHeight = galaxyWidgetSettings.canvasHeight;
-        let systemCount = galaxyWidgetSettings.systemCount;
-        let systemRadius = galaxyWidgetSettings.systemRadius;
-        let systemBuffer = galaxyWidgetSettings.systemBuffer;
-        let canvasBuffer = galaxyWidgetSettings.canvasBuffer;
-        let maxIterations = galaxyWidgetSettings.maxPlacementAttempts;
+    generateSystems(c) {
         let systems = [];
         let starName = new StarName();
 
@@ -31,22 +24,22 @@ export class Galaxy {
 
 
         // Define systems with coordinates
-        for (let i = 0; i < systemCount; i++){
-            let point = this.generateSystemXY(canvasWidth, canvasHeight, canvasBuffer);
+        for (let i = 0; i < c.systemCount; i++){
+            let point = this.generateSystemXY(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
             let iter = 0
             // Try n times to find a system far enough away from existing systems
-            while (!this.isValidDistance(systems, point, systemBuffer)) {
+            while (!this.isValidDistance(systems, point, c.systemBuffer)) {
                 console.log("retrying placement");
-                point = this.generateSystemXY(canvasWidth, canvasHeight, canvasBuffer);
+                point = this.generateSystemXY(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
                 iter = iter + 1;
-                if (iter == maxIterations){
+                if (iter == c.maxPlacementAttempts){
                     let errorMsg = 'Generating stars without buffer';
                     console.log(errorMsg);
                     if (lowerConsoleDiv) lowerConsoleDiv.innerHTML = errorMsg;
                     break;
                 }
             }
-            let system = new System(i, point, starName.pick(), systemRadius);
+            let system = new System(i, point, starName.pick(), c.systemRadius);
             systems.push(system);
         }
         return systems;
