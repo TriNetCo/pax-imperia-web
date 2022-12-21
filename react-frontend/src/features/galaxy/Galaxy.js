@@ -12,7 +12,6 @@ const Galaxy = () => {
         let galaxyWidget = data.galaxyWidget;
         let canvas = ref.current;
 
-
         const systemClickHandler = (path) => {
             history.push(path);
         }
