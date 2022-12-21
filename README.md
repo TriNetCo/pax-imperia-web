@@ -76,3 +76,4 @@ The main file to edit is of course `./public/index.html` for getting at the fron
 - GoLang Packages: https://go.dev/doc/code
 - GoLang Project Layout... https://github.com/golang-standards/project-layout
 - React + WebGL... http://www.petecorey.com/blog/2019/08/19/animating-a-canvas-with-react-hooks/
+- React Context?? https://www.freecodecamp.org/news/react-context-for-beginners/#:~:text=React%20context%20caveats-,What%20is%20React%20context%3F,across%20our%20components%20more%20easily.

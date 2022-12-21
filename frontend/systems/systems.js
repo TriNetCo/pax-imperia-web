@@ -198,17 +198,32 @@ const scene = new THREE.Scene();
 // light.lookAt(0,0,0);
 // scene.add( light );
 
-var sunLight = new THREE.PointLight(new THREE.Color(), 1, 1000);
+var sunLight = new THREE.PointLight(new THREE.Color(), 1.25, 1000);
 scene.add(sunLight);
 
-var ambientLight = new THREE.AmbientLight( 0xffffff, 0.1 );
-scene.add( ambientLight );
+var headLamp = new THREE.DirectionalLight( 0xffffff, 1 );
+headLamp.position.set(22, 22, 25);
+scene.add( headLamp );
+
+//var ambientLight = new THREE.AmbientLight( 0xffffff, 0.05 );
+//scene.add( ambientLight );
 
 // Add Camera
 
-const cameraPivot = new THREE.Group();
 
 const camera = new THREE.PerspectiveCamera( 15, width / height, 1, 10000 );
+scene.add(camera);
+
+var cameraLight = new THREE.PointLight(new THREE.Color(), .5, 10000);
+scene.add(cameraLight);
+
+camera.add(cameraLight);
+
+scene.add(sunLight);
+
+const cameraPivot = new THREE.Group();
+
+scene.add(cameraPivot);
 
 cameraPivot.add(camera);
 camera.position.set(0, 0, 50);
@@ -236,7 +251,7 @@ for (const planet of system['planets']) {
     planetObject.gameObject = planet;
 
     let material = planetObject.children[0].material;
-    material.emissive = new THREE.Color(0.1, 0.15, 0.2);
+    //material.emissive = new THREE.Color(0.05, 0.1, 0.15);
 
 
     if (planet["atmosphere"] == "sun") {
@@ -305,12 +320,19 @@ function animate() {
     let distance = distanceSlider.value;
     let xRotation = xSlider.value;
     let yRotation = ySlider.value;
-    let zRotation = 0.0;
+    let zRotation = zSlider.value;
 
-    cameraPivot.rotation.set(xRotation, 0.0, 0.0);
+    // cameraPivot.rotation.set(xRotation, yRotation, 0.0);
+    cameraPivot.rotation.set(-0.6, 0.05, -3);
 
-    camera.position.set(0, 0, distance);
+    cameraPivot.position.set(0, 0, distance);
     camera.lookAt( scene.position );
+
+    headLamp.position.set(0, 0, distance);
+    // headLamp.lookAt(scene.position);
+
+    ship.rotation.set(0.7, -1.6, 0.4);
+    ship.position.set(zRotation, xRotation ,yRotation);
 
 
     camera.updateProjectionMatrix();
