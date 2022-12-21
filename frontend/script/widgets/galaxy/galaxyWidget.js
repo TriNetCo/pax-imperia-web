@@ -1,4 +1,4 @@
-import { Galaxy } from './galaxy.js';
+import { Galaxy } from '../../models/galaxy.js';
 import { GalaxyDrawer } from './galaxyDrawer.js';
 import { GalaxyDomManager } from './galaxyDomManager.js';
 

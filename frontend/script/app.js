@@ -1,4 +1,4 @@
-import { GalaxyWidget } from './models/galaxyWidget.js';
+import { GalaxyWidget } from './widgets/galaxy/galaxyWidget.js';
 import { GameSettings } from './gameSettings.js';
 
 const canvas = document.getElementById("galaxy-canvas-large");
