@@ -4,12 +4,14 @@ import { GalaxyDrawer } from './galaxyDrawer.js';
 export class GalaxyWidget {
 
     systemClickHandler;
+    mouse;
 
     constructor(gameSettings) {
         this.width = gameSettings.canvasWidth;
         this.height = gameSettings.canvasHeight;
         this.systemCount = gameSettings.systemCount;
         console.log("count: " + gameSettings.systemCount);
+        this.mouse = { x: 0, y: 0 };
         this.galaxy = new Galaxy(gameSettings);
     }
 
@@ -18,19 +20,17 @@ export class GalaxyWidget {
         this.systemClickHandler = systemClickHandler;
         canvas.width = this.width;
         canvas.height = this.height;
-        // TODO: Refactor so window.mouse exists on... GalaxyWidget???
-        if (window.mouse == undefined)  // Here's where the widget store mouse location information when MouseMove events fire
-            window.mouse = { x: 0, y: 0 };
 
         this.cx = canvas.getContext("2d");
         console.log('beginGame systemCount: ' + this.systemCount)
 
         this.attachDomEventsToCode(this.cx, this.galaxy.systems);
         this.systemNameLabel = document.getElementById("system-name");
+        this.galaxyDrawer = new GalaxyDrawer({cx: this.cx, galaxy: this.galaxy, systemNameLabel: this.systemNameLabel, mouse: this.mouse});
     }
 
     draw() {
-        GalaxyDrawer.drawLoop(this.cx, this.galaxy, this.systemNameLabel);
+        this.galaxyDrawer.drawLoop();
     }
 
     attachDomEventsToCode(cx, systems) {
@@ -41,13 +41,15 @@ export class GalaxyWidget {
 
     addMouseMovement(cx) {
         cx.canvas.addEventListener('mousemove', e => {
-            window.mouse =  { x: e.offsetX, y: e.offsetY };
+            this.mouse.x = e.offsetX;
+            this.mouse.y = e.offsetY;
         });
     }
 
     addMouseClick(cx, systems) {
-        cx.canvas.addEventListener('click', event => {
-            window.mouse = { x: event.offsetX, y: event.offsetY };
+        cx.canvas.addEventListener('click', e => {
+            this.mouse.x = e.offsetX;
+            this.mouse.y = e.offsetY;
             this.clickHandler(systems);
         });
     }
@@ -55,7 +57,7 @@ export class GalaxyWidget {
     clickHandler(systems){
         // check if we're clicking a star system
         systems.forEach( system => {
-            if (GalaxyDrawer.isMouseHovering(system)) {
+            if (this.galaxyDrawer.isMouseHovering(system)) {
                 const path = "/systems/" + system.id;
                 this.systemClickHandler(path);
             }

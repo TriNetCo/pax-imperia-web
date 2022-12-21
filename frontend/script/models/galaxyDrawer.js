@@ -1,19 +1,29 @@
 export class GalaxyDrawer {
 
-    static drawLoop(cx, galaxy, systemNameLabel) {
-        // Redraw everything 60 times a second
-        this.drawBackground(cx);
-        this.drawConnections(cx, galaxy)
-        this.drawSystems(cx, galaxy)
-        this.drawHoveredSystem(cx, galaxy, systemNameLabel)
+    constructor(config) {
+        this.cx = config.cx;
+        this.galaxy = config.galaxy;
+        this.systemNameLabel = config.systemNameLabel;
+        this.mouse = config.mouse;
     }
 
-    static drawBackground(cx) {
+    drawLoop() {
+        // Redraw everything 60 times a second
+        this.drawBackground();
+        this.drawConnections()
+        this.drawSystems()
+        this.drawHoveredSystem()
+    }
+
+    drawBackground() {
+        let cx = this.cx;
         cx.fillStyle = "Black";
         cx.fillRect(0, 0, cx.canvas.width, cx.canvas.height);
     }
 
-    static drawConnections(cx, galaxy) {
+    drawConnections() {
+        let cx = this.cx;
+        let galaxy = this.galaxy;
         cx.strokeStyle = "orange";
         cx.lineWidth = 1;
         for (let i = 0, len = galaxy.connections.length; i < len; i++) {
@@ -26,15 +36,20 @@ export class GalaxyDrawer {
         }
     }
 
-    static drawSystems(cx, galaxy) {
+    drawSystems() {
+        let cx = this.cx;
+        let galaxy = this.galaxy;
         let systemDrawColor = "rgb(150, 150, 150)";
         for (let i = 0; i < galaxy.systems.length; i++) {
             let system = galaxy.systems[i];
-            this.drawDot(cx, system.x, system.y, system.radius, systemDrawColor);
+            this.drawDot(system.x, system.y, system.radius, systemDrawColor);
         }
     }
 
-    static drawHoveredSystem(cx, galaxy, systemNameLabel) {
+    drawHoveredSystem() {
+        let cx = this.cx;
+        let galaxy = this.galaxy;
+        let systemNameLabel = this.systemNameLabel;
         let hoverDrawColor = "rgb(255, 255, 255)";
         let nothingIsHovered = true;
         for (let i = 0; i < galaxy.systems.length; i++) {
@@ -42,7 +57,7 @@ export class GalaxyDrawer {
             if (this.isMouseHovering(system)) {
                 systemNameLabel.innerHTML = system.name;
                 let hoverDrawRadius = system.radius + 2;
-                this.drawDot(cx, system.x, system.y, hoverDrawRadius, hoverDrawColor);
+                this.drawDot(system.x, system.y, hoverDrawRadius, hoverDrawColor);
                 nothingIsHovered = false;
                 break;
             }
@@ -52,18 +67,19 @@ export class GalaxyDrawer {
         }
     }
 
-    static drawDot(cx, x, y, radius, color) {
+    drawDot(x, y, radius, color) {
+        let cx = this.cx;
         cx.fillStyle = color;
         cx.fillRect(x-radius, y-radius, radius*2, radius*2);
         cx.fill();
     }
 
-    static isMouseHovering(system) {
+    isMouseHovering(system) {
         let hoverRadius = system.radius + 1
-        return (window.mouse.x > system.x - hoverRadius
-             && window.mouse.x < system.x + hoverRadius + 1
-             && window.mouse.y > system.y - hoverRadius
-             && window.mouse.y < system.y + hoverRadius + 2);
+        return (this.mouse.x > system.x - hoverRadius
+             && this.mouse.x < system.x + hoverRadius + 1
+             && this.mouse.y > system.y - hoverRadius
+             && this.mouse.y < system.y + hoverRadius + 2);
     }
 
 }
