@@ -5,13 +5,12 @@ export class System {
         this.x = point.x;
         this.y = point.y;
         this.radius = radius;
-        debugger;
         this.star = this.generateStar(c) // star(s)?
         this.planets = this.generatePlanets(c)
     }
 
     generateStar(c){
-        star = {
+        const star = {
             "index": 0,
             "atmosphere": "sun",
             "size": this.getRandomFloat(c.minStarSize, c.maxStarSize),
@@ -25,8 +24,8 @@ export class System {
         planets = []
         planetCount = this.getRandomInt(c.minPlanetCount, c.maxPlanetCount)
 
-        for (let i = 0; i < c.systemCount; i++){
-            planet = {
+        for (let i = 0; i < c.systemCount; i++) {
+            const planet = {
                 "index": i,
                 "atmosphere": "oxygen",
                 "size": this.getRandomFloat(c.minPlanetSize, c.maxPlanetSize),

@@ -39,7 +39,6 @@ export class Galaxy {
                     break;
                 }
             }
-            debugger;
             let system = new System(i, point, starName.pick(), c.systemRadius, c);
             systems.push(system);
         }
