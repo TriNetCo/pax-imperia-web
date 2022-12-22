@@ -13,7 +13,7 @@ var system = {
     "id": "1",
     "name": "Rigel",
     "g_position": { "x": 1, "y": 1 },
-    "planets": [
+    "stars": [
         {
             "index": 0,
             "atmosphere": "sun",
@@ -21,7 +21,9 @@ var system = {
             "distance_from_star": 0,
             "spin_speed": 1,
             "starting_position": 5,  /* This is a random number where the planet's orbit begins so they aren't all rotating in sync with each other. */
-        },
+        }
+    ],
+    "planets": [
         {
             "index": 1,
             "atmosphere": "oxygen",
@@ -128,7 +130,7 @@ const zSlider = document.getElementById("z-slider");
 /*
  * Load Planet
  */
-function loadPlanet(name, atmosphere, x, y, z, size) {
+function loadStarOrPlanet(name, atmosphere, x, y, z, size) {
     return new Promise(function(resolve, reject) {
         loader.load("/assets/" + atmosphere + ".gltf", function ( gltf ) {
             let obj = gltf.scene;
@@ -235,30 +237,30 @@ const fbxLoader = new FBXLoader()
 
 
 ///////////////////
-// loadPlanets() //
+// loadStarsAndPlanets() //
 ///////////////////
 
-for (const planet of system['planets']) {
-    const z = 2 * planet['distance_from_star'];
+for (const starOrPlanet of system['stars'].concat(system['planets'])) {
+    const z = 2 * starOrPlanet['distance_from_star'];
 
-    console.log("loading planet with atmosphere: " + planet['atmosphere']);
-    let planetObject = await loadPlanet("" + planet["index"], planet['atmosphere'], 0,0,z, planet['size']);
-    planet['planet_object'] = planetObject;
-    planetObject.gameObject = planet;
+    console.log("loading star or planet with atmosphere: " + starOrPlanet['atmosphere']);
+    let object3d = await loadStarOrPlanet("" + starOrPlanet["index"], starOrPlanet['atmosphere'], 0,0,z, starOrPlanet['size']);
+    starOrPlanet['object3d'] = object3d;
+    object3d.gameObject = starOrPlanet;
 
-    let material = planetObject.children[0].material;
+    let material = object3d.children[0].material;
     //material.emissive = new THREE.Color(0.05, 0.1, 0.15);
 
 
-    if (planet["atmosphere"] == "sun") {
-        let texture = planetObject.children[0].material.map;
-        planetObject.children[0].material = new THREE.MeshBasicMaterial();
-        planetObject.children[0].material.map = texture;
+    if (starOrPlanet["atmosphere"] == "sun") {
+        let texture = object3d.children[0].material.map;
+        object3d.children[0].material = new THREE.MeshBasicMaterial();
+        object3d.children[0].material.map = texture;
     }
 }
 
 var ship = await loadShip('ship', '/script/assets/GalacticLeopard6.fbx', 0, 4, 4)
-ship.planetObject = {};
+ship.object3d = {};
 ship.gameObject = {}; // workaround for selectionBox
 
 
@@ -266,23 +268,23 @@ function doRotationsAndOrbits(deltaTime) {
     let speedMultiplier = 1; //1/9 to slow down the whole system
     spinTime += deltaTime * speedMultiplier;
 
-    for (const planet of system.planets) {
-        let planetObject = planet.planet_object;
+    for (const starOrPlanet of system['stars'].concat(system['planets'])) {
+        let object3d = starOrPlanet.object3d;
 
-        planetObject.rotation.y += 0.005;
+        object3d.rotation.y += 0.005;
 
-        let d = planet["distance_from_star"];
+        let d = starOrPlanet["distance_from_star"];
         if (d == 0) { // if the planet is the sun
-            planetObject.rotation.x += 0.005;
+            object3d.rotation.x += 0.005;
             continue;
         }
         let r = d*3;
-        let startingPosition = planet["starting_position"];
+        let startingPosition = starOrPlanet["starting_position"];
 
         // square of the planet's orbital period is proportional to the cube of its semimajor axis
         // pow(d, 3) = pow(period, 2), velocity = pow(1/d, 0.5), Math.pow(1/d, 0.5)
-        planetObject.position.x = r*Math.cos(spinTime * Math.pow(d, -2) + startingPosition) + 0;
-        planetObject.position.z = r*Math.sin(spinTime * Math.pow(d, -2) + startingPosition) + 0;
+        object3d.position.x = r*Math.cos(spinTime * Math.pow(d, -2) + startingPosition) + 0;
+        object3d.position.z = r*Math.sin(spinTime * Math.pow(d, -2) + startingPosition) + 0;
 
     }
 
