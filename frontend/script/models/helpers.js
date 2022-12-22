@@ -1,4 +1,8 @@
+// Generic helper functions
+
 export const getRandomNum = (min, max, decimals = null) => {
+    // Returns a random number between min and max, rounded to the specified
+    // decimal place. If decimals is left null, does not round.
     min = Math.ceil(min);
     max = Math.floor(max);
     let randNum = Math.random() * (max - min) + min;
@@ -7,6 +11,8 @@ export const getRandomNum = (min, max, decimals = null) => {
 }
 
 export const roundToDecimal = (num, decimals = null) => {
+    // Rounds a number to specified decimal place. If decimals is left null,
+    // does not round.
     if (decimals == null) {
         return num
     } else {
