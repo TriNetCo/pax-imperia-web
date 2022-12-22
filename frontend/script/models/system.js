@@ -1,4 +1,4 @@
-import {getRandomInt, getRandomFloat} from '/script/models/helpers.js'
+import {getRandomNum} from '/script/models/helpers.js'
 
 export class System {
     constructor(id, point, name, radius, c) {
@@ -15,7 +15,7 @@ export class System {
         let star = {
             "index": 0,
             "atmosphere": "sun",
-            "size": getRandomFloat(c.minStarSize, c.maxStarSize),
+            "size": getRandomNum(c.minStarSize, c.maxStarSize, 2),
             "distance_from_star": 0,
             "spin_speed": 1,
         };
@@ -24,16 +24,16 @@ export class System {
 
     generatePlanets(c){
         let planets = []
-        let planetCount = getRandomInt(c.minPlanetCount, c.maxPlanetCount)
+        let planetCount = getRandomNum(c.minPlanetCount, c.maxPlanetCount, 0)
 
         for (let i = 0; i < planetCount; i++) {
             let planet = {
                 "index": i,
                 "atmosphere": "oxygen",
-                "size": getRandomFloat(c.minPlanetSize, c.maxPlanetSize),
+                "size": getRandomNum(c.minPlanetSize, c.maxPlanetSize, 2),
                 "distance_from_star": i,
                 "spin_speed": 1,
-                "starting_position": getRandomFloat(0, Math.PI),
+                "starting_position": getRandomNum(0, Math.PI, 2),
             };
             planets.push(planet);
         };
