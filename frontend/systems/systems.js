@@ -17,38 +17,34 @@ var system = {
         {
             "index": 0,
             "atmosphere": "sun",
-            "size": 5,
+            "size": 2,
             "distance_from_star": 0,
             "spin_speed": 1,
             "starting_position": 5,  /* This is a random number where the planet's orbit begins so they aren't all rotating in sync with each other. */
-            "scale": 2
         },
         {
             "index": 1,
             "atmosphere": "oxygen",
-            "size": 5,
+            "size": 0.4,
             "distance_from_star": 2,
             "spin_speed": 2,
             "starting_position": 10,
-            "scale": 0.4
         },
         {
             "index": 2,
             "atmosphere": "oxygen",
-            "size": 5,
+            "size": 0.8,
             "distance_from_star": 3,
             "spin_speed": 3,
             "starting_position": 40,
-            "scale": .8
         },
         {
             "index": 3,
             "atmosphere": "oxygen",
-            "size": 4,
+            "size": 1.25,
             "distance_from_star": 4,
             "spin_speed": 4,
             "starting_position": 180,
-            "scale": 1.25
         }
     ],
     "connected_systems": [
@@ -132,12 +128,12 @@ const zSlider = document.getElementById("z-slider");
 /*
  * Load Planet
  */
-function loadPlanet(name, atmosphere, x, y, z, scale) {
+function loadPlanet(name, atmosphere, x, y, z, size) {
     return new Promise(function(resolve, reject) {
         loader.load("/assets/" + atmosphere + ".gltf", function ( gltf ) {
             let obj = gltf.scene;
             obj.position.set(x,y,z);
-            obj.scale.set(scale, scale, scale);
+            obj.scale.set(size, size, size);
             obj.name = name;
             obj.children[0].name = name;
             scene.add( obj );
@@ -160,9 +156,9 @@ function loadShip(name, modelPath, x, y, z) {
         fbxLoader.load(
             modelPath,
             (object) => {
-                let scale = 0.0002;
+                let size = 0.0002;
                 object.name = name;
-                object.scale.set(scale, scale, scale);
+                object.scale.set(size, size, size);
                 object.rotation.set(2* Math.PI, 1.5708 ,2*Math.PI/4); // x, y, z radians
                 object.position.set(x,y,z);
                 scene.add(object);
@@ -246,7 +242,7 @@ for (const planet of system['planets']) {
     const z = 2 * planet['distance_from_star'];
 
     console.log("loading planet with atmosphere: " + planet['atmosphere']);
-    let planetObject = await loadPlanet("" + planet["index"], planet['atmosphere'], 0,0,z, planet['scale']);
+    let planetObject = await loadPlanet("" + planet["index"], planet['atmosphere'], 0,0,z, planet['size']);
     planet['planet_object'] = planetObject;
     planetObject.gameObject = planet;
 
