@@ -7,8 +7,10 @@ export class System {
         this.x = point.x;
         this.y = point.y;
         this.radius = radius;
-        this.star = this.generateStar(c) // star(s)?
+        this.stars = [this.generateStar(c)]
         this.planets = this.generatePlanets(c)
+        this.ships = []
+        this.entities = this.stars.concat(this.planets).concat(this.ships)
     }
 
     generateStar(c){
@@ -18,6 +20,7 @@ export class System {
             "size": getRandomNum(c.minStarSize, c.maxStarSize, 2),
             "distance_from_star": 0,
             "spin_speed": 1,
+            "starting_position": 0,
         };
         return star
     }
