@@ -20,3 +20,4 @@ export const roundToDecimal = (num, decimals = null) => {
         let roundNum = Math.round((num + Number.EPSILON) * multiplier) / multiplier;
         return roundNum
     }
+}
