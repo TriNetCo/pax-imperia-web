@@ -131,16 +131,26 @@ const zSlider = document.getElementById("z-slider");
  * Load Planet
  */
 
-
 function loadObject3d(name,
                       assetPath,
                       scale = {x: 1, y: 1, z: 1},
                       position = {x: 0, y: 0, z: 0},
-                      rotation = {x: 0, y: 0, z: 0}
-                      ) {
-    return new Promise(function(resolve, reject) {
-        loader.load(assetPath, function ( gltf ) {
-            let obj = gltf.scene;
+                      rotation = {x: 0, y: 0, z: 0},
+                      loaderType = 'gltf') {
+    let loader;
+    if (loaderType == 'gltf') {
+        loader = new GLTFLoader();
+    } else {
+        loader = new FBXLoader();
+    }
+    let object3d = new Promise(function(resolve, reject) {
+        loader.load(assetPath, function ( input ) {
+            let obj;
+            if (loaderType == 'gltf') {
+                obj = input.scene;
+            } else {
+                obj = input;
+            }
             obj.position.set(position.x, position.y, position.z);
             obj.rotation.set(rotation.x, rotation.y, rotation.z); // x, y, z radians
             obj.scale.set(scale.x, scale.y, scale.z);
@@ -156,6 +166,7 @@ function loadObject3d(name,
         } );
 
     });
+    return object3d;
 }
 
 function loadStar(name, size) {
@@ -163,7 +174,8 @@ function loadStar(name, size) {
     let assetPath = "/assets/sun.gltf";
     let position = {x: 0, y: 0, z: 0};
     let scale = {x: size, y: size, z: size};
-    return loadObject3d(name, assetPath, scale, position)
+    let object3d = loadObject3d(name, assetPath, scale, position);
+    return object3d;
 }
 
 function loadPlanet(name, atmosphere, size, z) {
@@ -174,40 +186,16 @@ function loadPlanet(name, atmosphere, size, z) {
     return loadObject3d(name, assetPath, scale, position)
 }
 
-// function loadShip() {
-//    console.log("loading ship")
-//    let name = "ship"
-//    let assetPath = '/script/assets/GalacticLeopard6.fbx';
-//    let size = 0.0002;
-//    let scale = {x: size, y: size, z: size}
-//    let position = {x: 0, y: 4, z: 4}
-//    let rotation = {x: 2* Math.PI, y: 1.5708, z: 2*Math.PI/4};
-//    let loader = new FBXLoader()
-//    return loadObject3d(name, assetPath, scale, position, rotation, loader)
-// }
-
-function loadShip(name, modelPath, x, y, z) {
-    return new Promise(function(resolve, reject) {
-        fbxLoader.load(
-            modelPath,
-            (object) => {
-                let scale = 0.0002;
-                object.name = name;
-                object.scale.set(scale, scale, scale);
-                object.rotation.set(2* Math.PI, 1.5708 ,2*Math.PI/4); // x, y, z radians
-                object.position.set(x,y,z);
-                scene.add(object);
-                console.log("finished loading!");
-                resolve(object)
-            },
-            (xhr) => {
-                console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
-            },
-            (error) => {
-                console.log(error);
-            }
-        )
-    });
+function loadShip() {
+    console.log("loading ship")
+    let name = "ship"
+    let assetPath = '/script/assets/GalacticLeopard6.fbx';
+    let size = 0.0002;
+    let scale = {x: size, y: size, z: size}
+    let position = {x: 0, y: 4, z: 4}
+    let rotation = {x: 2* Math.PI, y: 1.5708, z: 2*Math.PI/4};
+    let loader = new FBXLoader()
+    return loadObject3d(name, assetPath, scale, position, rotation, 'fbx')
 }
 
 ////////////////////////////////////////
@@ -264,14 +252,6 @@ camera.lookAt( scene.position );
 // Load Models //
 /////////////////
 
-const loader = new GLTFLoader();
-const fbxLoader = new FBXLoader()
-
-
-///////////////////
-// loadStarsAndPlanets() //
-///////////////////
-
 for (const star of system['stars']) {
     let name = star['name'];
     let object3d = await loadStar(name, star['size']);
@@ -294,8 +274,7 @@ for (const planet of system['planets']) {
     object3d.gameObject = planet;
 }
 
-// var ship = await loadShip();
-var ship = await loadShip('ship', '/script/assets/GalacticLeopard6.fbx', 0, 4, 4)
+var ship = await loadShip();
 ship.object3d = {};
 ship.gameObject = {}; // workaround for selectionBox
 
@@ -489,5 +468,3 @@ function putCursorOverContainer(container) {
         putCursorOverContainer(parent)
     }
 }
-
-
