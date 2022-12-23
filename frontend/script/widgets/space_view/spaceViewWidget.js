@@ -13,7 +13,8 @@ export class SpaceViewWidget {
 
     constructor(gameSettings) {
         this.c = gameSettings;
-        this.mouse = new THREE.Vector2(0,0);
+        const mouse = new THREE.Vector2(0,0);
+        this.mouse = mouse;
     }
 
     beginGame(systemClickHandler) {
@@ -30,14 +31,19 @@ export class SpaceViewWidget {
         this.renderer.setSize( this.width, this.height );
         this.renderer.setPixelRatio( this.renderer.domElement.devicePixelRatio );
         document.getElementById("canvas-div").appendChild( this.renderer.domElement );
-
         let cx = this.renderer.getContext();
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera( 15, this.width / this.height, 1, 10000 );
 
-        // Click detection
-        this.raycaster = new THREE.Raycaster();
+        this.selectionSprite = new SpriteFlipbook(
+            this.scene,
+            '/script/assets/sprite_sheets/selection_sprite_sheet.png',
+            1,  // nCols in sprite sheet
+            10, // nRows
+            0.04); // loopFrameDuration
 
         this.spaceViewDrawer = new SpaceViewDrawer({cx: cx, system: this.system, mouse: this.mouse});
-        this.spaceViewDomManager = new SpaceViewDomManager(cx, this.system, this.spaceViewDrawer, systemClickHandler, this.mouse)
+        this.spaceViewDomManager = new SpaceViewDomManager(cx, this.system, this.spaceViewDrawer, systemClickHandler, this.mouse, this.camera, this.scene, this.selectionSprite)
         this.spaceViewDomManager.attachDomEventsToCode();
     }
 
@@ -54,14 +60,9 @@ export class SpaceViewWidget {
         let system = this.c.system;
         let renderer = this.renderer;
 
-
-
-
         ///////////////////////
         // Connect DOM Stuff //
         ///////////////////////
-
-
 
         const upperConsole = {
             print(msg) {
@@ -75,52 +76,6 @@ export class SpaceViewWidget {
             }
         }
 
-
-
-        /* This method runs whenever the pointer move event fires so
-         * we can tell canvas where our mouse is
-         */
-        const onPointerMove = ( event ) => {
-            // calculate pointer position in normalized device coordinates
-            // (-1 to +1) for both components
-            const h = renderer.domElement.height;
-            const w = renderer.domElement.width;
-            this.mouse.x = (event.offsetX / w) * 2 - 1;
-            this.mouse.y = -(event.offsetY / h) * 2 + 1;
-        }
-
-        renderer.domElement.addEventListener( 'pointermove', onPointerMove );
-
-
-        const onPointerClick = ( event ) => {
-            event.preventDefault();
-            let raycaster = this.raycaster;
-            raycaster.setFromCamera( this.mouse, camera );
-            const intersects = raycaster.intersectObjects( scene.children );
-
-            if ( intersects.length > 0) {
-
-                let uniqueIntersects = intersects.filter( (value, index, self) => {
-                    return self.findIndex(v => v.object.id === value.object.id) === index;
-                });
-
-                let msg = "HIT: ";
-                for ( let i = 0; i < uniqueIntersects.length; i ++ ) {
-                    const obj = uniqueIntersects[i].object;
-                    msg +=  ", " + obj.name + " (" + obj.id + ")";
-
-                    // removeContainerFromScene(obj);
-                    putCursorOverContainer(obj);
-                }
-                // lowerConsole.print(msg + " {" + this.mouse.x + ", " + this.mouse.y + "}");
-            } else {
-                // lowerConsole.print("Lower Console");
-            }
-
-        }
-
-        renderer.domElement.addEventListener( 'click', onPointerClick );
-
         const distanceSlider = document.getElementById("distance-slider");
         const xSlider = document.getElementById("x-slider");
         const ySlider = document.getElementById("y-slider");
@@ -131,7 +86,7 @@ export class SpaceViewWidget {
         // Setup the Scene with Basic Objects //
         ////////////////////////////////////////
 
-        const scene = new THREE.Scene();
+        const scene = this.scene;
 
         // Add Lights
 
@@ -157,8 +112,7 @@ export class SpaceViewWidget {
 
         // Add Camera
 
-
-        const camera = new THREE.PerspectiveCamera( 15, this.width / this.height, 1, 10000 );
+        let camera = this.camera;
         scene.add(camera);
 
         var cameraLight = new THREE.PointLight(new THREE.Color(), .5, 10000);
@@ -203,16 +157,7 @@ export class SpaceViewWidget {
 
         }
 
-        // Load sprites
 
-        const selectionSprite = new SpriteFlipbook(
-            scene,
-            '/script/assets/sprite_sheets/selection_sprite_sheet.png',
-            1,  // nCols in sprite sheet
-            10, // nRows
-            0.04); // loopFrameDuration
-
-        window.selectionSprite = selectionSprite;
 
 
         //////////////////////////////////
@@ -223,7 +168,7 @@ export class SpaceViewWidget {
         // uses client's clock for time info
         // starts the clock when .getDelta() is called for the first time
         const clock = new THREE.Clock();
-        function animate() {
+        const animate = () => {
 
             // Reset camera in real time
             //////////////////////////////
@@ -251,7 +196,7 @@ export class SpaceViewWidget {
             // seconds since getDelta last called
             let deltaTime = clock.getDelta();
 
-            selectionSprite.update(deltaTime); // UpdateSpriteFrame
+            this.selectionSprite.update(deltaTime); // UpdateSpriteFrame
 
             doRotationsAndOrbits(deltaTime);
 
@@ -321,17 +266,7 @@ export class SpaceViewWidget {
             }
         }
 
-        function putCursorOverContainer(container) {
-            if (container.name == "selectionSprite") return; // Never put a cursor over the cursor itself
-            let parent = container.parent;
 
-            if (parent.type == "Scene") {
-                selectionSprite.select(container);
-                lowerConsole.print("Selected: " + container.name);
-            } else {
-                putCursorOverContainer(parent)
-            }
-        }
 
     }
 
