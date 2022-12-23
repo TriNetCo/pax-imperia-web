@@ -46,14 +46,7 @@
     background-size: contain;
 }
 
-#planet-list {
-    /* flex-grow: 1; */
-    padding-left: 30px;
-    margin: 0px;
-    width: 150px;
-    height: 768px;
-    color: white;
-}
+
 
 
 #btnGovernor {
@@ -86,3 +79,76 @@
     background:red;
     width: 40%;
 }
+
+.left-menu-div {
+    padding: 0;
+    margin-left: 25px;
+    height: 768px;
+}
+
+ul.planet-list {
+    /* flex-grow: 1; */
+    list-style-type: none;
+    padding: 0;
+    padding-left: 10px;
+
+    margin: 0px;
+    width: 150px;
+    color: white;
+}
+
+#planet-list li {
+    margin-bottom: 20px;
+}
+
+.selected-thumbnail {
+    background: orange;
+}
+
+.left-menu-thumbnail {
+    /* background-image: url("../assets/thumbnails/oxygen_thumbnail.png"); */
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+    height: 45px;
+    width: 174px;
+    padding-top:5px;
+    padding-bottom:5px;
+}
+
+.left-menu-thumbnail img {
+    align-self: flex-start;
+    width: 40px;
+    height: 40px;
+}
+
+.left-menu-thumbnail label {
+    width: 75px;
+    white-space: nowrap;
+}
+
+.left-menu-thumbnail .right-side {
+    /* background: green; */
+    align-self: flex-start;
+    height: 100%;
+    display:flex;
+    margin-left: 16px;
+}
+
+.left-menu-thumbnail .wealth-rating {
+    width: 54px;
+    margin-left: -57px;
+    /* background: red; */
+    align-self: flex-start;
+    text-align: right;
+    white-space: nowrap;
+
+}
+
+.left-menu-thumbnail .habitat-column {
+    /* background: black; */
+    /* margin-left: 10px; */
+    align-self: flex-end;
+    width: 45px;
+}
+

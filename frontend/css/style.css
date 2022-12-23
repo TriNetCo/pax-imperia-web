@@ -2,11 +2,11 @@ html, body {margin: 0; height: 100%; overflow: hidden}
 
 body {
     background:grey;
+    font-family: Tahoma, sans-serif;
 }
 
 .page-wrap {
     width: 1024px;
-
     height: 100%;
     margin: 0 auto 0 auto;
     border-left: solid;
