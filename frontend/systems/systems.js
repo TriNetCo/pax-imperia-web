@@ -13,42 +13,40 @@ var system = {
     "id": "1",
     "name": "Rigel",
     "g_position": { "x": 1, "y": 1 },
-    "planets": [
+    "stars": [
         {
             "index": 0,
             "atmosphere": "sun",
-            "size": 5,
+            "size": 2,
             "distance_from_star": 0,
             "spin_speed": 1,
             "starting_position": 5,  /* This is a random number where the planet's orbit begins so they aren't all rotating in sync with each other. */
-            "scale": 2
-        },
+        }
+    ],
+    "planets": [
         {
             "index": 1,
             "atmosphere": "oxygen",
-            "size": 5,
+            "size": 0.4,
             "distance_from_star": 2,
             "spin_speed": 2,
             "starting_position": 10,
-            "scale": 0.4
         },
         {
             "index": 2,
             "atmosphere": "oxygen",
-            "size": 5,
+            "size": 0.8,
             "distance_from_star": 3,
             "spin_speed": 3,
             "starting_position": 40,
-            "scale": .8
         },
         {
             "index": 3,
             "atmosphere": "oxygen",
-            "size": 4,
+            "size": 1.25,
             "distance_from_star": 4,
             "spin_speed": 4,
             "starting_position": 180,
-            "scale": 1.25
         }
     ],
     "connected_systems": [
@@ -132,12 +130,30 @@ const zSlider = document.getElementById("z-slider");
 /*
  * Load Planet
  */
-function loadPlanet(name, atmosphere, x, y, z, scale) {
-    return new Promise(function(resolve, reject) {
-        loader.load("/assets/" + atmosphere + ".gltf", function ( gltf ) {
-            let obj = gltf.scene;
-            obj.position.set(x,y,z);
-            obj.scale.set(scale, scale, scale);
+
+function loadObject3d(name,
+                      assetPath,
+                      scale = {x: 1, y: 1, z: 1},
+                      position = {x: 0, y: 0, z: 0},
+                      rotation = {x: 0, y: 0, z: 0},
+                      loaderType = 'gltf') {
+    let loader;
+    if (loaderType == 'gltf') {
+        loader = new GLTFLoader();
+    } else {
+        loader = new FBXLoader();
+    }
+    let object3d = new Promise(function(resolve, reject) {
+        loader.load(assetPath, function ( input ) {
+            let obj;
+            if (loaderType == 'gltf') {
+                obj = input.scene;
+            } else {
+                obj = input;
+            }
+            obj.position.set(position.x, position.y, position.z);
+            obj.rotation.set(rotation.x, rotation.y, rotation.z); // x, y, z radians
+            obj.scale.set(scale.x, scale.y, scale.z);
             obj.name = name;
             obj.children[0].name = name;
             scene.add( obj );
@@ -150,35 +166,37 @@ function loadPlanet(name, atmosphere, x, y, z, scale) {
         } );
 
     });
+    return object3d;
 }
 
-/*
- * Load Ship
- */
-function loadShip(name, modelPath, x, y, z) {
-    return new Promise(function(resolve, reject) {
-        fbxLoader.load(
-            modelPath,
-            (object) => {
-                let scale = 0.0002;
-                object.name = name;
-                object.scale.set(scale, scale, scale);
-                object.rotation.set(2* Math.PI, 1.5708 ,2*Math.PI/4); // x, y, z radians
-                object.position.set(x,y,z);
-                scene.add(object);
-                console.log("finished loading!");
-                resolve(object)
-            },
-            (xhr) => {
-                console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
-            },
-            (error) => {
-                console.log(error);
-            }
-        )
-    });
+function loadStar(name, size) {
+    console.log("loading star")
+    let assetPath = "/assets/sun.gltf";
+    let position = {x: 0, y: 0, z: 0};
+    let scale = {x: size, y: size, z: size};
+    let object3d = loadObject3d(name, assetPath, scale, position);
+    return object3d;
 }
 
+function loadPlanet(name, atmosphere, size, z) {
+    console.log("loading planet " + name + " with atmosphere " + atmosphere)
+    let assetPath = "/assets/" + atmosphere + ".gltf";
+    let position = {x: 0, y: 0, z: z};
+    let scale = {x: size, y: size, z: size};
+    return loadObject3d(name, assetPath, scale, position)
+}
+
+function loadShip() {
+    console.log("loading ship")
+    let name = "ship"
+    let assetPath = '/script/assets/GalacticLeopard6.fbx';
+    let size = 0.0002;
+    let scale = {x: size, y: size, z: size}
+    let position = {x: 0, y: 4, z: 4}
+    let rotation = {x: 2* Math.PI, y: 1.5708, z: 2*Math.PI/4};
+    let loader = new FBXLoader()
+    return loadObject3d(name, assetPath, scale, position, rotation, 'fbx')
+}
 
 ////////////////////////////////////////
 // Setup the Scene with Basic Objects //
@@ -234,35 +252,30 @@ camera.lookAt( scene.position );
 // Load Models //
 /////////////////
 
-const loader = new GLTFLoader();
-const fbxLoader = new FBXLoader()
+for (const star of system['stars']) {
+    let name = star['name'];
+    let object3d = await loadStar(name, star['size']);
+    star['object3d'] = object3d;
+    object3d.gameObject = star;
 
+    let texture = object3d.children[0].material.map;
+    object3d.children[0].material = new THREE.MeshBasicMaterial();
+    object3d.children[0].material.map = texture;
 
-///////////////////
-// loadPlanets() //
-///////////////////
-
-for (const planet of system['planets']) {
-    const z = 2 * planet['distance_from_star'];
-
-    console.log("loading planet with atmosphere: " + planet['atmosphere']);
-    let planetObject = await loadPlanet("" + planet["index"], planet['atmosphere'], 0,0,z, planet['scale']);
-    planet['planet_object'] = planetObject;
-    planetObject.gameObject = planet;
-
-    let material = planetObject.children[0].material;
-    //material.emissive = new THREE.Color(0.05, 0.1, 0.15);
-
-
-    if (planet["atmosphere"] == "sun") {
-        let texture = planetObject.children[0].material.map;
-        planetObject.children[0].material = new THREE.MeshBasicMaterial();
-        planetObject.children[0].material.map = texture;
-    }
 }
 
-var ship = await loadShip('ship', '/script/assets/GalacticLeopard6.fbx', 0, 4, 4)
-ship.planetObject = {};
+for (const planet of system['planets']) {
+    let name = "" + planet["index"]
+    let size = planet['size'];
+    let atmosphere = planet['atmosphere']
+    let z = 2 * planet['distance_from_star'];
+    let object3d = await loadPlanet(name, atmosphere, size, z);
+    planet['object3d'] = object3d;
+    object3d.gameObject = planet;
+}
+
+var ship = await loadShip();
+ship.object3d = {};
 ship.gameObject = {}; // workaround for selectionBox
 
 
@@ -270,23 +283,23 @@ function doRotationsAndOrbits(deltaTime) {
     let speedMultiplier = 1; //1/9 to slow down the whole system
     spinTime += deltaTime * speedMultiplier;
 
-    for (const planet of system.planets) {
-        let planetObject = planet.planet_object;
+    for (const starOrPlanet of system['stars'].concat(system['planets'])) {
+        let object3d = starOrPlanet.object3d;
 
-        planetObject.rotation.y += 0.005;
+        object3d.rotation.y += 0.005;
 
-        let d = planet["distance_from_star"];
+        let d = starOrPlanet["distance_from_star"];
         if (d == 0) { // if the planet is the sun
-            planetObject.rotation.x += 0.005;
+            object3d.rotation.x += 0.005;
             continue;
         }
         let r = d*3;
-        let startingPosition = planet["starting_position"];
+        let startingPosition = starOrPlanet["starting_position"];
 
         // square of the planet's orbital period is proportional to the cube of its semimajor axis
         // pow(d, 3) = pow(period, 2), velocity = pow(1/d, 0.5), Math.pow(1/d, 0.5)
-        planetObject.position.x = r*Math.cos(spinTime * Math.pow(d, -2) + startingPosition) + 0;
-        planetObject.position.z = r*Math.sin(spinTime * Math.pow(d, -2) + startingPosition) + 0;
+        object3d.position.x = r*Math.cos(spinTime * Math.pow(d, -2) + startingPosition) + 0;
+        object3d.position.z = r*Math.sin(spinTime * Math.pow(d, -2) + startingPosition) + 0;
 
     }
 
@@ -455,5 +468,3 @@ function putCursorOverContainer(container) {
         putCursorOverContainer(parent)
     }
 }
-
-

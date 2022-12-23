@@ -19,41 +19,44 @@ export class Galaxy {
         let systems = [];
         let starName = new StarName();
 
+        // Clear lower console text
         let lowerConsoleDiv = document.getElementById("lower-console");
         if (lowerConsoleDiv) lowerConsoleDiv.innerHTML = "";
 
-
         // Define systems with coordinates
-        for (let i = 0; i < c.systemCount; i++){
+        for (let i_system = 0; i_system < c.systemCount; i_system++){
             let point = this.generateSystemXY(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
-            let iter = 0
-            // Try n times to find a system far enough away from existing systems
+            let i_attempt = 0
+            // Try maxPlacementAttempts times to find a system far enough away
+            // from existing systems
             while (!this.isValidDistance(systems, point, c.systemBuffer)) {
                 console.log("retrying placement");
                 point = this.generateSystemXY(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
-                iter = iter + 1;
-                if (iter == c.maxPlacementAttempts){
+                i_attempt = i_attempt + 1;
+                if (i_attempt == c.maxPlacementAttempts){
                     let errorMsg = 'Generating stars without buffer';
                     console.log(errorMsg);
                     if (lowerConsoleDiv) lowerConsoleDiv.innerHTML = errorMsg;
                     break;
                 }
             }
-            let system = new System(i, point, starName.pick(), c.systemRadius, c);
+            let system = new System(i_system, point, starName.pick(), c.systemRadius, c);
             systems.push(system);
         }
         return systems;
     }
 
     generateSystemXY(canvasWidth, canvasHeight, canvasBuffer) {
-        // Make sure that no systems are too close to the edge of the canvas
+        // Generates system coordinates that aren't within canvasBuffer of the
+        // edge of the canvas
         let x = Math.round(Math.random() * (canvasWidth - canvasBuffer * 2) + canvasBuffer);
         let y = Math.round(Math.random() * (canvasHeight - canvasBuffer * 2) + canvasBuffer);
         return {x: x, y: y};
     }
 
     isValidDistance(systems, point, systemBuffer) {
-        // Check the distance from the point to every system
+        // Checks the distance from the point to every existing system and
+        // returns true if the point is far enough away
         let isValid = systems.every( system => {
             let dist = Math.pow(Math.pow(system.x - point.x, 2) + Math.pow(system.y - point.y, 2), 0.5)
             if (dist < systemBuffer) {
