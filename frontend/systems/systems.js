@@ -77,13 +77,16 @@ let system = {
 let settings = {};
 
 settings.system = system;
-
-
 settings.consoleDiv = document.getElementById("console-message");
 settings.lowerConsoleDiv = document.getElementById("lower-console");
 
 let spaceViewWidget = new SpaceViewWidget(settings);
 
-spaceViewWidget.beginGame();
+await spaceViewWidget.beginGame();
 
-spaceViewWidget.oneHugeFunction();
+function draw() {
+    spaceViewWidget.draw();
+    window.requestAnimationFrame(draw);
+}
+
+draw();
