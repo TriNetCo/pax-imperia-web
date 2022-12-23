@@ -70,6 +70,24 @@ export class SpaceViewDomManager {
     // Drawing Commands //
     //////////////////////
 
+    populatePlanetList(system) {
+        let planetListUl = document.getElementById("planet-list");
+        let html = "<h3>Planets:</h3>";
+        html += "<ul>";
+        let name = system["name"];
+
+        system["planets"].forEach( planet => {
+            let index = planet["index"];
+            let planetFullName = name + " " + index;
+
+            html += "<li onclick='alert(\"hi\")''>" + planetFullName + "</li>";
+
+        });
+
+        html += "</ul>";
+        planetListUl.innerHTML = html;
+    }
+
     putCursorOverContainer(container) {
         if (container.name == "selectionSprite") return; // Never put a cursor over the cursor itself
         let parent = container.parent;
@@ -80,6 +98,22 @@ export class SpaceViewDomManager {
             // lowerConsole.print("Selected: " + container.name);
         } else {
             this.putCursorOverContainer(parent)
+        }
+    }
+
+    /* This function recursively walks up the tree of parents until it finds the root scene
+        * and removes the highest order group from that scene.
+        */
+    removeContainerFromScene(container) {
+        let parent = container.parent;
+
+        if (parent.type == "Scene") {
+            console.log("Deleting object at (" + container.position.x
+            + ", " + container.position.y
+            + ", " + container.position.z + ")");
+            parent.remove(container);
+        } else {
+            this.removeContainerFromScene(container.parent);
         }
     }
 

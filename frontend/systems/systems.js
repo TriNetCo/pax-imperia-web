@@ -79,6 +79,8 @@ let settings = {};
 settings.system = system;
 
 
+settings.consoleDiv = document.getElementById("console-message");
+settings.lowerConsoleDiv = document.getElementById("lower-console");
 
 let spaceViewWidget = new SpaceViewWidget(settings);
 
