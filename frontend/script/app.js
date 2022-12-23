@@ -22,6 +22,9 @@ let galaxyWidget;
 function generateGalaxy() {
     galaxyWidgetSettings.systemCount = systemCountSlider.value;
     galaxyWidgetSettings.systemBuffer = systemBufferSlider.value;
+    // Clear lower console text
+    let lowerConsoleDiv = document.getElementById("lower-console");
+    lowerConsoleDiv.innerHTML = "";
     galaxyWidget = new GalaxyWidget(galaxyWidgetSettings);
     galaxyWidget.beginGame(canvas, systemClickHandler);
 }
