@@ -20,8 +20,8 @@ export class Galaxy {
         let starName = new StarName();
 
         // Clear lower console text
-        let lowerConsoleDiv = document.getElementById("lower-console");
-        if (lowerConsoleDiv) lowerConsoleDiv.innerHTML = "";
+        // let lowerConsoleDiv = document.getElementById("lower-console");
+        // if (lowerConsoleDiv) lowerConsoleDiv.innerHTML = "";
 
         // Define systems with coordinates
         for (let i_system = 0; i_system < c.systemCount; i_system++){

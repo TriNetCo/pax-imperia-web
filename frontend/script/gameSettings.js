@@ -8,11 +8,11 @@ export const GameSettings = {
         canvasBuffer: 15,
         maxPlacementAttempts: 30,
 
-        minStarSize: 1,
-        maxStarSize: 3,
+        minStarSize: 1.6,
+        maxStarSize: 3.5,
         minPlanetCount: 1,
         maxPlanetCount: 5,
         minPlanetSize: 0.4,
-        maxPlanetSize: 2,
+        maxPlanetSize: 1.2,
     }
 }

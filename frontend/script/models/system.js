@@ -1,4 +1,4 @@
-import {getRandomNum} from '/script/models/helpers.js'
+import { getRandomNum, roundToDecimal } from '/script/models/helpers.js'
 
 export class System {
     constructor(id, point, name, radius, c) {
@@ -26,18 +26,27 @@ export class System {
     }
 
     generatePlanets(c){
-        let planets = []
-        let planetCount = getRandomNum(c.minPlanetCount, c.maxPlanetCount, 0)
+        let sizeToDistanceMultipler = 1/3
+        let planets = [];
+        let planetCount = getRandomNum(c.minPlanetCount, c.maxPlanetCount, 0);
+        let minDistance = this.stars[0].size * sizeToDistanceMultipler;
 
         for (let i = 0; i < planetCount; i++) {
+            let planetSize = getRandomNum(c.minPlanetSize, c.maxPlanetSize, 2);
+            let additionalDistance = getRandomNum(0.2, 0.5, 2)
+            let planetDistance = roundToDecimal(minDistance + planetSize * sizeToDistanceMultipler + additionalDistance, 2);
+            let startingPosition = getRandomNum(0, Math.PI, 2);
+            startingPosition = 0;
+
             let planet = {
                 "index": i,
                 "atmosphere": "oxygen",
-                "size": getRandomNum(c.minPlanetSize, c.maxPlanetSize, 2),
-                "distance_from_star": i,
+                "size": planetSize,
+                "distance_from_star": planetDistance,
                 "spin_speed": 1,
-                "starting_position": getRandomNum(0, Math.PI, 2),
+                "starting_position": startingPosition,
             };
+            minDistance = planetDistance + planetSize * sizeToDistanceMultipler
             planets.push(planet);
         };
         return planets

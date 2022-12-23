@@ -5,6 +5,8 @@ import { FBXLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/j
 import { SpriteFlipbook } from '/script/models/spriteFlipbook.js'
 import { SystemLoader } from '/systems/systemLoader.js'
 
+import { GameSettings } from '/script/gameSettings.js';
+import { Galaxy } from '/script/models/galaxy.js';
 
 ///////////////////////
 // Input System Data //
@@ -80,6 +82,9 @@ var system = {
     ]
 }
 
+let c = GameSettings.galaxyWidget;
+let galaxy = new Galaxy(c);
+system = galaxy.systems[0];
 
 ////////////////////
 // Setup Renderer //

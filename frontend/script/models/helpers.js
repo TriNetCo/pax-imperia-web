@@ -3,8 +3,6 @@
 export const getRandomNum = (min, max, decimals = null) => {
     // Returns a random number between min and max, rounded to the specified
     // decimal place. If decimals is left null, does not round.
-    min = Math.ceil(min);
-    max = Math.floor(max);
     let randNum = Math.random() * (max - min) + min;
     let roundNum = roundToDecimal(randNum, decimals)
     return roundNum
