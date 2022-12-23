@@ -19,6 +19,7 @@ export class Galaxy {
         let systems = [];
         let starName = new StarName();
 
+        // TO DO: Move this outside of galaxy class
         // Clear lower console text
         // let lowerConsoleDiv = document.getElementById("lower-console");
         // if (lowerConsoleDiv) lowerConsoleDiv.innerHTML = "";
