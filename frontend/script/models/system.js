@@ -15,7 +15,11 @@ export class System {
             this.planets = this.manualPlanets
         }
         this.ships = [];
-        this.entities = this.stars.concat(this.planets).concat(this.ships);
+        //this.entities = this.stars.concat(this.planets).concat(this.ships);
+    }
+
+    toJson(){
+        return JSON.stringify(this)
     }
 
     generateStar(c){
@@ -58,6 +62,9 @@ export class System {
         };
         return planets;
     }
+}
+
+export class manualSystem {
 
     manualStars = [
         {
