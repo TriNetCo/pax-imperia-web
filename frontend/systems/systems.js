@@ -130,12 +130,20 @@ const zSlider = document.getElementById("z-slider");
 /*
  * Load Planet
  */
-function loadStarOrPlanet(name, atmosphere, x, y, z, size) {
+
+
+function loadObject3d(name,
+                      assetPath,
+                      scale = {x: 1, y: 1, z: 1},
+                      position = {x: 0, y: 0, z: 0},
+                      rotation = {x: 0, y: 0, z: 0}
+                      ) {
     return new Promise(function(resolve, reject) {
-        loader.load("/assets/" + atmosphere + ".gltf", function ( gltf ) {
+        loader.load(assetPath, function ( gltf ) {
             let obj = gltf.scene;
-            obj.position.set(x,y,z);
-            obj.scale.set(size, size, size);
+            obj.position.set(position.x, position.y, position.z);
+            obj.rotation.set(rotation.x, rotation.y, rotation.z); // x, y, z radians
+            obj.scale.set(scale.x, scale.y, scale.z);
             obj.name = name;
             obj.children[0].name = name;
             scene.add( obj );
@@ -150,17 +158,42 @@ function loadStarOrPlanet(name, atmosphere, x, y, z, size) {
     });
 }
 
-/*
- * Load Ship
- */
+function loadStar(name, size) {
+    console.log("loading star")
+    let assetPath = "/assets/sun.gltf";
+    let position = {x: 0, y: 0, z: 0};
+    let scale = {x: size, y: size, z: size};
+    return loadObject3d(name, assetPath, scale, position)
+}
+
+function loadPlanet(name, atmosphere, size, z) {
+    console.log("loading planet " + name + " with atmosphere " + atmosphere)
+    let assetPath = "/assets/" + atmosphere + ".gltf";
+    let position = {x: 0, y: 0, z: z};
+    let scale = {x: size, y: size, z: size};
+    return loadObject3d(name, assetPath, scale, position)
+}
+
+// function loadShip() {
+//    console.log("loading ship")
+//    let name = "ship"
+//    let assetPath = '/script/assets/GalacticLeopard6.fbx';
+//    let size = 0.0002;
+//    let scale = {x: size, y: size, z: size}
+//    let position = {x: 0, y: 4, z: 4}
+//    let rotation = {x: 2* Math.PI, y: 1.5708, z: 2*Math.PI/4};
+//    let loader = new FBXLoader()
+//    return loadObject3d(name, assetPath, scale, position, rotation, loader)
+// }
+
 function loadShip(name, modelPath, x, y, z) {
     return new Promise(function(resolve, reject) {
         fbxLoader.load(
             modelPath,
             (object) => {
-                let size = 0.0002;
+                let scale = 0.0002;
                 object.name = name;
-                object.scale.set(size, size, size);
+                object.scale.set(scale, scale, scale);
                 object.rotation.set(2* Math.PI, 1.5708 ,2*Math.PI/4); // x, y, z radians
                 object.position.set(x,y,z);
                 scene.add(object);
@@ -176,7 +209,6 @@ function loadShip(name, modelPath, x, y, z) {
         )
     });
 }
-
 
 ////////////////////////////////////////
 // Setup the Scene with Basic Objects //
@@ -240,25 +272,29 @@ const fbxLoader = new FBXLoader()
 // loadStarsAndPlanets() //
 ///////////////////
 
-for (const starOrPlanet of system['stars'].concat(system['planets'])) {
-    const z = 2 * starOrPlanet['distance_from_star'];
+for (const star of system['stars']) {
+    let name = star['name'];
+    let object3d = await loadStar(name, star['size']);
+    star['object3d'] = object3d;
+    object3d.gameObject = star;
 
-    console.log("loading star or planet with atmosphere: " + starOrPlanet['atmosphere']);
-    let object3d = await loadStarOrPlanet("" + starOrPlanet["index"], starOrPlanet['atmosphere'], 0,0,z, starOrPlanet['size']);
-    starOrPlanet['object3d'] = object3d;
-    object3d.gameObject = starOrPlanet;
+    let texture = object3d.children[0].material.map;
+    object3d.children[0].material = new THREE.MeshBasicMaterial();
+    object3d.children[0].material.map = texture;
 
-    let material = object3d.children[0].material;
-    //material.emissive = new THREE.Color(0.05, 0.1, 0.15);
-
-
-    if (starOrPlanet["atmosphere"] == "sun") {
-        let texture = object3d.children[0].material.map;
-        object3d.children[0].material = new THREE.MeshBasicMaterial();
-        object3d.children[0].material.map = texture;
-    }
 }
 
+for (const planet of system['planets']) {
+    let name = "" + planet["index"]
+    let size = planet['size'];
+    let atmosphere = planet['atmosphere']
+    let z = 2 * planet['distance_from_star'];
+    let object3d = await loadPlanet(name, atmosphere, size, z);
+    planet['object3d'] = object3d;
+    object3d.gameObject = planet;
+}
+
+// var ship = await loadShip();
 var ship = await loadShip('ship', '/script/assets/GalacticLeopard6.fbx', 0, 4, 4)
 ship.object3d = {};
 ship.gameObject = {}; // workaround for selectionBox
