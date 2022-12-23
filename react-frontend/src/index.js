@@ -6,7 +6,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from "react-router-dom";
 
-import { GalaxyWidget } from 'pax-imperia-js/script/models/galaxyWidget';
+import { GalaxyWidget } from 'pax-imperia-js/script/widgets/galaxy/galaxyWidget';
 import { GameSettings } from 'pax-imperia-js/script/gameSettings';
 
 import './index.css';

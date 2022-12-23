@@ -13,8 +13,7 @@ const Galaxy = () => {
         let canvas = ref.current;
 
         const systemClickHandler = (path) => {
-            if (history.location.pathname != path)
-                history.push(path);
+            history.push(path);
         }
 
         galaxyWidget.beginGame(canvas, systemClickHandler);
@@ -28,6 +27,7 @@ const Galaxy = () => {
 
         return () => {
             cancelAnimationFrame(requestId);
+            galaxyWidget.detachFromDom();
         }
     });
 
