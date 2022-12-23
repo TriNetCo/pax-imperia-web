@@ -55,7 +55,7 @@ go install github.com/go-jet/jet/v2/cmd/jet@latest
 jet -source=postgres -host=localhost -port=5432 -user="${GO_DB_USER}" -password=ez -dbname=dbmodels -schema=pax -sslmode=disable
 ```
 
-### Boot the App
+### Boot the GO App
 
 Run these commands to start the server
 ```
@@ -66,6 +66,31 @@ Run these commands to start the server
 Now navigate to [http://localhost:3000](http://localhost:3000) to play the game!
 
 The main file to edit is of course `./public/index.html` for getting at the front end at the moment.
+
+### Setup the react app
+
+###### For Windows
+```
+cd frontend
+npm link
+cd ../react-frontend
+npm link pax-imperia-js
+npm install
+```
+
+###### For Mac
+```
+cd react-frontend
+npm install
+```
+
+### Run the react server
+
+```
+cd react-frontend
+npm start
+```
+
 
 ## References
 

@@ -1,4 +1,4 @@
-import {getRandomNum} from '/script/models/helpers.js'
+import {getRandomNum} from './helpers.js'
 
 export class System {
     constructor(id, point, name, radius, c) {
