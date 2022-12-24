@@ -2,15 +2,14 @@ import * as THREE from 'three';
 
 export class SpaceViewDomManager {
 
-    constructor(cx, systems, spaceViewDrawer, systemClickHandler, mouse, camera, scene, selectionSprite) {
-        this.canvas = cx.canvas;
-        this.systems = systems;
-        this.spaceViewDrawer = spaceViewDrawer;
-        this.systemClickHandler = systemClickHandler;
-        this.mouse = mouse;
-        this.camera = camera;
-        this.scene = scene;
-        this.selectionSprite = selectionSprite;
+    constructor(config, clientObjects, systemData) {
+        this.c = config;
+        this.systems = systemData;
+        this.canvas = clientObjects.cx.canvas;
+        this.mouse = clientObjects.mouse;
+        this.camera = clientObjects.camera;
+        this.scene = clientObjects.scene;
+        this.selectionSprite = clientObjects.selectionSprite;
         this.raycaster = new THREE.Raycaster();
     }
 

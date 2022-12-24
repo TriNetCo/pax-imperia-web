@@ -4,17 +4,19 @@ import { SystemLoader } from './systemLoader.js'
 
 export class SpaceViewAnimator {
 
-    constructor(config) {
-        this.c = config.c;
-        this.scene = config.scene;
-        this.selectionSprite = config.selectionSprite;
-        this.renderer = config.renderer;
-        this.camera = config.camera;
-        this.system = config.system;
-        this.cx = config.cx;
-        this.galaxy = config.galaxy;
-        this.systemNameLabel = config.systemNameLabel;
-        this.mouse = config.mouse;
+    constructor(config, clientObjects, systemData) {
+        this.c = config;
+        this.clientObjects = clientObjects;
+        this.systemData = systemData;
+
+        this.scene = clientObjects.scene;
+        this.selectionSprite = clientObjects.selectionSprite;
+        this.renderer = clientObjects.renderer;
+        this.camera = clientObjects.camera;
+        this.system = systemData;
+        this.cx = clientObjects.cx;
+        this.mouse = clientObjects.mouse;
+
         this.clock = new THREE.Clock();
         this.spinTime = 0;
     }
@@ -37,10 +39,10 @@ export class SpaceViewAnimator {
         // Reset camera in real time
         //////////////////////////////
 
-        let distance =  parseFloat( this.c.dom.distanceSlider.value );
-        let xRotation = this.c.dom.xSlider.value;
-        let yRotation = this.c.dom.ySlider.value;
-        let zRotation = this.c.dom.zSlider.value;
+        let distance =  parseFloat( this.clientObjects.distanceSlider.value );
+        let xRotation = this.clientObjects.xSlider.value;
+        let yRotation = this.clientObjects.ySlider.value;
+        let zRotation = this.clientObjects.zSlider.value;
 
         // cameraPivot.rotation.set(xRotation, yRotation, 0.0);
         this.cameraPivot.rotation.set(-0.6, 0.05, -3);
@@ -71,7 +73,7 @@ export class SpaceViewAnimator {
 
     async populateScene() {
         const scene = this.scene;
-        const system = this.system;
+        const system = await this.system;
 
         // Add Lights
 
@@ -119,7 +121,7 @@ export class SpaceViewAnimator {
         // Load Models //
         /////////////////
 
-        let systemLoader = new SystemLoader(system, this.scene);
+        let systemLoader = new SystemLoader(system, scene);
         await systemLoader.loadStars()
         await systemLoader.loadPlanets()
         this.ships = await systemLoader.loadShips()

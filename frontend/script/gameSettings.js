@@ -14,5 +14,10 @@ export const GameSettings = {
         maxPlanetCount: 5,
         minPlanetSize: 0.4,
         maxPlanetSize: 1.2
+    },
+
+    spaceViewWidget: {
+        canvasWidth: 800,
+        canvasHeight: 500,
     }
 }

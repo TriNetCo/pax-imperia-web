@@ -6,7 +6,7 @@ import { Galaxy } from '/script/models/galaxy.js';
 // Input System Data //
 ///////////////////////
 
-let system = {
+let systemData = {
     "id": "1",
     "name": "Rigel",
     "g_position": { "x": 1, "y": 1 },
@@ -76,9 +76,9 @@ let system = {
     ]
 }
 
-let c = GameSettings.galaxyWidget;
-let galaxy = new Galaxy(c);
-system = galaxy.systems[0];
+let gameSettings = GameSettings;
+let galaxy = new Galaxy(gameSettings.galaxyWidget);
+systemData = galaxy.systems[0];
 
 // types of state
 //   config settings (game settings, widget settings)
@@ -90,13 +90,13 @@ system = galaxy.systems[0];
 //     - new state: galaxy data JSON
 //
 
-let settings = {};
+let config = gameSettings.spaceViewWidget;
+let clientObjects = {};
 
-settings.system = system;
-settings.consoleDiv = document.getElementById("console-message");
-settings.lowerConsoleDiv = document.getElementById("lower-console");
+clientObjects.consoleDiv = document.getElementById("console-message");
+clientObjects.lowerConsoleDiv = document.getElementById("lower-console");
 
-let spaceViewWidget = new SpaceViewWidget(settings);
+let spaceViewWidget = new SpaceViewWidget(config, clientObjects, systemData);
 window.spaceViewWidget = spaceViewWidget; // debugging
 
 await spaceViewWidget.beginGame();
