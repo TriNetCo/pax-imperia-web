@@ -20,23 +20,23 @@ export class Galaxy {
         let starName = new StarName();
 
         // Define systems with coordinates
-        for (let i_system = 0; i_system < c.systemCount; i_system++){
+        for (let systemIndex = 0; systemIndex < c.systemCount; systemIndex++){
             let point = this.generateSystemXY(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
-            let i_attempt = 0
+            let i = 0
             // Try maxPlacementAttempts times to find a system far enough away
             // from existing systems
             while (!this.isValidDistance(systems, point, c.systemBuffer)) {
                 console.log("retrying placement");
                 point = this.generateSystemXY(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
-                i_attempt = i_attempt + 1;
-                if (i_attempt == c.maxPlacementAttempts){
+                i = i + 1;
+                if (i == c.maxPlacementAttempts){
                     let errorMsg = 'Generating stars without buffer';
                     console.log(errorMsg);
                     if (lowerConsoleDiv) lowerConsoleDiv.innerHTML = errorMsg;
                     break;
                 }
             }
-            let system = new System(i_system, point, starName.pick(), c.systemRadius, c);
+            let system = new System(systemIndex, point, starName.pick(), c.systemRadius, c);
             systems.push(system);
         }
         return systems;
