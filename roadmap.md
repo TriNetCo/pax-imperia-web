@@ -1,32 +1,55 @@
-# Road Map
+# Roadmap
 
 Here's where we describe what our vision, ambitions and next steps are for the project.
 
 ## Network/ Data Engineering Roadmap
+- Make it so Galaxy is generated outside of the widget and passed in as a parameter for GalaxyWidget
+- Make it so Galaxy is generated outside of the widget and passed in as a parameter for SpaceViewWidget
+- Improve code quality of PlanetView stuff
+- (ROB) Get System Detail view to work in React
 - Add testing to the frontend
-- Drive solar system contents off of JS data
+x Drive Space View contents off of JSON sample data
+- (LAUREN) Define game data classes used in the space view
+- (LAUREN) Generate System data in javascript instead of using sample data
 - Define golang struct for solar system data
 - Combine galactic view into system view
-- Websockets
+- (ROB) Websockets
     - Listen for websocket connections from the frontend
     - Get two clients "chatting"
-    - Communicate commands from frontend to backend
-    - Transmit gametime to subscribed clients
-    - Communicate positions with multiple clients
+    - Communicate commands from frontend to backend (start new game command?)
     - pump out solar system data to the backend over websocket
+    - Transmit gametime to multiple subscribed clients
+    - Communicate positions of ships with multiple clients
 
-## Game Logic
-- Figure out how gametime synchronization impacts the game?
+
+## Gameplay Logic and Design
+- (PAT) Create a ship you can control and move to planets
+- Figure out how gametime updates from the backend impact the game?
+
+
+## Design
+- Colonizing planets
+- Themes
+    - Expansion
+    - Exploration
+    - Industry
+    - Combat
+    - Research
+- Spaceships
+- Different species with different histories
 
 
 ## WebGL/ Canvas Graphics Roadmap
 - Draw a pretty star instead of squares
-- Create a ship you can control and move to planets
+- Draw orbits
+- (QUINN) Use blender to create something used in the game
 
 
 ## HTML/ CSS UI Roadmap
-- (CSS) Flesh out Main Menu links
-- Flesh out HUD buttons
+- Add Login view
+- Add NewGame view
+- Flesh out Main Menu CSS
+- Flesh out HUD buttons in System detail view
 
 
 ## Finished Stuff!
