@@ -17,6 +17,10 @@ import 'pax-imperia-js/css/systems.css';
 const container = document.getElementById('root');
 const root = createRoot(container);
 
+//////////
+// Main //
+//////////
+
 let gameData = {
     galaxy: new Galaxy(GameSettings.galaxyWidget)
 };
