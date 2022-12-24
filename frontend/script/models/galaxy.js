@@ -22,7 +22,7 @@ export class Galaxy {
         // Define systems with coordinates
         for (let systemIndex = 0; systemIndex < c.systemCount; systemIndex++){
             let point = this.generateSystemXY(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
-            let i = 0
+            let i = 0;
             // Try maxPlacementAttempts times to find a system far enough away
             // from existing systems
             while (!this.isValidDistance(systems, point, c.systemBuffer)) {

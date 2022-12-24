@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { SystemLoader } from '/systems/systemLoader.js'
+import { SystemLoader } from './systemLoader.js'
 
 
 export class SpaceViewAnimator {

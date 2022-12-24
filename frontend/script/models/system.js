@@ -18,11 +18,11 @@ export class System {
         //this.entities = this.stars.concat(this.planets).concat(this.ships);
     }
 
-    toJson(){
+    toJson() {
         return JSON.stringify(this)
     }
 
-    generateStar(c){
+    generateStar(c) {
         // Currently generates a single star
         let star = {
             "index": 0,
@@ -35,7 +35,7 @@ export class System {
         return star;
     }
 
-    generatePlanets(c){
+    generatePlanets(c) {
         let sizeToDistanceMultipler = 1/3;
         let planets = [];
         let planetCount = getRandomNum(c.minPlanetCount, c.maxPlanetCount, 0);

@@ -83,9 +83,11 @@ system = galaxy.systems[0];
 // types of state
 //   config settings (game settings, widget settings)
 //   widget pointers
-//     - DOM References
-//     - scene objects
-//   game data (current state: galaxy class > systems list > system class > system data)
+//     - DOM References (dom)
+//     - scene objects (sceneObjects)
+//   game data
+//     - current state: galaxy class > systems list > system class > system data
+//     - new state: galaxy data JSON
 //
 
 let settings = {};
