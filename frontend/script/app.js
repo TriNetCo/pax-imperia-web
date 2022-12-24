@@ -1,31 +1,37 @@
 import { GalaxyWidget } from './widgets/galaxy/galaxyWidget.js';
 import { GameSettings } from './gameSettings.js';
+import { Galaxy } from './models/galaxy.js';
 
 const canvas = document.getElementById("galaxy-canvas-large");
 const regenButton = document.getElementById("galaxy-regenerate-button");
 const systemCountSlider = document.getElementById("system-count-slider");
 const systemBufferSlider = document.getElementById("system-buffer-slider");
 
-let galaxyWidgetSettings = GameSettings.galaxyWidget;
+let config = GameSettings.galaxyWidget;
 
 const systemClickHandler = (path) => {
     window.location.href = path + ".html";
 }
 
-systemCountSlider.value = galaxyWidgetSettings.systemCount;
-systemBufferSlider.value = galaxyWidgetSettings.systemBuffer;
+systemCountSlider.value = config.systemCount;
+systemBufferSlider.value = config.systemBuffer;
 
 systemCountSlider.onchange = generateGalaxy;
 systemBufferSlider.onchange = generateGalaxy;
 
 let galaxyWidget;
 function generateGalaxy() {
-    galaxyWidgetSettings.systemCount = systemCountSlider.value;
-    galaxyWidgetSettings.systemBuffer = systemBufferSlider.value;
+    config.systemCount = systemCountSlider.value;
+    config.systemBuffer = systemBufferSlider.value;
     // Clear lower console text
     let lowerConsoleDiv = document.getElementById("lower-console");
     lowerConsoleDiv.innerHTML = "";
-    galaxyWidget = new GalaxyWidget(galaxyWidgetSettings);
+
+    let gameData = {
+        galaxy: new Galaxy(config)
+    };
+
+    galaxyWidget = new GalaxyWidget(config, gameData);
     galaxyWidget.beginGame(canvas, systemClickHandler);
 }
 

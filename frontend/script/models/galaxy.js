@@ -29,10 +29,9 @@ export class Galaxy {
                 console.log("retrying placement");
                 point = this.generateSystemXY(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
                 i = i + 1;
-                if (i == c.maxPlacementAttempts){
+                if (i == c.maxPlacementAttempts) {
                     let errorMsg = 'Generating stars without buffer';
                     console.log(errorMsg);
-                    if (lowerConsoleDiv) lowerConsoleDiv.innerHTML = errorMsg;
                     break;
                 }
             }

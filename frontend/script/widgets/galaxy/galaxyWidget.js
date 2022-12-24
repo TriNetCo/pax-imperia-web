@@ -1,4 +1,3 @@
-import { Galaxy } from '../../models/galaxy.js';
 import { GalaxyDrawer } from './galaxyDrawer.js';
 import { GalaxyDomManager } from './galaxyDomManager.js';
 
@@ -8,11 +7,11 @@ export class GalaxyWidget {
     galaxyDomManager;
 
 
-    constructor(gameSettings) {
-        this.c = gameSettings;
-        console.log("count: " + gameSettings.systemCount);
+    constructor(config, gameData) {
+        this.c = config;
+        console.log("count: " + config.systemCount);
         this.mouse = { x: 0, y: 0 };
-        this.galaxy = new Galaxy(gameSettings);
+        this.galaxy = gameData.galaxy;
     }
 
     beginGame(canvas, systemClickHandler) {

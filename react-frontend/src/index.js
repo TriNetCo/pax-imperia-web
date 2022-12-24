@@ -8,6 +8,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 
 import { GalaxyWidget } from 'pax-imperia-js/script/widgets/galaxy/galaxyWidget';
 import { GameSettings } from 'pax-imperia-js/script/gameSettings';
+import { Galaxy } from 'pax-imperia-js/script/models/galaxy';
 
 import './index.css';
 import 'pax-imperia-js/css/style.css';
@@ -16,9 +17,13 @@ import 'pax-imperia-js/css/systems.css';
 const container = document.getElementById('root');
 const root = createRoot(container);
 
+let gameData = {
+    galaxy: new Galaxy(GameSettings.galaxyWidget)
+};
+
 const data = {
     galaxyWidget :
-        new GalaxyWidget(GameSettings.galaxyWidget)
+        new GalaxyWidget(GameSettings.galaxyWidget, gameData)
 };
 const DataContext = React.createContext(data);
 
