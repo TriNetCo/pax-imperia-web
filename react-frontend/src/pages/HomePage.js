@@ -1,9 +1,18 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { Link } from 'react-router-dom'
 
 import Galaxy from '../features/galaxy/Galaxy';
+import { newMessage } from "../modules/websocket";
 
 const HomePage = () => {
+    const dispatch = useDispatch();
+
+    const doSomething = () => {
+        const msg = "hihihi";
+        alert('Sending: ' + msg);
+        dispatch(newMessage(msg));
+    }
 
     return (
         <div className="App">
@@ -14,6 +23,7 @@ const HomePage = () => {
             <Galaxy/>
 
             <Link to="/systems/1"> System 1 </Link>
+            <button onClick={doSomething}>Do Something</button>
 
             <div className="links">
                 <h6>Management</h6>
