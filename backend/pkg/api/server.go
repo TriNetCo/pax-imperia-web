@@ -1,9 +1,11 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
 )
 
 type album struct {
@@ -24,6 +26,29 @@ func getAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, albums)
 }
 
+var wsupgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+func wshandler(w http.ResponseWriter, r *http.Request) {
+	wsupgrader.CheckOrigin = func(r *http.Request) bool { return true }
+	conn, err := wsupgrader.Upgrade(w, r, nil)
+	if err != nil {
+		fmt.Println("Failed to set websocket upgrade: %+v", err)
+		return
+	}
+
+	for {
+		t, msg, err := conn.ReadMessage()
+		if err != nil {
+			break
+		}
+		fmt.Println("Received Message:", string(msg))
+		conn.WriteMessage(t, msg)
+	}
+}
+
 func RunServer() {
 	// sc, err := subscription.GenerateSubscriptionController()
 
@@ -31,6 +56,9 @@ func RunServer() {
 
 	router.NoRoute(gin.WrapH(http.FileServer(http.Dir("../frontend"))))
 	router.GET("/albums", getAlbums)
+	router.GET("/websocket", func(c *gin.Context) {
+		wshandler(c.Writer, c.Request)
+	})
 
-	router.Run("localhost:3000")
+	router.Run("localhost:3001")
 }
