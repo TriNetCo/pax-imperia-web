@@ -1,6 +1,7 @@
 import { Galaxy } from '../../models/galaxy.js';
 import { SpaceViewAnimator } from './spaceViewAnimator.js';
 import { SpaceViewDomManager } from './spaceViewDomManager.js';
+import { SystemRepresentation } from './representations/systemRepresentation.js';
 
 import * as THREE from 'three';
 import { SpriteFlipbook } from '/script/models/spriteFlipbook.js'
@@ -13,7 +14,8 @@ export class SpaceViewWidget {
     constructor(config, clientObjects, systemData) {
         this.c = config;
         this.clientObjects = clientObjects;
-        this.systemData = systemData;
+        systemData.ships = [{"name": "ship", "index": 0}]
+        this.system = new SystemRepresentation(systemData);
 
         const mouse = new THREE.Vector2(0,0);
         this.clientObjects.mouse = mouse;
@@ -52,12 +54,12 @@ export class SpaceViewWidget {
             10, // nRows
             0.04); // loopFrameDuration
 
-        this.spaceViewAnimator = new SpaceViewAnimator(this.c, this.clientObjects, this.systemData);
+        this.spaceViewAnimator = new SpaceViewAnimator(this.c, this.clientObjects, this.system);
         await this.spaceViewAnimator.populateScene();
 
-        this.spaceViewDomManager = new SpaceViewDomManager(this.c, this.clientObjects, this.systemData)
+        this.spaceViewDomManager = new SpaceViewDomManager(this.c, this.clientObjects, this.system)
         this.spaceViewDomManager.attachDomEventsToCode();
-        this.spaceViewDomManager.populatePlanetList(this.systemData);
+        this.spaceViewDomManager.populatePlanetList();
     }
 
     draw() {
