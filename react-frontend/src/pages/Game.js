@@ -8,17 +8,18 @@ class Game extends React.Component {
   componentDidMount() {
     const { id } = this.props;
     if (id) {
-      this.connectAndJoin();
+    //   this.connectAndJoin();
     }
   }
 
   connectAndJoin = () => {
     const { id, dispatch } = this.props;
-    const host = `ws://127.0.0.1:8000/ws/game/${id}?token=${localStorage.getItem('token')}`;
+    const host = `ws://127.0.0.1:4000/websocket`;
+    // const host = `ws://127.0.0.1:8000/ws/game/${id}?token=${localStorage.getItem('token')}`;
     dispatch(wsConnect(host));
   };
 
-  
+
   render() {
     // abridged for brevity
     return `${<span> LOADING </span>}`;

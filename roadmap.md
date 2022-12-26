@@ -3,14 +3,14 @@
 Here's where we describe what our vision, ambitions and next steps are for the project.
 
 ## Network/ Data Engineering Roadmap
+- (LAUREN) Define game data classes used in the space view
+- (LAUREN) Generate System data in javascript instead of using sample data
+- (ROB) <BLOCKED: Need refactors to be pushed by Lauren> Get System Detail view to work in React
 - Make it so Galaxy is generated outside of the widget and passed in as a parameter for GalaxyWidget
 - Make it so Galaxy is generated outside of the widget and passed in as a parameter for SpaceViewWidget
 - Improve code quality of PlanetView stuff
-- (ROB) Get System Detail view to work in React
 - Add testing to the frontend
 x Drive Space View contents off of JSON sample data
-- (LAUREN) Define game data classes used in the space view
-- (LAUREN) Generate System data in javascript instead of using sample data
 - Define golang struct for solar system data
 - Combine galactic view into system view
 - (ROB) Websockets

@@ -1,12 +1,12 @@
 import React from 'react';
 import { useEffect, useRef, useContext } from 'react';
-import { DataContext } from "../../index";
+import {GameDataContext} from "../../app/Context";
 import { useHistory } from 'react-router-dom';
 
 const Galaxy = () => {
     const history = useHistory();
     let ref = useRef();
-    const data = useContext(DataContext);
+    const data = useContext(GameDataContext);
 
     useEffect(() => {
         let galaxyWidget = data.galaxyWidget;
