@@ -1,8 +1,12 @@
 import * as THREE from 'three';
-import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/jsm/loaders/GLTFLoader.js";
-import { FBXLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/jsm/loaders/FBXLoader.js";
 
-import { unpackData } from '/script/models/helpers.js'
+import { GLTFLoader } from '/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+import { FBXLoader } from '/node_modules/three/examples/jsm/loaders/FBXLoader.js';
+
+// import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/jsm/loaders/GLTFLoader.js";
+// import { FBXLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/jsm/loaders/FBXLoader.js";
+
+import { unpackData } from '../../../models/helpers.js'
 
 // TODO: Rename to Entity (remove Representation from all)
 export class EntityRepresentation {

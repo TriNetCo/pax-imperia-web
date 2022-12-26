@@ -45,7 +45,10 @@ const SystemPage = () => {
                                 <div>
                                     Lower Console
                                 </div>
-                                {/* <input type="range" min="0" max="300" value="0" className="slider" id="slider" /> */}
+                                <input readOnly={true} type="range" min="15" max="300" value="50" className="slider" id="distance-slider"/>
+                                <input readOnly={true} type="range" min="-6" max="6" value="-1.5" step="0.05" className="slider" id="x-slider"/>
+                                <input readOnly={true} type="range" min="-6" max="6" value="2.6" className="slider" step="0.05" id="y-slider"/>
+                                <input readOnly={true} type="range" min="-12" max="12" value="6" className="slider" step="0.05" id="z-slider"/>
                             </div>
                         </div>
 

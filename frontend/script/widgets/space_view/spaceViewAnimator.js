@@ -1,4 +1,7 @@
+// import * as THREE from '/node_modules/three/build/three.module.js';
+
 import * as THREE from 'three';
+
 // import { SystemLoader } from './systemLoader.js'
 
 
@@ -111,12 +114,10 @@ export class SpaceViewAnimator {
         scene.add(sunLight);
 
         this.cameraPivot = new THREE.Group();
-
-        scene.add(this.cameraPivot);
-
-        this.cameraPivot.add(camera);
         camera.position.set(0, 0, 50);
         camera.lookAt( scene.position );
+        this.cameraPivot.add(camera);
+        scene.add(this.cameraPivot);
 
         /////////////////
         // Load Models //

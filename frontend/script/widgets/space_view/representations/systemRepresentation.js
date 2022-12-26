@@ -1,4 +1,4 @@
-import { unpackData } from '/script/models/helpers.js';
+import { unpackData } from '../../../models/helpers.js'
 import { StarRepresentation } from './starRepresentation.js';
 import { PlanetRepresentation } from './planetRepresentation.js';
 import { ShipRepresentation } from './shipRepresentation.js';

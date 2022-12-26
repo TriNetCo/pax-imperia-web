@@ -17,11 +17,11 @@ const SpaceView = () => {
         //         history.push(path);
         // }
 
-        // spaceViewWidget.beginGame(canvas, systemClickHandler);
+        spaceViewWidget.beginGame(canvas);
 
         let requestId;
         const render = () => {
-            // spaceViewWidget.draw();
+            spaceViewWidget.draw();
             requestId = requestAnimationFrame(render);
         }
         render();

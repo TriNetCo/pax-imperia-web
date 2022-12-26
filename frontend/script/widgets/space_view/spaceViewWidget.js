@@ -3,8 +3,10 @@ import { SpaceViewAnimator } from './spaceViewAnimator.js';
 import { SpaceViewDomManager } from './spaceViewDomManager.js';
 import { SystemRepresentation } from './representations/systemRepresentation.js';
 
-import * as THREE from 'three';
-import { SpriteFlipbook } from '/script/models/spriteFlipbook.js'
+// import * as THREE from 'three';
+import * as THREE from '/node_modules/three/build/three.module.js';
+
+import { SpriteFlipbook } from '../../models/spriteFlipbook.js'
 
 export class SpaceViewWidget {
 
@@ -23,7 +25,8 @@ export class SpaceViewWidget {
 
     async beginGame() {
 
-        this.clientObjects.consoleDiv.innerHTML = "Resume";
+        // TODO: fix this so the console is created by the widget
+        // this.clientObjects.consoleDiv.innerHTML = "Resume";
 
         this.clientObjects.distanceSlider = document.getElementById("distance-slider")
         this.clientObjects.xSlider = document.getElementById("x-slider")

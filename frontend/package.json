@@ -4,7 +4,13 @@
   "description": "",
   "main": "index.js",
   "directories": {
-    "lib": "lib"
+    "lib": "lib",
+    "script": "script",
+    "css": "css",
+    "assets": "assets"
+  },
+  "dependencies": {
+    "three": "^0.147.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
