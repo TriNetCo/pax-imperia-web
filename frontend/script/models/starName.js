@@ -1,6 +1,6 @@
 export class StarName {
 
-    stars = [ 
+    stars = [
         "Achernar",
         "Acrux",
         "Adhara",
@@ -75,6 +75,6 @@ export class StarName {
     ];
 
     pick() {
-        return this.stars.splice(Math.random()*this.stars.length, 1);
+        return this.stars.splice(Math.random()*this.stars.length, 1)[0];
     }
 }

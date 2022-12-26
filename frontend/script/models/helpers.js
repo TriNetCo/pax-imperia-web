@@ -19,3 +19,9 @@ export const roundToDecimal = (num, decimals = null) => {
         return roundNum
     }
 }
+
+export const unpackData = (data, context) => {
+    for (var key in data){
+        context[key] = data[key];
+    }
+}

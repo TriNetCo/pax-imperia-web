@@ -2,9 +2,9 @@ import * as THREE from 'three';
 
 export class SpaceViewDomManager {
 
-    constructor(config, clientObjects, systemData) {
+    constructor(config, clientObjects, system) {
         this.c = config;
-        this.systems = systemData;
+        this.system = system;
         this.canvas = clientObjects.cx.canvas;
         this.mouse = clientObjects.mouse;
         this.camera = clientObjects.camera;
@@ -69,18 +69,13 @@ export class SpaceViewDomManager {
     // Drawing Commands //
     //////////////////////
 
-    populatePlanetList(system) {
+    populatePlanetList() {
         let planetListUl = document.getElementById("planet-list");
         let html = "<h3>Planets:</h3>";
         html += "<ul>";
-        let name = system["name"];
 
-        system["planets"].forEach( planet => {
-            let index = planet["index"];
-            let planetFullName = name + " " + index;
-
-            html += "<li onclick='alert(\"hi\")''>" + planetFullName + "</li>";
-
+        this.system["planets"].forEach( planet => {
+            html += "<li onclick='alert(\"hi\")''>" + planet.name + "</li>";
         });
 
         html += "</ul>";

@@ -1,19 +1,19 @@
 import * as THREE from 'three';
-import { SystemLoader } from './systemLoader.js'
+// import { SystemLoader } from './systemLoader.js'
 
 
 export class SpaceViewAnimator {
 
-    constructor(config, clientObjects, systemData) {
+    constructor(config, clientObjects, system) {
         this.c = config;
         this.clientObjects = clientObjects;
-        this.systemData = systemData;
+        this.system = system;
+        // debugger;
 
         this.scene = clientObjects.scene;
         this.selectionSprite = clientObjects.selectionSprite;
         this.renderer = clientObjects.renderer;
         this.camera = clientObjects.camera;
-        this.system = systemData;
         this.cx = clientObjects.cx;
         this.mouse = clientObjects.mouse;
 
@@ -33,16 +33,16 @@ export class SpaceViewAnimator {
         cx.fillRect(0, 0, cx.canvas.width, cx.canvas.height);
     }
 
-    animate() {
+    async animate() {
         let clock = this.clock;
 
         // Reset camera in real time
         //////////////////////////////
 
         let distance =  parseFloat( this.clientObjects.distanceSlider.value );
-        let xRotation = this.clientObjects.xSlider.value;
-        let yRotation = this.clientObjects.ySlider.value;
-        let zRotation = this.clientObjects.zSlider.value;
+        let xPosition = this.clientObjects.xSlider.value;
+        let yPosition = this.clientObjects.ySlider.value;
+        let zPosition = this.clientObjects.zSlider.value;
 
         // cameraPivot.rotation.set(xRotation, yRotation, 0.0);
         this.cameraPivot.rotation.set(-0.6, 0.05, -3);
@@ -53,10 +53,12 @@ export class SpaceViewAnimator {
         this.headLamp.position.set(0, 0, distance);
         // headLamp.lookAt(this.scene.position);
 
-        let ship = this.ships[0];
-        ship.rotation.set(0.7, -1.6, 0.4);
-        ship.position.set(zRotation, xRotation ,yRotation);
-
+        let ship = this.system.ships[0].object3d;
+        // if (ship === undefined) {
+        //    debugger;
+        // }
+        // ship.rotation.set(0.7, -1.6, 0.4);
+        ship.position.set(xPosition, yPosition, zPosition);
 
         this.camera.updateProjectionMatrix();
 
@@ -67,7 +69,6 @@ export class SpaceViewAnimator {
 
         this.doRotationsAndOrbits(deltaTime);
 
-        // debugger;
         this.renderer.render( this.scene, this.camera );
     }
 
@@ -121,14 +122,11 @@ export class SpaceViewAnimator {
         // Load Models //
         /////////////////
 
-        let systemLoader = new SystemLoader(system, scene);
-        await systemLoader.loadStars()
-        await systemLoader.loadPlanets()
-        this.ships = await systemLoader.loadShips()
+        await system.load(scene);
     }
 
     doRotationsAndOrbits (deltaTime) {
-        let speedMultiplier = 1; //1/9 to slow down the whole system
+        let speedMultiplier = 1; // 1/9 to slow down the whole system
         let system = this.system;
         this.spinTime += deltaTime * speedMultiplier;
 

@@ -1,5 +1,6 @@
 import { getRandomNum, roundToDecimal } from './helpers.js'
 
+// TODO: Rename to SystemGenerator
 export class System {
     constructor(id, point, name, radius, c) {
         this.id = id;
