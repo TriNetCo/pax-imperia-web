@@ -32,36 +32,56 @@ export class SpaceViewDomManager {
     }
 
     addMouseClick() {
-        this.clickHandler = ( event ) => {
-            event.preventDefault();
-            let raycaster = this.raycaster;
-            raycaster.setFromCamera( this.mouse, this.camera );
-            const intersects = raycaster.intersectObjects( this.scene.children );
+        this.canvas.addEventListener('click', this.#clickHandler);
+    }
 
-            if ( intersects.length > 0) {
+    #clickHandler = ( event ) => {
+        // Arrow function / lambda so that "this" refers to SpaceViewDomManager
+        // instead of canvas
+        event.preventDefault();
+        let raycaster = this.raycaster;
+        raycaster.setFromCamera( this.mouse, this.camera );
+        const intersects = raycaster.intersectObjects( this.scene.children );
 
-                let uniqueIntersects = intersects.filter( (value, index, self) => {
-                    return self.findIndex(v => v.object.id === value.object.id) === index;
-                });
+        let currentSelectionTarget = this.selectionSprite.selectionTarget
 
-                let msg = "HIT: ";
-                for ( let i = 0; i < uniqueIntersects.length; i ++ ) {
-                    const obj = uniqueIntersects[i].object;
-                    msg +=  ", " + obj.name + " (" + obj.id + ")";
-
-                    this.putCursorOverContainer(obj);
-                }
-                // lowerConsole.print(msg + " {" + this.mouse.x + ", " + this.mouse.y + "}");
-            }
-
+        // If no intersections, sets target to null
+        if (intersects.length == 0) {
+            this.selectionSprite.unselect();
         }
 
-        this.canvas.addEventListener('click', this.clickHandler);
+        // Loops through intersected objects (sorted by distance)
+        for (let i = 0; i < intersects.length; i++) {
+            let obj = this.getParentObject(intersects[i].object)
+            // Cannot select the selection sprite
+            if (obj.name != "selectionSprite") {
+                // If you click again on an object, you can select the
+                // object behind
+                if (obj != currentSelectionTarget) {
+                    this.selectionSprite.select(obj);
+                    break;
+                }
+            }
+        }
+    }
+
+    getParentObject (obj) {
+        // Recursively goes through object to find the highest
+        // level object that is not the scene
+
+        let parent = obj.parent;
+
+        if (parent.type == "Scene") {
+            return (obj);
+        } else {
+            return (this.getParentObject(parent));
+        }
+
     }
 
     detachFromDom() {
         this.canvas.removeEventListener('mousemove', this.mouseMovementHandler);
-        this.canvas.removeEventListener('click', this.clickHandler);
+        this.canvas.removeEventListener('click', this.#clickHandler);
         this.canvas.remove();
     }
 
