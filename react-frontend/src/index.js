@@ -18,11 +18,11 @@ const root = createRoot(container);
 root.render(
     <Provider store={store}>
         <Context>
-            {/* <React.StrictMode> */}
+            <React.StrictMode>
                 <Router basename={process.env.REACT_APP_PUBLIC_SUFIX}>
                     <App />
                 </Router>
-            {/* </React.StrictMode> */}
+            </React.StrictMode>
         </Context>
     </Provider>
 );

@@ -7,27 +7,24 @@ const SpaceView = () => {
     const history = useHistory();
     let ref = useRef();
     const data = useContext(GameDataContext);
+    let spaceViewWidget = data.spaceViewWidget;
+    let requestId;
 
     useEffect(() => {
-        let spaceViewWidget = data.spaceViewWidget;
         let canvas = ref.current;
 
-        // const systemClickHandler = (path) => {
-        //     if (history.location.pathname != path)
-        //         history.push(path);
-        // }
-
-        spaceViewWidget.beginGame(canvas);
-
-        let requestId;
-        const render = () => {
-            spaceViewWidget.draw();
-            requestId = requestAnimationFrame(render);
-        }
-        render();
+        (async () => {
+            await spaceViewWidget.beginGame(canvas);
+            const render = () => {
+                spaceViewWidget.draw();
+                requestId = requestAnimationFrame(render);
+            }
+            render();
+        })();
 
         return () => {
             cancelAnimationFrame(requestId);
+            spaceViewWidget.detachFromDom();
         }
     });
 

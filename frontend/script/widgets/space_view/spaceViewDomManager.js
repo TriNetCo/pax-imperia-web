@@ -62,6 +62,7 @@ export class SpaceViewDomManager {
     detachFromDom() {
         this.canvas.removeEventListener('mousemove', this.mouseMovementHandler);
         this.canvas.removeEventListener('click', this.clickHandler);
+        this.canvas.remove();
     }
 
 

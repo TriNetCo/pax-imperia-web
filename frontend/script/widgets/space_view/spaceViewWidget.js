@@ -57,12 +57,12 @@ export class SpaceViewWidget {
             10, // nRows
             0.04); // loopFrameDuration
 
-        this.spaceViewAnimator = new SpaceViewAnimator(this.c, this.clientObjects, this.system);
-        await this.spaceViewAnimator.populateScene();
-
         this.spaceViewDomManager = new SpaceViewDomManager(this.c, this.clientObjects, this.system)
         this.spaceViewDomManager.attachDomEventsToCode();
         this.spaceViewDomManager.populatePlanetList();
+
+        this.spaceViewAnimator = new SpaceViewAnimator(this.c, this.clientObjects, this.system);
+        await this.spaceViewAnimator.populateScene();
     }
 
     draw() {
