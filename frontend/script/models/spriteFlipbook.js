@@ -39,6 +39,7 @@ export class SpriteFlipbook {
         // UpdateSelectionTarget
         const selectionTarget = this.selectionTarget;
         if (selectionTarget != null) {
+            this.sprite.visible = true;
             const p = selectionTarget.position;
             this.setPosition(p.x, p.y, p.z);
             if (selectionTarget.name == "ship") {
@@ -47,6 +48,8 @@ export class SpriteFlipbook {
             } else {
                 this.setScale(selectionTarget.scale);
             }
+        } else {
+            this.sprite.visible = false;
         }
 
         // cycleSpriteFlipbook
@@ -76,6 +79,10 @@ export class SpriteFlipbook {
 
     select(selectionTarget) {
         this.selectionTarget = selectionTarget;
+    }
+
+    unselect() {
+        this.selectionTarget = null;
     }
 
 }
