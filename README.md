@@ -15,7 +15,7 @@ The backend's data models are created from the postgres database (resume driven 
 
 ## Getting Started...
 
-### Build Database
+### ~~Build Database~~
 
 go install github.com/go-jet/jet/v2/cmd/jet@latest
 
@@ -26,9 +26,17 @@ jet -source=postgres -host=localhost -port=5432 -user="${GO_DB_USER}" -password=
 ### Boot the GO App
 
 Run these commands to start the server
+
+Prerequisite on Macbook:
+
 ```
-  cd backend
-  go run cmd/pax.go
+cd frontend
+npm install
+```
+
+```
+cd backend
+go run cmd/pax.go
 ```
 
 Now navigate to [http://localhost:3000](http://localhost:3000) to play the game!
