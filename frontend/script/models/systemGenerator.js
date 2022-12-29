@@ -8,6 +8,7 @@ export class SystemGenerator {
         this.radius = radius;
         this.stars = [this.generateStar(c)];
         this.planets = this.generatePlanets(c);
+        this.position.z = getRandomNum(-5, 5, 2)
         // Use manual system for debugging
         if (false) {
             this.stars = this.manualStars
