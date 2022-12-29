@@ -22,13 +22,13 @@ export class Galaxy {
 
         // Define systems with coordinates
         for (let systemIndex = 0; systemIndex < c.systemCount; systemIndex++){
-            let point = this.generateSystemXY(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
+            let position = this.generateSystemXY(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
             let i = 0;
             // Try maxPlacementAttempts times to find a system far enough away
             // from existing systems
-            while (!this.isValidDistance(systems, point, c.systemBuffer)) {
+            while (!this.isValidDistance(systems, position, c.systemBuffer)) {
                 console.log("retrying placement");
-                point = this.generateSystemXY(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
+                position = this.generateSystemXY(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
                 i = i + 1;
                 if (i == c.maxPlacementAttempts) {
                     let errorMsg = 'Generating stars without buffer';
@@ -36,7 +36,7 @@ export class Galaxy {
                     break;
                 }
             }
-            let systemGenerator = new SystemGenerator(systemIndex, point, starName.pick(), c.systemRadius, c);
+            let systemGenerator = new SystemGenerator(systemIndex, position, starName.pick(), c.systemRadius, c);
             let systemData = systemGenerator.generateData();
             systems.push(systemData);
         }
@@ -51,11 +51,11 @@ export class Galaxy {
         return {x: x, y: y};
     }
 
-    isValidDistance(systems, point, systemBuffer) {
-        // Checks the distance from the point to every existing system and
-        // returns true if the point is far enough away
+    isValidDistance(systems, position, systemBuffer) {
+        // Checks the distance from the position to every existing system and
+        // returns true if the position is far enough away
         let isValid = systems.every( system => {
-            let dist = Math.pow(Math.pow(system.x - point.x, 2) + Math.pow(system.y - point.y, 2), 0.5)
+            let dist = Math.pow(Math.pow(system.position.x - position.x, 2) + Math.pow(system.position.y - position.y, 2), 0.5)
             if (dist < systemBuffer) {
                 return false;
             } else {
@@ -83,7 +83,7 @@ export class Galaxy {
                     if (        connections.length == 0
                             || (connectedSystems.includes(i) && !connectedSystems.includes(j))
                             || (connectedSystems.includes(j) && !connectedSystems.includes(i)) ) {
-                        let dist = (this.systems[i].x - this.systems[j].x)**2 + (this.systems[i].y - this.systems[j].y)**2;
+                        let dist = (this.systems[i].position.x - this.systems[j].position.x)**2 + (this.systems[i].position.y - this.systems[j].position.y)**2;
                         if (dist < minDist) {
                             minDist = dist;
                             minI = i;

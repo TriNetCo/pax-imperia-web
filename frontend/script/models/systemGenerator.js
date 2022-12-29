@@ -1,11 +1,10 @@
 import { getRandomNum, roundToDecimal } from './helpers.js'
 
 export class SystemGenerator {
-    constructor(id, point, name, radius, c) {
+    constructor(id, position, name, radius, c) {
         this.id = id;
         this.name = name;
-        this.x = point.x;
-        this.y = point.y;
+        this.position = position;
         this.radius = radius;
         this.stars = [this.generateStar(c)];
         this.planets = this.generatePlanets(c);

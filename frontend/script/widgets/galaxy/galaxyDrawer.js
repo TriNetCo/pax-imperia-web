@@ -30,24 +30,22 @@ export class GalaxyDrawer {
             let startSystem = galaxy.systems[galaxy.connections[i][0]];
             let endSystem = galaxy.systems[galaxy.connections[i][1]];
             cx.beginPath();
-            cx.moveTo(startSystem.x, startSystem.y);
-            cx.lineTo(endSystem.x, endSystem.y);
+            cx.moveTo(startSystem.position.x, startSystem.position.y);
+            cx.lineTo(endSystem.position.x, endSystem.position.y);
             cx.stroke();
         }
     }
 
     drawSystems() {
-        let cx = this.cx;
         let galaxy = this.galaxy;
         let systemDrawColor = "rgb(150, 150, 150)";
         for (let i = 0; i < galaxy.systems.length; i++) {
             let system = galaxy.systems[i];
-            this.drawDot(system.x, system.y, system.radius, systemDrawColor);
+            this.drawDot(system.position.x, system.position.y, system.radius, systemDrawColor);
         }
     }
 
     drawHoveredSystem() {
-        let cx = this.cx;
         let galaxy = this.galaxy;
         let systemNameLabel = this.systemNameLabel;
         let hoverDrawColor = "rgb(255, 255, 255)";
@@ -57,7 +55,7 @@ export class GalaxyDrawer {
             if (this.isMouseHovering(system)) {
                 systemNameLabel.innerHTML = system.name;
                 let hoverDrawRadius = system.radius + 2;
-                this.drawDot(system.x, system.y, hoverDrawRadius, hoverDrawColor);
+                this.drawDot(system.position.x, system.position.y, hoverDrawRadius, hoverDrawColor);
                 nothingIsHovered = false;
                 break;
             }
@@ -76,10 +74,10 @@ export class GalaxyDrawer {
 
     isMouseHovering(system) {
         let hoverRadius = system.radius + 1
-        return (this.mouse.x > system.x - hoverRadius
-             && this.mouse.x < system.x + hoverRadius + 1
-             && this.mouse.y > system.y - hoverRadius
-             && this.mouse.y < system.y + hoverRadius + 2);
+        return (this.mouse.x > system.position.x - hoverRadius
+             && this.mouse.x < system.position.x + hoverRadius + 1
+             && this.mouse.y > system.position.y - hoverRadius
+             && this.mouse.y < system.position.y + hoverRadius + 2);
     }
 
 }
