@@ -1,7 +1,6 @@
 import { SpaceViewWidget } from '/script/widgets/space_view/spaceViewWidget.js'
 import { GameSettings } from '/script/gameSettings.js';
 import { Galaxy } from '/script/models/galaxy.js';
-// import { SystemRepresentation } from '/script/widgets/space_view/systemRepresentation.js'
 
 ///////////////////////
 // Input System Data //
@@ -77,17 +76,12 @@ let systemDataOld = {
     ]
 }
 
-// TODO: why is systemName an array?
-
 // placeholder get system data
 let gameSettings = GameSettings;
 let galaxy = new Galaxy(gameSettings.galaxyWidget);
 let systemData = JSON.parse(JSON.stringify(galaxy.systems[0]));
 console.log('systemData: ')
 console.log(systemData)
-// let systemRepresentation = new SystemRepresentation(systemData);
-// console.log(systemRepresentation)
-// debugger;
 
 // types of state
 //   config settings (game settings, widget settings)

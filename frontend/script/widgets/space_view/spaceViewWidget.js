@@ -1,7 +1,7 @@
 import { Galaxy } from '../../models/galaxy.js';
 import { SpaceViewAnimator } from './spaceViewAnimator.js';
 import { SpaceViewDomManager } from './spaceViewDomManager.js';
-import { SystemRepresentation } from './representations/systemRepresentation.js';
+import { System } from './entities/system.js';
 
 // import * as THREE from 'three';
 import * as THREE from '/node_modules/three/build/three.module.js';
@@ -17,7 +17,7 @@ export class SpaceViewWidget {
         this.c = config;
         this.clientObjects = clientObjects;
         systemData.ships = [{"name": "ship", "index": 0}]
-        this.system = new SystemRepresentation(systemData);
+        this.system = new System(systemData);
 
         const mouse = new THREE.Vector2(0,0);
         this.clientObjects.mouse = mouse;

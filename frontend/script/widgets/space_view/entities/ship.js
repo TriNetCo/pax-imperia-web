@@ -1,6 +1,6 @@
-import { EntityRepresentation } from './entityRepresentation.js'
+import { Entity } from './entity.js'
 
-export class ShipRepresentation extends EntityRepresentation {
+export class Ship extends Entity {
     constructor (data, systemName) {
         super(data, systemName);
         this.type = 'ship';

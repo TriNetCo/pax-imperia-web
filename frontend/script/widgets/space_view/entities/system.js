@@ -1,15 +1,15 @@
 import { unpackData } from '../../../models/helpers.js'
-import { StarRepresentation } from './starRepresentation.js';
-import { PlanetRepresentation } from './planetRepresentation.js';
-import { ShipRepresentation } from './shipRepresentation.js';
+import { Star } from './star.js';
+import { Planet } from './planet.js';
+import { Ship } from './ship.js';
 
-export class SystemRepresentation {
+export class System {
 
     constructor(systemData) {
         unpackData(systemData, this);
-        this.stars = this.createRepresentations(systemData.stars, StarRepresentation, this.name);
-        this.planets = this.createRepresentations(systemData.planets, PlanetRepresentation, this.name);
-        this.ships = this.createRepresentations(systemData.ships, ShipRepresentation, this.name);
+        this.stars = this.createRepresentations(systemData.stars, Star, this.name);
+        this.planets = this.createRepresentations(systemData.planets, Planet, this.name);
+        this.ships = this.createRepresentations(systemData.ships, Ship, this.name);
     }
 
     createRepresentations (entitiesData, cls, systemName) {

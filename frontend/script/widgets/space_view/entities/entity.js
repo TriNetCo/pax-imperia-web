@@ -8,8 +8,7 @@ import { FBXLoader } from '/node_modules/three/examples/jsm/loaders/FBXLoader.js
 
 import { unpackData } from '../../../models/helpers.js'
 
-// TODO: Rename to Entity (remove Representation from all)
-export class EntityRepresentation {
+export class Entity {
     constructor (data, systemName = "") {
         this.type = "";
         this.size = 1;
