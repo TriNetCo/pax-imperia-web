@@ -1,11 +1,12 @@
 import { StarName } from './starName.js';
-import { System } from './system.js';
+import { SystemGenerator } from './systemGenerator.js';
 
 export class Galaxy {
 
     constructor(galaxyWidgetSettings){
         console.log("Constructing galaxy");
         console.log('Constructor system count: ' + galaxyWidgetSettings.systemCount)
+        // Should systems be called systemsData?
         this.systems = this.generateSystems(galaxyWidgetSettings);
         this.connections = this.generateConnections();
     }
@@ -35,8 +36,9 @@ export class Galaxy {
                     break;
                 }
             }
-            let system = new System(systemIndex, point, starName.pick(), c.systemRadius, c);
-            systems.push(system);
+            let systemGenerator = new SystemGenerator(systemIndex, point, starName.pick(), c.systemRadius, c);
+            let systemData = systemGenerator.generateData();
+            systems.push(systemData);
         }
         return systems;
     }

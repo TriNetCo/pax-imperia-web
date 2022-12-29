@@ -82,7 +82,7 @@ let systemDataOld = {
 // placeholder get system data
 let gameSettings = GameSettings;
 let galaxy = new Galaxy(gameSettings.galaxyWidget);
-let systemData = JSON.parse(galaxy.systems[0].toJson());
+let systemData = JSON.parse(JSON.stringify(galaxy.systems[0]));
 console.log('systemData: ')
 console.log(systemData)
 // let systemRepresentation = new SystemRepresentation(systemData);

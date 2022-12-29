@@ -1,7 +1,6 @@
 import { getRandomNum, roundToDecimal } from './helpers.js'
 
-// TODO: Rename to SystemGenerator
-export class System {
+export class SystemGenerator {
     constructor(id, point, name, radius, c) {
         this.id = id;
         this.name = name;
@@ -16,11 +15,14 @@ export class System {
             this.planets = this.manualPlanets
         }
         this.ships = [];
-        //this.entities = this.stars.concat(this.planets).concat(this.ships);
     }
 
-    toJson() {
-        return JSON.stringify(this)
+    generateData(){
+        let data = {};
+        for (var key in this) {
+            data[key] = this[key];
+        };
+        return(data);
     }
 
     generateStar(c) {
@@ -63,6 +65,11 @@ export class System {
         };
         return planets;
     }
+
+    toJson() {
+        return JSON.stringify(this)
+    }
+
 }
 
 export class manualSystem {
