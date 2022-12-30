@@ -9,6 +9,7 @@ export class Galaxy {
         // Should systems be called systemsData?
         this.systems = this.generateSystems(galaxyWidgetSettings);
         this.connections = this.generateConnections();
+        this.addConnectionsToSystems();
     }
 
     // parameters of galaxies:
@@ -65,7 +66,7 @@ export class Galaxy {
         return isValid;
     }
 
-    generateConnections(){
+    generateConnections() {
         let connections = [];
         let connectedSystems = [];
         while (connectedSystems.length < this.systems.length && this.systems.length > 1){
@@ -103,4 +104,12 @@ export class Galaxy {
         return connections;
     }
 
+    addConnectionsToSystems() {
+        this.connections.forEach( connection => {
+            let i = connection[0];
+            let j = connection[1];
+            this.systems[i].connections.push(j)
+            this.systems[j].connections.push(i)
+        });
+    }
 }

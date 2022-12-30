@@ -6,6 +6,7 @@ export class SystemGenerator {
         this.name = name;
         this.position = position;
         this.radius = radius;
+        this.connections = [];
         this.stars = [this.generateStar(c)];
         this.planets = this.generatePlanets(c);
         this.position.z = getRandomNum(-5, 5, 2)
