@@ -80,6 +80,8 @@ let systemDataOld = {
 let gameSettings = GameSettings;
 let galaxy = new Galaxy(gameSettings.galaxyWidget);
 let systemData = JSON.parse(JSON.stringify(galaxy.systems[0]));
+window.systemData = systemData; // for debugging
+
 console.log('systemData: ')
 console.log(systemData)
 

@@ -108,8 +108,17 @@ export class Galaxy {
         this.connections.forEach( connection => {
             let i = connection[0];
             let j = connection[1];
-            this.systems[i].connections.push(j)
-            this.systems[j].connections.push(i)
+            this.addConnectionToSystem(i, j);
+            this.addConnectionToSystem(j, i);
         });
+    }
+
+    addConnectionToSystem(systemId, connectedSystemId) {
+        let connectedSystem = this.systems[connectedSystemId];
+        let connection = {id: connectedSystem.id,
+                          name: connectedSystem.name,
+                          position: connectedSystem.position
+        };
+        this.systems[systemId].connections.push(connection);
     }
 }
