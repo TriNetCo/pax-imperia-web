@@ -5,5 +5,7 @@ import (
 )
 
 func main() {
+	// api.TestAuthStuff()
+
 	api.RunServer()
 }

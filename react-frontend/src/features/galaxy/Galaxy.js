@@ -9,6 +9,7 @@ const Galaxy = () => {
     const data = useContext(GameDataContext);
 
     useEffect(() => {
+        if (data === null) return; // for testing...
         let galaxyWidget = data.galaxyWidget;
         let canvas = ref.current;
 

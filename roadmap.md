@@ -5,16 +5,16 @@ Here's where we describe what our vision, ambitions and next steps are for the p
 ## Network/ Data Engineering Roadmap
 - (LAUREN) Define game data classes used in the space view
 - (LAUREN) Generate System data in javascript instead of using sample data
-- (ROB) <BLOCKED: Need refactors to be pushed by Lauren> Get System Detail view to work in React
+- (ROB) Roll out firebase authentication
+- (ROB) Host on-the-cheap using w/e my work is hosting with
 - Make it so Galaxy is generated outside of the widget and passed in as a parameter for GalaxyWidget
 - Make it so Galaxy is generated outside of the widget and passed in as a parameter for SpaceViewWidget
 - Improve code quality of PlanetView stuff
 - Add testing to the frontend
-x Drive Space View contents off of JSON sample data
 - Define golang struct for solar system data
 - Combine galactic view into system view
 - (ROB) Websockets
-    - Listen for websocket connections from the frontend
+    x Listen for websocket connections from the frontend
     - Get two clients "chatting"
     - Communicate commands from frontend to backend (start new game command?)
     - pump out solar system data to the backend over websocket
@@ -46,13 +46,15 @@ x Drive Space View contents off of JSON sample data
 
 
 ## HTML/ CSS UI Roadmap
-- Add Login view
+- (ROB) Add Login view
 - Add NewGame view
 - Flesh out Main Menu CSS
 - Flesh out HUD buttons in System detail view
 
 
 ## Finished Stuff!
+x Drive Space View contents off of JSON sample data
+x Get System Detail view to work in React
 x Center rectangle of star
 x Extract constellation algo into it's own module
 x Set minimum distance between stars

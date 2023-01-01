@@ -15,7 +15,11 @@ The backend's data models are created from the postgres database (resume driven 
 
 ## Getting Started...
 
-### ~~Build Database~~
+## Secrets
+
+Populate `backend/secrets/` and set `export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/dev/game_dev/pax-imperia-clone/backend/secrets/pax-imeria-clone-firebase-adminsdk-b7dfw-1c36eb54cd.json"`.  This file comes from firebase's dashboard instructions for using/ installing service accounts: https://firebase.google.com/docs/admin/setup#go.
+
+### Build Database
 
 go install github.com/go-jet/jet/v2/cmd/jet@latest
 
@@ -67,6 +71,22 @@ cd react-frontend
 npm start
 ```
 
+## Dashboards
+
+- Azure for auth AD:  https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Authentication/appId/4d2c3c6a-9ea2-4e28-b0f4-6c6523ac1e32/objectId/c5d31509-5bb8-4ec0-a3a9-47db79308fe1/isMSAApp~/true/defaultBlade/Overview/appSignInAudience/AzureADandPersonalMicrosoftAccount
+- Google for firebase for auth detail smearing:  https://console.firebase.google.com/u/0/project/pax-imeria-clone/settings/general/web:ZDRmYjQzZGItNTJkYy00ZDE1LWE3OWItNjY3MWYxMTA4Yzky
+
+
+## Authentication Info
+
+###### Azure App Registration
+The Azure dashboard is used to create an "App Registration" in Azure.  It's really Janky registering an app so the link to view and edit it must be saved to the readme.  A secret is created in the Azure App Registration and Authentication (via web using both "Access Tokens" as well as "ID Tokens").  The `*.firebaseapp.com/__/auth/handler` redirect uri from firebase get's configured here in Azure.  A Client secret must be generated in Azure so that it and the "Application (client) ID" can be copied into the firebase dashboard. Firebase documents it [here](https://firebase.google.com/docs/auth/web/microsoft-oauth) which links to MS docs [here](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app).
+
+###### Firebase Project Creation
+Firebase's dashboard is used to create our project and Azure AD is enabled as an auth mechanism.  We copy the client secret and client ID from azure to make the authentication integration function correctly.
+
+###### Authentication Process
+Using the firebase library, the JS client redirects the user to firebase's Azure AD auth extension.  From there, firebase forwards the auth request to Azure and Azure responds with a signed JWT token.  Firebase fowards this to our react front end upon redirect back to our application's login page.  Our app will now be able to look up the OAuth token via `auth.currentUser.getIdToken(true).then(idToken => { console.log(idToken) });`.  This token is passed to our backend which validates that the token is an authentically signed Azure token.  Our backend takes the email information from the JWT token to associate the user with our backend.  A table named `users` will include this email along with any roles this user may have (admin?).
 
 ## References
 
@@ -78,3 +98,4 @@ npm start
 - GoLang Project Layout... https://github.com/golang-standards/project-layout
 - React + WebGL... http://www.petecorey.com/blog/2019/08/19/animating-a-canvas-with-react-hooks/
 - React Context?? https://www.freecodecamp.org/news/react-context-for-beginners/#:~:text=React%20context%20caveats-,What%20is%20React%20context%3F,across%20our%20components%20more%20easily.
+

@@ -9,8 +9,8 @@ const socketMiddleware = () => {
     store.dispatch(actions.wsConnected(event.target.url));
   };
 
-  const onClose = store => () => {
-    store.dispatch(actions.wsDisconnected());
+  const onClose = (store, host) => (event) => {
+    store.dispatch(actions.wsDisconnected(host));
   };
 
   const onMessage = store => (event) => {
@@ -39,9 +39,11 @@ const socketMiddleware = () => {
 
         // websocket handlers
         socket.onmessage = onMessage(store);
-        socket.onclose = onClose(store);
+        socket.onclose = onClose(store, action.host);
         socket.onopen = onOpen(store);
 
+        // this interupts the dispatch event for WS_CONNECT completly, so it never hits a reducer...
+        // But the onopen callback should be fired, where the store will be set to update
         break;
       case 'WS_DISCONNECT':
         if (socket !== null) {

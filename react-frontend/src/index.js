@@ -10,14 +10,18 @@ import './index.css';
 import 'pax-imperia-js/css/style.css';
 import 'pax-imperia-js/css/systems.css';
 import Context from './app/Context';
+import { initGameData } from './app/gameDataInitializer';
+import { createMyContext } from './app/UserContext';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
 
+const gameData = initGameData();
+const userContext = createMyContext();
 
 root.render(
     <Provider store={store}>
-        <Context>
+        <Context gameData={gameData} userContext={userContext}>
             <React.StrictMode>
                 <Router basename={process.env.REACT_APP_PUBLIC_SUFIX}>
                     <App />
