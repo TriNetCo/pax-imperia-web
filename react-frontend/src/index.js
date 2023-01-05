@@ -16,7 +16,7 @@ import { createMyContext } from './app/UserContext';
 const container = document.getElementById('root');
 const root = createRoot(container);
 
-const gameData = initGameData();
+const gameData    = initGameData();
 const userContext = createMyContext();
 
 root.render(

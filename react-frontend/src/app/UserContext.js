@@ -2,7 +2,6 @@ import React from 'react';
 
 import { initApp, signInMicrosoft, signOutMicrosoft } from './AzureAuth';
 
-
 let user;
 let setUser;
 
@@ -16,7 +15,6 @@ const setUserInfo = (info) => {
 };
 
 const fillUserInfoFromLocalStorage = () => {
-  console.log("Login status was: " + ctx.status)
   setUserInfo({
     ...ctx,
     displayName: localStorage.getItem("displayName") ?? 'NONE',
@@ -24,14 +22,14 @@ const fillUserInfoFromLocalStorage = () => {
     profilePic:  localStorage.getItem("photoURL") ?? '',
     accessToken: localStorage.getItem("accessToken") ?? '',
     idToken:     localStorage.getItem("idToken") ?? '',
-    status:      localStorage.getItem('login_status') ?? 'logged_out',
+    lastSignInTime: localStorage.getItem("lastSignInTime") ?? '',
+    loginStatus:      localStorage.getItem('loginStatus') ?? 'logged_out',
     initialized: true,
   });
 };
 
 const login = () => {
-  localStorage.setItem("login_pending", "true");
-  localStorage.setItem('login_status', 'pending')
+  localStorage.setItem('loginStatus', 'pending')
   signInMicrosoft();
 };
 
@@ -41,11 +39,12 @@ const logout = () => {
   localStorage.removeItem("photoURL")
   localStorage.removeItem("accessToken");
   localStorage.removeItem("idToken");
-  localStorage.removeItem("login_status");
+  localStorage.removeItem("lastSignInTime");
+  localStorage.removeItem("loginStatus");
 
   setUserInfo({
     ...ctx,
-    status: 'logged_out'
+    loginStatus: 'logged_out'
   });
   signOutMicrosoft();
 };
@@ -58,7 +57,8 @@ const fillUserInfoFromRedirect = (result, credential) => {
   localStorage.setItem("photoURL", usr.photoURL)
   localStorage.setItem("accessToken", credential.accessToken);
   localStorage.setItem("idToken", credential.idToken);
-  localStorage.setItem('login_status', 'logged_in');
+  localStorage.setItem("lastSignInTime", usr.metadata.lastSignInTime)
+  localStorage.setItem('loginStatus', 'logged_in');
 
   setUserInfo({
     ...ctx,
@@ -67,18 +67,28 @@ const fillUserInfoFromRedirect = (result, credential) => {
     profilePic: usr.photoURL ?? '',
     accessToken: credential.accessToken ?? '',
     idToken: credential.idToken ?? '',
-    status: 'logged_in'
+    lastSignInTime: usr.metadata.lastSignInTime,
+    loginStatus: 'logged_in',
   });
 };
 
-const setStatus = (val) => {
-  localStorage.setItem('login_status', val);
+const setLoginStatus = (val) => {
+  localStorage.setItem('loginStatus', val);
 
   setUserInfo({
     ...user,
-    status: val
+    loginStatus: val
   });
 };
+
+const setDisplayName = (val) => {
+  localStorage.setItem('displayName', val);
+
+  setUserInfo({
+    ...user,
+    displayName: val
+  });
+}
 
 const ctx = {
   displayName: 'NONE',
@@ -86,10 +96,12 @@ const ctx = {
   email: '',
   accessToken: '',
   idToken: '',
-  status:  '',
+  loginStatus:  '',
   initialized: false,
+  lastSignInTime: null,
 
-  setStatus,
+  setLoginStatus,
+  setDisplayName,
   login,
   logout,
   fillUserInfoFromRedirect,

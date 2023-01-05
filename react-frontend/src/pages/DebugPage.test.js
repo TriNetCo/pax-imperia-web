@@ -12,9 +12,5 @@ test("renders DebugPage", () => {
     rootReducer: rootReducer,
   });
 
-  expect(getByTestId("login-state")).toHaveTextContent("Login State:");
-
-  // fireEvent.click(getByText("login"));
-
-  // expect(getByTestId("count-value")).toHaveTextContent("1");
+  expect(getByText("Login Status: logged_out"))
 });

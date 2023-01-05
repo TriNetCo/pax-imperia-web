@@ -3,8 +3,10 @@ import { connectAndJoin, disconnect } from '../app/Context';
 import { useDispatch, useSelector } from "react-redux";
 import { newMessage, selectWebsocket } from "../modules/websocket";
 import { UserContext } from '../app/UserContext';
+import { useHistory } from 'react-router-dom';
 
 export default function DebugPage() {
+  const history = useHistory();
   const userContext = useContext(UserContext);
   const [websocketConsole, setWebsocketConsole] = useState("");
   const dispatch = useDispatch();
@@ -36,8 +38,8 @@ export default function DebugPage() {
     disconnect(dispatch);
   }
 
-  const login = () => {
-    userContext.login();
+  const handleLogin = () => {
+    history.push("/login");
   }
 
   const logout = () => {
@@ -48,14 +50,21 @@ export default function DebugPage() {
 
   }
 
+  const handleSetDisplayName = () => {
+    const me = userContext;
+    debugger;
+    // userContext.setDisplayName("Overwritten Name");
+  };
+
   return (
     <>
 
       <h6>User Info</h6>
       <div>
-        <div data-testid="login-state">Login State: {userContext.isPendingState}</div>
+        <div>Login Status: {userContext.loginStatus}</div>
         <div>Display Name: {userContext.displayName}</div>
         <div>Email: {userContext.email}</div>
+        <div>Last Signin: {userContext.lastSignInTime}</div>
         <div>Token: {userContext.idToken}</div>
         <div>Token Expiration: ??</div>
       </div>
@@ -65,8 +74,9 @@ export default function DebugPage() {
         <div>Connection Status: { websocket.status } </div>
         <button onClick={openConnection}>openConnection</button>
         <button onClick={closeConnection}>closeConnection</button>
-        <button onClick={login}>login</button>
+        <button onClick={handleLogin}>login</button>
         <button onClick={logout}>logout</button>
+        <button onClick={handleSetDisplayName}>set displayName</button>
         <button onClick={authenticateWithBackend}>authenticateWithBackend</button>
 
         <div>

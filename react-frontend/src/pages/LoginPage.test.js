@@ -37,6 +37,9 @@ function populateLocalStorageData() {
     displayName: 'Its Me',
     email: 'me@example.com',
     photoURL: '',
+    metadata: {
+      lastSignInTime: 'Thu, 05 Jan 2023 23:35:09 GMT'
+    }
   };
 
   const credential = {
@@ -49,5 +52,6 @@ function populateLocalStorageData() {
   localStorage.setItem("photoURL", usr.photoURL);
   localStorage.setItem("accessToken", credential.accessToken);
   localStorage.setItem("idToken", credential.idToken);
-  localStorage.setItem('login_status', 'logged_in');
+  localStorage.setItem("lastSignInTime", credential.idToken);
+  localStorage.setItem('loginStatus', 'logged_in');
 }

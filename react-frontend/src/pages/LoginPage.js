@@ -20,15 +20,15 @@ export default function LoginPage() {
     // if (userContext.displayName === undefined)
     //   return;
     // If we're not expecting a redirect (ie "logged_in" or 'logged_out' is set) return early to reduce web traffic
-    if (userContext.status !== 'pending')
+    if (userContext.loginStatus !== 'pending')
       return;
 
     console.log("Calling catchRedirectSignInMicrosoft");
     catchRedirectSignInMicrosoft()
       .then(result => {
         if (result == null) {
-          if (userContext.status === 'pending') {
-            userContext.setStatus('logged_out');  // catches bugs where the login is set to pending, but no redirect comes in
+          if (userContext.loginStatus === 'pending') {
+            userContext.setLoginStatus('logged_out');  // catches bugs where the login is set to pending, but no redirect comes in
           }
           return;  // sometimes this is null, even if it's a redirect response
         }
@@ -68,7 +68,7 @@ export default function LoginPage() {
   const UserDetails = () => {
     return (
       <div>
-        { userContext.status === 'pending' ?
+        { userContext.loginStatus === 'pending' ?
             <CircularProgress />
         :
           <>username: { userContext.displayName }</>
@@ -82,15 +82,15 @@ export default function LoginPage() {
   }
 
   const handleChangeStateState = (state) => {
-    userContext.setStatus(state);
+    userContext.setLoginStatus(state);
   }
 
   return (
     <>
       <div>
-        { userContext.status === 'logged_in' ?
+        { userContext.loginStatus === 'logged_in' ?
           "Logged In" :
-          userContext.status === 'logged_out' ?
+          userContext.loginStatus === 'logged_out' ?
             "Logged Out" :
             "Login Pending"
         }
@@ -98,14 +98,14 @@ export default function LoginPage() {
 
       <UserDetails/>
 
-      { userContext.status === 'logged_in' ?
+      { userContext.loginStatus === 'logged_in' ?
         <LogoutButton/> :
         <LoginButton/>
       }
 
       <ShowTokenButton/>
 
-      <div>Login status is: "{ userContext.status }" </div>
+      <div>Login status is: "{ userContext.loginStatus }" </div>
       <button onClick={() => handleChangeStateState('logged_out')}>Change to logged_out</button>
       <button onClick={() => handleChangeStateState('pending')}>Change to pending</button>
       <button onClick={() => handleChangeStateState('logged_in')}>Change to logged_in</button>
