@@ -139,7 +139,7 @@ func RunServer() {
 
 	router := gin.Default()
 
-	router.NoRoute(gin.WrapH(http.FileServer(http.Dir("../frontend"))))
+	router.NoRoute(gin.WrapH(http.FileServer(http.Dir("../pax-imperia-js"))))
 	router.GET("/albums", getAlbums)
 	router.GET("/test", doTest)
 	router.GET("/websocket", func(c *gin.Context) {

@@ -26,10 +26,6 @@ export default function DebugPage() {
     setMsgToSend(event.target.value);
   };
 
-  const thingy = () => {
-    console.log("The state is: " + websocket.status);
-  }
-
   const openConnection = () => {
     connectAndJoin(dispatch);
   }
@@ -51,9 +47,7 @@ export default function DebugPage() {
   }
 
   const handleSetDisplayName = () => {
-    const me = userContext;
-    debugger;
-    // userContext.setDisplayName("Overwritten Name");
+    userContext.setDisplayName("Overwritten Name");
   };
 
   return (
