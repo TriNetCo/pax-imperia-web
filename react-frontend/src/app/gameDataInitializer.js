@@ -8,11 +8,13 @@ const initGameData = () => {
   // Main //
   //////////
 
+  let galaxy = new Galaxy(GameSettings.galaxyWidget);
+
   let gameData = {
-    galaxy: new Galaxy(GameSettings.galaxyWidget)
+    galaxy
   };
 
-  let systemData = JSON.parse(gameData.galaxy.systems[0].toJson());
+  let systemData = JSON.parse(JSON.stringify(galaxy.systems[0]));
 
   const data = {
     galaxyWidget :
