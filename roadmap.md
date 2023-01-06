@@ -14,12 +14,12 @@ Here's where we describe what our vision, ambitions and next steps are for the p
 - Define golang struct for solar system data
 - Combine galactic view into system view
 - (ROB) Websockets
-    x Listen for websocket connections from the frontend
-    - Get two clients "chatting"
-    - Communicate commands from frontend to backend (start new game command?)
-    - pump out solar system data to the backend over websocket
-    - Transmit gametime to multiple subscribed clients
-    - Communicate positions of ships with multiple clients
+  x Listen for websocket connections from the frontend
+  - Get two clients "chatting"
+  - Communicate commands from frontend to backend (start new game command?)
+  - pump out solar system data to the backend over websocket
+  - Transmit gametime to multiple subscribed clients
+  - Communicate positions of ships with multiple clients
 
 
 ## Gameplay Logic and Design
@@ -30,11 +30,11 @@ Here's where we describe what our vision, ambitions and next steps are for the p
 ## Design
 - Colonizing planets
 - Themes
-    - Expansion
-    - Exploration
-    - Industry
-    - Combat
-    - Research
+  - Expansion
+  - Exploration
+  - Industry
+  - Combat
+  - Research
 - Spaceships
 - Different species with different histories
 

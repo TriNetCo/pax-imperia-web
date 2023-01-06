@@ -1,6 +1,6 @@
 # Pax Imperia Clone
 
-A clone of an old game
+A clone of an old game.  The arcitecture is [here](architectural_diagrams.md).
 
 
 ## Overview
