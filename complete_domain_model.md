@@ -1,4 +1,4 @@
-# Domain Model
+# Complete Domain Model
 
 ```mermaid
 classDiagram
@@ -20,12 +20,12 @@ classDiagram
   ResearchProgress --> ResearchItem
   ResearchItem --> ResearchItemType
 
-  System --> Star
-  System --> Planet
+  System --> Star~GameEntity~
+  System --> Planet~GameEntity~
   System --> Squadron~GameEntity~
 
 
-  Planet --> Colony
+  Planet~GameEntity~ --> Colony
 
   Squadron~GameEntity~ --> GameEntity
   Squadron~GameEntity~ --> Ship
@@ -67,7 +67,7 @@ classDiagram
   class System {
     List~Star~ stars
     List~Planet~ planets
-    List~Squadron~GameEntity~~ squadrons
+    List~Squadron~ squadrons
   }
   class Player {
     String playStyle : human/ ai_agro/ ai_peaceful
@@ -111,7 +111,7 @@ classDiagram
     space
   }
 
-  class Star {
+  class Star~GameEntity~ {
     String starType
     int size
     int radiationStrength
@@ -130,7 +130,7 @@ classDiagram
     List~Ship~ ships
   }
 
-  class Planet {
+  class Planet~GameEntity~ {
     Colony colony
     int wealthRating
     String atmosphere
