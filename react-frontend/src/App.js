@@ -6,6 +6,7 @@ import DebugPage from './pages/DebugPage';
 import Default from './pages/Default';
 import SystemPage from './pages/SystemPage';
 import LoginPage from './pages/LoginPage';
+import UsersPage from './features/users/UsersPage';
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
           <Route exact path="/systems/:systemId" component={SystemPage} />
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/debug" component={DebugPage} />
+          <Route exact path="/users" component={UsersPage} />
           <Route exact path="/default" component={Default} />
         </Switch>
       </div>
