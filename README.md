@@ -15,7 +15,13 @@ The backend's data models are created from the postgres database (resume driven 
 
 ## Getting Started...
 
-## Secrets
+## Secrets and Configs
+
+Add something like this to your shell:
+
+```
+source ~/dev/game_dev/pax-imperia-clone/.env.local
+```
 
 Populate `backend/secrets/` and set `export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/dev/game_dev/pax-imperia-clone/backend/secrets/pax-imeria-clone-firebase-adminsdk-b7dfw-1c36eb54cd.json"`.  This file comes from firebase's dashboard instructions for using/ installing service accounts: https://firebase.google.com/docs/admin/setup#go.
 
