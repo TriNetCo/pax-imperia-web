@@ -24,7 +24,7 @@ Ideally we should be able to load a game in progress.  The state of a game shoul
 
 ##### Complete Domain Model:
 
-The domain model got huge so it lives [here](domain_model.md).  Usually I just model this in javascript somewhere so it never falls out of date, but I wound up getting distracted while figuring out what a saved game's state would look like.
+The domain model got huge so it lives [here](complete_domain_model.md).  Usually I just model this in javascript somewhere so it never falls out of date, but I wound up getting distracted while figuring out what a saved game's state would look like.
 
 ##### System Domain Model:
 
