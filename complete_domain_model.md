@@ -15,9 +15,10 @@ classDiagram
   Player --> User
 
   Colonizer --> Race
-  Colonizer --> ResearchProgress
+  Colonizer --> ResearchState
+  Colonizer --> EspionageState
 
-  ResearchProgress --> ResearchItem
+  ResearchState --> ResearchItem
   ResearchItem --> ResearchItemType
 
   System --> Star~GameEntity~
@@ -77,7 +78,7 @@ classDiagram
 
   class Colonizer {
     Race race
-    ResearchProgress researchProgress
+    ResearchState researchState
   }
 
   class Race {
@@ -89,7 +90,7 @@ classDiagram
     etc..
   }
 
-  class ResearchProgress {
+  class ResearchState {
     ResearchItem currentResearchItem
     List~ResearchItem~ researchedItems
     List~ResearchItem~ unResearchedItems
