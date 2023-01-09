@@ -1,44 +1,34 @@
 import { bindActionCreators } from '@reduxjs/toolkit';
-import React, { useState } from 'react';
-import { useSelector, useDispatch, connect } from 'react-redux';
+import React from 'react';
+import { connect } from 'react-redux';
 import * as userSliceActions from "./usersSlice";
-// import {
-//   decrement,
-//   increment,
-//   incrementByAmount,
-//   incrementAsync,
-//   incrementIfOdd,
-//   selectCount,
-// } from './usersSlice';
-import styles from './Users.module.css';
+import UserList from './UserList';
 
 const UsersPage = ({
   users,
   actions,
   ...props
 }) => {
-  // const count = useSelector(selectCount);
-  const dispatch = useDispatch();
-  // const users = useSelector(state => state.users);
-  // const [incrementAmount, setIncrementAmount] = useState('2');
-
-  // const incrementValue = Number(incrementAmount) || 0;
-
   const initRedux = () => {
     actions.fetchAllUsers()
         .catch((error) => {
           alert("Loading users failed HOW DO I CATCH HERE"); });
-  }
+  };
+
+  const handleDeleteUser = (user) => {
+    // const userWantsToDelete = confirm("Are you sure?");
+    const userWantsToDelete = true;
+    if (userWantsToDelete) {
+      console.log("User deleted");
+      actions.deleteUser(user.id).catch((error) => {
+        console.log("Delete failed. " + error.message);
+      });
+    }
+  };
 
   return (
     <div>
-      <h1>Users:</h1>
-      <div className={styles.row}>
-        John Doe | john@example.com | admin | show
-      </div>
-      <div className={styles.row}>
-        Jane Doe | jane@example.com | user | show
-      </div>
+      <UserList users={users} onDeleteClick={handleDeleteUser} />
 
       <button onClick={initRedux}>Initiate Redux Thing</button>
     </div>
@@ -58,6 +48,7 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: {
       fetchAllUsers: bindActionCreators(userSliceActions.fetchAll, dispatch),
+      deleteUser: bindActionCreators(userSliceActions.deleteUser, dispatch),
     },
   };
 }

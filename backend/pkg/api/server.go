@@ -3,11 +3,29 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/websocket"
 )
+
+func CORS() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	}
+}
 
 type album struct {
 	ID     string  `json:"id"`
@@ -134,14 +152,51 @@ func doTest(c *gin.Context) {
 // 	jwks.EndBackground()
 // }
 
+type user struct {
+	ID      int    `json:"id"`
+	Name    string `json:"name"`
+	Email   string `json:"email"`
+	Role    string `json:"role"`
+	IdToken string `json:"idToken"`
+}
+
+var users = []user{
+	{ID: 1, Name: "John Doe", Email: "John@example.com", Role: "admin", IdToken: "blah"},
+	{ID: 2, Name: "Jane Doe", Email: "jane@example.com", Role: "user", IdToken: "blahblah"},
+}
+
+func getUsers(c *gin.Context) {
+	c.JSON(http.StatusOK, users)
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"code":    http.StatusOK,
+	// 	"message": users})
+}
+
+func deleteUser(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		fmt.Println("param 'id' was not an int")
+	}
+
+	var deletedId user
+	deletedId.ID = id
+
+	c.JSON(http.StatusOK, deletedId)
+}
+
 func RunServer() {
 	// sc, err := subscription.GenerateSubscriptionController()
 
 	router := gin.Default()
+	router.Use(cors.Default())
+	// router.Use(CORS())
 
 	router.NoRoute(gin.WrapH(http.FileServer(http.Dir("../pax-imperia-js"))))
 	router.GET("/albums", getAlbums)
 	router.GET("/test", doTest)
+	router.GET("/users", getUsers)
+	router.GET("/users/", getUsers)
+	router.DELETE("/users/:id", deleteUser)
 	router.GET("/websocket", func(c *gin.Context) {
 		wshandler(c.Writer, c.Request)
 	})

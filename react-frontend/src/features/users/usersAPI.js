@@ -1,24 +1,23 @@
 import { handleResponse, handleError } from "./apiUtils";
 const baseUrl = process.env.REACT_APP_PAX_API_URL;
 
-const headers = {}
+const headers = new Headers();
 
 function getHeaders() {
   let token = localStorage.getItem("currentUserToken");
   if (token) {
-    headers.Authorization = "Bearer " + token
-    // headers.Custom = "yes"
+    headers.append('Authorization', "Bearer " + token);
   }
 
   return headers;
 }
 
-export default {
+const usersApi = {
   fetchAllUsers: function() {
     let params = {
       method: 'get',
-      headers: new Headers(getHeaders()),
-      mode: 'cors',
+      cache: 'no-cache',
+      headers: getHeaders(),
     }
 
     return fetch(baseUrl + "/users/", params)
@@ -31,3 +30,5 @@ export default {
       .catch(handleError);
   }
 }
+
+export default usersApi;
