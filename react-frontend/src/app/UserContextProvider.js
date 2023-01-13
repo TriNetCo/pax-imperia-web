@@ -25,5 +25,5 @@ export const UserContextProvider = (props) => {
     <UserContext.Provider value={userContext}>
       {props.children}
     </UserContext.Provider>
-  )
-}
+  );
+};

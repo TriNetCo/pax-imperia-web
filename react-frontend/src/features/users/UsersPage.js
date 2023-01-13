@@ -1,7 +1,7 @@
 import { bindActionCreators } from '@reduxjs/toolkit';
 import React from 'react';
 import { connect } from 'react-redux';
-import * as userSliceActions from "./usersSlice";
+import * as userSliceActions from './usersSlice';
 import UserList from './UserList';
 
 const UsersPage = ({
@@ -11,17 +11,17 @@ const UsersPage = ({
 }) => {
   const initRedux = () => {
     actions.fetchAllUsers()
-        .catch((error) => {
-          alert("Loading users failed HOW DO I CATCH HERE"); });
+      .catch((error) => {
+        alert('Loading users failed HOW DO I CATCH HERE'); });
   };
 
   const handleDeleteUser = (user) => {
     // const userWantsToDelete = confirm("Are you sure?");
     const userWantsToDelete = true;
     if (userWantsToDelete) {
-      console.log("User deleted");
+      console.log('User deleted');
       actions.deleteUser(user.id).catch((error) => {
-        console.log("Delete failed. " + error.message);
+        console.log('Delete failed. ' + error.message);
       });
     }
   };

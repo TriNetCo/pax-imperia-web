@@ -23,6 +23,6 @@ const initGameData = () => {
       new SpaceViewWidget(GameSettings.spaceViewWidget, {}, systemData)
   };
   return data;
-}
+};
 
 export { initGameData };

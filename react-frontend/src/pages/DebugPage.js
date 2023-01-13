@@ -1,16 +1,16 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { connectAndJoin, disconnect } from '../app/Context';
-import { useDispatch, useSelector } from "react-redux";
-import { newMessage, selectWebsocket } from "../modules/websocket";
+import { useDispatch, useSelector } from 'react-redux';
+import { newMessage, selectWebsocket } from '../modules/websocket';
 import { UserContext } from '../app/UserContext';
 import { useHistory } from 'react-router-dom';
 
 export default function DebugPage() {
   const history = useHistory();
   const userContext = useContext(UserContext);
-  const [websocketConsole, setWebsocketConsole] = useState("");
+  const [websocketConsole, setWebsocketConsole] = useState('');
   const dispatch = useDispatch();
-  const [msgToSend, setMsgToSend] = useState("");
+  const [msgToSend, setMsgToSend] = useState('');
   const websocket = useSelector(selectWebsocket);
 
   useEffect(() => {
@@ -18,9 +18,9 @@ export default function DebugPage() {
   }, [userContext]);
 
   const sendMessage = () => {
-    setWebsocketConsole(websocketConsole + "sent: " + msgToSend + "\n");
+    setWebsocketConsole(websocketConsole + 'sent: ' + msgToSend + '\n');
     dispatch(newMessage(msgToSend));
-  }
+  };
 
   const handleMessageChange = event => {
     setMsgToSend(event.target.value);
@@ -28,26 +28,26 @@ export default function DebugPage() {
 
   const openConnection = () => {
     connectAndJoin(dispatch);
-  }
+  };
 
   const closeConnection = () => {
     disconnect(dispatch);
-  }
+  };
 
   const handleLogin = () => {
-    history.push("/login");
-  }
+    history.push('/login');
+  };
 
   const logout = () => {
     userContext.logout();
-  }
+  };
 
   const authenticateWithBackend = () => {
 
-  }
+  };
 
   const handleSetDisplayName = () => {
-    userContext.setDisplayName("Overwritten Name");
+    userContext.setDisplayName('Overwritten Name');
   };
 
   return (

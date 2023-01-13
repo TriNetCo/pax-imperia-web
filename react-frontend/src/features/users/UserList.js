@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 const UserList = ({ users, onDeleteClick }) => (
   <table className="table">
@@ -17,7 +17,7 @@ const UserList = ({ users, onDeleteClick }) => (
         return (
           <tr key={user.id} className="user">
             <td>
-              <Link to={"/user/" + user.id}>{user.name}</Link>
+              <Link to={'/user/' + user.id}>{user.name}</Link>
             </td>
             <td>{user.email}</td>
             <td>{user.role}</td>

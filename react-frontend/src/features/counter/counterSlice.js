@@ -13,7 +13,7 @@ const initialState = {
 // typically used to make async requests.
 export const incrementAsync = createAsyncThunk(
   'counter/fetchCount',
-  async (amount) => {
+  async(amount) => {
     const response = await fetchCount(amount);
     // The value we return becomes the `fulfilled` action payload
     return response.data;

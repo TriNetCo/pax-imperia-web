@@ -7,7 +7,7 @@ let setUser;
 
 const initUser = (setStateFunc) => {
   setUser = setStateFunc;
-}
+};
 
 const setUserInfo = (info) => {
   user = info;
@@ -17,30 +17,30 @@ const setUserInfo = (info) => {
 const fillUserInfoFromLocalStorage = () => {
   setUserInfo({
     ...ctx,
-    displayName: localStorage.getItem("displayName") ?? 'NONE',
-    email:       localStorage.getItem("email") ?? '',
-    profilePic:  localStorage.getItem("photoURL") ?? '',
-    accessToken: localStorage.getItem("accessToken") ?? '',
-    idToken:     localStorage.getItem("idToken") ?? '',
-    lastSignInTime: localStorage.getItem("lastSignInTime") ?? '',
+    displayName: localStorage.getItem('displayName') ?? 'NONE',
+    email:       localStorage.getItem('email') ?? '',
+    profilePic:  localStorage.getItem('photoURL') ?? '',
+    accessToken: localStorage.getItem('accessToken') ?? '',
+    idToken:     localStorage.getItem('idToken') ?? '',
+    lastSignInTime: localStorage.getItem('lastSignInTime') ?? '',
     loginStatus:      localStorage.getItem('loginStatus') ?? 'logged_out',
     initialized: true,
   });
 };
 
 const login = () => {
-  localStorage.setItem('loginStatus', 'pending')
+  localStorage.setItem('loginStatus', 'pending');
   signInMicrosoft();
 };
 
 const logout = () => {
-  localStorage.removeItem("displayName");
-  localStorage.removeItem("email")
-  localStorage.removeItem("photoURL")
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("idToken");
-  localStorage.removeItem("lastSignInTime");
-  localStorage.removeItem("loginStatus");
+  localStorage.removeItem('displayName');
+  localStorage.removeItem('email');
+  localStorage.removeItem('photoURL');
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('idToken');
+  localStorage.removeItem('lastSignInTime');
+  localStorage.removeItem('loginStatus');
 
   setUserInfo({
     ...ctx,
@@ -52,12 +52,12 @@ const logout = () => {
 const fillUserInfoFromRedirect = (result, credential) => {
   const usr = result;
 
-  localStorage.setItem("displayName", usr.displayName)
-  localStorage.setItem("email", usr.email)
-  localStorage.setItem("photoURL", usr.photoURL)
-  localStorage.setItem("accessToken", credential.accessToken);
-  localStorage.setItem("idToken", credential.idToken);
-  localStorage.setItem("lastSignInTime", usr.metadata.lastSignInTime)
+  localStorage.setItem('displayName', usr.displayName);
+  localStorage.setItem('email', usr.email);
+  localStorage.setItem('photoURL', usr.photoURL);
+  localStorage.setItem('accessToken', credential.accessToken);
+  localStorage.setItem('idToken', credential.idToken);
+  localStorage.setItem('lastSignInTime', usr.metadata.lastSignInTime);
   localStorage.setItem('loginStatus', 'logged_in');
 
   setUserInfo({
@@ -88,7 +88,7 @@ const setDisplayName = (val) => {
     ...user,
     displayName: val
   });
-}
+};
 
 const ctx = {
   displayName: 'NONE',
@@ -113,7 +113,7 @@ const ctx = {
 
 export const createUserContext = () => {
   return ctx;
-}
+};
 
 
 export const UserContext = React.createContext(ctx);

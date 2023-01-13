@@ -1,20 +1,19 @@
-import React from "react";
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 import Galaxy from '../features/galaxy/Galaxy';
-import { useDispatch } from "react-redux";
-import { newMessage } from "../modules/websocket";
+import { useDispatch } from 'react-redux';
+import { newMessage } from '../modules/websocket';
 
 const HomePage = () => {
   const dispatch = useDispatch();
 
-
   const doSomething = () => {
-    const msg = "hihihi";
+    const msg = 'hihihi';
     alert('Sending: ' + msg);
     debugger;
     dispatch(newMessage(msg));
-  }
+  };
 
   return (
     <div className="App">

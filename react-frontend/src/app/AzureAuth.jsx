@@ -9,14 +9,14 @@ import {
 
 
 const config = {
-  apiKey: "AIzaSyC2-8-ZkRcdM7hJXAYnWaiPEloUr_8dcsE",
-  authDomain: "pax-imeria-clone.firebaseapp.com",
-  projectId: "pax-imeria-clone",
-  storageBucket: "pax-imeria-clone.appspot.com",
-  messagingSenderId: "197061503647",
-  appId: "1:197061503647:web:ddb8057e008e53ab6ad0aa",
-  measurementId: "G-8QVSYPR5KT",
-  tenant: "common"
+  apiKey: 'AIzaSyC2-8-ZkRcdM7hJXAYnWaiPEloUr_8dcsE',
+  authDomain: 'pax-imeria-clone.firebaseapp.com',
+  projectId: 'pax-imeria-clone',
+  storageBucket: 'pax-imeria-clone.appspot.com',
+  messagingSenderId: '197061503647',
+  appId: '1:197061503647:web:ddb8057e008e53ab6ad0aa',
+  measurementId: 'G-8QVSYPR5KT',
+  tenant: 'common'
 };
 
 let app;
@@ -61,7 +61,7 @@ async function catchRedirectSignInMicrosoft() {
   }
 
   return { user:       result.user,
-           credential: OAuthProvider.credentialFromResult(result) };
+    credential: OAuthProvider.credentialFromResult(result) };
 }
 
 export { signInMicrosoft, signOutMicrosoft, catchRedirectSignInMicrosoft, initApp };

@@ -23,7 +23,7 @@ export default function LoginPage() {
     if (userContext.loginStatus !== 'pending')
       return;
 
-    console.log("Calling catchRedirectSignInMicrosoft");
+    console.log('Calling catchRedirectSignInMicrosoft');
     catchRedirectSignInMicrosoft()
       .then(result => {
         if (result == null) {
@@ -36,7 +36,7 @@ export default function LoginPage() {
         userContext.fillUserInfoFromRedirect(result.user, result.credential);
       })
       .catch((error) => {
-        console.log("Something unexpected happened: " + error);
+        console.log('Something unexpected happened: ' + error);
       });
 
   }, [userContext]);
@@ -47,30 +47,30 @@ export default function LoginPage() {
 
   const handleLogout = () => {
     userContext.logout();
-  }
+  };
 
   const handleShow = _ => {
     console.log(userContext.idToken);
   };
 
   const LogoutButton = () => {
-    return <button variant="secondary" className="ml-auto" onClick={() => handleLogout()}>Sign out</button>
+    return <button variant="secondary" className="ml-auto" onClick={() => handleLogout()}>Sign out</button>;
   };
 
   const LoginButton = () => {
-    return <button variant="secondary" className="ml-auto" onClick={handleLogin}>Sign in using Redirect</button>
+    return <button variant="secondary" className="ml-auto" onClick={handleLogin}>Sign in using Redirect</button>;
   };
 
   const ShowTokenButton = () => {
-    return <button variant="secondary" className="ml-auto" onClick={() => handleShow()}>Show Token</button>
+    return <button variant="secondary" className="ml-auto" onClick={() => handleShow()}>Show Token</button>;
   };
 
   const UserDetails = () => {
     return (
       <div>
         { userContext.loginStatus === 'pending' ?
-            <CircularProgress />
-        :
+          <CircularProgress />
+          :
           <>username: { userContext.displayName }</>
         }
       </div>
@@ -78,21 +78,21 @@ export default function LoginPage() {
   };
 
   const handleShowContext = () => {
-    console.log("DisplayName: " + userContext.displayName);
-  }
+    console.log('DisplayName: ' + userContext.displayName);
+  };
 
   const handleChangeStateState = (state) => {
     userContext.setLoginStatus(state);
-  }
+  };
 
   return (
     <>
       <div>
         { userContext.loginStatus === 'logged_in' ?
-          "Logged In" :
+          'Logged In' :
           userContext.loginStatus === 'logged_out' ?
-            "Logged Out" :
-            "Login Pending"
+            'Logged Out' :
+            'Login Pending'
         }
       </div>
 

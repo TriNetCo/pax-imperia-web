@@ -13,21 +13,21 @@ export async function handleResponse(response) {
 
   if (response.status === 401) {
     const json = await response.json();
-    if (json.error === "Token Expired") {
-      throw new Error("Token Expired");
+    if (json.error === 'Token Expired') {
+      throw new Error('Token Expired');
     }
   }
 
   if (response.status === 403) {
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized');
   }
 
-  throw new Error("Network response was not ok.");
+  throw new Error('Network response was not ok.');
 }
 
 // In a real app, would likely call an error logging service.
 export function handleError(error) {
   // eslint-disable-next-line no-console
-  console.error("API call failed. " + error);
+  console.error('API call failed. ' + error);
   throw error;
 }
