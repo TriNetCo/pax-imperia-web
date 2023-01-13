@@ -5,10 +5,10 @@ import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import Context from '../src/app/Context';
 import { BrowserRouter as Router } from "react-router-dom";
-import { createMyContext } from "../src/app/UserContext";
+import { createUserContext } from "../src/app/UserContext";
 
 
-const userContext = createMyContext();
+const userContext = createUserContext();
 userContext.login = () => {};
 userContext.logout = () => {};
 userContext.initApp = () => {};

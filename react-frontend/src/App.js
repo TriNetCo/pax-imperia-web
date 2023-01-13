@@ -9,19 +9,19 @@ import LoginPage from './pages/LoginPage';
 import UsersPage from './features/users/UsersPage';
 
 function App() {
-    return (
-      <div className="App">
-        <Switch>
-          <Route exact path="/" component={HomePage} />
-          <Route exact path="/systems" component={HomePage} />
-          <Route exact path="/systems/:systemId" component={SystemPage} />
-          <Route exact path="/login" component={LoginPage} />
-          <Route exact path="/debug" component={DebugPage} />
-          <Route exact path="/users" component={UsersPage} />
-          <Route exact path="/default" component={Default} />
-        </Switch>
-      </div>
-    );
+  return (
+    <div className="App">
+      <Switch>
+        <Route exact path="/" component={HomePage} />
+        <Route exact path="/systems" component={HomePage} />
+        <Route exact path="/systems/:systemId" component={SystemPage} />
+        <Route exact path="/login" component={LoginPage} />
+        <Route exact path="/debug" component={DebugPage} />
+        <Route exact path="/users" component={UsersPage} />
+        <Route exact path="/default" component={Default} />
+      </Switch>
+    </div>
+  );
 }
 
 export default App;

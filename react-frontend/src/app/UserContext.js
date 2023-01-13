@@ -111,7 +111,7 @@ const ctx = {
 };
 
 
-export const createMyContext = () => {
+export const createUserContext = () => {
   return ctx;
 }
 

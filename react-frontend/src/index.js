@@ -11,24 +11,24 @@ import 'pax-imperia-js/css/style.css';
 import 'pax-imperia-js/css/systems.css';
 import Context from './app/Context';
 import { initGameData } from './app/gameDataInitializer';
-import { createMyContext } from './app/UserContext';
+import { createUserContext } from './app/UserContext';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
 
 const gameData    = initGameData();
-const userContext = createMyContext();
+const userContext = createUserContext();
 
 root.render(
-    <Provider store={store}>
-        <Context gameData={gameData} userContext={userContext}>
-            <React.StrictMode>
-                <Router basename={process.env.REACT_APP_PUBLIC_SUFIX}>
-                    <App />
-                </Router>
-            </React.StrictMode>
-        </Context>
-    </Provider>
+  <Provider store={store}>
+    <Context gameData={gameData} userContext={userContext}>
+      <React.StrictMode>
+        <Router basename={process.env.REACT_APP_PUBLIC_SUFIX}>
+          <App />
+        </Router>
+      </React.StrictMode>
+    </Context>
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function
