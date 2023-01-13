@@ -29,6 +29,7 @@ const Galaxy = () => {
     return () => {
       cancelAnimationFrame(requestId);
       galaxyWidget.detachFromDom();
+      console.log('detached galaxy from dom');
     };
   });
 

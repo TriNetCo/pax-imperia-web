@@ -1,0 +1,19 @@
+import { useHistory } from 'react-router-dom';
+
+const ColonizerConfigPage = () => {
+  const history = useHistory();
+
+  const handleDefaultClick = () => {
+    alert('TODO: Populate the colonizer game data here...');
+    history.push('/new_game/galaxy_config');
+  };
+
+  return (
+    <>
+      <h1>ColonizerConfig Page</h1>
+      <button onClick={handleDefaultClick}>Choose default telepathic species</button>
+    </>
+  );
+};
+
+export default ColonizerConfigPage;

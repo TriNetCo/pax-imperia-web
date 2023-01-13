@@ -1,11 +1,11 @@
 import React, { useEffect, useContext } from 'react';
-import { UserContext } from '../app/UserContext';
+import { UserContext } from '../../app/UserContext';
 
 import {
   CircularProgress
 } from '@mui/material';
 
-import { catchRedirectSignInMicrosoft } from '../app/AzureAuth';
+import { catchRedirectSignInMicrosoft } from '../../app/AzureAuth';
 
 
 export default function LoginPage() {

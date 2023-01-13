@@ -5,7 +5,7 @@ import Galaxy from '../features/galaxy/Galaxy';
 import { useDispatch } from 'react-redux';
 import { newMessage } from '../modules/websocket';
 
-const HomePage = () => {
+const GameDashboardPage = () => {
   const dispatch = useDispatch();
 
   const doSomething = () => {
@@ -48,4 +48,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default GameDashboardPage;
