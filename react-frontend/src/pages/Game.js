@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { wsConnect, wsDisconnect } from '../modules/websocket';
 // import { startRound, leaveGame, makeMove } from '../modules/game';
 import WithAuth from '../hocs/AuthenticationWrapper';
@@ -30,4 +31,10 @@ class Game extends React.Component {
 const s2p = (state, ownProps) => ({
   id: ownProps.match && ownProps.match.params.id,
 });
+
+Game.propTypes = {
+  id: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
+};
+
 export default WithAuth(connect(s2p)(Game));

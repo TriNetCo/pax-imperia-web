@@ -11,7 +11,6 @@ const HomePage = () => {
   const doSomething = () => {
     const msg = 'hihihi';
     alert('Sending: ' + msg);
-    debugger;
     dispatch(newMessage(msg));
   };
 

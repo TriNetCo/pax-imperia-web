@@ -54,15 +54,15 @@ export default function LoginPage() {
   };
 
   const LogoutButton = () => {
-    return <button variant="secondary" className="ml-auto" onClick={() => handleLogout()}>Sign out</button>;
+    return <button className="ml-auto" onClick={() => handleLogout()}>Sign out</button>;
   };
 
   const LoginButton = () => {
-    return <button variant="secondary" className="ml-auto" onClick={handleLogin}>Sign in using Redirect</button>;
+    return <button className="ml-auto" onClick={handleLogin}>Sign in using Redirect</button>;
   };
 
   const ShowTokenButton = () => {
-    return <button variant="secondary" className="ml-auto" onClick={() => handleShow()}>Show Token</button>;
+    return <button className="ml-auto" onClick={() => handleShow()}>Show Token</button>;
   };
 
   const UserDetails = () => {
@@ -105,12 +105,12 @@ export default function LoginPage() {
 
       <ShowTokenButton/>
 
-      <div>Login status is: "{ userContext.loginStatus }" </div>
+      <div>Login status is: &quot;{ userContext.loginStatus }&quot; </div>
       <button onClick={() => handleChangeStateState('logged_out')}>Change to logged_out</button>
       <button onClick={() => handleChangeStateState('pending')}>Change to pending</button>
       <button onClick={() => handleChangeStateState('logged_in')}>Change to logged_in</button>
 
-      <button variant="secondary" className="ml-auto" onClick={handleShowContext}>Show Context</button>
+      <button className="ml-auto" onClick={handleShowContext}>Show Context</button>
 
     </>
   );

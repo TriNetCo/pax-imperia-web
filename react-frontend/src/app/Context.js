@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect, useDispatch } from 'react-redux';
 import { wsConnect, wsDisconnect } from '../modules/websocket';
 import { UserContextProvider } from './UserContextProvider';
+import PropTypes from 'prop-types';
 
 export const GameDataContext = React.createContext(null);
 
@@ -17,21 +18,26 @@ export const disconnect = (dispatch) => {
   dispatch(wsDisconnect());
 };
 
-const Context = (props) => {
+const Context = ({children, userContext, gameData}) => {
   const dispatch = useDispatch();
 
   useEffect( () => {
     connectAndJoin(dispatch);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <UserContextProvider value={props.userContext}>
-      <GameDataContext.Provider value={props.gameData}>
-        {props.children}
+    <UserContextProvider value={userContext}>
+      <GameDataContext.Provider value={gameData}>
+        {children}
       </GameDataContext.Provider>
     </UserContextProvider>
   );
+};
+
+Context.propTypes = {
+  children: PropTypes.element.isRequired,
+  userContext: PropTypes.object.isRequired,
+  gameData: PropTypes.object,
 };
 
 function mapDispatchToProps(dispatch) {

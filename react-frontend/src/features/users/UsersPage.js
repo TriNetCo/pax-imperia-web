@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as userSliceActions from './usersSlice';
 import UserList from './UserList';
+import PropTypes from 'prop-types';
 
 const UsersPage = ({
   users,
@@ -52,6 +53,11 @@ function mapDispatchToProps(dispatch) {
     },
   };
 }
+
+UsersPage.propTypes = {
+  users: PropTypes.array.isRequired,
+  actions: PropTypes.array.isRequired,
+};
 
 // export default UsersPage;
 export default connect(mapStateToProps, mapDispatchToProps)(UsersPage);
