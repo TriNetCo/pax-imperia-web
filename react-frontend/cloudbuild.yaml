@@ -1,0 +1,10 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build',
+    '--build-arg', 'SOCKET_URL=${_SOCKET_URL}',
+    '--build-arg', 'BACKEND_URL=${_BACKEND_URL}',
+    '-t', '${_IMAGE_URL}:${_TAG}',
+    '-t', '${_IMAGE_URL}:latest',
+    '.']
+images:
+    - '${_IMAGE_URL}'
