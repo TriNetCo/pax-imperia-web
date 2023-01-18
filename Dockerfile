@@ -3,6 +3,7 @@ FROM node:latest as ui-build
 RUN mkdir /app
 WORKDIR /app
 COPY . ./
+WORKDIR /app/react-frontend
 
 # setting default values for arguments
 ARG VITE_PAX_ENV=local
@@ -14,13 +15,14 @@ ENV VITE_SOCKET_URL=$SOCKET_URL
 ENV VITE_BACKEND_URL=$BACKEND_URL
 ENV NODE_ENV=production
 
+RUN ls ..
 RUN npm i
 RUN npm run build
 
 # server environment
 FROM nginx:alpine
-COPY nginx.conf /etc/nginx/conf.d/configfile.template
-COPY --from=ui-build /app/dist /usr/share/nginx/html
+COPY react-frontend/nginx.conf /etc/nginx/conf.d/configfile.template
+COPY --from=ui-build /app/react-frontend/build /usr/share/nginx/html
 ENV PORT 8080
 ENV HOST 0.0.0.0
 EXPOSE 8080
