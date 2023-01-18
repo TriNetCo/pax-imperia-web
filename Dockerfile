@@ -1,5 +1,7 @@
 FROM node:latest as ui-build
 
+# Unfortunatemly, this is just the frontend container which shouldn't even exist
+
 RUN mkdir /app
 WORKDIR /app
 COPY . ./
