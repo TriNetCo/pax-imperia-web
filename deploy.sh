@@ -50,4 +50,26 @@ gcloud run services delete react-frontend-dev
 
 gcloud container images  delete gcr.io/pax-imeria-clone/react-frontend
 
+# Delete the cloud build logs
+
+gsutil rm gs://pax-imeria-clone_cloudbuild/source/*.tgz
+
+
+
+
+
+
+# Copy frontend files via bucket method
+# ref: https://cloud.google.com/storage/docs/hosting-static-website#command-line
+
+gsutil mkdir gs://pax-imeria-clone_static_assets/
+gsutil cp -r react-frontend/build/* gs://pax-imeria-clone_static_assets/
+
+# Configure For static content sharing
+
+gcloud storage buckets add-iam-policy-binding  gs://pax-imeria-clone_static_asset --member=allUsers --role=roles/storage.objectViewer
+gcloud storage buckets update gs://pax-imeria-clone_static_asset --web-main-page-suffix=index.html --web-error-page=404.html
+
+
+
 
