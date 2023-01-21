@@ -26,6 +26,8 @@ source ~/dev/game_dev/pax-imperia-clone/.env.local
 
 Populate `backend/secrets/` and set `export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/dev/game_dev/pax-imperia-clone/backend/secrets/pax-imeria-clone-firebase-adminsdk-b7dfw-1c36eb54cd.json"`.  This file comes from firebase's dashboard instructions for using/ installing service accounts: https://firebase.google.com/docs/admin/setup#go.
 
+TODO: Document using `ln` to pull in the secrets/fullchain.pem and secrets/privkey.pem secrets
+
 ### Build Database
 
 go install github.com/go-jet/jet/v2/cmd/jet@latest

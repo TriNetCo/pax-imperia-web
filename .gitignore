@@ -1,5 +1,9 @@
 node_modules/
 dbmodels/
 backend/secrets/
+secrets/
 .env.local
 .env.prod
+**/terraform.tfstate
+**/terraform.tfstate.backup
+cloud_infrastructure/tf/.terraform/
