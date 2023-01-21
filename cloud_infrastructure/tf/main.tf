@@ -26,6 +26,15 @@ provider "google-beta" {
   project = var.project
 }
 
+resource "google_project" "project" {
+  name       = var.project
+  project_id = var.project
+
+  labels = {
+    "firebase" = "enabled"
+  }
+}
+
 # ------------------------------------------------------------------------------
 # CREATE THE SITE
 # ------------------------------------------------------------------------------
