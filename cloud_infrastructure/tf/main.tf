@@ -51,7 +51,7 @@ module "static_site" {
   enable_versioning = var.enable_versioning
 
   index_page     = var.index_page
-  not_found_page = var.not_found_page
+  not_found_page = var.index_page
 
   enable_cdn  = false
   enable_ssl  = var.enable_ssl
@@ -64,66 +64,18 @@ module "static_site" {
 # CREATE DEFAULT PAGES
 # ------------------------------------------------------------------------------
 
-resource "google_storage_bucket_object" "index" {
-  name    = var.index_page
-  content = "Bucket provisioned"
-  bucket  = module.static_site.website_bucket_name
-}
-
-resource "google_storage_bucket_object" "not_found" {
-  name    = var.not_found_page
-  content = "Not Found"
-  bucket  = module.static_site.website_bucket_name
-}
-
-# ------------------------------------------------------------------------------
-# SET GLOBAL READ PERMISSIONS
-# ------------------------------------------------------------------------------
-
-resource "google_storage_object_acl" "index_acl" {
-  bucket      = module.static_site.website_bucket_name
-  object      = google_storage_bucket_object.index.name
-  role_entity = ["READER:allUsers"]
-}
-
-resource "google_storage_object_acl" "not_found_acl" {
-  bucket      = module.static_site.website_bucket_name
-  object      = google_storage_bucket_object.not_found.name
-  role_entity = ["READER:allUsers"]
-}
-
-# ------------------------------------------------------------------------------
-# IF SSL IS ENABLED, CREATE A SELF-SIGNED CERTIFICATE
 #
-# In a production setup, you will likely manage your certificates separately.
-# ------------------------------------------------------------------------------
+resource "google_storage_bucket_object" "confirm_deploy" {
+  name    = "confirm_deploy.html"
+  content = "Bucket provisioning complete"
+  bucket  = module.static_site.website_bucket_name
+}
 
-# resource "tls_self_signed_cert" "cert" {
-#   count = var.enable_ssl ? 1 : 0
-
-#   #key_algorithm   = "RSA"
-#   private_key_pem = join("", tls_private_key.private_key.*.private_key_pem)
-
-#   subject {
-#     common_name  = var.website_domain_name
-#     organization = "Examples, Inc"
-#   }
-
-#   validity_period_hours = 12
-
-#   allowed_uses = [
-#     "key_encipherment",
-#     "digital_signature",
-#     "server_auth",
-#   ]
-# }
-
-# resource "tls_private_key" "private_key" {
-#   count = var.enable_ssl ? 1 : 0
-
-#   algorithm   = "RSA"
-#   ecdsa_curve = "P256"
-# }
+resource "google_storage_object_acl" "confirm_deploy_acl" {
+  bucket      = module.static_site.website_bucket_name
+  object      = google_storage_bucket_object.confirm_deploy.name
+  role_entity = ["READER:allUsers"]
+}
 
 # ------------------------------------------------------------------------------
 # CREATE A CORRESPONDING GOOGLE CERTIFICATE THAT WE CAN ATTACH TO THE LOAD BALANCER

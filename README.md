@@ -97,6 +97,11 @@ Firebase's dashboard is used to create our project and Azure AD is enabled as an
 ###### Authentication Process
 Using the firebase library, the JS client redirects the user to firebase's Azure AD auth extension.  From there, firebase forwards the auth request to Azure and Azure responds with a signed JWT token.  Firebase fowards this to our react front end upon redirect back to our application's login page.  Our app will now be able to look up the OAuth token via `auth.currentUser.getIdToken(true).then(idToken => { console.log(idToken) });`.  This token is passed to our backend which validates that the token is an authentically signed Azure token.  Our backend takes the email information from the JWT token to associate the user with our backend.  A table named `users` will include this email along with any roles this user may have (admin?).
 
+## Cloud Deployment Stuff
+
+Check out the [cloud docs](cloud_infrastructure/README.md).
+
+
 ## References
 
 - Three JS raycaster/ click detection stuff:
