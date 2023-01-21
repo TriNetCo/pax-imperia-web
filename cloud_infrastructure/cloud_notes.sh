@@ -39,6 +39,18 @@ gcloud projects add-iam-policy-binding ${PROJECT_ID} \
   --member="serviceAccount:sa-pax-tf-sbx@${PROJECT_ID}.iam.gserviceaccount.com" \
   --role="roles/editor"
 
+
+# Enable login via MS button using Google Identity Platform
+# Enable it and view it on the web UI here https://console.cloud.google.com/customer-identity/providers?project=pax-imeria-clone
+
+# This functionality can be managed by terraform using this reference: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/identity_platform_oauth_idp_config
+
+
+
+
+
+
+
 # Docker Build
 gcloud builds submit \
   --config cloudbuild.yaml \

@@ -68,12 +68,6 @@ variable "index_page" {
   default     = "index.html"
 }
 
-variable "not_found_page" {
-  description = "The custom object to return when a requested resource is not found"
-  type        = string
-  default     = "404.html"
-}
-
 variable "force_destroy_website" {
   description = "If set to true, this will force the delete of the website bucket when you run terraform destroy, even if there is still content in it. This is only meant for testing and should not be used in production."
   type        = bool
@@ -86,3 +80,12 @@ variable "force_destroy_access_logs_bucket" {
   default     = true
 }
 
+variable "pax_ms_client_id" {
+  description = "The client ID for the microsoft OAUTH IDP connection."
+  type        = string
+}
+
+variable "pax_ms_client_secret" {
+  description = "The client secret for the microsoft OAUTH IDP connection."
+  type        = string
+}

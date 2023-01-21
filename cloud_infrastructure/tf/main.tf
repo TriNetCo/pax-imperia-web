@@ -96,3 +96,12 @@ resource "google_compute_ssl_certificate" "certificate" {
     create_before_destroy = true
   }
 }
+
+# NOTE: the auth stuff is incomplete, see https://github.com/hashicorp/terraform-provider-google/issues/8510.  Authorized domains are not defined and must be entered manually.
+resource "google_identity_platform_default_supported_idp_config" "microsoft" {
+  enabled       = true
+  idp_id        = "microsoft.com"
+  client_id     = var.pax_ms_client_id
+  client_secret = var.pax_ms_client_secret
+  project       = var.project
+}
