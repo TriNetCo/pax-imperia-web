@@ -31,4 +31,3 @@ output "access_logs_bucket_name" {
   description = "Name of the access logs bucket"
   value       = module.static_site.access_logs_bucket_name
 }
-

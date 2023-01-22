@@ -1,8 +1,11 @@
 # These are just notes on google cloud, using the CLI and in some places point to how to see it in their webui which sucks to look at
 # It turned out deploying a static site over https was a LOT of commands so I switched over to terraform... not sure where to keep notes now...
 
-# Login
+# Login using your gmail...
 gcloud auth login
+
+# Login using a service account (the key will show up automatically only after running terraform)
+gcloud auth activate-service-account --key-file=../secrets/terraform_sa_key.json --project=$PROJECT_ID
 
 # Check login status
 gcloud auth list

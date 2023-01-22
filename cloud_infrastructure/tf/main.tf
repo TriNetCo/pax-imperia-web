@@ -18,10 +18,6 @@ terraform {
   }
 }
 
-# ------------------------------------------------------------------------------
-# CONFIGURE OUR GCP CONNECTION
-# ------------------------------------------------------------------------------
-
 provider "google-beta" {
   project = var.project
 }
@@ -33,6 +29,42 @@ resource "google_project" "project" {
   labels = {
     "firebase" = "enabled"
   }
+}
+
+# ------------------------------------------------------------------------------
+# CONFIGURE Service Account
+# ------------------------------------------------------------------------------
+
+data "google_iam_policy" "admin" {
+  binding {
+    role = "roles/iam.serviceAccountUser"
+
+    members = [
+      "serviceAccount:${google_service_account.sa.email}"
+    ]
+  }
+}
+
+resource "google_service_account" "sa" {
+  account_id   = "my-service-account"
+  display_name = "A service account for terraform"
+  project = var.project
+}
+
+resource "google_service_account_iam_policy" "admin-account-iam" {
+  service_account_id = google_service_account.sa.name
+  policy_data        = data.google_iam_policy.admin.policy_data
+}
+
+resource "google_service_account_key" "mykey" {
+  service_account_id = google_service_account.sa.name
+  public_key_type    = "TYPE_X509_PEM_FILE"
+}
+
+resource "local_file" "service_account_private_key" {
+    content  = base64decode(google_service_account_key.mykey.private_key)
+    filename = "../../secrets/terraform_sa_key.json"
+    file_permission = "0664"
 }
 
 # ------------------------------------------------------------------------------
