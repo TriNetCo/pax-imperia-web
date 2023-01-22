@@ -35,25 +35,31 @@ resource "google_project" "project" {
 # CONFIGURE Service Account
 # ------------------------------------------------------------------------------
 
-data "google_iam_policy" "admin" {
-  binding {
-    role = "roles/iam.serviceAccountUser"
-
-    members = [
-      "serviceAccount:${google_service_account.sa.email}"
-    ]
-  }
-}
-
 resource "google_service_account" "sa" {
   account_id   = "my-service-account"
   display_name = "A service account for terraform"
   project = var.project
 }
 
-resource "google_service_account_iam_policy" "admin-account-iam" {
-  service_account_id = google_service_account.sa.name
-  policy_data        = data.google_iam_policy.admin.policy_data
+# DEVELOPMENT NOTES:
+# This is a good refereces for basic roles, as well as predefined roles: https://cloud.google.com/iam/docs/understanding-roles#project-roles
+# In addition to that, going to IAM -> Service Accounts -> (pick your SA) -> Permissions...
+# will show you a table which can be filtered by 'permission' when debugging why an terraform/ gcloud command didn't work
+resource "google_project_iam_member" "member-role" {
+  for_each = toset([
+    "roles/viewer",
+    "roles/iam.serviceAccountUser",
+    "roles/cloudsql.admin",
+    "roles/secretmanager.secretAccessor",
+    "roles/datastore.owner",
+    "roles/storage.admin",
+    "roles/cloudbuild.builds.builder",
+    "roles/cloudbuild.serviceAgent",
+    "roles/logging.admin",
+  ])
+  role = each.key
+  member = "serviceAccount:${google_service_account.sa.email}"
+  project = var.project
 }
 
 resource "google_service_account_key" "mykey" {
@@ -138,7 +144,9 @@ resource "google_compute_ssl_certificate" "certificate" {
   }
 }
 
-# NOTE: the auth stuff is incomplete, see https://github.com/hashicorp/terraform-provider-google/issues/8510.  Authorized domains are not defined and must be entered manually.
+# NOTE: the auth stuff is incomplete, see https://github.com/hashicorp/terraform-provider-google/issues/8510.
+# Authorized domains are not defined and must be entered manually.  Additionally, the redirect URL needs to be
+# copy pasted into the MS Azure ID side of things.
 resource "google_identity_platform_default_supported_idp_config" "microsoft" {
   enabled       = true
   idp_id        = "microsoft.com"
