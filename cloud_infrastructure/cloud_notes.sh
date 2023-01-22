@@ -65,6 +65,7 @@ gcloud builds submit \
 
 gcloud container images list
 
+gcloud container images list-tags gcr.io/pax-imeria-clone/backend
 gcloud container images list-tags gcr.io/pax-imeria-clone/react-frontend
 
 #
