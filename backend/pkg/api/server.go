@@ -2,7 +2,9 @@ package api
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-contrib/cors"
@@ -184,7 +186,27 @@ func deleteUser(c *gin.Context) {
 	c.JSON(http.StatusOK, deletedId)
 }
 
+func healthCheck(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"status": "UP"})
+}
+
+func livenessCheck(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"status": "UP"})
+}
+
 func RunServer() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3001"
+		log.Printf("defaulting to port %s", port)
+	}
+
+	listenAddress := os.Getenv("LISTEN_ADDRESS")
+	if listenAddress == "" {
+		listenAddress = "localhost"
+		log.Printf("defaulting to listenAddress %s", listenAddress)
+	}
+
 	// sc, err := subscription.GenerateSubscriptionController()
 
 	router := gin.Default()
@@ -192,6 +214,8 @@ func RunServer() {
 	// router.Use(CORS())
 
 	router.NoRoute(gin.WrapH(http.FileServer(http.Dir("../pax-imperia-js"))))
+	router.GET("/health", healthCheck)
+	router.GET("/liveness", livenessCheck)
 	router.GET("/albums", getAlbums)
 	router.GET("/test", doTest)
 	router.GET("/users", getUsers)
@@ -201,5 +225,5 @@ func RunServer() {
 		wshandler(c.Writer, c.Request)
 	})
 
-	router.Run("localhost:3001")
+	router.Run(listenAddress + ":" + port)
 }
