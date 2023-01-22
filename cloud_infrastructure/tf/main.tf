@@ -43,7 +43,7 @@ resource "google_service_account" "sa" {
 
 # DEVELOPMENT NOTES:
 # This is a good refereces for basic roles, as well as predefined roles: https://cloud.google.com/iam/docs/understanding-roles#project-roles
-# In addition to that, going to IAM -> Service Accounts -> (pick your SA) -> Permissions...
+# In addition to that, going to IAM -> Roles...
 # will show you a table which can be filtered by 'permission' when debugging why an terraform/ gcloud command didn't work
 resource "google_project_iam_member" "member-role" {
   for_each = toset([
@@ -56,7 +56,7 @@ resource "google_project_iam_member" "member-role" {
     "roles/cloudbuild.builds.builder",
     "roles/cloudbuild.serviceAgent",
     "roles/logging.admin",
-    "roles/run.developer",
+    "roles/run.admin",
   ])
   role = each.key
   member = "serviceAccount:${google_service_account.sa.email}"
