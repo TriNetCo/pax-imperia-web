@@ -14,5 +14,5 @@ test('renders learn react link', () => {
     </Router>
   );
 
-  expect(getByText(/Galactic View/i)).toBeInTheDocument();
+  expect(getByText(/Pax Imperia/i)).toBeInTheDocument();
 });
