@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { newMessage, selectWebsocket } from '../modules/websocket';
 import { UserContext } from '../app/UserContext';
 import { useHistory } from 'react-router-dom';
+import { getAuthOutput } from '../app/AzureAuth';
+import AppConfig from '../AppConfig';
 
 export default function DebugPage() {
   const history = useHistory();
@@ -50,9 +52,38 @@ export default function DebugPage() {
     userContext.setDisplayName('Overwritten Name');
   };
 
+  const testGcpEndpoint = async evt => {
+    // Query api
+    //
+    // const token = userContext.accessToken;
+    // const token = firebase.User.getIdToken();
+    const token = await getAuthOutput();
+
+    // const url = 'https://backend-dev-kv67nkbama-uc.a.run.app/auth_test';
+    const baseUrl = AppConfig.BACKEND_URL;
+
+    const url = `${baseUrl}/auth_test`;
+
+    console.log(`curl -H 'Authorization: Bearer ${token}' ${url}`);
+
+    const headers = new Headers();
+    headers.append('Authorization', 'Bearer ' + token);
+    headers.append('Content-Type', 'application/json');
+
+    let params = {
+      method: 'get',
+      cache: 'no-cache',
+      headers: headers,
+    };
+
+    const resp = await fetch(url, params);
+    const json = await resp.json();
+
+    alert('response from api: ' + json.data);
+  };
+
   return (
     <>
-
       <h6>User Info</h6>
       <div>
         <div>Login Status: {userContext.loginStatus}</div>
@@ -72,6 +103,7 @@ export default function DebugPage() {
         <button onClick={logout}>logout</button>
         <button onClick={handleSetDisplayName}>set displayName</button>
         <button onClick={authenticateWithBackend}>authenticateWithBackend</button>
+        <button onClick={testGcpEndpoint}>Test GCP endpoint</button>
 
         <div>
           <textarea value={msgToSend} onChange={handleMessageChange}></textarea>

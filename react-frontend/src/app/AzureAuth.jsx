@@ -6,18 +6,21 @@ import {
   OAuthProvider,
   signInWithRedirect
 } from 'firebase/auth';
+import AppConfig from '../AppConfig';
 
 
 const config = {
-  apiKey: 'AIzaSyC2-8-ZkRcdM7hJXAYnWaiPEloUr_8dcsE',
-  authDomain: 'pax-imeria-clone.firebaseapp.com',
-  projectId: 'pax-imeria-clone',
-  storageBucket: 'pax-imeria-clone.appspot.com',
+  apiKey: AppConfig.FIREBASE_API_KEY,
+  authDomain: `${AppConfig.GOOGLE_PROJECT_ID}.firebaseapp.com`,
+  projectId: AppConfig.GOOGLE_PROJECT_ID,
+  storageBucket: `${AppConfig.GOOGLE_PROJECT_ID}.appspot.com`,
   messagingSenderId: '197061503647',
   appId: '1:197061503647:web:ddb8057e008e53ab6ad0aa',
   measurementId: 'G-8QVSYPR5KT',
   tenant: 'common'
 };
+
+debugger;
 
 let app;
 let auth;
@@ -64,4 +67,10 @@ async function catchRedirectSignInMicrosoft() {
     credential: OAuthProvider.credentialFromResult(result) };
 }
 
-export { signInMicrosoft, signOutMicrosoft, catchRedirectSignInMicrosoft, initApp };
+async function getAuthOutput() {
+  if (auth == null)
+    await initApp();
+  return await getAuth().currentUser.getIdToken();
+}
+
+export { signInMicrosoft, signOutMicrosoft, catchRedirectSignInMicrosoft, initApp, getAuthOutput };
