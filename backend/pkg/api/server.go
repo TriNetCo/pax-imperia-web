@@ -1,12 +1,15 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
+	firebase "firebase.google.com/go"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
@@ -186,6 +189,36 @@ func deleteUser(c *gin.Context) {
 	c.JSON(http.StatusOK, deletedId)
 }
 
+func authTest(c *gin.Context) {
+
+	app, err := firebase.NewApp(context.Background(), nil)
+	if err != nil {
+		log.Fatalf("error initializing app: %v\n", err)
+	}
+
+	// Get an auth client from the firebase.App
+	client, err := app.Auth(c)
+	if err != nil {
+		log.Fatalf("error getting Auth client: %v\n", err)
+	}
+
+	idToken := strings.Replace(
+		c.Request.Header.Get("Authorization"),
+		"Bearer ",
+		"",
+		1)
+
+	token, err := client.VerifyIDToken(context.Background(), idToken)
+	if err != nil {
+		log.Printf("error verifying ID token: %v\n", err)
+		c.JSON(http.StatusOK, gin.H{"data": "Access Denied"})
+	}
+
+	log.Printf("Verified ID token: %v\n", token)
+
+	c.JSON(http.StatusOK, gin.H{"data": "Access Granted"})
+}
+
 func healthCheck(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "UP"})
 }
@@ -210,10 +243,16 @@ func RunServer() {
 	// sc, err := subscription.GenerateSubscriptionController()
 
 	router := gin.Default()
-	router.Use(cors.Default())
-	// router.Use(CORS())
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{http.MethodGet, http.MethodPatch, http.MethodPost, http.MethodHead, http.MethodDelete, http.MethodOptions},
+		AllowHeaders:     []string{"Content-Type", "X-XSRF-TOKEN", "Accept", "Origin", "X-Requested-With", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 
 	router.NoRoute(gin.WrapH(http.FileServer(http.Dir("../pax-imperia-js"))))
+	router.GET("/auth_test", authTest)
 	router.GET("/health", healthCheck)
 	router.GET("/liveness", livenessCheck)
 	router.GET("/albums", getAlbums)
