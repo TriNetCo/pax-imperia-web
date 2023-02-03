@@ -60,7 +60,8 @@ export default function DebugPage() {
     const token = await getAuthOutput();
 
     // const url = 'https://backend-dev-kv67nkbama-uc.a.run.app/auth_test';
-    const baseUrl = AppConfig.BACKEND_URL;
+    // const baseUrl = AppConfig.BACKEND_URL;
+    const baseUrl = 'https://backend-dev-kv67nkbama-uc.a.run.app';
 
     const url = `${baseUrl}/auth_test`;
 
@@ -90,7 +91,8 @@ export default function DebugPage() {
         <div>Display Name: {userContext.displayName}</div>
         <div>Email: {userContext.email}</div>
         <div>Last Signin: {userContext.lastSignInTime}</div>
-        <div>Token: {userContext.idToken}</div>
+        <div>ID Token: {userContext.idToken}</div>
+        <div>Access Token (useless): {userContext.accessToken}</div>
         <div>Token Expiration: ??</div>
       </div>
 

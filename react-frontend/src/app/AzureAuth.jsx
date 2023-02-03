@@ -20,8 +20,6 @@ const config = {
   tenant: 'common'
 };
 
-debugger;
-
 let app;
 let auth;
 
