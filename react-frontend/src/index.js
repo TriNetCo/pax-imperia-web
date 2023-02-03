@@ -22,11 +22,11 @@ const userContext = createUserContext();
 root.render(
   <Provider store={store}>
     <Context gameData={gameData} userContext={userContext}>
-      <React.StrictMode>
-        <Router basename={process.env.REACT_APP_PUBLIC_SUFIX}>
-          <App />
-        </Router>
-      </React.StrictMode>
+      {/* <React.StrictMode> */}
+      <Router basename={process.env.REACT_APP_PUBLIC_SUFIX}>
+        <App />
+      </Router>
+      {/* </React.StrictMode> */}
     </Context>
   </Provider>
 );
