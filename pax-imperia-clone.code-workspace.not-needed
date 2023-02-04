@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+  {
+			"path": "./backend"
+		},
+		{
+			"path": "./react-frontend"
+		},
+		{
+			"path": "./pax-imperia-js"
+		}
+	],
+  "settings": {
+    "jest.disabledWorkspaceFolders": [
+      "pax-imperia-js",
+      "backend"
+    ]
+  }
+}
