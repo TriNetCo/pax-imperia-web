@@ -14,7 +14,8 @@ const SpaceView = () => {
     let canvas = ref.current;
 
     (async() => {
-      await spaceViewWidget.beginGame(0);
+      const systemIndex = parseInt(window.location.pathname.replace("/systems/", ""));
+      await spaceViewWidget.beginGame(systemIndex);
       const render = () => {
         spaceViewWidget.draw();
         requestId = requestAnimationFrame(render);

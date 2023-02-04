@@ -22,10 +22,10 @@ export class SpaceViewWidget {
         this.clientObjects.mouse = mouse;
     }
 
-    async beginGame(systemNumber) {
-        console.log(systemNumber)
+    async beginGame(systemIndex) {
+        console.log(systemIndex)
         console.log(this.systemsData)
-        let systemData = this.systemsData[systemNumber]
+        let systemData = this.systemsData[systemIndex]
         systemData.ships = [{"name": "ship", "index": 0}]
         this.system = new System(systemData);
 
