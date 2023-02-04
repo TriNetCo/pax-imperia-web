@@ -14,4 +14,9 @@ gcloud container images list-tags ${IMAGE} --filter='-tags:*' --format='get(dige
   xargs -I {arg} gcloud container images delete  "${IMAGE}@{arg}" --quiet
 
 # Deploy to Google Cloud Run
-gcloud run deploy backend-dev --image=$IMAGE --platform managed --region=us-central1 --allow-unauthenticated
+gcloud run deploy pax-backend-dev --image=$IMAGE --platform managed --region=us-central1 --allow-unauthenticated
+# gcloud run services delete backend-dev
+gcloud run services list
+
+# API Gateway...
+#gcloud api-gateway apis create api-gateway-dev
