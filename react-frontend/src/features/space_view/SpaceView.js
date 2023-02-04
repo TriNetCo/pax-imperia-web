@@ -14,7 +14,7 @@ const SpaceView = () => {
     let canvas = ref.current;
 
     (async() => {
-      await spaceViewWidget.beginGame(canvas);
+      await spaceViewWidget.beginGame(0);
       const render = () => {
         spaceViewWidget.draw();
         requestId = requestAnimationFrame(render);

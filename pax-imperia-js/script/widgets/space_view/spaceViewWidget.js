@@ -13,17 +13,21 @@ export class SpaceViewWidget {
     spaceViewAnimator;
     spaceViewDomManager;
 
-    constructor(config, clientObjects, systemData) {
+    constructor(config, clientObjects, systemsData) {
         this.c = config;
         this.clientObjects = clientObjects;
-        systemData.ships = [{"name": "ship", "index": 0}]
-        this.system = new System(systemData);
+        this.systemsData = systemsData;
 
         const mouse = new THREE.Vector2(0,0);
         this.clientObjects.mouse = mouse;
     }
 
-    async beginGame() {
+    async beginGame(systemNumber) {
+        console.log(systemNumber)
+        console.log(this.systemsData)
+        let systemData = this.systemsData[systemNumber]
+        systemData.ships = [{"name": "ship", "index": 0}]
+        this.system = new System(systemData);
 
         // TODO: fix this so the console is created by the widget
         // this.clientObjects.consoleDiv.innerHTML = "Resume";
