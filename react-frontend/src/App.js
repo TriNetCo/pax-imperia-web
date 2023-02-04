@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import './App.css';
 import GameDashboardPage from './pages/GameDashboardPage';
-import DebugPage from './pages/DebugPage';
+import DebugPage from './pages/DebugPage/DebugPage';
 import SystemPage from './pages/SystemPage';
 import LoginPage from './pages/LandingPage/LoginPage';
 import UsersPage from './features/users/UsersPage';
