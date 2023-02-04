@@ -9,6 +9,18 @@ variable "project" {
   default     = "pax-imeria-clone"
 }
 
+variable "region" {
+  type = string
+  default = "us-central1"
+  description = "Region of GCP project"
+}
+
+variable "credentials_file" {
+  type = string
+  default = "../../backend/secrets/serviceAccountKey.json"
+  description = "Path to credentials file for service account"
+}
+
 variable "website_domain_name" {
   description = "The name of the website and the Cloud Storage bucket to create (e.g. static.foo.com)."
   type        = string

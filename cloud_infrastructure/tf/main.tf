@@ -1,13 +1,8 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # LAUNCH A STATIC WEBSITE USING CLOUD LOAD BALANCER
-#
-# This is an example of how to use the cloud-load-balancer-website module to deploy a static website with a custom domain.
 # ---------------------------------------------------------------------------------------------------------------------
 
 terraform {
-  # This module is now only being tested with Terraform 1.0.x. However, to make upgrading easier, we are setting
-  # 0.12.26 as the minimum version, as that version added support for required_providers with source URLs, making it
-  # forwards compatible with 1.0.x code.
   required_version = ">= 0.12.26"
 
   required_providers {
@@ -18,8 +13,16 @@ terraform {
   }
 }
 
+provider "google" {
+  credentials = file("${var.credentials_file}")
+  project     = var.project
+  region      = var.region
+}
+
 provider "google-beta" {
-  project = var.project
+  credentials = file("${var.credentials_file}")
+  project     = var.project
+  region      = var.region
 }
 
 resource "google_project" "project" {
