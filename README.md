@@ -3,20 +3,64 @@
 A clone of an old game.  The arcitecture is [here](architectural_diagrams.md).  Pax is our benchmark game for an even cooler game built on top of it!!!  Here's some ideas/ brainstorms about the [game design](game_design.md).
 
 
+## Technical Overview
 
-## Overview
+This project was built with technologies divided across 3 main categories (frontend, backend, and cloud platform):
 
-This project was built with 3 main technologies:
+<pre>
+Golang (backend)
+  * Gin                   - This is the GoLang web framework we're using for all
+                            HTTP endpoints
 
-- Golang (backend)      - Handles all of the communication between the frontend clients over http and websockets.
-- Javascript (frontend) - Handles all of the graphics on the front end as well as plenty of game logic.
-- Postgres   - Allows us to store data if the need should arise...
+  * Gorillia              - This is the GoLang websocket toolkit we're using for
+                            websocket sessions
 
-The backend's data models are created from the postgres database (resume driven design) using "Jet".
+  * Liquibase             - Allows us to define our relational database scheme
+                            using SQL files and perform updates to our database
+                            over time via "migrations"
+
+  * Jet                   - Allows us to import our GoLang data models from the
+                            database which is kind of annoying really if we want
+                            to learn how to program in GoLang.
+
+  * Postgres              - Allows us to store data if the need should arise...
+
+Javascript (frontend)
+  * Three.JS             - This is the WebGL Framework we're using to render 3D
+                           scenes in the browser
+
+  * React                - This is the SPA framework we're using to build our
+                           web application so that state and game rendering
+                           components can be managed elegantly (work forced me).
+
+  * Create React App     - This is the React Framework flavor we're using to
+                           build our react app so we don't have to get our hands
+                           too dirty with js compilation pipelines.
+
+GCP (cloud platform)
+  * Terraform            - Allows us to create resources in the cloud
+                           (GCP) by defining them in a markup language and
+                           using `terraform apply` to create/ delete cloud
+                           resources.
+
+  * Cloud SQL            - This is our cloud-native database product from GCP
+
+  * Cloud Build          - A product that builds our docker containers and
+                           stores them in the cloud.
+
+  * Cloud Run            - A product that hosts our GoLang backend in a very
+                           efficient "serverless" manner
+
+  * Firebase Auth        - This is our authentication provider allowing users to
+                           Sign in (with their Windows/ xbox accounts currently)
+                           without us having to slow down to deal with much
+                           authentication logic on the backend.
+</pre>
+
 
 ## Getting Started...
 
-## Secrets and Configs
+### Secrets and Configs
 
 Add something like this to your shell:
 
@@ -36,7 +80,7 @@ go install github.com/go-jet/jet/v2/cmd/jet@latest
 jet -source=postgres -host=localhost -port=5432 -user="${GO_DB_USER}" -password=ez -dbname=dbmodels -schema=pax -sslmode=disable
 ```
 
-### Boot the GO App
+### Boot the Go App
 
 Run these commands to start the server
 
@@ -112,4 +156,3 @@ Check out the [cloud docs](cloud_infrastructure/README.md).
 - GoLang Project Layout... https://github.com/golang-standards/project-layout
 - React + WebGL... http://www.petecorey.com/blog/2019/08/19/animating-a-canvas-with-react-hooks/
 - React Context?? https://www.freecodecamp.org/news/react-context-for-beginners/#:~:text=React%20context%20caveats-,What%20is%20React%20context%3F,across%20our%20components%20more%20easily.
-
