@@ -14,7 +14,7 @@ const SpaceView = () => {
     let canvas = ref.current;
 
     (async() => {
-      const systemIndex = parseInt(window.location.pathname.replace("/systems/", ""));
+      const systemIndex = parseInt(window.location.pathname.replace('/systems/', ''));
       await spaceViewWidget.beginGame(systemIndex);
       const render = () => {
         spaceViewWidget.draw();

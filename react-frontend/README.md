@@ -23,3 +23,9 @@ npm start
 ```bash
 npm test
 ```
+
+###### Deploy to Cloud
+
+```bash
+npm run deploy
+```
