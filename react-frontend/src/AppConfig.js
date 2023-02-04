@@ -17,8 +17,8 @@ const getAppConfig = () => {
     default:
       return {
         APP_ENV:           'local',
-        SOCKET_URL:        process.env.REACT_APP_PAX_SOCKET_URL,
-        BACKEND_URL:       process.env.REACT_APP_PAX_BACKEND_URL,
+        SOCKET_URL:        'ws://localhost:3001/websocket',
+        BACKEND_URL:       'http://localhost:3001',
         FIREBASE_API_KEY:  process.env.REACT_APP_PAX_FIREBASE_API_KEY,
         GOOGLE_PROJECT_ID: process.env.REACT_APP_PAX_GOOGLE_PROJECT_ID,
       };

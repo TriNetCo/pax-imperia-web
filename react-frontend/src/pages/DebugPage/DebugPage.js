@@ -44,15 +44,11 @@ export default function DebugPage() {
     userContext.logout();
   };
 
-  const authenticateWithBackend = () => {
-
-  };
-
   const handleSetDisplayName = () => {
     userContext.setDisplayName('Overwritten Name');
   };
 
-  const testGcpEndpoint = async evt => {
+  const authenticateWithBackend = async evt => {
     // Query api
     //
     // const token = userContext.accessToken;
@@ -60,12 +56,9 @@ export default function DebugPage() {
     const token = await getAuthOutput();
 
     // const url = 'https://backend-dev-kv67nkbama-uc.a.run.app/auth_test';
-    // const baseUrl = AppConfig.BACKEND_URL;
-    const baseUrl = 'https://backend-dev-kv67nkbama-uc.a.run.app';
+    const baseUrl = AppConfig.BACKEND_URL;
 
     const url = `${baseUrl}/auth_test`;
-
-    console.log(`curl -H 'Authorization: Bearer ${token}' ${url}`);
 
     const headers = new Headers();
     headers.append('Authorization', 'Bearer ' + token);
@@ -80,7 +73,7 @@ export default function DebugPage() {
     const resp = await fetch(url, params);
     const json = await resp.json();
 
-    alert('response from api: ' + json.data);
+    alert('response from api... Authenticated: ' + json.Authenticated);
   };
 
   return (
@@ -104,8 +97,7 @@ export default function DebugPage() {
         <button onClick={handleLogin}>login</button>
         <button onClick={logout}>logout</button>
         <button onClick={handleSetDisplayName}>set displayName</button>
-        <button onClick={authenticateWithBackend}>authenticateWithBackend</button>
-        <button onClick={testGcpEndpoint}>Test GCP endpoint</button>
+        <button onClick={authenticateWithBackend}>Authenticate oAuth Token with Backend</button>
 
         <div>
           <textarea value={msgToSend} onChange={handleMessageChange}></textarea>
@@ -114,8 +106,7 @@ export default function DebugPage() {
 
         <div>
           Server Responses:
-          <pre
-            id="server-responses">
+          <pre id="server-responses">
             {websocketConsole}
           </pre>
         </div>

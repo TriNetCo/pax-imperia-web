@@ -10,9 +10,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/cmd/pax.go",
-            "env": {
-                "GOOGLE_APPLICATION_CREDENTIALS": "${workspaceFolder}/secrets/pax-imeria-clone-firebase-adminsdk-b7dfw-1c36eb54cd.json"
-            }
+            "cwd": "${workspaceFolder}",
         }
 
     ]

@@ -6,6 +6,7 @@ import {
 } from '@mui/material';
 
 import { catchRedirectSignInMicrosoft } from '../../app/AzureAuth';
+import { Link } from 'react-router-dom';
 
 
 export default function LoginPage() {
@@ -111,6 +112,13 @@ export default function LoginPage() {
       <button onClick={() => handleChangeStateState('logged_in')}>Change to logged_in</button>
 
       <button className="ml-auto" onClick={handleShowContext}>Show Context</button>
+
+      <div>
+        <Link to='/'>Main Menu</Link>
+      </div>
+      <div>
+        <Link to='/debug'>Debug Page</Link>
+      </div>
 
     </>
   );
