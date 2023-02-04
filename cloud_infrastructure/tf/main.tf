@@ -8,6 +8,23 @@ resource "google_project" "project" {
 }
 
 # ------------------------------------------------------------------------------
+# CREATE BUCKET FOR TERRAFORM STATE FILE BACKEND
+# ------------------------------------------------------------------------------
+resource "random_id" "bucket_prefix" {
+  byte_length = 8
+}
+
+resource "google_storage_bucket" "terraform_backend_bucket" {
+  name          = "${random_id.bucket_prefix.hex}-bucket-tfstate"
+  force_destroy = false
+  location      = "US"
+  storage_class = "STANDARD"
+  versioning {
+    enabled = false
+  }
+}
+
+# ------------------------------------------------------------------------------
 # CREATE THE STATIC SITE WHERE THE FRONTEND DEPLOYS TO
 # Note: see static_asset_load_balancer.tf for related resources yet to be modularized
 # ------------------------------------------------------------------------------

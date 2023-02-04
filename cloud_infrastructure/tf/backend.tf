@@ -7,4 +7,9 @@ terraform {
       version = "~> 3.50.0"
     }
   }
+
+  backend "gcs" {
+    bucket  = "b4e94ce8317d0897-bucket-tfstate"
+    prefix  = "terraform/state"
+  }
 }
