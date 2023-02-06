@@ -54,3 +54,24 @@ module "static_site" {
 
   ssl_certificate = join("", google_compute_ssl_certificate.certificate.*.self_link)
 }
+
+
+# ------------------------------------------------------------------------------
+# CREATE A CLOUD SQL SERVICE
+# ------------------------------------------------------------------------------
+resource "random_id" "db_name_suffix" {
+  byte_length = 4
+}
+
+resource "google_sql_database_instance" "postgres" {
+  name             = "postgres-instance-${random_id.db_name_suffix.hex}"
+  database_version = "POSTGRES_14"
+
+  settings {
+    tier = "db-f1-micro"
+    # ip_configuration {
+    #   ipv4_enabled    = true
+    #   private_network = google_compute_network.private_network.id
+    # }
+  }
+}
