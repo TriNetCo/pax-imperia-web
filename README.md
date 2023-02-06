@@ -1,6 +1,6 @@
 # Pax Imperia Clone
 
-A clone of an old game.  The arcitecture is [here](architectural_diagrams.md).  Pax is our benchmark game for an even cooler game built on top of it!!!  Here's some ideas/ brainstorms about the [game design](game_design.md).
+A clone of an old game.  The architecture is [here](architectural_diagrams.md).  Pax is our benchmark game for an even cooler game built on top of it!!!  Here's some ideas/ brainstorms about the [game design](game_design.md).
 
 
 ## Technical Overview

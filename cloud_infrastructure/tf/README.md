@@ -1,5 +1,9 @@
 # Pax Terraform
 
+This folder contains all our terraform markup that lets us codify all the cloud resources we're using in GCP.
+
+## Getting Started
+
 Terraform uses the configurations generated from the below stuff for interacting with GCP when GCP is setup as the backend I guess...  If you get permissions errors, please re-login.
 
 ```
