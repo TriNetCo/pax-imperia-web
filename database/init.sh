@@ -20,6 +20,8 @@
 # Show records in table
 # > SELECT * FROM pax.players;
 
+# Show all users
+# > \du
 
 psql -U postgres -f ../bootstrap.sql
 psql -U postgres -d dbmodels -f ../games.sql

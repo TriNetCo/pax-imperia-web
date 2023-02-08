@@ -15,7 +15,7 @@ Our database engine is Postgres 14.  We're using Liquibase to manage our scheme 
 
 ```
 docker-compose down; docker rm -f $(docker ps -a -q) ; docker volume rm $(docker volume ls -q)
-docker-compose up --build
+docker-compose up
 ```
 
 ## Connect to the database
@@ -24,6 +24,8 @@ docker-compose up --build
 docker run -it --rm --network host postgres \
   psql -h localhost -p 5432 -U ${PAX_DATABASE_USERNAME} -W dbmodels
 ```
+docker run -it --rm --network host postgres \
+  psql -h 35.238.72.41 -p 5432 -U ${PAX_DATABASE_USERNAME} -W dbmodels
 
 ## Connect to the database (BAD)
 
@@ -33,3 +35,4 @@ docker run -it --rm --network host postgres \
 docker exec -ti database_db_1 /bin/bash
 psql -U postgres
 ```
+
