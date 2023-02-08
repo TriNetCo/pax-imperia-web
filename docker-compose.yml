@@ -1,5 +1,6 @@
 services:
   db:
+    restart: always
     image: 'postgres:14'
     ports:
       - '5432:5432'
@@ -11,6 +12,17 @@ services:
       POSTGRES_DB: dbmodels
     volumes:
       - pax-db-data:/var/lib/postgresql/data
+  liquibase:
+    build: ./liquibase
+    image: "registry.njax.org/destructocats/liquibase_client"
+    env_file:
+      - ./.env
+    environment:
+      MYSQL_HOST: "db"
+      MYSQL_PORT: "3306"
+    depends_on:
+      - "db"
+
 
 volumes:
   pax-db-data:
