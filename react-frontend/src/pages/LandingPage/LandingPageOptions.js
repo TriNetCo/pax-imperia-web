@@ -22,7 +22,7 @@ const LandingPageOptions = () => {
           <li><Link to="/systems">Singleplayer</Link></li>
           <li><Link to="/new_game">Multiplayer</Link></li>
           <li><Link to="/about">About</Link></li>
-          <li><Link onClick={handleLogout}>Logout</Link></li>
+          <li><button onClick={handleLogout}>Logout</button></li>
         </ul>
       </div>
     );
@@ -31,7 +31,7 @@ const LandingPageOptions = () => {
     <div>
       <ul>
         <li><Link to="/login">Login</Link></li>
-        <li><Link onClick={handleLoginAsGuest}>(Dev) Login as Guest</Link></li>
+        <li><button onClick={handleLoginAsGuest}>(Dev) Login as Guest</button></li>
         <li><Link to="/debug">(Dev) Debug Page</Link></li>
       </ul>
     </div>

@@ -58,71 +58,37 @@ GCP (cloud platform)
 </pre>
 
 
-## Getting Started...
+## Getting Started
 
-### Secrets and Configs
+### Configuration and Secrets
 
-Add something like this to your shell:
+Run the below steps to load the configs into your shell's `~/.bashrc` file:
 
 ```
-source ~/dev/game_dev/pax-imperia-clone/.env.local
+cp .env.sample .env.local
+echo "[ -e ${PWD}/.env.local ] && source ${PWD}/.env.local" >> ~/.bashrc
 ```
 
 Populate `backend/secrets/` and set `export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/dev/game_dev/pax-imperia-clone/backend/secrets/pax-imeria-clone-firebase-adminsdk-b7dfw-1c36eb54cd.json"`.  This file comes from firebase's dashboard instructions for using/ installing service accounts: https://firebase.google.com/docs/admin/setup#go.
 
 TODO: Document using `ln` to pull in the secrets/fullchain.pem and secrets/privkey.pem secrets
 
-### Build Database
+### Launch the system with Docker Compose
 
-go install github.com/go-jet/jet/v2/cmd/jet@latest
+All of the microservices can be launched per the `docker-compose.yml` file.
 
-```
-jet -source=postgres -host=localhost -port=5432 -user="${GO_DB_USER}" -password=ez -dbname=dbmodels -schema=pax -sslmode=disable
-```
-
-### Boot the Go App
-
-Run these commands to start the server
-
-Prerequisite on Macbook:
-
-```
-cd frontend
-npm install
+```bash
+# Start the backing services in the background
+docker compose up --build -d db liquibase
+# Rebuild and boot the backend
+docker compose build backend frontend && docker compose up backend frontend
 ```
 
-```
-cd backend
-go run cmd/pax.go
-```
-
-Now navigate to [http://localhost:3000](http://localhost:3000) to play the game!
-
-The main file to edit is of course `./public/index.html` for getting at the front end at the moment.
+### Setup the GoLang Backend
+See [backend](backend/README.md).
 
 ### Setup the react app
-
-###### For Windows
-```
-cd frontend
-npm link
-cd ../react-frontend
-npm link pax-imperia-js
-npm install
-```
-
-###### For Mac
-```
-cd react-frontend
-npm install
-```
-
-### Run the react server
-
-```
-cd react-frontend
-npm start
-```
+See [react-frontend](react-frontend/README.md).
 
 ## Dashboards
 

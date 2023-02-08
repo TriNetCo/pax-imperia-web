@@ -4,6 +4,29 @@ This is the react app.  It imports the javascript library for Pax and loads all 
 
 For notes on content, see [references](references.md).
 
+## Setup
+
+###### For Windows
+```
+cd frontend
+npm link
+cd ../react-frontend
+npm link pax-imperia-js
+npm install
+```
+
+###### For Mac
+```
+cd react-frontend
+npm install
+```
+
+### Run the react server
+```
+cd react-frontend
+npm start
+```
+
 ## Usage
 
 ###### Setup

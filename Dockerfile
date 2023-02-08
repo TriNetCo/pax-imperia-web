@@ -2,23 +2,28 @@ FROM node:latest as ui-build
 
 # Unfortunatemly, this is just the frontend container which shouldn't even exist
 
-RUN mkdir /app
-WORKDIR /app
-COPY . ./
-WORKDIR /app/react-frontend
+# TODO: Clean this out
+ARG REACT_APP_PAX_APP_ENV local
+ARG REACT_APP_PAX_SOCKET_URL ws://localhost:3001/websocket
+ARG REACT_APP_PAX_BACKEND_URL http://localhost:3001
+ARG REACT_APP_PAX_GOOGLE_PROJECT_ID
+ARG REACT_APP_PAX_FIREBASE_API_KEY
 
-# setting default values for arguments
-ARG VITE_PAX_ENV=local
-ARG SOCKET_URL=ws://localhost:3001/websocket
-ARG BACKEND_URL=http://localhost:3001
-# assigning values provided in build command
-ENV VITE_PAX_ENV=$VITE_PAX_ENV
-ENV VITE_SOCKET_URL=$SOCKET_URL
-ENV VITE_BACKEND_URL=$BACKEND_URL
+ENV REACT_APP_PAX_APP_ENV=$REACT_APP_PAX_APP_ENV
+ENV REACT_APP_PAX_SOCKET_URL=$REACT_APP_PAX_SOCKET_URL
+ENV REACT_APP_PAX_BACKEND_URL=$REACT_APP_PAX_BACKEND_URL
+ENV REACT_APP_PAX_GOOGLE_PROJECT_ID=$REACT_APP_PAX_GOOGLE_PROJECT_ID
+ENV REACT_APP_PAX_FIREBASE_API_KEY=$REACT_APP_PAX_FIREBASE_API_KEY
+
 ENV NODE_ENV=production
 
-RUN ls ..
-RUN npm i
+RUN mkdir /app
+WORKDIR /app
+COPY ./react-frontend/ /app/react-frontend/
+COPY ./pax-imperia-js/ /app/pax-imperia-js/
+WORKDIR /app/react-frontend
+
+RUN npm ci
 RUN npm run build
 
 # server environment

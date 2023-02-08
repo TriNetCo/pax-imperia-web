@@ -55,7 +55,7 @@ classDiagram
   class User {
     String displayName
     String email
-    String idToken
+    String token
     String lastSignon
     List~Game~ games
   }

@@ -4,6 +4,7 @@ import "@testing-library/jest-dom/extend-expect";
 
 import LoginPage from "./LoginPage";
 import { websocketReducer } from "../../modules/websocket";
+import { spoofSignIn } from "../DebugPage/webToolHelpers"
 const rootReducer = { websocket: websocketReducer };
 
 test("renders LoginPage when no localStorage is set", () => {
@@ -21,8 +22,7 @@ test("renders LoginPage when no localStorage is set", () => {
 });
 
 test("renders LoginPage with localStorage data", () => {
-  populateLocalStorageData();
-
+  spoofSignIn();
   const { getByText, getByTestId } = render(<LoginPage />, {
     rootReducer: rootReducer,
   });
@@ -32,26 +32,4 @@ test("renders LoginPage with localStorage data", () => {
   expect(getByText("Sign out"))
 });
 
-function populateLocalStorageData() {
-  const usr = {
-    displayName: 'Its Me',
-    email: 'me@example.com',
-    photoURL: '',
-    metadata: {
-      lastSignInTime: 'Thu, 05 Jan 2023 23:35:09 GMT'
-    }
-  };
 
-  const credential = {
-    accessToken: 'mockAccessToken',
-    idToken: 'mockIdToken',
-  };
-
-  localStorage.setItem("displayName", usr.displayName);
-  localStorage.setItem("email", usr.email);
-  localStorage.setItem("photoURL", usr.photoURL);
-  localStorage.setItem("accessToken", credential.accessToken);
-  localStorage.setItem("idToken", credential.idToken);
-  localStorage.setItem("lastSignInTime", credential.idToken);
-  localStorage.setItem('loginStatus', 'logged_in');
-}

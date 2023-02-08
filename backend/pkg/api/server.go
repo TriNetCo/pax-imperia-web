@@ -159,12 +159,12 @@ type user struct {
 	Name    string `json:"name"`
 	Email   string `json:"email"`
 	Role    string `json:"role"`
-	IdToken string `json:"idToken"`
+	Token string `json:"token"`
 }
 
 var users = []user{
-	{ID: 1, Name: "John Doe", Email: "John@example.com", Role: "admin", IdToken: "blah"},
-	{ID: 2, Name: "Jane Doe", Email: "jane@example.com", Role: "user", IdToken: "blahblah"},
+	{ID: 1, Name: "John Doe", Email: "John@example.com", Role: "admin", Token: "blah"},
+	{ID: 2, Name: "Jane Doe", Email: "jane@example.com", Role: "user", Token: "blahblah"},
 }
 
 func getUsers(c *gin.Context) {

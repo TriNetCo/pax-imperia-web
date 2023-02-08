@@ -51,9 +51,12 @@ export default function DebugPage() {
   const authenticateWithBackend = async evt => {
     // Query api
     //
-    // const token = userContext.accessToken;
+    // const token = userContext.token;
     // const token = firebase.User.getIdToken();
     const token = await getAuthOutput();
+    console.log('getIdToken(): ' + token);
+    console.log('token: ' + localStorage.getItem('token'));
+    console.log('tokenFromProvider: ' + localStorage.getItem('tokenFromProvider'));
 
     // const url = 'https://backend-dev-kv67nkbama-uc.a.run.app/auth_test';
     const baseUrl = AppConfig.BACKEND_URL;
@@ -84,8 +87,8 @@ export default function DebugPage() {
         <div>Display Name: {userContext.displayName}</div>
         <div>Email: {userContext.email}</div>
         <div>Last Signin: {userContext.lastSignInTime}</div>
-        <div>ID Token: {userContext.idToken}</div>
-        <div>Access Token (useless): {userContext.accessToken}</div>
+        <div>Token: {userContext.token}</div>
+        <div>Token From Provider (for profile pic lookups): {userContext.tokenFromProvider}</div>
         <div>Token Expiration: ??</div>
       </div>
 

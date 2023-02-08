@@ -1,5 +1,7 @@
 const getAppConfig = () => {
   const appEnv = process.env.REACT_APP_PAX_APP_ENV;
+  console.log(`REACT_APP_PAX_GOOGLE_PROJECT_ID: ${process.env.REACT_APP_PAX_GOOGLE_PROJECT_ID}`);
+  console.log(`REACT_APP_PAX_FIREBASE_API_KEY: ${process.env.REACT_APP_PAX_FIREBASE_API_KEY}`);
 
   switch (appEnv) {
     case 'dev':

@@ -51,7 +51,7 @@ export default function LoginPage() {
   };
 
   const handleShow = _ => {
-    console.log(userContext.idToken);
+    console.log(userContext.token);
   };
 
   const LogoutButton = () => {

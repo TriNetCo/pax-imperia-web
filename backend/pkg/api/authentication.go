@@ -18,9 +18,10 @@ type AuthenticationResponse struct {
 }
 
 func handleAuthenticateUser(c *gin.Context) {
-	idToken := strings.Replace(c.Request.Header["Authorization"][0], "Bearer ", "", 1)
+	token := strings.Replace(c.Request.Header["Authorization"][0], "Bearer ", "", 1)
+	log.Printf("Recieved Authorization: %s", token)
 
-	isValid, _, _, err := validateToken(idToken)
+	isValid, _, _, err := validateToken(token)
 	if err != nil {
 		log.Warn().Msg(err.Error())
 	}
@@ -34,7 +35,7 @@ func handleAuthenticateUser(c *gin.Context) {
 	return
 }
 
-func validateToken(idToken string) (isValid bool, email string, uid string, err error) {
+func validateToken(token string) (isValid bool, email string, uid string, err error) {
 	if isFirebaseAuthDisabled() {
 		log.Printf("Bypassing Token Varification per ENV RPM_FIREBASE_AUTH_DISABLED")
 		isValid = true
@@ -55,16 +56,16 @@ func validateToken(idToken string) (isValid bool, email string, uid string, err 
 		return
 	}
 
-	token, err := client.VerifyIDToken(context.Background(), idToken)
+	validatedToken, err := client.VerifyIDToken(context.Background(), token)
 	if err != nil {
 		err = fmt.Errorf("error verifying ID token: %v\n", err)
 		return
 	}
 
-	log.Printf("Verified ID token: %v", token)
+	log.Printf("Verified ID token: %v", validatedToken)
 	isValid = true
-	email = token.Claims["email"].(string)
-	uid = token.UID
+	email = validatedToken.Claims["email"].(string)
+	uid = validatedToken.UID
 	return
 }
 

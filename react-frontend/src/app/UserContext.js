@@ -20,10 +20,10 @@ const fillUserInfoFromLocalStorage = () => {
     displayName: localStorage.getItem('displayName') ?? 'NONE',
     email:       localStorage.getItem('email') ?? '',
     profilePic:  localStorage.getItem('photoURL') ?? '',
-    accessToken: localStorage.getItem('accessToken') ?? '',
-    idToken:     localStorage.getItem('idToken') ?? '',
+    token: localStorage.getItem('token') ?? '',
+    tokenFromProvider:     localStorage.getItem('tokenFromProvider') ?? '',
     lastSignInTime: localStorage.getItem('lastSignInTime') ?? '',
-    loginStatus:      localStorage.getItem('loginStatus') ?? 'logged_out',
+    loginStatus: localStorage.getItem('loginStatus') ?? 'logged_out',
     initialized: true,
   });
 };
@@ -37,8 +37,8 @@ const logout = () => {
   localStorage.removeItem('displayName');
   localStorage.removeItem('email');
   localStorage.removeItem('photoURL');
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('idToken');
+  localStorage.removeItem('token');
+  localStorage.removeItem('tokenFromProvider');
   localStorage.removeItem('lastSignInTime');
   localStorage.removeItem('loginStatus');
 
@@ -55,8 +55,8 @@ const fillUserInfoFromRedirect = (result, credential) => {
   localStorage.setItem('displayName', usr.displayName);
   localStorage.setItem('email', usr.email);
   localStorage.setItem('photoURL', usr.photoURL);
-  localStorage.setItem('accessToken', credential.accessToken);
-  localStorage.setItem('idToken', credential.idToken);
+  localStorage.setItem('token', usr.accessToken);
+  localStorage.setItem('tokenFromProvider', credential.accessToken);
   localStorage.setItem('lastSignInTime', usr.metadata.lastSignInTime);
   localStorage.setItem('loginStatus', 'logged_in');
 
@@ -65,8 +65,8 @@ const fillUserInfoFromRedirect = (result, credential) => {
     displayName: usr.displayName ?? '',
     email: usr.email ?? '',
     profilePic: usr.photoURL ?? '',
-    accessToken: credential.accessToken ?? '',
-    idToken: credential.idToken ?? '',
+    token: usr.accessToken ?? '',
+    tokenFromProvider: credential.accessToken ?? '',
     lastSignInTime: usr.metadata.lastSignInTime,
     loginStatus: 'logged_in',
   });
@@ -94,8 +94,8 @@ const ctx = {
   displayName: 'NONE',
   profilePic: '',
   email: '',
-  accessToken: '',
-  idToken: '',
+  token: '',
+  tokenFromProvider: '',
   loginStatus:  '',
   initialized: false,
   lastSignInTime: null,
