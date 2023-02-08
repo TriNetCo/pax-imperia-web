@@ -3,17 +3,17 @@ BEGIN
     BEGIN
         DROP OWNED BY rpm_owner;
     EXCEPTION WHEN SQLSTATE '42704' THEN
-        RAISE NOTICE '%; SQLSTATE: %', SQLERRM, SQLSTATE; 
+        RAISE NOTICE '%; SQLSTATE: %', SQLERRM, SQLSTATE;
     END;
-    BEGIN 
+    BEGIN
         DROP OWNED BY app_rpm;
     EXCEPTION WHEN SQLSTATE '42704' THEN
-        RAISE NOTICE '%; SQLSTATE: %', SQLERRM, SQLSTATE; 
+        RAISE NOTICE '%; SQLSTATE: %', SQLERRM, SQLSTATE;
     END;
-       
-    DROP USER IF EXISTS rpm_owner;   
-    DROP USER IF EXISTS app_rpm; 
-    
+
+    DROP USER IF EXISTS rpm_owner;
+    DROP USER IF EXISTS app_rpm;
+
     CREATE USER rpm_owner WITH PASSWORD 'pewpew';
     GRANT ALL ON DATABASE dbmodels TO rpm_owner;
 
