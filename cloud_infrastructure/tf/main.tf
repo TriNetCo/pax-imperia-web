@@ -131,5 +131,5 @@ resource "google_sql_user" "users" {
 }
 
 output "db_connection_string" {
-  value = "jdbc:postgresql://${google_sql_database_instance.postgres.public_ip_address}/dbmodels"
+  value = "jdbc:postgresql://${google_sql_database_instance.postgres.public_ip_address}:5432/dbmodels"
 }
