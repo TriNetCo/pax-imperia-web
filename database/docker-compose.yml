@@ -1,12 +1,15 @@
 services:
   db:
-    build: .
+    image: 'postgres:14'
     ports:
       - '5432:5432'
     expose:
       - '5432'
+    environment:
+      POSTGRES_USER: app_rpm
+      POSTGRES_PASSWORD: ez
     volumes:
-      - pax-db-data2:/var/lib/postgresql/data
+      - pax-db-data:/var/lib/postgresql/data
 
 volumes:
-  pax-db-data2:
+  pax-db-data:
