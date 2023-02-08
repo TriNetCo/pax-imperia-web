@@ -36,3 +36,10 @@ variable "pax_ms_client_secret" {
   description = "The client secret for the microsoft OAUTH IDP connection."
   type        = string
 }
+
+
+
+variable "allowed_ip" {
+  description = "Your ip address for developing"
+  type        = string
+}
