@@ -11,7 +11,7 @@ gcloud auth activate-service-account --key-file=../secrets/terraform_sa_key.json
 gcloud auth list
 
 # Set Project
-gcloud config set project pax-imeria-clone
+gcloud config set project ${PROJECT_ID}
 
 # Set the region
 gcloud config set run/region us-central1
@@ -31,8 +31,6 @@ gcloud asset search-all-resources
 
 # Setup a service account
 ## Ref: https://gcloud.devoteam.com/blog/a-step-by-step-guide-to-set-up-a-gcp-project-to-start-using-terraform/
-
-export PROJECT_ID=pax-imeria-clone
 
 gcloud iam service-accounts create sa-pax-tf-sbx \
   --description="Terraform Service account for Pax, Sandbox Environment" \

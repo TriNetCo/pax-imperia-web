@@ -11,13 +11,12 @@ import AppConfig from '../AppConfig';
 
 const config = {
   apiKey: AppConfig.FIREBASE_API_KEY,
-  authDomain: `${AppConfig.GOOGLE_PROJECT_ID}.firebaseapp.com`,
+  authDomain: AppConfig.AUTH_DOMAIN,
   projectId: AppConfig.GOOGLE_PROJECT_ID,
   storageBucket: `${AppConfig.GOOGLE_PROJECT_ID}.appspot.com`,
   messagingSenderId: '197061503647',
   appId: '1:197061503647:web:ddb8057e008e53ab6ad0aa',
   measurementId: 'G-8QVSYPR5KT',
-  tenant: 'common'
 };
 
 let app;
@@ -31,10 +30,10 @@ async function initApp() {
 async function signInMicrosoft() {
   if (auth === undefined)
     await initApp();
-  //   const provider = new OAuthProvider('microsoft.com').setCustomParameters({
-  //       tenant: config.tenant
-  //   });
-  const provider = new OAuthProvider('microsoft.com');
+  const provider = new OAuthProvider('microsoft.com').setCustomParameters({
+    // tenant: config.tenant,
+    // prompt: 'consent',
+  });
   signInWithRedirect(auth, provider);
 }
 

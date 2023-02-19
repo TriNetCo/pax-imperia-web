@@ -98,10 +98,10 @@ See [react-frontend](react-frontend/README.md).
 
 ## Authentication Info
 
-###### Azure App Registration
+###### Azure App Registration (Wa)
 The Azure dashboard is used to create an "App Registration" in Azure.  It's really Janky registering an app so the link to view and edit it must be saved to the readme.  A secret is created in the Azure App Registration and Authentication (via web using both "Access Tokens" as well as "ID Tokens").  The `*.firebaseapp.com/__/auth/handler` redirect uri from firebase get's configured here in Azure.  A Client secret must be generated in Azure so that it and the "Application (client) ID" can be copied into the firebase dashboard. Firebase documents it [here](https://firebase.google.com/docs/auth/web/microsoft-oauth) which links to MS docs [here](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app).
 
-###### Firebase Project Creation
+###### Firebase Project Creation (Ve)
 Firebase's dashboard is used to create our project and Azure AD is enabled as an auth mechanism.  We copy the client secret and client ID from azure to make the authentication integration function correctly.
 
 ###### Authentication Process
