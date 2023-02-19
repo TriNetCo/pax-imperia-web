@@ -1,7 +1,5 @@
 # Pax Imperia Clone
-
-A clone of an old game.  The architecture is [here](architectural_diagrams.md).  Pax is our benchmark game for an even cooler game built on top of it!!!  Here's some ideas/ brainstorms about the [game design](game_design.md).
-
+Right now this is a clone of an old game.  But Pax is our benchmark game for an even cooler game built on top of it!!!  Our roadmap listing completed/ in-progress and planned features is in the [roadmap.md](roadmap.mp) file.
 
 ## Technical Overview
 
@@ -57,11 +55,17 @@ GCP (cloud platform)
                            authentication logic on the backend.
 </pre>
 
+More detailed architectural documentation is located [here](docs/architectural_diagrams.md).
+
+### Game Design
+Here's some ideas/ brainstorms about the [game design](docs/game_design.md).
+
+## Authentication Info
+See [sign_ins](docs/sign_ins.md).
 
 ## Getting Started
 
 ### Configuration and Secrets
-
 Run the below steps to load the configs into your shell's `~/.bashrc` file:
 
 ```
@@ -91,26 +95,12 @@ See [backend](backend/README.md).
 See [react-frontend](react-frontend/README.md).
 
 ## Dashboards
-
 - Azure for auth AD:  https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Authentication/appId/4d2c3c6a-9ea2-4e28-b0f4-6c6523ac1e32/objectId/c5d31509-5bb8-4ec0-a3a9-47db79308fe1/isMSAApp~/true/defaultBlade/Overview/appSignInAudience/AzureADandPersonalMicrosoftAccount
 - Google for firebase for auth detail smearing:  https://console.firebase.google.com/u/0/project/pax-imeria-clone/settings/general/web:ZDRmYjQzZGItNTJkYy00ZDE1LWE3OWItNjY3MWYxMTA4Yzky
-
-
-## Authentication Info
-
-###### Azure App Registration (Wa)
-The Azure dashboard is used to create an "App Registration" in Azure.  It's really Janky registering an app so the link to view and edit it must be saved to the readme.  A secret is created in the Azure App Registration and Authentication (via web using both "Access Tokens" as well as "ID Tokens").  The `*.firebaseapp.com/__/auth/handler` redirect uri from firebase get's configured here in Azure.  A Client secret must be generated in Azure so that it and the "Application (client) ID" can be copied into the firebase dashboard. Firebase documents it [here](https://firebase.google.com/docs/auth/web/microsoft-oauth) which links to MS docs [here](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app).
-
-###### Firebase Project Creation (Ve)
-Firebase's dashboard is used to create our project and Azure AD is enabled as an auth mechanism.  We copy the client secret and client ID from azure to make the authentication integration function correctly.
-
-###### Authentication Process
-Using the firebase library, the JS client redirects the user to firebase's Azure AD auth extension.  From there, firebase forwards the auth request to Azure and Azure responds with a signed JWT token.  Firebase fowards this to our react front end upon redirect back to our application's login page.  Our app will now be able to look up the OAuth token via `auth.currentUser.getIdToken(true).then(idToken => { console.log(idToken) });`.  This token is passed to our backend which validates that the token is an authentically signed Azure token.  Our backend takes the email information from the JWT token to associate the user with our backend.  A table named `users` will include this email along with any roles this user may have (admin?).
 
 ## Cloud Deployment Stuff
 
 Check out the [cloud docs](cloud_infrastructure/README.md).
-
 
 ## References
 

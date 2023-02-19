@@ -6,7 +6,6 @@ Here's where we describe what our vision, ambitions and next steps are for the p
 - (LAUREN) Define game data classes used in the space view
 - (LAUREN) Generate System data in javascript instead of using sample data
 - (ROB) Roll out firebase authentication
-- (ROB) Host on-the-cheap using w/e my work is hosting with
 - Make it so Galaxy is generated outside of the widget and passed in as a parameter for GalaxyWidget
 - Make it so Galaxy is generated outside of the widget and passed in as a parameter for SpaceViewWidget
 - Improve code quality of PlanetView stuff
@@ -20,6 +19,7 @@ Here's where we describe what our vision, ambitions and next steps are for the p
   - pump out solar system data to the backend over websocket
   - Transmit gametime to multiple subscribed clients
   - Communicate positions of ships with multiple clients
+- (ROB) Fix up database to use yaml and have pipeline build secrets and stuff
 
 
 ## Gameplay Logic and Design
@@ -64,3 +64,4 @@ x Add stars to systems
 x Add planets to systems
 x Tech Debt: Load models cleanly
 x Define database using sql
+x (ROB) Host on-the-cheap using w/e my work is hosting with

@@ -25,7 +25,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "deploy": "react-scripts build && gsutil cp -r build/* gs://pax-njax-org/",
+    "deploy": "bash -c 'source ../.env.prod && react-scripts build && gsutil -m cp -r build/* gs://pax-njax-org/'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
