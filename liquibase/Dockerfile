@@ -1,4 +1,4 @@
-FROM liquibase/liquibase
+FROM liquibase/liquibase:4.19.0
 
 # Root level setup
 RUN mkdir /liquibase/jdbc

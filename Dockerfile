@@ -1,4 +1,4 @@
-FROM node:latest as ui-build
+FROM node:19.6.1 as ui-build
 
 # This is just load balancer container used to serve the frontend (and proxy auth stuff)
 
@@ -28,7 +28,8 @@ RUN npm ci
 RUN npm run build
 
 # server environment
-FROM nginx:alpine
+FROM nginx:1.23.3-alpine
+
 COPY react-frontend/nginx.conf /etc/nginx/conf.d/configfile.template
 COPY --from=ui-build /app/react-frontend/build /usr/share/nginx/html
 ENV PORT 8080

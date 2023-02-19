@@ -16,7 +16,6 @@ services:
 
   liquibase:
     build: ./liquibase
-    image: "registry.njax.org/destructocats/liquibase_client"
     env_file:
       - ./.env.local
     environment:
