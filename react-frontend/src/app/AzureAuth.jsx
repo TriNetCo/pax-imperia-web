@@ -8,7 +8,6 @@ import {
 } from 'firebase/auth';
 import AppConfig from '../AppConfig';
 
-
 const config = {
   apiKey: AppConfig.FIREBASE_API_KEY,
   authDomain: AppConfig.AUTH_DOMAIN,
@@ -21,47 +20,38 @@ const config = {
 
 let app;
 let auth;
+const provider = new OAuthProvider('microsoft.com').setCustomParameters({
+  // tenant: config.tenant,
+  // prompt: 'select_account',
+});
 
 async function initApp() {
   app  = await initializeApp(config);
   auth = await getAuth(app);
+  // if (AppConfig.APP_ENV === 'local-test')
+  //   connectAuthEmulator(auth, 'http://localhost:9099');
+  return await catchRedirectSignInMicrosoft();
 }
 
 async function signInMicrosoft() {
-  if (auth === undefined)
-    await initApp();
-  const provider = new OAuthProvider('microsoft.com').setCustomParameters({
-    // tenant: config.tenant,
-    // prompt: 'consent',
-  });
-  signInWithRedirect(auth, provider);
+  signInWithRedirect(auth, provider).catch(error => console.log(error));
 }
 
 async function signOutMicrosoft() {
-  if (auth == null)
-    await initApp();
   await getAuth().signOut();
 }
 
 async function catchRedirectSignInMicrosoft() {
-  if (!auth)
-    await initApp();
-
-
-  if (auth != null &&
-      auth.currentUser != null &&
-      auth.currentUser.displayName) {
-    return;  // we are already logged in, ensure pending login is set to false so we don't keep looking up our login
-  }
-
   const result = await getRedirectResult(auth);
 
   if (result == null) {
     return;
   }
 
-  return { user:       result.user,
-    credential: OAuthProvider.credentialFromResult(result) };
+  return ({
+    user:       result.user,
+    credential: OAuthProvider.credentialFromResult(result)
+  });
 }
 
 async function getAuthOutput() {
@@ -70,4 +60,8 @@ async function getAuthOutput() {
   return await getAuth().currentUser.getIdToken();
 }
 
-export { signInMicrosoft, signOutMicrosoft, catchRedirectSignInMicrosoft, initApp, getAuthOutput };
+function getFirebaseUser() {
+  return auth.currentUser;
+}
+
+export { signInMicrosoft, signOutMicrosoft, initApp, getAuthOutput, getFirebaseUser };

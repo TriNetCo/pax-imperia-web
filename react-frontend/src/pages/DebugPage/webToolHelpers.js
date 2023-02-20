@@ -16,7 +16,7 @@ export const spoofSignIn = (provider) => {
 
   localStorage.setItem('displayName', usr.displayName);
   localStorage.setItem('email', usr.email);
-  localStorage.setItem('profilePicUrl', usr.photoURL);
+  localStorage.setItem('photoURL', usr.photoURL);
   localStorage.setItem('token', usr.accessToken);
   localStorage.setItem('tokenFromProvider', credential.accessToken);
   localStorage.setItem('lastSignInTime', usr.metadata.lastSignInTime);

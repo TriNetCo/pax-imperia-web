@@ -3,22 +3,21 @@ import PropTypes from 'prop-types';
 import { UserContext } from './UserContext';
 
 export const UserContextProvider = ({ children, value }) => {
-
-  // const userContext = useContext(UserContext);
-  // const { user, setUser } = value;
   const [ userContext, setUserContext ] = useState(value);
 
-  useEffect( () => {
-    // This is working in that it set's the parent's state, but that update is not reflected locally...
-    // until this component is re-rendered by the parent following the state change :)
+  // We use this method as opposed to useEffect which has an issue where the useEffect's resolved in opposite the order we want
+  const initUserContext = () => {
+    if (!userContext.initialized) {
+      console.debug('UserContextProvider: Initial Render');
+      userContext.initUser(setUserContext);
+      userContext.fillUserInfoFromLocalStorage();
+    }
 
-    userContext.initApp();
-    userContext.initUser(setUserContext);
-    userContext.fillUserInfoFromLocalStorage();
-  }, []);
+    return userContext;
+  };
 
   return (
-    <UserContext.Provider value={userContext}>
+    <UserContext.Provider value={initUserContext()}>
       {children}
     </UserContext.Provider>
   );

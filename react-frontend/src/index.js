@@ -10,6 +10,7 @@ import './index.css';
 import 'pax-imperia-js/css/style.css';
 import 'pax-imperia-js/css/systems.css';
 import Context from './app/Context';
+import FirebaseConnector from './app/FirebaseConnector';
 import { initGameData } from './app/gameDataInitializer';
 import { createUserContext } from './app/UserContext';
 
@@ -22,11 +23,13 @@ const userContext = createUserContext();
 root.render(
   <Provider store={store}>
     <Context gameData={gameData} userContext={userContext}>
-      {/* <React.StrictMode> */}
-      <Router basename={process.env.REACT_APP_PUBLIC_SUFIX}>
-        <App />
-      </Router>
-      {/* </React.StrictMode> */}
+      <FirebaseConnector>
+        {/* <React.StrictMode> */}
+        <Router basename={process.env.REACT_APP_PUBLIC_SUFIX}>
+          <App />
+        </Router>
+        {/* </React.StrictMode> */}
+      </FirebaseConnector>
     </Context>
   </Provider>
 );

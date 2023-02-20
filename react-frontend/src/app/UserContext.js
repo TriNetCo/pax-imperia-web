@@ -19,8 +19,8 @@ const fillUserInfoFromLocalStorage = () => {
     ...ctx,
     displayName: localStorage.getItem('displayName') ?? 'NONE',
     email:       localStorage.getItem('email') ?? '',
-    profilePic:  localStorage.getItem('photoURL') ?? '',
-    token: localStorage.getItem('token') ?? '',
+    photoURL:    localStorage.getItem('photoURL') ?? '',
+    token:       localStorage.getItem('token') ?? '',
     tokenFromProvider:     localStorage.getItem('tokenFromProvider') ?? '',
     lastSignInTime: localStorage.getItem('lastSignInTime') ?? '',
     loginStatus: localStorage.getItem('loginStatus') ?? 'logged_out',
@@ -49,8 +49,8 @@ const logout = () => {
   signOutMicrosoft();
 };
 
-const fillUserInfoFromRedirect = (result, credential) => {
-  const usr = result;
+const fillUserInfoFromRedirect = (usr, credential) => {
+  // const profileBlobPicUrl = usr.photoURL !== null && usr.photoURL !== '' ? usr.photoURL : '/public/web_assets/defaultProfilePicture.png';
 
   localStorage.setItem('displayName', usr.displayName);
   localStorage.setItem('email', usr.email);
@@ -64,7 +64,7 @@ const fillUserInfoFromRedirect = (result, credential) => {
     ...ctx,
     displayName: usr.displayName ?? '',
     email: usr.email ?? '',
-    profilePic: usr.photoURL ?? '',
+    photoURL: usr.photoURL ?? '',
     token: usr.accessToken ?? '',
     tokenFromProvider: credential.accessToken ?? '',
     lastSignInTime: usr.metadata.lastSignInTime,
@@ -90,9 +90,20 @@ const setDisplayName = (val) => {
   });
 };
 
+const setIdToken = (newToken) => {
+  if (newToken === localStorage.getItem('idToken')) return;
+
+  localStorage.setItem('idToken', newToken);
+
+  setUserInfo({
+    ...user,
+    idToken: newToken
+  });
+};
+
 const ctx = {
   displayName: 'NONE',
-  profilePic: '',
+  photoURL: '',
   email: '',
   token: '',
   tokenFromProvider: '',
@@ -102,6 +113,7 @@ const ctx = {
 
   setLoginStatus,
   setDisplayName,
+  setIdToken,
   login,
   logout,
   fillUserInfoFromRedirect,

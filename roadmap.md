@@ -1,6 +1,8 @@
 # Roadmap
 
-Here's where we describe what our vision, ambitions and next steps are for the project.
+Here's where we describe what our vision, ambitions and next steps are for the project.  Everyone owns this file.  To make things visible and reduce work duplication, we've been tagging our name on items we're currently doing (or are working towards doing).
+
+On Github, I've been testing out the latest GH project tracking features and basically implementing SAFe's agile definitions [explained and rebuttled here](https://insideproduct.co/themes-epics-features-user-stories/#:~:text=A%20feature%20is%20what%20everyone,broken%20down%20into%20user%20stories) but primarily defined [here](https://www.scaledagileframework.com/story/).  It's good to have both perspectives going in.  No one's agile is not perfect for every project.
 
 ## Network/ Data Engineering Roadmap
 - (LAUREN) Define game data classes used in the space view

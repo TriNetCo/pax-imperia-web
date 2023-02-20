@@ -12,36 +12,6 @@ import { Link } from 'react-router-dom';
 export default function LoginPage() {
   const userContext = useContext(UserContext);
 
-  useEffect(() => {
-
-    // If this is a glitched up render and userContext is still booting, then return early
-    if (!userContext.initialized) return;
-
-    // If this is a glitched up render and userContext is still booting, then return early
-    // if (userContext.displayName === undefined)
-    //   return;
-    // If we're not expecting a redirect (ie "logged_in" or 'logged_out' is set) return early to reduce web traffic
-    if (userContext.loginStatus !== 'pending')
-      return;
-
-    console.log('Calling catchRedirectSignInMicrosoft');
-    catchRedirectSignInMicrosoft()
-      .then(result => {
-        if (result == null) {
-          if (userContext.loginStatus === 'pending') {
-            userContext.setLoginStatus('logged_out');  // catches bugs where the login is set to pending, but no redirect comes in
-          }
-          return;  // sometimes this is null, even if it's a redirect response
-        }
-
-        userContext.fillUserInfoFromRedirect(result.user, result.credential);
-      })
-      .catch((error) => {
-        console.log('Something unexpected happened: ' + error);
-      });
-
-  }, [userContext]);
-
   const handleLogin = () => {
     userContext.login();
   };

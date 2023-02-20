@@ -1,4 +1,5 @@
 # Pax Imperia Clone
+
 Right now this is a clone of an old game.  But Pax is our benchmark game for an even cooler game built on top of it!!!  Our roadmap listing completed/ in-progress and planned features is in the [roadmap.md](roadmap.mp) file.
 
 ## Technical Overview
@@ -60,7 +61,7 @@ More detailed architectural documentation is located [here](docs/architectural_d
 ### Game Design
 Here's some ideas/ brainstorms about the [game design](docs/game_design.md).
 
-## Authentication Info
+### Authentication Info
 See [sign_ins](docs/sign_ins.md).
 
 ## Getting Started
@@ -78,7 +79,6 @@ Populate `backend/secrets/` and set `export GOOGLE_APPLICATION_CREDENTIALS="${HO
 TODO: Document using `ln` to pull in the secrets/fullchain.pem and secrets/privkey.pem secrets
 
 ### Launch the system with Docker Compose
-
 All of the microservices can be launched per the `docker-compose.yml` file.
 
 ```bash
@@ -94,15 +94,14 @@ See [backend](backend/README.md).
 ### Setup the react app
 See [react-frontend](react-frontend/README.md).
 
-## Dashboards
+### Cloud Deployment Stuff
+Check out the [cloud docs](cloud_infrastructure/README.md).
+
+### Service Dashboards
 - Azure for auth AD:  https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Authentication/appId/4d2c3c6a-9ea2-4e28-b0f4-6c6523ac1e32/objectId/c5d31509-5bb8-4ec0-a3a9-47db79308fe1/isMSAApp~/true/defaultBlade/Overview/appSignInAudience/AzureADandPersonalMicrosoftAccount
 - Google for firebase for auth detail smearing:  https://console.firebase.google.com/u/0/project/pax-imeria-clone/settings/general/web:ZDRmYjQzZGItNTJkYy00ZDE1LWE3OWItNjY3MWYxMTA4Yzky
 
-## Cloud Deployment Stuff
-
-Check out the [cloud docs](cloud_infrastructure/README.md).
-
-## References
+### References
 
 - Three JS raycaster/ click detection stuff:
 - Three JS Sprite stuff:  https://www.youtube.com/watch?v=pGO1Hm-JB90
