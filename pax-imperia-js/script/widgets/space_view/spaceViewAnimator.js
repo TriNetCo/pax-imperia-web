@@ -17,7 +17,6 @@ export class SpaceViewAnimator {
         this.mouse = clientObjects.mouse;
 
         this.clock = new THREE.Clock();
-        this.spinTime = 0;
     }
 
     drawLoop() {
@@ -63,10 +62,11 @@ export class SpaceViewAnimator {
 
         // seconds since getDelta last called
         let deltaTime = clock.getDelta();
+        let elapsedTime = clock.getElapsedTime();
 
         this.selectionSprite.update(deltaTime); // UpdateSpriteFrame
 
-        this.doRotationsAndOrbits(deltaTime);
+        this.doRotationsAndOrbits(elapsedTime);
 
         this.renderer.render( this.scene, this.camera );
     }
@@ -122,10 +122,8 @@ export class SpaceViewAnimator {
         await system.load(scene);
     }
 
-    doRotationsAndOrbits (deltaTime) {
-        let speedMultiplier = 1; // 1/9 to slow down the whole system
+    doRotationsAndOrbits (elapsedTime) {
         let system = this.system;
-        this.spinTime += deltaTime * speedMultiplier;
 
         for (const starOrPlanet of system['stars'].concat(system['planets'])) {
             let object3d = starOrPlanet.object3d;
@@ -142,8 +140,8 @@ export class SpaceViewAnimator {
 
             // square of the planet's orbital period is proportional to the cube of its semimajor axis
             // pow(d, 3) = pow(period, 2), velocity = pow(1/d, 0.5), Math.pow(1/d, 0.5)
-            object3d.position.x = r*Math.cos(this.spinTime * Math.pow(d, -2) + startingPosition) + 0;
-            object3d.position.z = r*Math.sin(this.spinTime * Math.pow(d, -2) + startingPosition) + 0;
+            object3d.position.x = r*Math.cos(elapsedTime * Math.pow(d, -2) + startingPosition) + 0;
+            object3d.position.z = r*Math.sin(elapsedTime * Math.pow(d, -2) + startingPosition) + 0;
         }
 
     }
