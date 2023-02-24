@@ -128,11 +128,11 @@ export class SpaceViewAnimator {
         for (const starOrPlanet of system['stars'].concat(system['planets'])) {
             let object3d = starOrPlanet.object3d;
 
-            object3d.rotation.y += 0.005;
+            object3d.rotation.y = 0.3 * elapsedTime;
 
             let d = starOrPlanet["distance_from_star"];
             if (d == 0) { // if the planet is the sun
-                object3d.rotation.x += 0.005;
+                object3d.rotation.x = 0.3 * elapsedTime;
                 continue;
             }
             let r = d*3;
