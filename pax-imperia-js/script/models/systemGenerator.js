@@ -40,15 +40,14 @@ export class SystemGenerator {
     }
 
     generatePlanets(c) {
-        let sizeToDistanceMultipler = 1/3;
         let planets = [];
         let planetCount = getRandomNum(c.minPlanetCount, c.maxPlanetCount, 0);
-        let minDistance = this.stars[0].size * sizeToDistanceMultipler;
+        let minDistance = this.stars[0].size;
 
         for (let i = 0; i < planetCount; i++) {
             let planetSize = getRandomNum(c.minPlanetSize, c.maxPlanetSize, 2);
-            let additionalDistance = getRandomNum(0.2, 0.5, 2);
-            let planetDistance = roundToDecimal(minDistance + planetSize * sizeToDistanceMultipler + additionalDistance, 2);
+            let additionalDistance = getRandomNum(0.6, 1.5, 2);
+            let planetDistance = roundToDecimal(minDistance + planetSize + additionalDistance, 2);
             let startingPosition = getRandomNum(0, Math.PI, 2);
             // Start all planets in the same spot to debug random settings
             // startingPosition = 0;
@@ -61,7 +60,7 @@ export class SystemGenerator {
                 "spin_speed": 1,
                 "starting_position": startingPosition,
             };
-            minDistance = planetDistance + planetSize * sizeToDistanceMultipler;
+            minDistance = planetDistance + planetSize;
             planets.push(planet);
         };
         return planets;

@@ -17,7 +17,7 @@ export class Planet extends Entity {
 
         // square of the planet's orbital period is proportional to the cube of its semimajor axis
         // pow(d, 3) = pow(period, 2), velocity = pow(1/d, 0.5), Math.pow(1/d, 0.5)
-        this.object3d.position.x = 3*d*Math.cos(elapsedTime * Math.pow(d, -2) + startingPosition);
-        this.object3d.position.z = 3*d*Math.sin(elapsedTime * Math.pow(d, -2) + startingPosition);
+        this.object3d.position.x = d*Math.cos(elapsedTime * Math.pow(3/d, 2) + startingPosition);
+        this.object3d.position.z = d*Math.sin(elapsedTime * Math.pow(3/d, 2) + startingPosition);
     }
 }
