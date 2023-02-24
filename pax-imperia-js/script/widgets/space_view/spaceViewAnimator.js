@@ -32,15 +32,16 @@ export class SpaceViewAnimator {
     }
 
     async animate() {
-        let clock = this.clock;
+        this.resetCamera()
+        this.updateObjects()
+        this.renderer.render( this.scene, this.camera );
+    }
 
+    resetCamera() {
         // Reset camera in real time
         //////////////////////////////
 
         let distance =  parseFloat( this.clientObjects.distanceSlider.value );
-        let xPosition = this.clientObjects.xSlider.value;
-        let yPosition = this.clientObjects.ySlider.value;
-        let zPosition = this.clientObjects.zSlider.value;
 
         // cameraPivot.rotation.set(xRotation, yRotation, 0.0);
         this.cameraPivot.rotation.set(-0.6, 0.05, -3);
@@ -51,24 +52,34 @@ export class SpaceViewAnimator {
         this.headLamp.position.set(0, 0, distance);
         // headLamp.lookAt(this.scene.position);
 
-        let ship = this.system.ships[0].object3d;
-        // if (ship === undefined) {
-        //    debugger;
-        // }
-        // ship.rotation.set(0.7, -1.6, 0.4);
-        ship.position.set(xPosition, yPosition, zPosition);
-
         this.camera.updateProjectionMatrix();
+    }
 
-        // seconds since getDelta last called
-        let deltaTime = clock.getDelta();
-        let elapsedTime = clock.getElapsedTime();
+    updateObjects() {
+        // update ship position with slider bars
+        let xPosition = this.clientObjects.xSlider.value;
+        let yPosition = this.clientObjects.ySlider.value;
+        let zPosition = this.clientObjects.zSlider.value;
 
-        this.selectionSprite.update(deltaTime); // UpdateSpriteFrame
+        this.system.ships[0].object3d.position.set(xPosition, yPosition, zPosition);
+        // ship.rotation.set(0.7, -1.6, 0.4);
 
-        this.doRotationsAndOrbits(elapsedTime);
+        // seconds since clock reset
+        let deltaTime = this.clock.getDelta();
+        // seconds since clock started (avoiding getElapsedTime() which resets clock)
+        let elapsedTime = this.clock.elapsedTime;
 
-        this.renderer.render( this.scene, this.camera );
+        // TODO: use elapsedTime instead of deltaTime
+        this.selectionSprite.update(deltaTime);
+
+        for (const star of this.system['stars']) {
+            star.update(elapsedTime);
+        }
+
+        for (const planet of this.system['planets']) {
+            planet.update(elapsedTime);
+        }
+
     }
 
     async populateScene() {
@@ -120,19 +131,6 @@ export class SpaceViewAnimator {
         /////////////////
 
         await system.load(scene);
-    }
-
-    doRotationsAndOrbits (elapsedTime) {
-        let system = this.system;
-
-        for (const star of system['stars']) {
-            star.update(elapsedTime)
-        }
-
-        for (const planet of system['planets']) {
-            planet.update(elapsedTime)
-        }
-
     }
 
 }
