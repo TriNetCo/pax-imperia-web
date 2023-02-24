@@ -17,7 +17,7 @@ let systemDataOld = {
             "size": 2,
             "distance_from_star": 0,
             "spin_speed": 1,
-            "starting_position": 5,  /* This is a random number where the planet's orbit begins so they aren't all rotating in sync with each other. */
+            "starting_angle": 5,  /* This is a random number where the planet's orbit begins so they aren't all rotating in sync with each other. */
         }
     ],
     "planets": [
@@ -27,7 +27,7 @@ let systemDataOld = {
             "size": 0.4,
             "distance_from_star": 2,
             "spin_speed": 2,
-            "starting_position": 10,
+            "starting_angle": 10,
         },
         {
             "index": 2,
@@ -35,7 +35,7 @@ let systemDataOld = {
             "size": 0.8,
             "distance_from_star": 3,
             "spin_speed": 3,
-            "starting_position": 40,
+            "starting_angle": 40,
         },
         {
             "index": 3,
@@ -43,7 +43,7 @@ let systemDataOld = {
             "size": 1.25,
             "distance_from_star": 4,
             "spin_speed": 4,
-            "starting_position": 180,
+            "starting_angle": 180,
         }
     ],
     "connected_systems": [
