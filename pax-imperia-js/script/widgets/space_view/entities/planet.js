@@ -13,11 +13,10 @@ export class Planet extends Entity {
         this.object3d.rotation.y = 0.3 * elapsedTime;
 
         let d = this.distance_from_star;
-        let startingPosition = this.starting_position;
-
         // square of the planet's orbital period is proportional to the cube of its semimajor axis
         // pow(d, 3) = pow(period, 2), velocity = pow(1/d, 0.5), Math.pow(1/d, 0.5)
-        this.object3d.position.x = d*Math.cos(elapsedTime * Math.pow(3/d, 2) + startingPosition);
-        this.object3d.position.z = d*Math.sin(elapsedTime * Math.pow(3/d, 2) + startingPosition);
+        let angle = elapsedTime * Math.pow(3/d, 2) + this.starting_position;
+        this.object3d.position.x = d * Math.cos(angle);
+        this.object3d.position.z = d * Math.sin(angle);
     }
 }
