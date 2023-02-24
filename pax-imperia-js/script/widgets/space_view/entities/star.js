@@ -7,4 +7,10 @@ export class Star extends Entity {
         this.name = systemName;
         this.assetPath = "/assets/sun.gltf";
     }
+
+    update (elapsedTime) {
+        this.object3d.rotation.y = 0.3 * elapsedTime;
+        this.object3d.rotation.x = 0.3 * elapsedTime;
+    }
+
 }

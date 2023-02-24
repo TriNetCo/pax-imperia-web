@@ -125,23 +125,12 @@ export class SpaceViewAnimator {
     doRotationsAndOrbits (elapsedTime) {
         let system = this.system;
 
-        for (const starOrPlanet of system['stars'].concat(system['planets'])) {
-            let object3d = starOrPlanet.object3d;
+        for (const star of system['stars']) {
+            star.update(elapsedTime)
+        }
 
-            object3d.rotation.y = 0.3 * elapsedTime;
-
-            let d = starOrPlanet["distance_from_star"];
-            if (d == 0) { // if the planet is the sun
-                object3d.rotation.x = 0.3 * elapsedTime;
-                continue;
-            }
-            let r = d*3;
-            let startingPosition = starOrPlanet["starting_position"];
-
-            // square of the planet's orbital period is proportional to the cube of its semimajor axis
-            // pow(d, 3) = pow(period, 2), velocity = pow(1/d, 0.5), Math.pow(1/d, 0.5)
-            object3d.position.x = r*Math.cos(elapsedTime * Math.pow(d, -2) + startingPosition) + 0;
-            object3d.position.z = r*Math.sin(elapsedTime * Math.pow(d, -2) + startingPosition) + 0;
+        for (const planet of system['planets']) {
+            planet.update(elapsedTime)
         }
 
     }
