@@ -4,68 +4,41 @@ Here's where we describe what our vision, ambitions and next steps are for the p
 
 On Github, I've been testing out the latest GH project tracking features and basically implementing SAFe's agile definitions [explained and rebuttled here](https://insideproduct.co/themes-epics-features-user-stories/#:~:text=A%20feature%20is%20what%20everyone,broken%20down%20into%20user%20stories) but primarily defined [here](https://www.scaledagileframework.com/story/).  It's good to have both perspectives going in.  No one's agile is not perfect for every project.
 
-## Network/ Data Engineering Roadmap
-m Add testing to the frontend
-m Define golang struct for solar system data
-m Combine galactic view into system view
-m (R) Websockets
-  x Listen for websocket connections from the frontend
-  m Get two clients "chatting"
-  m Ws: Communicate commands from frontend to backend (start new game command?)
-  m Ws: Transmit gametime to multiple subscribed clients
-  m Ws: Communicate positions of ships with multiple clients
-  m Ws: pump out solar system data to the backend over websocket
-m (R) Fix up database to use yaml and have pipeline build secrets and stuff
-  m update the username stuff to have yaml
-  m define pipeline/ script to perform database migration on cloud
-m Figure out how gametime updates from the backend impact the game? (reworded as clock synchronization)
+This file is not the source of truth for work, it is copied from milestones after their agreed upon.
 
-## Gameplay Logic and Design (GL&D)
-- [ ] Colonizing planets
-- [ ] Themes
-  - [ ] Expansion
-  - [ ] Exploration
-  - [ ] Industry
-  - [ ] Combat
-  - [ ] Research
-- [ ] Spaceships
-- [ ] Different species with different histories
+# Milestone: Single Player MVP ("extermination)
 
+###### Must
 
-## WebGL/ Canvas Graphics Roadmap
-m Galaxy Map Polish: Draw a pretty star instead of squares
-m Draw orbits lines
-m (P) Create a ship you can control and move to planets (in singleplayer mvp)
+- [ ] (L) Feature: Polish planet animations #51
+  - [ ] Refactor the way planet animation algorithms exist outside of the planet class #52
+  - [ ] Update the system generator to add some variance to planetary rotation and orbit speed #53
+- [ ] Create view to start a new single player game #20
+- [ ] Feature: Basic UI Navigation for Space View
+  - [ ] Add unpolished wormhole graphics, and include adjacent system wormholes in every system
+  - [ ] Space View UI - Enable changing systems by double clicking wormholes
+  - [ ] Space View UI - Enable leaving the space view to see the main menu screen
+- [ ] Feature: Basic ship controls #21
+  - [ ] Create UI controls for ships #22
+  - [ ] Enable moving a ship on the space view (scripting, UI button driven, and right click movement) #23
+  - [ ] Enable moving a ship from one system to another system #24
+  - [ ] Destroy an enemy battle ship #25
+  - [ ] Destroy an enemy planet #26
+- [ ] Feature: Setup automated browser testing infrastructure #27
+  - [ ] Research Browser test frameworks and report options #28
+  - [ ] Decide on which browser testing framework to support #29
+  - [ ] Configure the browser testing framework and write a test for the Single Player MVP #30
+  - [ ] Add controls, triggers, and observability for browser test automation #31
+- [ ] Create test suite that validates the correctness of the Single Player MVP implementation #32
+- [ ] Feature: Victory Conditions - total annihilation #33
+  - [ ] Create view for Game Over - Victory page #34
+  - [ ] Implement marking a colonizer as "eliminated" in data structure #35
+  - [ ] Implement Victory Conditions wherein when all other players are eliminated, end the game #36
+- [ ] Feature: Polish views for starting a new single player game #20
+  - [ ] Rework the main menu's Single Player button to show sub-menu for "New Game" or "Load Game"
+  - [ ] Implement "Species Selection" view, accessed by main menu -> Single Player -> "New Game"
+  - [ ] Implement "Galaxy Generator" view, accessed by "New Game" bread crumbs
 
-## Modeling
-m (Q) Use blender to create something used in the game
-
-
-## HTML/ CSS UI Roadmap
-m (R) Add Login view
-m Add NewGame view
-m Flesh out Main Menu CSS
-m Flesh out HUD buttons in System detail view
-
-## Moved to GH
+###### Should
 
 
-## Finished Stuff!
-x Drive Space View contents off of JSON sample data
-x Get System Detail view to work in React
-x Center rectangle of star
-x Extract constellation algo into it's own module
-x Set minimum distance between stars
-x Connect systems to each other with a line
-x Allow opening a system by clicking it
-x Add stars to systems
-x Add planets to systems
-x Tech Debt: Load models cleanly
-x Define database using sql
-x (R) Host on-the-cheap using w/e my work is hosting with
-x (R) Roll out firebase authentication
-x (L) Define game data classes used in the space view
-x (L) Generate System data in javascript instead of using sample data
-x Make it so Galaxy is generated outside of the widget and passed in as a parameter for GalaxyWidget
-x Make it so Galaxy is generated outside of the widget and passed in as a parameter for SpaceViewWidget
-x Improve code quality of PlanetView stuff
