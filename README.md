@@ -58,6 +58,17 @@ GCP (cloud platform)
 
 More detailed architectural documentation is located [here](docs/architectural_diagrams.md).
 
+### Technical References
+
+- Three JS raycaster/ click detection stuff:
+- Three JS Sprite stuff:  https://www.youtube.com/watch?v=pGO1Hm-JB90
+- Restful GoLang (skipped):  https://go.dev/doc/tutorial/web-service-gin
+- REST using Gin:  https://go.dev/doc/tutorial/web-service-gin
+- GoLang Packages: https://go.dev/doc/code
+- GoLang Project Layout... https://github.com/golang-standards/project-layout
+- React + WebGL... http://www.petecorey.com/blog/2019/08/19/animating-a-canvas-with-react-hooks/
+- React Context?? https://www.freecodecamp.org/news/react-context-for-beginners/#:~:text=React%20context%20caveats-,What%20is%20React%20context%3F,across%20our%20components%20more%20easily.
+
 ### Game Design
 Here's some ideas/ brainstorms about the [game design](docs/game_design.md).
 
@@ -78,6 +89,14 @@ Populate `backend/secrets/` and set `export GOOGLE_APPLICATION_CREDENTIALS="${HO
 
 TODO: Document using `ln` to pull in the secrets/fullchain.pem and secrets/privkey.pem secrets
 
+### Service Dashboards
+This application is hosted using the following third party services:
+
+- This GitHub repo...
+- GCP for static hosting and compute: https://console.cloud.google.com
+- Azure for auth AD:  https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Authentication/appId/4d2c3c6a-9ea2-4e28-b0f4-6c6523ac1e32/objectId/c5d31509-5bb8-4ec0-a3a9-47db79308fe1/isMSAApp~/true/defaultBlade/Overview/appSignInAudience/AzureADandPersonalMicrosoftAccount
+- Google for firebase for auth detail smearing:  https://console.firebase.google.com/u/0/project/pax-imeria-clone/settings/general/web:ZDRmYjQzZGItNTJkYy00ZDE1LWE3OWItNjY3MWYxMTA4Yzky
+
 ### Launch the system with Docker Compose
 All of the microservices can be launched per the `docker-compose.yml` file.
 
@@ -96,18 +115,3 @@ See [react-frontend](react-frontend/README.md).
 
 ### Cloud Deployment Stuff
 Check out the [cloud docs](cloud_infrastructure/README.md).
-
-### Service Dashboards
-- Azure for auth AD:  https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Authentication/appId/4d2c3c6a-9ea2-4e28-b0f4-6c6523ac1e32/objectId/c5d31509-5bb8-4ec0-a3a9-47db79308fe1/isMSAApp~/true/defaultBlade/Overview/appSignInAudience/AzureADandPersonalMicrosoftAccount
-- Google for firebase for auth detail smearing:  https://console.firebase.google.com/u/0/project/pax-imeria-clone/settings/general/web:ZDRmYjQzZGItNTJkYy00ZDE1LWE3OWItNjY3MWYxMTA4Yzky
-
-### References
-
-- Three JS raycaster/ click detection stuff:
-- Three JS Sprite stuff:  https://www.youtube.com/watch?v=pGO1Hm-JB90
-- Restful GoLang (skipped):  https://go.dev/doc/tutorial/web-service-gin
-- REST using Gin:  https://go.dev/doc/tutorial/web-service-gin
-- GoLang Packages: https://go.dev/doc/code
-- GoLang Project Layout... https://github.com/golang-standards/project-layout
-- React + WebGL... http://www.petecorey.com/blog/2019/08/19/animating-a-canvas-with-react-hooks/
-- React Context?? https://www.freecodecamp.org/news/react-context-for-beginners/#:~:text=React%20context%20caveats-,What%20is%20React%20context%3F,across%20our%20components%20more%20easily.
