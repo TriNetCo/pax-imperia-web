@@ -1,0 +1,9 @@
+.user-card {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  background: green;
+  width: 200px;
+  height: 50px;
+}

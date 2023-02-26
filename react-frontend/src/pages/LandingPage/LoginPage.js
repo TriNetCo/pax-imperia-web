@@ -1,5 +1,6 @@
 import React, { useEffect, useContext } from 'react';
-import { UserContext } from '../../app/UserContext';
+import UserContext from '../../app/UserContext';
+import UserCard from '../../shared/UserCard/UserCard';
 
 import {
   CircularProgress
@@ -58,6 +59,7 @@ export default function LoginPage() {
 
   return (
     <>
+      <UserCard />
       <div>
         { userContext.loginStatus === 'logged_in' ?
           'Logged In' :

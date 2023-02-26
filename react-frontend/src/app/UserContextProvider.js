@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { UserContext } from './UserContext';
+import UserContext from './UserContext';
 
 export const UserContextProvider = ({ children, value }) => {
   const [ userContext, setUserContext ] = useState(value);

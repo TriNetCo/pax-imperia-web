@@ -14,17 +14,47 @@ const setUserInfo = (info) => {
   setUser(user);
 };
 
+const fillUserInfoFromRedirect = (usr, credential) => {
+  const profileBlobPicUrl = (usr.photoURL != null && usr.photoURL !== '')
+    ? usr.photoURL
+    : '/web_assets/defaultProfilePicture.png';
+
+  localStorage.setItem('displayName', usr.displayName);
+  localStorage.setItem('email', usr.email);
+  localStorage.setItem('photoURL', profileBlobPicUrl);
+  localStorage.setItem('token', usr.accessToken);
+  localStorage.setItem('tokenFromProvider', credential.accessToken);
+  localStorage.setItem('providerId', credential.providerId);
+  localStorage.setItem('lastSignInTime', usr.metadata.lastSignInTime);
+  localStorage.setItem('loginStatus', 'logged_in');
+
+  setUserInfo({
+    ...ctx,
+    // ...usr, // TODO: do it this way so the below stuff doesn't require duplicative digging
+    displayName: usr.displayName ?? '',
+    email: usr.email ?? '',
+    photoURL: profileBlobPicUrl ?? '',
+    token: usr.accessToken ?? '',
+    tokenFromProvider: credential.accessToken ?? '',
+    providerId: credential.providerId ?? '',
+    lastSignInTime: usr.metadata.lastSignInTime,
+    loginStatus: 'logged_in',
+  });
+
+};
+
 const fillUserInfoFromLocalStorage = () => {
   setUserInfo({
     ...ctx,
-    displayName: localStorage.getItem('displayName') ?? 'NONE',
-    email:       localStorage.getItem('email') ?? '',
-    photoURL:    localStorage.getItem('photoURL') ?? '',
-    token:       localStorage.getItem('token') ?? '',
-    tokenFromProvider:     localStorage.getItem('tokenFromProvider') ?? '',
-    lastSignInTime: localStorage.getItem('lastSignInTime') ?? '',
-    loginStatus: localStorage.getItem('loginStatus') ?? 'logged_out',
-    initialized: true,
+    displayName:       localStorage.getItem('displayName') ?? 'NONE',
+    email:             localStorage.getItem('email') ?? '',
+    photoURL:          localStorage.getItem('photoURL') ?? '',
+    token:             localStorage.getItem('token') ?? '',
+    tokenFromProvider: localStorage.getItem('tokenFromProvider') ?? '',
+    providerId:        localStorage.getItem('providerId') ?? '',
+    lastSignInTime:    localStorage.getItem('lastSignInTime') ?? '',
+    loginStatus:       localStorage.getItem('loginStatus') ?? 'logged_out',
+    initialized:       true,
   });
 };
 
@@ -39,6 +69,7 @@ const logout = () => {
   localStorage.removeItem('photoURL');
   localStorage.removeItem('token');
   localStorage.removeItem('tokenFromProvider');
+  localStorage.removeItem('providerId');
   localStorage.removeItem('lastSignInTime');
   localStorage.removeItem('loginStatus');
 
@@ -47,29 +78,6 @@ const logout = () => {
     loginStatus: 'logged_out'
   });
   signOutMicrosoft();
-};
-
-const fillUserInfoFromRedirect = (usr, credential) => {
-  // const profileBlobPicUrl = usr.photoURL !== null && usr.photoURL !== '' ? usr.photoURL : '/public/web_assets/defaultProfilePicture.png';
-
-  localStorage.setItem('displayName', usr.displayName);
-  localStorage.setItem('email', usr.email);
-  localStorage.setItem('photoURL', usr.photoURL);
-  localStorage.setItem('token', usr.accessToken);
-  localStorage.setItem('tokenFromProvider', credential.accessToken);
-  localStorage.setItem('lastSignInTime', usr.metadata.lastSignInTime);
-  localStorage.setItem('loginStatus', 'logged_in');
-
-  setUserInfo({
-    ...ctx,
-    displayName: usr.displayName ?? '',
-    email: usr.email ?? '',
-    photoURL: usr.photoURL ?? '',
-    token: usr.accessToken ?? '',
-    tokenFromProvider: credential.accessToken ?? '',
-    lastSignInTime: usr.metadata.lastSignInTime,
-    loginStatus: 'logged_in',
-  });
 };
 
 const setLoginStatus = (val) => {
@@ -101,12 +109,36 @@ const setIdToken = (newToken) => {
   });
 };
 
+function setPhotoURL(value) {
+  // setAttributeByCalleeName(arguments.callee.name, value);
+};
+
+const setAttributeByCalleeName = (calleeName, value) => {
+  const attributeName = constructAttributeName(calleeName);
+
+  // Don't touch storage or the context state if we don't have anything to change
+  if (value === localStorage.getItem(attributeName)) return;
+
+  localStorage.setItem(attributeName, value);
+
+  setUserInfo({
+    ...user,
+    attributeName: value
+  });
+};
+
+const constructAttributeName = (calleeName) => {
+  const properCaseName = calleeName.substring(3);
+  return properCaseName.charAt(0).toLowerCase() + properCaseName.substring(1);
+};
+
 const ctx = {
   displayName: 'NONE',
   photoURL: '',
   email: '',
   token: '',
   tokenFromProvider: '',
+  providerId: '',
   loginStatus:  '',
   initialized: false,
   lastSignInTime: null,
@@ -114,6 +146,7 @@ const ctx = {
   setLoginStatus,
   setDisplayName,
   setIdToken,
+  setPhotoURL,
   login,
   logout,
   fillUserInfoFromRedirect,
@@ -127,5 +160,6 @@ export const createUserContext = () => {
   return ctx;
 };
 
+const UserContext = React.createContext(ctx);
 
-export const UserContext = React.createContext(ctx);
+export default UserContext;

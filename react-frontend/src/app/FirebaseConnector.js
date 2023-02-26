@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { UserContext } from './UserContext';
+import UserContext from './UserContext';
 import { getFirebaseUser, initApp } from './AzureAuth';
 import AppConfig from '../AppConfig';
 
