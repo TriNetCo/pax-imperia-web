@@ -10,7 +10,7 @@ const initUser = (setStateFunc) => {
 };
 
 const setUserInfo = (info) => {
-  user = info;
+  user = new Proxy(info, metaHandler);
   setUser(user);
 };
 
@@ -109,30 +109,29 @@ const setIdToken = (newToken) => {
   });
 };
 
-function setPhotoURL(value) {
-  // setAttributeByCalleeName(arguments.callee.name, value);
+const metaHandler = {
+  // get(target, name) {
+  //   return name in target ? target[name] : 42;
+  // },
+  set(target, prop, value, receiver) {
+    console.debug(`setting userContext property: ${prop} = ${value}`);
+
+    // Don't touch storage or the context state if we don't have anything to change
+    if (user[prop] === value) return;
+
+    localStorage.setItem(prop, value);
+
+    const newUser = {
+      ...user
+    };
+    newUser[prop] = value;
+    setUserInfo(newUser);
+
+    return true;
+  },
 };
 
-const setAttributeByCalleeName = (calleeName, value) => {
-  const attributeName = constructAttributeName(calleeName);
-
-  // Don't touch storage or the context state if we don't have anything to change
-  if (value === localStorage.getItem(attributeName)) return;
-
-  localStorage.setItem(attributeName, value);
-
-  setUserInfo({
-    ...user,
-    attributeName: value
-  });
-};
-
-const constructAttributeName = (calleeName) => {
-  const properCaseName = calleeName.substring(3);
-  return properCaseName.charAt(0).toLowerCase() + properCaseName.substring(1);
-};
-
-const ctx = {
+const ctx = new Proxy({
   displayName: 'NONE',
   photoURL: '',
   email: '',
@@ -146,14 +145,13 @@ const ctx = {
   setLoginStatus,
   setDisplayName,
   setIdToken,
-  setPhotoURL,
   login,
   logout,
   fillUserInfoFromRedirect,
   fillUserInfoFromLocalStorage,
   initUser,
   initApp,
-};
+}, metaHandler);
 
 
 export const createUserContext = () => {

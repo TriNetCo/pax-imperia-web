@@ -1,12 +1,16 @@
 import { useContext, useEffect } from 'react';
+import {
+  CircularProgress
+} from '@mui/material';
 
 import './UserCard.css';
 import UserContext from '../../app/UserContext';
 import AppConfig from '../../AppConfig';
 
+let doneWithPhotoLookups = false;
+
 const UserCard = () => {
   const userContext = useContext(UserContext);
-  let doneWithPhotoLookups = false;
 
   const lookupMsAzureProfilePhoto = async (token) => {
     return fetch('https://graph.microsoft.com/v1.0/me/photo/$value', {
@@ -32,7 +36,6 @@ const UserCard = () => {
     }).then(function (blob) {
       if (blob == null) return null;
       return URL.createObjectURL(blob);
-      // setProfilePicUrl(imageObjectURL);
     }).catch(e => {
       console.log('error injecting photo');
       console.log(e);
@@ -41,30 +44,49 @@ const UserCard = () => {
 
   const asyncEffect = async () => {
     const photoURL = await lookupMsAzureProfilePhoto(userContext.tokenFromProvider);
-    if (photoURL != null)
-      userContext.setPhotoURL(photoURL);
+    if (photoURL != null) {
+      userContext.photoURL = photoURL;
+      console.debug('set photoURL to ' + photoURL);
+    }
   };
 
   useEffect(() => {
     if (AppConfig.APP_ENV === 'local-test') return;
-    if (userContext.providerId === 'microsoft.com' && !doneWithPhotoLookups) {
+    if (doneWithPhotoLookups) return;
+    if (userContext.providerId === 'microsoft.com') {
       asyncEffect();
       doneWithPhotoLookups = true;
+      console.debug('set doneWithPhotoLookups');
     }
-  }, []);
+  }, [userContext]);
 
-  return (
-    <div className='user-card'>
-      <img
-        src={userContext.photoURL}
-        style={{ maxWidth: '40px', borderRadius: '50%' }} />
-      <div>
-        FACE PIC
-      </div>
-      <div>User: {userContext.displayName}</div>
-      <div>Hamburger</div>
-    </div>
-  );
+  switch (userContext.loginStatus) {
+    case 'logged_out':
+      return (
+        <></>
+      );
+    case 'logged_in':
+      console.debug('rendering UserCard since logged in, photoURL: ' + userContext.photoURL);
+      return (
+        <div className='user-card'>
+          <img
+            src={userContext.photoURL}
+            style={{ maxWidth: '40px', borderRadius: '50%' }} />
+          <div>{userContext.displayName}</div>
+          <div>Options</div>
+          <div>Minimize</div>
+        </div>
+      );
+    case 'pending':
+    default:
+      return (
+        <div className='user-card'>
+          <div style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+            <CircularProgress />
+          </div>
+        </div>
+      );
+  }
 };
 
 export default UserCard;
