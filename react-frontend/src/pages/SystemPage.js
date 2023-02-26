@@ -1,8 +1,41 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import SpaceView from '../features/space_view/SpaceView';
 
 const SystemPage = () => {
+
+  const distanceSliderOnInput = () => {
+    var input = document.getElementById('distance-slider');
+    var currentVal = input.value;
+    this.setState({
+      value: currentVal
+    });
+  };
+
+  const xSliderOnInput = () => {
+    var input = document.getElementById('x-slider');
+    var currentVal = input.value;
+    this.setState({
+      value: currentVal
+    });
+  };
+
+  const ySliderOnInput = () => {
+    var input = document.getElementById('y-slider');
+    var currentVal = input.value;
+    this.setState({
+      value: currentVal
+    });
+  };
+
+  const zSliderOnInput = () => {
+    var input = document.getElementById('z-slider');
+    var currentVal = input.value;
+    this.setState({
+      value: currentVal
+    });
+  };
+
   return (
     <div className="page-wrap">
 
@@ -45,10 +78,10 @@ const SystemPage = () => {
                 <div>
                   Lower Console
                 </div>
-                <input readOnly={true} type="range" min="15" max="300" value="50" className="slider" id="distance-slider"/>
-                <input readOnly={true} type="range" min="-6" max="6" value="-1.5" step="0.05" className="slider" id="x-slider"/>
-                <input readOnly={true} type="range" min="-6" max="6" value="2.6" className="slider" step="0.05" id="y-slider"/>
-                <input readOnly={true} type="range" min="-12" max="12" value="6" className="slider" step="0.05" id="z-slider"/>
+                <p>Distance <input id="distance-slider" type="range" min="15" max="300" step="1" defaultValue="50" onInput={distanceSliderOnInput}/></p>
+                <p>X <input id="x-slider" type="range" min="-6" max="6" step="0.05" defaultValue="-1.5" onInput={xSliderOnInput}/></p>
+                <p>Y <input id="y-slider" type="range" min="-6" max="6" step="0.05" defaultValue="2.6" onInput={ySliderOnInput}/></p>
+                <p>Z <input id="z-slider" type="range" min="-12" max="12" step="0.05" defaultValue="6" onInput={zSliderOnInput}/></p>
               </div>
             </div>
 

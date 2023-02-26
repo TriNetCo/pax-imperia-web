@@ -57,10 +57,9 @@ export class SpaceViewAnimator {
 
     updateObjects() {
         // update ship position with slider bars
-        let xPosition = this.clientObjects.xSlider.value;
-        let yPosition = this.clientObjects.ySlider.value;
-        let zPosition = this.clientObjects.zSlider.value;
-
+        let xPosition = this.clientObjects.xSlider.value; // -1.5
+        let yPosition = this.clientObjects.ySlider.value; // 2.6
+        let zPosition = this.clientObjects.zSlider.value; // 6
         this.system.ships[0].object3d.position.set(xPosition, yPosition, zPosition);
         // ship.rotation.set(0.7, -1.6, 0.4);
 
@@ -115,10 +114,7 @@ export class SpaceViewAnimator {
 
         var cameraLight = new THREE.PointLight(new THREE.Color(), .5, 10000);
         scene.add(cameraLight);
-
         camera.add(cameraLight);
-
-        scene.add(sunLight);
 
         this.cameraPivot = new THREE.Group();
         camera.position.set(0, 0, 50);
@@ -126,9 +122,7 @@ export class SpaceViewAnimator {
         this.cameraPivot.add(camera);
         scene.add(this.cameraPivot);
 
-        /////////////////
-        // Load Models //
-        /////////////////
+        // Load Models
 
         await system.load(scene);
     }

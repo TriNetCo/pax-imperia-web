@@ -23,13 +23,13 @@ export class Galaxy {
 
         // Define systems with coordinates
         for (let systemIndex = 0; systemIndex < c.systemCount; systemIndex++){
-            let position = this.generateSystemXY(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
+            let position = this.generateSystemPosition(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
             let i = 0;
             // Try maxPlacementAttempts times to find a system far enough away
             // from existing systems
             while (!this.isValidDistance(systems, position, c.systemBuffer)) {
                 console.log("retrying placement");
-                position = this.generateSystemXY(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
+                position = this.generateSystemPosition(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
                 i = i + 1;
                 if (i == c.maxPlacementAttempts) {
                     let errorMsg = 'Generating stars without buffer';
@@ -44,12 +44,13 @@ export class Galaxy {
         return systems;
     }
 
-    generateSystemXY(canvasWidth, canvasHeight, canvasBuffer) {
+    generateSystemPosition(canvasWidth, canvasHeight, canvasBuffer) {
         // Generates system coordinates that aren't within canvasBuffer of the
         // edge of the canvas
         let x = Math.round(Math.random() * (canvasWidth - canvasBuffer * 2) + canvasBuffer);
         let y = Math.round(Math.random() * (canvasHeight - canvasBuffer * 2) + canvasBuffer);
-        return {x: x, y: y};
+        let z = Math.round(Math.random() * 100);
+        return {x: x, y: y, z: z};
     }
 
     isValidDistance(systems, position, systemBuffer) {
