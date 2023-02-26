@@ -4,7 +4,7 @@ Here's where we describe what our vision, ambitions and next steps are for the p
 
 On Github, I've been testing out the latest GH project tracking features and basically implementing SAFe's agile definitions [explained and rebuttled here](https://insideproduct.co/themes-epics-features-user-stories/#:~:text=A%20feature%20is%20what%20everyone,broken%20down%20into%20user%20stories) but primarily defined [here](https://www.scaledagileframework.com/story/).  It's good to have both perspectives going in.  No one's agile is not perfect for every project.
 
-This file is not the source of truth for work, it is copied from milestones after their agreed upon.
+This file is not the source of truth for work, it is copied from this [vision/ milestone issue](https://github.com/TriNetCo/pax-imperia-clone/issues/19).
 
 # Milestone: Single Player MVP ("extermination)
 
