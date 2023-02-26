@@ -17,6 +17,7 @@ export class SpaceViewWidget {
         this.c = config;
         this.clientObjects = clientObjects;
         this.systemsData = systemsData;
+        window.systemsData = systemsData;
 
         const mouse = new THREE.Vector2(0,0);
         this.clientObjects.mouse = mouse;

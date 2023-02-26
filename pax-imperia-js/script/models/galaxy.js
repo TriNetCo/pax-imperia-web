@@ -1,5 +1,6 @@
 import { StarName } from './starName.js';
 import { SystemGenerator } from './systemGenerator.js';
+import { getRandomNum } from './helpers.js'
 
 export class Galaxy {
 
@@ -47,9 +48,9 @@ export class Galaxy {
     generateSystemPosition(canvasWidth, canvasHeight, canvasBuffer) {
         // Generates system coordinates that aren't within canvasBuffer of the
         // edge of the canvas
-        let x = Math.round(Math.random() * (canvasWidth - canvasBuffer * 2) + canvasBuffer);
-        let y = Math.round(Math.random() * (canvasHeight - canvasBuffer * 2) + canvasBuffer);
-        let z = Math.round(Math.random() * 100);
+        let x = getRandomNum(canvasBuffer, canvasWidth - canvasBuffer, 0);
+        let y = getRandomNum(canvasBuffer, canvasHeight - canvasBuffer, 0);
+        let z = getRandomNum(-10, 10, 2);
         return {x: x, y: y, z: z};
     }
 

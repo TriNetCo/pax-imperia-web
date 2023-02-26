@@ -125,6 +125,12 @@ export class SpaceViewAnimator {
         // Load Models
 
         await system.load(scene);
+
+        for (const wormhole of this.system['wormholes']) {
+            wormhole.addWormholeText(scene);
+        }
+
+
     }
 
 }

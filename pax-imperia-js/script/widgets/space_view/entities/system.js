@@ -2,6 +2,7 @@ import { unpackData } from '../../../models/helpers.js'
 import { Star } from './star.js';
 import { Planet } from './planet.js';
 import { Ship } from './ship.js';
+import { Wormhole } from './wormhole.js';
 
 export class System {
 
@@ -9,20 +10,21 @@ export class System {
         unpackData(systemData, this);
         this.stars = this.createRepresentations(systemData.stars, Star, this.name);
         this.planets = this.createRepresentations(systemData.planets, Planet, this.name);
+        this.wormholes = this.createRepresentations(systemData.connections, Wormhole, this.name, systemData.position);
         this.ships = this.createRepresentations(systemData.ships, Ship, this.name);
     }
 
-    createRepresentations (entitiesData, cls, systemName) {
+    createRepresentations (entitiesData, cls, systemName, systemPosition=null) {
         let representations = [];
         for (const entityData of entitiesData) {
-            let representation = new cls(entityData, systemName);
+            let representation = new cls(entityData, systemName, systemPosition);
             representations.push(representation);
         };
         return representations;
     }
 
     async load (scene) {
-        let entities = this.stars.concat(this.planets).concat(this.ships);
+        let entities = this.stars.concat(this.planets).concat(this.wormholes).concat(this.ships);
         for (let i = 0; i < entities.length; i++) {
             const entity = entities[i];
             await entity.load(scene);
