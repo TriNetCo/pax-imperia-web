@@ -1,46 +1,22 @@
 import { useContext, useEffect } from 'react';
 import {
-  CircularProgress
+  Avatar,
+  CircularProgress, IconButton,
 } from '@mui/material';
+
+import MailIcon from '@mui/icons-material/Mail';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 import './UserCard.css';
 import UserContext from '../../app/UserContext';
 import AppConfig from '../../AppConfig';
+import { lookupMsAzureProfilePhoto } from '../../app/AzureAuth';
+import UserCardMenu from './UserCardMenu';
 
 let doneWithPhotoLookups = false;
 
 const UserCard = () => {
   const userContext = useContext(UserContext);
-
-  const lookupMsAzureProfilePhoto = async (token) => {
-    return fetch('https://graph.microsoft.com/v1.0/me/photo/$value', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        pragma: 'no-cache',
-        'cache-control': 'no-cache',
-        'Content-Type': 'image/jpg',
-      }
-    }).then(async function (response) {
-      if (response.status === 200)
-        return await response.blob();
-      if (response.status === 401) {
-        console.log('Recieved unauthorized response while querying photo from MS Azure.  The token is probably expired therefore logging out.');
-        logout();
-      }
-      if (response.status === 404) {
-        console.log('404 received during profile picture lookup, user likely has no photo.');
-        return;
-      }
-
-      console.log('Recieved unexpected response code while querying graph.microsoft.com: ' + response.statusText);
-    }).then(function (blob) {
-      if (blob == null) return null;
-      return URL.createObjectURL(blob);
-    }).catch(e => {
-      console.log('error injecting photo');
-      console.log(e);
-    });
-  };
 
   const asyncEffect = async () => {
     const photoURL = await lookupMsAzureProfilePhoto(userContext.tokenFromProvider);
@@ -60,6 +36,10 @@ const UserCard = () => {
     }
   }, [userContext]);
 
+  const minimize = () => {
+
+  };
+
   switch (userContext.loginStatus) {
     case 'logged_out':
       return (
@@ -69,19 +49,28 @@ const UserCard = () => {
       console.debug('rendering UserCard since logged in, photoURL: ' + userContext.photoURL);
       return (
         <div className='user-card'>
-          <img
-            src={userContext.photoURL}
-            style={{ maxWidth: '40px', borderRadius: '50%' }} />
-          <div>{userContext.displayName}</div>
-          <div>Options</div>
-          <div>Minimize</div>
+          <img src={userContext.photoURL} />
+          <div className='display-name'>{userContext.displayName}</div>
+          <div className='email'>
+            <MailIcon></MailIcon>
+            <span>{userContext.email}</span>
+          </div>
+          <UserCardMenu />
+          <div className='minimize-button'>
+            <Avatar>
+              <IconButton
+                variant="outlined" onClick={minimize}>
+                <ExpandLessIcon />
+              </IconButton>
+            </Avatar>
+          </div>
         </div>
       );
     case 'pending':
     default:
       return (
         <div className='user-card'>
-          <div style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          <div className='pending'>
             <CircularProgress />
           </div>
         </div>

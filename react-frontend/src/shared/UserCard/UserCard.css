@@ -2,23 +2,64 @@
   position: absolute;
   top: 20px;
   right: 20px;
+  color: #333;
 
   background: #ccc;
-  width: 200px;
-  height: 60px;
+  width: 300px;
+  height: 74px;
 }
 
 .user-card img {
   float: left;
   margin-right: 10px;
-  margin-top: 4px;
-  margin-left: 4px;
+  margin-top: 8px;
+  margin-left: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.user-card .display-name {
+  text-decoration: underline;
+  margin-bottom: 8px;
+  margin-top: 8px;
+}
+
+.user-card .email {
+  display: flex;
+}
+
+.user-card .email span {
+margin-left: 8px;
 }
 
 .user-card::after {
   clear: both;
 }
 
-/* .user-card .MuiCircularProgress-svg {
-  fl
-} */
+.user-card .minimize-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+}
+
+.user-card .menu {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  font-size: xx-large;
+}
+
+
+.user-card .pending {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#basic-menu > div > ul.MuiList-root > li > svg {
+  margin-right: 8px;
+}
