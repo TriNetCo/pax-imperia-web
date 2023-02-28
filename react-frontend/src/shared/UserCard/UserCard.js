@@ -1,17 +1,15 @@
 import { useContext, useEffect } from 'react';
-import {
-  Avatar,
-  CircularProgress, IconButton,
-} from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 
 import MailIcon from '@mui/icons-material/Mail';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import LoginIcon from '@mui/icons-material/Login';
 
 import './UserCard.css';
 import UserContext from '../../app/UserContext';
 import AppConfig from '../../AppConfig';
 import { lookupMsAzureProfilePhoto } from '../../app/AzureAuth';
 import UserCardMenu from './UserCardMenu';
+import UserCardCollapser from './UserCardCollapser';
 
 let doneWithPhotoLookups = false;
 
@@ -36,44 +34,45 @@ const UserCard = () => {
     }
   }, [userContext]);
 
-  const minimize = () => {
-
-  };
 
   switch (userContext.loginStatus) {
     case 'logged_out':
       return (
-        <></>
+        <UserCardCollapser>
+          <div className='user-card'>
+            <div className='login-button-container'>
+              <Button variant="contained" startIcon={<LoginIcon />}>
+                Login
+              </Button>
+            </div>
+          </div>
+        </UserCardCollapser>
       );
     case 'logged_in':
       console.debug('rendering UserCard since logged in, photoURL: ' + userContext.photoURL);
       return (
-        <div className='user-card'>
-          <img src={userContext.photoURL} />
-          <div className='display-name'>{userContext.displayName}</div>
-          <div className='email'>
-            <MailIcon></MailIcon>
-            <span>{userContext.email}</span>
+        <UserCardCollapser>
+          <div className='user-card'>
+            <img src={userContext.photoURL} />
+            <div className='display-name'>{userContext.displayName}</div>
+            <div className='email'>
+              <MailIcon></MailIcon>
+              <span>{userContext.email}</span>
+            </div>
+            <UserCardMenu />
           </div>
-          <UserCardMenu />
-          <div className='minimize-button'>
-            <Avatar>
-              <IconButton
-                variant="outlined" onClick={minimize}>
-                <ExpandLessIcon />
-              </IconButton>
-            </Avatar>
-          </div>
-        </div>
+        </UserCardCollapser>
       );
     case 'pending':
     default:
       return (
-        <div className='user-card'>
-          <div className='pending'>
-            <CircularProgress />
+        <UserCardCollapser>
+          <div className='user-card'>
+            <div className='pending'>
+              <CircularProgress />
+            </div>
           </div>
-        </div>
+        </UserCardCollapser>
       );
   }
 };

@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import UserContext from '../../app/UserContext';
 import { spoofSignIn } from '../DebugPage/webToolHelpers';
+import { Button } from '@mui/material';
 
 const LandingPageOptions = () => {
   const userContext = useContext(UserContext);
@@ -22,7 +23,11 @@ const LandingPageOptions = () => {
           <li><Link to="/systems">Singleplayer</Link></li>
           <li><Link to="/new_game">Multiplayer</Link></li>
           <li><Link to="/about">About</Link></li>
-          <li><button onClick={handleLogout}>Logout</button></li>
+          <li>
+            <Button onClick={handleLogout}>
+              Logout
+            </Button>
+          </li>
         </ul>
       </div>
     );

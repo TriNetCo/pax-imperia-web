@@ -1,18 +1,30 @@
-.user-card {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  color: #333;
 
+.user-card-container {
+  position: absolute;
+  top: 0px;
+  right: 20px;
+  flex: 1;
+}
+
+.user-card {
+  position: relative;
+  color: #333;
   background: #ccc;
-  width: 300px;
+  width: 340px;
   height: 74px;
+  padding-top: 20px;
+}
+
+.user-card .login-button-container {
+  margin-top: -20px; /* the battle begins... */
+  margin-left: auto;
+  margin-right: auto;
+  width: 100px;
 }
 
 .user-card img {
   float: left;
   margin-right: 10px;
-  margin-top: 8px;
   margin-left: 8px;
   width: 40px;
   height: 40px;
@@ -22,7 +34,6 @@
 .user-card .display-name {
   text-decoration: underline;
   margin-bottom: 8px;
-  margin-top: 8px;
 }
 
 .user-card .email {
@@ -37,21 +48,12 @@ margin-left: 8px;
   clear: both;
 }
 
-.user-card .minimize-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 100%;
-}
-
 .user-card .menu {
   position: absolute;
   right: 12px;
   top: 10px;
   font-size: xx-large;
 }
-
 
 .user-card .pending {
   height: 100%;
@@ -62,4 +64,12 @@ margin-left: 8px;
 
 #basic-menu > div > ul.MuiList-root > li > svg {
   margin-right: 8px;
+}
+
+.user-card-container .minimize-button {
+  margin-top: -18px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

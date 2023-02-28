@@ -4,17 +4,28 @@ import PeopleIcon from '@mui/icons-material/People';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 
-import { useState } from 'react';
-
+import { useContext, useState } from 'react';
+import UserContext from '../../app/UserContext';
 
 const UserCardMenu = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const userContext = useContext(UserContext);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleAccount = () => {
+    setAnchorEl(null);
+
+    alert('TODO: Add account settings when more backend stuff is finished.');
+  };
+
+  const handleLogout = () => {
+    userContext.logout();
   };
 
   return (
@@ -33,8 +44,9 @@ const UserCardMenu = () => {
           }}
         >
           <MenuItem onClick={handleClose}><PeopleIcon /> Friend List</MenuItem>
-          <MenuItem onClick={handleClose}><SettingsIcon /> Account</MenuItem>
-          <MenuItem onClick={handleClose}><LogoutIcon /> Logout</MenuItem>
+          <MenuItem onClick={handleAccount}><SettingsIcon /> Account</MenuItem>
+          <MenuItem onClick={handleClose}><LogoutIcon /> Leave Game</MenuItem>
+          <MenuItem onClick={handleLogout}><LogoutIcon /> Logout</MenuItem>
         </Menu>
       </div>
     </>

@@ -60,14 +60,22 @@ More detailed architectural documentation is located [here](docs/architectural_d
 
 ### Technical References
 
+###### WebGL
 - Three JS raycaster/ click detection stuff:
 - Three JS Sprite stuff:  https://www.youtube.com/watch?v=pGO1Hm-JB90
+
+###### GoLang
 - Restful GoLang (skipped):  https://go.dev/doc/tutorial/web-service-gin
 - REST using Gin:  https://go.dev/doc/tutorial/web-service-gin
 - GoLang Packages: https://go.dev/doc/code
 - GoLang Project Layout... https://github.com/golang-standards/project-layout
+
+###### React
 - React + WebGL... http://www.petecorey.com/blog/2019/08/19/animating-a-canvas-with-react-hooks/
 - React Context?? https://www.freecodecamp.org/news/react-context-for-beginners/#:~:text=React%20context%20caveats-,What%20is%20React%20context%3F,across%20our%20components%20more%20easily.
+
+###### CSS
+- Nesting Flexboxes: https://www.quackit.com/css/flexbox/tutorial/nested_flex_containers.cfm
 
 ### Game Design
 Here's some ideas/ brainstorms about the [game design](docs/game_design.md).

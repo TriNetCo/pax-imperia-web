@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import UserContext from '../../app/UserContext';
 import UserCard from '../../shared/UserCard/UserCard';
 
@@ -6,9 +6,7 @@ import {
   CircularProgress
 } from '@mui/material';
 
-import { catchRedirectSignInMicrosoft } from '../../app/AzureAuth';
 import { Link } from 'react-router-dom';
-
 
 export default function LoginPage() {
   const userContext = useContext(UserContext);
