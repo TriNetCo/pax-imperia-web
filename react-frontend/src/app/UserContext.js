@@ -3,7 +3,7 @@ import React from 'react';
 import { initApp, signInMicrosoft, signOutMicrosoft } from './AzureAuth';
 
 let user;
-let setUser;
+let setUser = (u) => user = u;  // Override this via initUser
 
 const initUser = (setStateFunc) => {
   setUser = setStateFunc;
@@ -152,7 +152,7 @@ const ctx = new Proxy({
   initUser,
   initApp,
 }, metaHandler);
-
+user = ctx;
 
 export const createUserContext = () => {
   return ctx;

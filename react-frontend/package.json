@@ -26,7 +26,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "deploy": "bash -c 'source ../.env.prod && react-scripts build && gsutil -m cp -r build/* gs://pax-njax-org/'",
-    "test": "react-scripts test",
+    "test": "CI=true react-scripts test --color",
+    "verify": "tsc && eslint --max-warnings=0 --fix src",
     "eject": "react-scripts eject"
   },
   "jest": {
