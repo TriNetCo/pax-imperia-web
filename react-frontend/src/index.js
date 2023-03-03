@@ -13,7 +13,7 @@ import Context from './app/Context';
 import FirebaseConnector from './app/FirebaseConnector';
 import { initGameData } from './app/gameDataInitializer';
 import { createUserContext } from './app/UserContext';
-
+import AzureAuth from './app/AzureAuth';
 const container = document.getElementById('root');
 const root = createRoot(container);
 
@@ -23,7 +23,7 @@ const userContext = createUserContext();
 root.render(
   <Provider store={store}>
     <Context gameData={gameData} userContext={userContext}>
-      <FirebaseConnector>
+      <FirebaseConnector azureAuth={new AzureAuth()}>
         {/* <React.StrictMode> */}
         <Router basename={process.env.REACT_APP_PUBLIC_SUFIX}>
           <App />

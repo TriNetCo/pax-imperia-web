@@ -117,15 +117,12 @@ const metaHandler = {
     console.debug(`setting userContext property: ${prop} = ${value}`);
 
     // Don't touch storage or the context state if we don't have anything to change
-    if (user[prop] === value) return;
+    if (target[prop] === value) return;
 
     localStorage.setItem(prop, value);
 
-    const newUser = {
-      ...user
-    };
-    newUser[prop] = value;
-    setUserInfo(newUser);
+    target[prop] = value;
+    setUserInfo(target);
 
     return true;
   },
@@ -133,7 +130,6 @@ const metaHandler = {
 
 const ctx = new Proxy({
   displayName: 'NONE',
-  photoURL: '',
   email: '',
   token: '',
   tokenFromProvider: '',

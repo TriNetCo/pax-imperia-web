@@ -25,6 +25,7 @@ const provider = new OAuthProvider('microsoft.com').setCustomParameters({
   // prompt: 'select_account',
 });
 
+
 async function initApp() {
   app  = await initializeApp(config);
   auth = await getAuth(app);
@@ -92,6 +93,69 @@ async function getAuthOutput() {
 
 function getFirebaseUser() {
   return auth.currentUser;
+}
+
+// TODO: refactor all of above functions into the below class.
+export default class AzureAuth {
+  constructor() {
+  }
+
+  /* initLoginContext will call 1 of the 4 handlers based on the scenario was have going with firebase:
+   * - redirectSuccessHandler: When we're coming back to the app from a redirect with login OAuth
+   * - redirectStuckHandler: When something exceptional took place during the login process and our local context thinks we're pending a login redirect, but redirect information isn't coming in right
+   * - alreadyLoggedInHandler: When we're already logged in via firefox and only need to check to see if we need to update our login token
+   * - loginExpiredHandler: When our local login context thinks we're logged in, but firebase probably knows our login has expired
+   */
+  async initLoginContext(handlers) {
+    const result = await initApp();
+
+    try {
+      handlers.redirectSuccessHandler(result);  // The first function in this chain to find that it is the appropriate handler for the situation will handle the situation and throw an exception to exit the call chain
+      handlers.redirectStuckHandler();
+
+      // Okay... we're not in a redirect cycle... let's see if we're logged in
+      const user = azureAuth.getFirebaseUser();
+      if (checkIfAlreadyLoggedInViaSomePersistenceFromFirebase(user)) {
+        user?.getIdToken()
+          .then((token) => {
+            handlers.alreadyLoggedInHandler(user);
+          })
+          .catch((err) => console.log(err));
+      }
+
+      handlers.loginExpiredHandler();
+
+    } catch (exception) { }
+
+    function checkIfAlreadyLoggedInViaSomePersistenceFromFirebase (user) {
+      return user != null;
+    };
+  }
+
+  async initApp() {
+    return await initApp();
+  }
+
+  async signInMicrosoft() {
+    return await signInMicrosoft();
+  }
+
+  async signOutMicrosoft() {
+    return await signOutMicrosoft();
+  };
+
+  async getAuthOutput() {
+    return await getAuthOutput();
+  }
+
+  getFirebaseUser() {
+    getFirebaseUser();
+  }
+
+  async lookupMsAzureProfilePhoto() {
+    return await lookupMsAzureProfilePhoto();
+  }
+
 }
 
 export { signInMicrosoft, signOutMicrosoft, initApp, getAuthOutput, getFirebaseUser, lookupMsAzureProfilePhoto };
