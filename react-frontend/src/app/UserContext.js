@@ -1,69 +1,17 @@
 import React from 'react';
 
-import { initApp, signInMicrosoft, signOutMicrosoft } from './AzureAuth';
+let localStorage = window.localStorage;
+let _azureAuth;
 
 let user;
-let setUser = (u) => user = u;  // Override this via initUser
-
-const initUser = (setStateFunc) => {
-  setUser = setStateFunc;
-};
+let setUser = (u) => user = u;  // Override this via initUser when running in React
 
 const setUserInfo = (info) => {
   user = new Proxy(info, metaHandler);
   setUser(user);
 };
 
-const fillUserInfoFromRedirect = (usr, credential) => {
-  const profileBlobPicUrl = (usr.photoURL != null && usr.photoURL !== '')
-    ? usr.photoURL
-    : '/web_assets/defaultProfilePicture.png';
-
-  localStorage.setItem('displayName', usr.displayName);
-  localStorage.setItem('email', usr.email);
-  localStorage.setItem('photoURL', profileBlobPicUrl);
-  localStorage.setItem('token', usr.accessToken);
-  localStorage.setItem('tokenFromProvider', credential.accessToken);
-  localStorage.setItem('providerId', credential.providerId);
-  localStorage.setItem('lastSignInTime', usr.metadata.lastSignInTime);
-  localStorage.setItem('loginStatus', 'logged_in');
-
-  setUserInfo({
-    ...ctx,
-    // ...usr, // TODO: do it this way so the below stuff doesn't require duplicative digging
-    displayName: usr.displayName ?? '',
-    email: usr.email ?? '',
-    photoURL: profileBlobPicUrl ?? '',
-    token: usr.accessToken ?? '',
-    tokenFromProvider: credential.accessToken ?? '',
-    providerId: credential.providerId ?? '',
-    lastSignInTime: usr.metadata.lastSignInTime,
-    loginStatus: 'logged_in',
-  });
-
-};
-
-const fillUserInfoFromLocalStorage = () => {
-  setUserInfo({
-    ...ctx,
-    displayName:       localStorage.getItem('displayName') ?? 'NONE',
-    email:             localStorage.getItem('email') ?? '',
-    photoURL:          localStorage.getItem('photoURL') ?? '',
-    token:             localStorage.getItem('token') ?? '',
-    tokenFromProvider: localStorage.getItem('tokenFromProvider') ?? '',
-    providerId:        localStorage.getItem('providerId') ?? '',
-    lastSignInTime:    localStorage.getItem('lastSignInTime') ?? '',
-    loginStatus:       localStorage.getItem('loginStatus') ?? 'logged_out',
-    initialized:       true,
-  });
-};
-
-const login = () => {
-  localStorage.setItem('loginStatus', 'pending');
-  signInMicrosoft();
-};
-
-const logout = () => {
+const clearAppStorage = () => {
   localStorage.removeItem('displayName');
   localStorage.removeItem('email');
   localStorage.removeItem('photoURL');
@@ -72,41 +20,88 @@ const logout = () => {
   localStorage.removeItem('providerId');
   localStorage.removeItem('lastSignInTime');
   localStorage.removeItem('loginStatus');
-
-  setUserInfo({
-    ...ctx,
-    loginStatus: 'logged_out'
-  });
-  signOutMicrosoft();
 };
 
-const setLoginStatus = (val) => {
-  localStorage.setItem('loginStatus', val);
+let ctx = {
+  initialized: false,
 
-  setUserInfo({
-    ...user,
-    loginStatus: val
-  });
-};
+  login: () => {
+    localStorage.setItem('loginStatus', 'pending');
+    _azureAuth.signInMicrosoft();
+  },
 
-const setDisplayName = (val) => {
-  localStorage.setItem('displayName', val);
+  logout: () => {
+    clearAppStorage();
 
-  setUserInfo({
-    ...user,
-    displayName: val
-  });
-};
+    user.updateKeys({
+      ...ctx,
+      loginStatus: 'logged_out'
+    });
+    setUserInfo(user);
 
-const setIdToken = (newToken) => {
-  if (newToken === localStorage.getItem('idToken')) return;
+    _azureAuth.signOutMicrosoft();
+  },
 
-  localStorage.setItem('idToken', newToken);
+  fillUserInfoFromRedirect: (usr, credential) => {
+    const profileBlobPicUrl = (usr.photoURL != null && usr.photoURL !== '')
+      ? usr.photoURL
+      : '/web_assets/defaultProfilePicture.png';
 
-  setUserInfo({
-    ...user,
-    idToken: newToken
-  });
+    user.updateKeys({
+      ...ctx,
+      displayName: usr.displayName,
+      email: usr.email,
+      photoURL: profileBlobPicUrl,
+      token: usr.accessToken,
+      tokenFromProvider: credential.accessToken,
+      providerId: credential.providerId,
+      lastSignInTime: usr.metadata.lastSignInTime,
+      loginStatus: 'logged_in',
+    });
+    user.updateStorage(user);
+
+    setUserInfo(user);
+  },
+
+  fillUserInfoFromLocalStorage: () => {
+    user.updateKeys({
+      ...ctx,
+      displayName:       localStorage.getItem('displayName'),
+      email:             localStorage.getItem('email'),
+      photoURL:          localStorage.getItem('photoURL'),
+      token:             localStorage.getItem('token'),
+      tokenFromProvider: localStorage.getItem('tokenFromProvider'),
+      providerId:        localStorage.getItem('providerId'),
+      lastSignInTime:    localStorage.getItem('lastSignInTime'),
+      loginStatus:       localStorage.getItem('loginStatus') ?? 'logged_out',
+      initialized:       true,
+    });
+
+    setUserInfo(user);
+  },
+
+  initUser: (setStateFunc) => {
+    setUser = setStateFunc;
+  },
+
+  overrideStorage: (storage) => {
+    localStorage = storage;
+  },
+
+  updateKeys: (object) => {
+    for (const property in object) {
+      const val = object[property];
+      user[property] = val;
+    }
+  },
+
+  updateStorage: (object) => {
+    for (const property in object) {
+      const val = object[property];
+      if ( typeof(val) !== Function && val !== '' && val != null)
+        localStorage.setItem(property, val);
+    }
+  }
 };
 
 const metaHandler = {
@@ -114,46 +109,31 @@ const metaHandler = {
   //   return name in target ? target[name] : 42;
   // },
   set(target, prop, value, receiver) {
-    console.debug(`setting userContext property: ${prop} = ${value}`);
-
     // Don't touch storage or the context state if we don't have anything to change
-    if (target[prop] === value) return;
+    if (target[prop] === value) return true;
 
     localStorage.setItem(prop, value);
 
     target[prop] = value;
     setUserInfo(target);
-
     return true;
   },
 };
 
-const ctx = new Proxy({
-  displayName: 'NONE',
-  email: '',
-  token: '',
-  tokenFromProvider: '',
-  providerId: '',
-  loginStatus:  '',
-  initialized: false,
-  lastSignInTime: null,
-
-  setLoginStatus,
-  setDisplayName,
-  setIdToken,
-  login,
-  logout,
-  fillUserInfoFromRedirect,
-  fillUserInfoFromLocalStorage,
-  initUser,
-  initApp,
-}, metaHandler);
-user = ctx;
-
-export const createUserContext = () => {
-  return ctx;
+const generateNewImmutableUser = (sourceObj) => {
+  return new Proxy({ ...sourceObj }, metaHandler);
 };
 
-const UserContext = React.createContext(ctx);
+export const createUserContext = ({ storage, azureAuth } = {}) => {
+  user = generateNewImmutableUser(ctx);
+
+  if (storage != null)
+    localStorage = storage;
+
+  _azureAuth = azureAuth;
+  return user;
+};
+
+const UserContext = React.createContext(generateNewImmutableUser(ctx));
 
 export default UserContext;

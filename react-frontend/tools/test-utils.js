@@ -6,29 +6,28 @@ import { Provider } from "react-redux";
 import Context from '../src/app/Context';
 import { BrowserRouter as Router } from "react-router-dom";
 import { createUserContext } from "../src/app/UserContext";
+import AzureAuth from '../src/app/AzureAuth';
 
 
-const userContext = createUserContext();
-userContext.login = () => {};
-userContext.logout = () => {};
-userContext.initApp = () => {};
-
-
-// TODO: create a mocked out userContext here, where login is stubbed
-function render(ui, { rootReducer, ...renderOptions } = {}) {
+function render(ui, { rootReducer, storage, ...renderOptions } = {}) {
   const store = configureStore({ reducer: rootReducer });
 
   function Wrapper({ children }) {
+    const userContext = createUserContext({storage, azureAuth: new AzureAuth()});
+
+    userContext.login = () => {};
+    userContext.logout = () => {};
+    userContext.initApp = () => {};
+
     return (
-    <Provider store={store}>
-        <Router>
-          <Context userContext={userContext}>
+      <Provider store={store}>
+        <Context userContext={userContext}>
+          <Router>
             {children}
-          </Context>
-        </Router>
+          </Router>
+        </Context>
       </Provider>
     );
-
   }
 
   return rtlRender(ui, { wrapper: Wrapper, ...renderOptions });

@@ -45,7 +45,7 @@ export default function DebugPage() {
   };
 
   const handleSetDisplayName = () => {
-    userContext.setDisplayName('Overwritten Name');
+    userContext.displayName = 'Overwritten Name';
   };
 
   const authenticateWithBackend = async evt => {

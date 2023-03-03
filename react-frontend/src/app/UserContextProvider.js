@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import UserContext from './UserContext';
 
@@ -25,5 +25,5 @@ export const UserContextProvider = ({ children, value }) => {
 
 UserContextProvider.propTypes = {
   children: PropTypes.element.isRequired,
-  value: PropTypes.object.isRequired,
+  value:    PropTypes.object.isRequired,
 };

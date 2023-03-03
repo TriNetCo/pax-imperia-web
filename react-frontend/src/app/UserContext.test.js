@@ -7,11 +7,11 @@ describe("UserContext tests", () => {
   test('userContext can get and set properties', () => {
     const userContext = createUserContext();
 
-    // expect(userContext.displayName).toEqual('NONE');
-    // expect(userContext.photoURL).toEqual('');
-    // expect(userContext.email).toEqual('');
-    // expect(userContext.login).toBeInstanceOf(Function);
-    // expect(userContext.logout).toBeInstanceOf(Function);
+    expect(userContext.displayName).toEqual(undefined);
+    expect(userContext.photoURL).toEqual(undefined);
+    expect(userContext.email).toEqual(undefined);
+    expect(userContext.login).toBeInstanceOf(Function);
+    expect(userContext.logout).toBeInstanceOf(Function);
 
     userContext.photoURL = 'photo url';
     expect(userContext.photoURL).toEqual('photo url');

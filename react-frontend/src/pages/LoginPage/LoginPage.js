@@ -52,7 +52,7 @@ export default function LoginPage() {
   };
 
   const handleChangeStateState = (state) => {
-    userContext.setLoginStatus(state);
+    userContext.loginStatus = state;
   };
 
   return (

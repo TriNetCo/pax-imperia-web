@@ -27,8 +27,8 @@ export const redirectSuccessHandler = (userContext) => {
 export const redirectStuckHandler = (userContext) => {
   return () => {
     if (!checkIfWeAreInAPotentiallyStuckPendingState()) return;
-    console.log('loginStatus was pending, but catchRedirectSignInMicrosoft response was null.  Setting status to logged_out in case we\'re in a stuck state.');
-    userContext.setLoginStatus('logged_out');
+    console.debug('loginStatus was pending, but catchRedirectSignInMicrosoft response was null.  Setting status to logged_out in case we\'re in a stuck state.');
+    userContext.loginStatus = 'logged_out';
     throw 'end handler chain';
 
     function checkIfWeAreInAPotentiallyStuckPendingState() {
@@ -38,8 +38,8 @@ export const redirectStuckHandler = (userContext) => {
 };
 
 export const alreadyLoggedInHandler = (userContext) => {
-  return (user) => {
-    userContext.setIdToken(token);
+  return (token) => {
+    userContext.token = token;
     // TODO: Add application logic for after successful authentication here
     applicationLogicToCallOnAuthInit();
     throw 'end handler chain';
@@ -54,12 +54,11 @@ export const loginExpiredHandler = (userContext) => {
       throw 'end handler chain';
     }
 
-    const checkIfOurLoginStatusIndicatesALoginEvenThoughFirebaseDisagrees = () => {
+    function checkIfOurLoginStatusIndicatesALoginEvenThoughFirebaseDisagrees() {
       return userContext.loginStatus === 'logged_in';
-    };
+    }
   };
 };
-
 
 const FirebaseConnector = ({children, azureAuth}) => {
   const userContext = useContext(UserContext);

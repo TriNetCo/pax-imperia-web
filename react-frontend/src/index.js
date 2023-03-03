@@ -18,7 +18,8 @@ const container = document.getElementById('root');
 const root = createRoot(container);
 
 const gameData    = initGameData();
-const userContext = createUserContext();
+let azureAuth = new AzureAuth();
+const userContext = createUserContext({azureAuth});
 
 root.render(
   <Provider store={store}>

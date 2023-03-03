@@ -118,7 +118,7 @@ export default class AzureAuth {
       if (checkIfAlreadyLoggedInViaSomePersistenceFromFirebase(user)) {
         user?.getIdToken()
           .then((token) => {
-            handlers.alreadyLoggedInHandler(user);
+            handlers.alreadyLoggedInHandler(token);
           })
           .catch((err) => console.log(err));
       }
