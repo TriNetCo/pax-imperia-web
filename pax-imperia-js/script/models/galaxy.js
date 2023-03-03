@@ -50,7 +50,7 @@ export class Galaxy {
         // edge of the canvas
         let x = getRandomNum(canvasBuffer, canvasWidth - canvasBuffer, 0);
         let y = getRandomNum(canvasBuffer, canvasHeight - canvasBuffer, 0);
-        let z = getRandomNum(-10, 10, 2);
+        let z = getRandomNum(-8, 8, 2);
         return {x: x, y: y, z: z};
     }
 

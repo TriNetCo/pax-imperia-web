@@ -79,8 +79,8 @@ const SystemPage = () => {
                   Lower Console
                 </div>
                 <p>Distance <input id="distance-slider" type="range" min="15" max="300" step="1" defaultValue="50" onInput={distanceSliderOnInput}/></p>
-                <p>X <input id="x-slider" type="range" min="-6" max="6" step="0.05" defaultValue="-1.5" onInput={xSliderOnInput}/></p>
-                <p>Y <input id="y-slider" type="range" min="-6" max="6" step="0.05" defaultValue="2.6" onInput={ySliderOnInput}/></p>
+                <p>X <input id="x-slider" type="range" min="-15" max="15" step="0.05" defaultValue="-1.5" onInput={xSliderOnInput}/></p>
+                <p>Y <input id="y-slider" type="range" min="-10" max="10" step="0.05" defaultValue="2.6" onInput={ySliderOnInput}/></p>
                 <p>Z <input id="z-slider" type="range" min="-12" max="12" step="0.05" defaultValue="6" onInput={zSliderOnInput}/></p>
               </div>
             </div>

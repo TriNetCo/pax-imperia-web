@@ -56,6 +56,7 @@ export class GalaxyDrawer {
                 systemNameLabel.innerHTML = system.name;
                 let hoverDrawRadius = system.radius + 2;
                 this.drawDot(system.position.x, system.position.y, hoverDrawRadius, hoverDrawColor);
+                console.log('x: ', system.position.x, 'y: ', system.position.y)
                 nothingIsHovered = false;
                 break;
             }
