@@ -39,7 +39,7 @@ describe("FirebaseConnector tests", () => {
 
     try {
       handlerUnderTest(redirectResultSample)
-    } catch { }
+    } catch (error) { if (error !== 'end handler chain') console.log(error); }
 
 
     expect(userContext.displayName).toEqual(expectedDisplayName);
@@ -52,7 +52,7 @@ describe("FirebaseConnector tests", () => {
 
     try {
       handlerUnderTest()
-    } catch { }
+    } catch (error) { if (error !== 'end handler chain') console.log(error); }
 
     expect(userContext.loginStatus).toEqual('logged_out');
   });
@@ -62,7 +62,7 @@ describe("FirebaseConnector tests", () => {
 
     try {
       handlerUnderTest(expectedToken)
-    } catch { }
+    } catch (error) { if (error !== 'end handler chain') console.log(error); }
 
     expect(userContext.token).toEqual(expectedToken);
   });
@@ -73,7 +73,7 @@ describe("FirebaseConnector tests", () => {
 
     try {
       handlerUnderTest()
-    } catch (error) { }
+    } catch (error) { if (error !== 'end handler chain') console.log(error); }
 
     expect(userContext.loginStatus).toEqual('logged_out');
   });

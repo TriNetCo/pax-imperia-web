@@ -11,19 +11,27 @@ const setUserInfo = (info) => {
   setUser(user);
 };
 
+const persistedFields = [
+  'displayName',
+  'email',
+  'photoURL',
+  'token',
+  'tokenFromProvider',
+  'providerId',
+  'lastSignInTime',
+  'loginStatus',
+];
+
+
 const clearAppStorage = () => {
-  localStorage.removeItem('displayName');
-  localStorage.removeItem('email');
-  localStorage.removeItem('photoURL');
-  localStorage.removeItem('token');
-  localStorage.removeItem('tokenFromProvider');
-  localStorage.removeItem('providerId');
-  localStorage.removeItem('lastSignInTime');
-  localStorage.removeItem('loginStatus');
+  persistedFields.forEach(prop => {
+    localStorage.removeItem(prop);
+  });
 };
 
 let ctx = {
   initialized: false,
+  loginStatus: 'logged_out',
 
   login: () => {
     localStorage.setItem('loginStatus', 'pending');
@@ -34,8 +42,7 @@ let ctx = {
     clearAppStorage();
 
     user.updateKeys({
-      ...ctx,
-      loginStatus: 'logged_out'
+      ...ctx
     });
     setUserInfo(user);
 
@@ -66,15 +73,15 @@ let ctx = {
   fillUserInfoFromLocalStorage: () => {
     user.updateKeys({
       ...ctx,
-      displayName:       localStorage.getItem('displayName'),
+      displayName:       localStorage.getItem('displayName') ?? 'NONE',
+      loginStatus:       localStorage.getItem('loginStatus') ?? 'logged_out',
+      initialized:       true,
       email:             localStorage.getItem('email'),
       photoURL:          localStorage.getItem('photoURL'),
       token:             localStorage.getItem('token'),
       tokenFromProvider: localStorage.getItem('tokenFromProvider'),
       providerId:        localStorage.getItem('providerId'),
       lastSignInTime:    localStorage.getItem('lastSignInTime'),
-      loginStatus:       localStorage.getItem('loginStatus') ?? 'logged_out',
-      initialized:       true,
     });
 
     setUserInfo(user);
@@ -96,23 +103,21 @@ let ctx = {
   },
 
   updateStorage: (object) => {
-    for (const property in object) {
-      const val = object[property];
-      if ( typeof(val) !== Function && val !== '' && val != null)
-        localStorage.setItem(property, val);
+    for (const prop in object) {
+      const value = object[prop];
+      if (shouldPropBePersisted(prop, value))
+        localStorage.setItem(prop, value);
     }
   }
 };
 
 const metaHandler = {
-  // get(target, name) {
-  //   return name in target ? target[name] : 42;
-  // },
   set(target, prop, value, receiver) {
     // Don't touch storage or the context state if we don't have anything to change
     if (target[prop] === value) return true;
 
-    localStorage.setItem(prop, value);
+    if ( shouldPropBePersisted(prop) )
+      localStorage.setItem(prop, value);
 
     target[prop] = value;
     setUserInfo(target);
@@ -134,6 +139,11 @@ export const createUserContext = ({ storage, azureAuth } = {}) => {
   return user;
 };
 
-const UserContext = React.createContext(generateNewImmutableUser(ctx));
+const shouldPropBePersisted = (prop, value) => {
+  return (persistedFields.includes(prop) &&
+      value !== '' && value != null &&
+      typeof(value) !== Function);
+};
 
+const UserContext = React.createContext(generateNewImmutableUser(ctx));
 export default UserContext;
