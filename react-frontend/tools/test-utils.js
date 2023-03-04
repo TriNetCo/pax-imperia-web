@@ -1,32 +1,28 @@
 /* eslint-disable */
-import React, { useContext } from "react";
+import React from "react";
 import { render as rtlRender } from "@testing-library/react";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
-import Context from '../src/app/Context';
 import { BrowserRouter as Router } from "react-router-dom";
-import UserContext, { createUserContext } from "../src/app/UserContext";
-import AzureAuth from '../src/app/AzureAuth';
+import {UserContextProvider} from '../src/app/UserContextProvider';
 
 
-function render(ui, { rootReducer, storage, ...renderOptions } = {}) {
+function render(ui, { rootReducer, ...renderOptions } = {}) {
   const store = configureStore({ reducer: rootReducer });
+  const azureAuthMock = {
+    initApp: () => {},
+    signInMicrosoft: () => {},
+    signOutMicrosoft: () => {},
+  }
 
   function Wrapper({ children }) {
-    const otherUserContext = useContext(UserContext);
-    const userContext = useContext(UserContext);
-    // const userContext = createUserContext({storage, azureAuth: new AzureAuth()});
-
-    userContext.login = () => {};
-    userContext.logout = () => {};
-
     return (
       <Provider store={store}>
-        <Context userContext={userContext}>
+        <UserContextProvider azureAuth={azureAuthMock}>
           <Router>
             {children}
           </Router>
-        </Context>
+        </UserContextProvider>
       </Provider>
     );
   }
