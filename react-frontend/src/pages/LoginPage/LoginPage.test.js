@@ -14,7 +14,6 @@ describe("LoginPage tests", () => {
     });
 
     expect(getByText("Logged Out"))
-    expect(getByText("username: NONE"))
     expect(getByText("Sign in using Redirect"))
 
     // fireEvent.click(getByText("Sign in using Redirect"));
@@ -23,27 +22,14 @@ describe("LoginPage tests", () => {
   });
 
   test("renders LoginPage with localStorage data", () => {
-
-    const mockLocalStorage = {
-      store: {},
-      setItem(key, value) {
-        this.store[key] = value;
-      },
-      getItem(key) {
-        return this.store[key];
-      },
-    };
-
-    spoofSignIn(mockLocalStorage);
+    spoofSignIn();
 
     const { getByText, getByTestId } = render(<LoginPage />, {
       rootReducer: rootReducer,
-      storage: mockLocalStorage,
     });
 
-
     expect(getByText("Logged In"));
-    expect(getByText("username: " + mockLocalStorage.getItem('displayName')));
+    expect(getByText("username: " + localStorage.getItem('displayName')));
     expect(getByText("Sign out"));
   });
 

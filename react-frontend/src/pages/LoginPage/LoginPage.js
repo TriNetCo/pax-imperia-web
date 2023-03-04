@@ -38,10 +38,14 @@ export default function LoginPage() {
   const UserDetails = () => {
     return (
       <div>
-        { userContext.loginStatus === 'pending' ?
-          <CircularProgress />
-          :
-          <>username: { userContext.displayName }</>
+        {
+          userContext.loginStatus === 'pending' ?
+            <CircularProgress />
+            :
+            userContext.loginStatus === 'logged_in' ?
+              <>username: { userContext.displayName }</>
+              :
+              <></>
         }
       </div>
     );

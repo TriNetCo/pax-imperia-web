@@ -1,4 +1,4 @@
-export const spoofSignIn = (localStorage, provider) => {
+export const spoofSignIn = (provider) => {
   if (provider == null) provider = 'microsoft.com';
   const usr = {
     displayName: 'Its Me',

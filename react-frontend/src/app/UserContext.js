@@ -1,37 +1,32 @@
 import React from 'react';
 
-let localStorage = window.localStorage;
 let _azureAuth;
+let dataShell; // Proxy
+let data;      // Underlying Data
+let setUser = (proxy) => dataShell = proxy;  // Override this via initUser when running in React
 
-let user;
-let setUser = (u) => user = u;  // Override this via initUser when running in React
+const CTX = {
+  persistedFields: [
+    'displayName',
+    'email',
+    'photoURL',
+    'token',
+    'tokenFromProvider',
+    'providerId',
+    'lastSignInTime',
+    'loginStatus',
+  ],
 
-const setUserInfo = (info) => {
-  user = new Proxy(info, metaHandler);
-  setUser(user);
-};
-
-const persistedFields = [
-  'displayName',
-  'email',
-  'photoURL',
-  'token',
-  'tokenFromProvider',
-  'providerId',
-  'lastSignInTime',
-  'loginStatus',
-];
-
-
-const clearAppStorage = () => {
-  persistedFields.forEach(prop => {
-    localStorage.removeItem(prop);
-  });
-};
-
-let ctx = {
   initialized: false,
   loginStatus: 'logged_out',
+
+  initUser: (setStateFunc) => {
+    setUser = setStateFunc;
+  },
+
+  setUserInfo: (info) => {
+    setUser(new Proxy(info, metaHandler));
+  },
 
   login: () => {
     localStorage.setItem('loginStatus', 'pending');
@@ -39,13 +34,11 @@ let ctx = {
   },
 
   logout: () => {
-    clearAppStorage();
-
-    user.updateKeys({
-      ...ctx
+    dataShell.updateKeys({
+      ...CTX
     });
-    setUserInfo(user);
-
+    CTX.setUserInfo(dataShell);
+    CTX.clearAppStorage();
     _azureAuth.signOutMicrosoft();
   },
 
@@ -54,8 +47,8 @@ let ctx = {
       ? usr.photoURL
       : '/web_assets/defaultProfilePicture.png';
 
-    user.updateKeys({
-      ...ctx,
+    dataShell.updateKeys({
+      ...CTX,
       displayName: usr.displayName,
       email: usr.email,
       photoURL: profileBlobPicUrl,
@@ -65,85 +58,115 @@ let ctx = {
       lastSignInTime: usr.metadata.lastSignInTime,
       loginStatus: 'logged_in',
     });
-    user.updateStorage(user);
+    dataShell.updateStorage(dataShell);
 
-    setUserInfo(user);
+    CTX.setUserInfo(dataShell);
   },
 
   fillUserInfoFromLocalStorage: () => {
-    user.updateKeys({
-      ...ctx,
-      displayName:       localStorage.getItem('displayName') ?? 'NONE',
-      loginStatus:       localStorage.getItem('loginStatus') ?? 'logged_out',
+    // dataShell.updateKeys({
+    //   ...CTX,
+    //   ...CTX.pullNonNullLocalStorageValues(),
+    //   initialized:       true,
+    // });
+    Object.assign(data, {
+      ...CTX,
+      ...CTX.pullNonNullLocalStorageValues(),
       initialized:       true,
-      email:             localStorage.getItem('email'),
-      photoURL:          localStorage.getItem('photoURL'),
-      token:             localStorage.getItem('token'),
-      tokenFromProvider: localStorage.getItem('tokenFromProvider'),
-      providerId:        localStorage.getItem('providerId'),
-      lastSignInTime:    localStorage.getItem('lastSignInTime'),
     });
 
-    setUserInfo(user);
-  },
-
-  initUser: (setStateFunc) => {
-    setUser = setStateFunc;
+    CTX.setUserInfo(dataShell);
   },
 
   overrideStorage: (storage) => {
     localStorage = storage;
   },
 
+  // Private
+
+  pullNonNullLocalStorageValues: () => {
+    const storageRaw = {
+      loginStatus:       localStorage.getItem('loginStatus'),
+      displayName:       localStorage.getItem('displayName'),
+      email:             localStorage.getItem('email'),
+      photoURL:          localStorage.getItem('photoURL'),
+      token:             localStorage.getItem('token'),
+      tokenFromProvider: localStorage.getItem('tokenFromProvider'),
+      providerId:        localStorage.getItem('providerId'),
+      lastSignInTime:    localStorage.getItem('lastSignInTime'),
+    };
+
+    // remove null properties
+    return Object.fromEntries(Object.entries(storageRaw).filter(([_, v]) => v != null));
+  },
+
   updateKeys: (object) => {
-    for (const property in object) {
-      const val = object[property];
-      user[property] = val;
+    for (const prop in object) {
+      const value = object[prop];
+      if (!CTX.shouldPropBeAllowed(prop, value)) {
+        return false;
+      }
+      dataShell[prop] = value;
     }
   },
 
   updateStorage: (object) => {
     for (const prop in object) {
       const value = object[prop];
-      if (shouldPropBePersisted(prop, value))
+      if (CTX.shouldPropBePersisted(prop, value))
         localStorage.setItem(prop, value);
     }
-  }
+  },
+
+  clearAppStorage: () => {
+    CTX.persistedFields.forEach(prop => {
+      localStorage.removeItem(prop);
+    });
+  },
+
+  shouldPropBePersisted: (prop, value) => {
+    return (CTX.persistedFields.includes(prop) &&
+        value !== '' && value != null &&
+        typeof(value) !== Function);
+  },
+
+  shouldPropBeAllowed: (prop, value) => {
+    return (value !== undefined &&
+         ( CTX.persistedFields.includes(prop) ||
+          {}.hasOwnProperty.call(CTX, prop) ));
+  },
+
 };
 
 const metaHandler = {
   set(target, prop, value, receiver) {
     // Don't touch storage or the context state if we don't have anything to change
     if (target[prop] === value) return true;
+    if (!target.shouldPropBeAllowed(prop, value)) return false;
 
-    if ( shouldPropBePersisted(prop) )
+    if ( target.shouldPropBePersisted(prop, value) ) {
       localStorage.setItem(prop, value);
+      console.log('STORAGE SET: ' + prop);
+      if (prop == 'photoURL') console.error('setting photo');
+    }
 
     target[prop] = value;
-    setUserInfo(target);
+    CTX.setUserInfo(receiver);
     return true;
   },
 };
 
-const generateNewImmutableUser = (sourceObj) => {
-  return new Proxy({ ...sourceObj }, metaHandler);
+const createImmutableUser = (sourceObj) => {
+  data = { ...sourceObj };
+  return new Proxy(data, metaHandler);
 };
 
-export const createUserContext = ({ storage, azureAuth } = {}) => {
-  user = generateNewImmutableUser(ctx);
-
-  if (storage != null)
-    localStorage = storage;
-
+export const createUserContext = ({ azureAuth } = {}) => {
+  dataShell = createImmutableUser(CTX);
   _azureAuth = azureAuth;
-  return user;
+  return dataShell;
 };
 
-const shouldPropBePersisted = (prop, value) => {
-  return (persistedFields.includes(prop) &&
-      value !== '' && value != null &&
-      typeof(value) !== Function);
-};
 
-const UserContext = React.createContext(generateNewImmutableUser(ctx));
+const UserContext = React.createContext(createImmutableUser(CTX));
 export default UserContext;
