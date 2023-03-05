@@ -13,6 +13,10 @@ npm link
 cd ../react-frontend
 npm link pax-imperia-js
 npm install
+
+# https://stackoverflow.com/a/46006249/1457383
+# To run tests, you might need this, but run with caution as it changes npm settings for the whole machine
+npm config set script-shell "C:\\Program Files\\git\\bin\\bash.exe"
 ```
 
 ###### For Mac

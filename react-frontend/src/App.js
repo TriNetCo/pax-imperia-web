@@ -4,7 +4,7 @@ import './App.css';
 import GameDashboardPage from './pages/GameDashboardPage';
 import DebugPage from './pages/DebugPage/DebugPage';
 import SystemPage from './pages/SystemPage';
-import LoginPage from './pages/LandingPage/LoginPage';
+import LoginPage from './pages/LoginPage/LoginPage';
 import UsersPage from './features/users/UsersPage';
 import LandingPage from './pages/LandingPage/LandingPage';
 import ColonizerConfigPage from './pages/NewGame/ColonizerConfigPage';

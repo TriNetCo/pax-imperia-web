@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from 'react';
 import { connectAndJoin, disconnect } from '../../app/Context';
 import { useDispatch, useSelector } from 'react-redux';
 import { newMessage, selectWebsocket } from '../../modules/websocket';
-import { UserContext } from '../../app/UserContext';
+import UserContext from '../../app/UserContext';
 import { useHistory } from 'react-router-dom';
 import { getAuthOutput } from '../../app/AzureAuth';
 import AppConfig from '../../AppConfig';
@@ -45,7 +45,7 @@ export default function DebugPage() {
   };
 
   const handleSetDisplayName = () => {
-    userContext.setDisplayName('Overwritten Name');
+    userContext.displayName = 'Overwritten Name';
   };
 
   const authenticateWithBackend = async evt => {

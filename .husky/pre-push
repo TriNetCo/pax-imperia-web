@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+pushd react-frontend
+npm run verify
+npm test
+popd
+#npm run e2e

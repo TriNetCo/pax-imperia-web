@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
 import SpaceView from '../features/space_view/SpaceView';
+import { Button, IconButton } from '@mui/material';
+import {useHistory} from 'react-router-dom';
 
 const SystemPage = () => {
+  const history = useHistory();
+
 
   const distanceSliderOnInput = () => {
     var input = document.getElementById('distance-slider');
@@ -36,9 +40,12 @@ const SystemPage = () => {
     });
   };
 
+  const handleCloseSystemView = () => {
+    history.push('/systems');
+  };
+
   return (
     <div className="page-wrap">
-
       <div id="app-parent">
         <div id="console-div" className="flex-container">
           <div className="console-message" id="console-message">
@@ -47,6 +54,11 @@ const SystemPage = () => {
 
           <div className="console-message" id="time">
             403.1
+          </div>
+          <div className='close-system-view'>
+            <IconButton onClick={handleCloseSystemView} color="secondary">
+              <Button />
+            </IconButton>
           </div>
         </div>
 

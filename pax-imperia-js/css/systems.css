@@ -1,9 +1,7 @@
-.flex-container {
-    display: flex;
-    width: 100%;
-}
+
 
 #console-div {
+    position: relative;
     width: 100%;
     height: 20px;
     background-color: black;
@@ -19,11 +17,30 @@
 }
 
 #time {
+    position: absolute;
+    right: 50px;
+    top: 3px;
     width: 44px;
-    padding-top: 3px;
-    margin-left: 120px;
     font-size: 0.7rem;
     text-align: right;
+}
+
+.close-system-view {
+    position: absolute;
+    right: 10px;
+    width: 40px;
+    height: 20px;
+}
+
+.flex-container {
+    display: flex;
+    width: 100%;
+    height: 708px;
+    overflow: hidden;
+}
+
+#canvas-and-buttons {
+    width: 800px;
 }
 
 .flex-container-left {
@@ -37,7 +54,7 @@
 
     margin: 0px;
     width: 150px;
-    height: 708px;
+    /* height: 708px; */
     color: white;
 
     background: grey;
@@ -46,9 +63,6 @@
     background-size: contain;
 }
 
-
-
-
 #btnGovernor {
     margin-left: 72px;
     margin-bottom: 8px;
@@ -56,12 +70,8 @@
     height: 22px;
 }
 
-#canvas-and-buttons {
-    width: 800px;
-}
-
 #canvas-div {
-    width: 100%;
+    /* width: 100%; */
     height: 520px;
     background: black;
 }
@@ -72,7 +82,7 @@
 }
 
 #galaxy-and-console {
-    height: 188px;
+    height: 184px;
 }
 
 #lower-console {

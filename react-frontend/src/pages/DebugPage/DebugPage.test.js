@@ -7,10 +7,19 @@ import DebugPage from './DebugPage';
 import { websocketReducer } from '../../modules/websocket';
 const rootReducer = { websocket: websocketReducer };
 
-test('renders DebugPage', () => {
-  const { getByText, getByTestId } = render(<DebugPage />, {
-    rootReducer: rootReducer,
+describe("DebugPage tests", () => {
+
+  beforeEach(() => {
+    console.debug = jest.fn()
+  })
+
+  test('renders DebugPage', () => {
+    const { getByText, getByTestId } = render(<DebugPage />, {
+      rootReducer: rootReducer,
+    });
+
+    expect(getByText('Login Status: logged_out'));
   });
 
-  expect(getByText('Login Status: logged_out'));
 });
+

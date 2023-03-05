@@ -1,15 +1,16 @@
-import React, { useEffect, useContext } from 'react';
-import { UserContext } from '../../app/UserContext';
+import React, { useContext } from 'react';
+import UserContext from '../../app/UserContext';
+import UserCard from '../../shared/UserCard/UserCard';
 
 import {
   CircularProgress
 } from '@mui/material';
 
-import { catchRedirectSignInMicrosoft } from '../../app/AzureAuth';
 import { Link } from 'react-router-dom';
 
-
+let renderCount = 0;
 export default function LoginPage() {
+  renderCount++;
   const userContext = useContext(UserContext);
 
   const handleLogin = () => {
@@ -39,10 +40,14 @@ export default function LoginPage() {
   const UserDetails = () => {
     return (
       <div>
-        { userContext.loginStatus === 'pending' ?
-          <CircularProgress />
-          :
-          <>username: { userContext.displayName }</>
+        {
+          userContext.loginStatus === 'pending' ?
+            <CircularProgress />
+            :
+            userContext.loginStatus === 'logged_in' ?
+              <>username: { userContext.displayName }</>
+              :
+              <></>
         }
       </div>
     );
@@ -53,11 +58,12 @@ export default function LoginPage() {
   };
 
   const handleChangeStateState = (state) => {
-    userContext.setLoginStatus(state);
+    userContext.loginStatus = state;
   };
 
   return (
     <>
+      <UserCard />
       <div>
         { userContext.loginStatus === 'logged_in' ?
           'Logged In' :
@@ -90,6 +96,7 @@ export default function LoginPage() {
         <Link to='/debug'>Debug Page</Link>
       </div>
 
+      <div>renderCount: {renderCount}</div>
     </>
   );
 }

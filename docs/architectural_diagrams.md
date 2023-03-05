@@ -15,6 +15,29 @@ graph LR;
   backend-->database;
 ```
 
+##### Current Work MindMap
+I'm playing around with using mind maps because they help you get a better spacial sense about the work being done and helps me reason about how some domains of work might expand.
+
+```
+mindmap
+    root((Pax <br/> Features))
+        Get Web UX Ready for Customers
+        ::icon(fa fa-star)
+        Finish Pax Benchmark Gameplay
+        ::icon(fa fa-star)
+        Users management Feature
+        ::icon(fa fa-star)
+            Add backend support for "users management"
+            ::icon(fa fa-book)
+        B
+        ::icon(fa fa-star)
+        Automated Database Migrations
+        ::icon(fa fa-star)
+            I should use MongoDB, right?
+            ::icon(fa fa-question)
+```
+
+
 ##### Saved Game State:
 
 Ideally we should be able to load a game in progress.  The state of a game should be something like...

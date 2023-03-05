@@ -1,34 +1,26 @@
-html, body {margin: 0; height: 100%; overflow: hidden}
+html, body {
+  margin: 0;
+  /* height: 100%; */
+  overflow: hidden
+}
 
 .page-wrap {
     width: 1024px;
-    height: 100%;
+    /* height: 100%; */
     margin-left: auto;
     margin-right: auto;
     border-left: solid;
     border-right: solid;
 }
 
-#app-parent {
-    /* XGA Resolution */
-    width: 1024px;
-    /* height: 768px; */
-    height: 728px;  /* image scaling error... */
-    /* height: 100%; */
-    margin-left: auto;
-    margin-right: auto;
-
-    /* border: solid; */
-    /* border-left: solid;
-    border-right: solid; */
-}
-
 #generic-app-parent {
+  position:relative;
   /* XGA Resolution */
   width: 1024px;
   height: 728px;
   margin-left: auto;
   margin-right: auto;
+  border-bottom: solid;
 }
 
 .console-message {

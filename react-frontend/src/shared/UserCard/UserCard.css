@@ -1,0 +1,75 @@
+
+.user-card-container {
+  position: absolute;
+  top: 0px;
+  right: 20px;
+  flex: 1;
+}
+
+.user-card {
+  position: relative;
+  color: #333;
+  background: #ccc;
+  width: 340px;
+  height: 74px;
+  padding-top: 20px;
+}
+
+.user-card .login-button-container {
+  margin-top: -20px; /* the battle begins... */
+  margin-left: auto;
+  margin-right: auto;
+  width: 100px;
+}
+
+.user-card img {
+  float: left;
+  margin-right: 10px;
+  margin-left: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.user-card .display-name {
+  text-decoration: underline;
+  margin-bottom: 8px;
+}
+
+.user-card .email {
+  display: flex;
+}
+
+.user-card .email span {
+margin-left: 8px;
+}
+
+.user-card::after {
+  clear: both;
+}
+
+.user-card .menu {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  font-size: xx-large;
+}
+
+.user-card .pending {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#basic-menu > div > ul.MuiList-root > li > svg {
+  margin-right: 8px;
+}
+
+.user-card-container .minimize-button {
+  margin-top: -18px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

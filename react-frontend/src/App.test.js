@@ -4,14 +4,23 @@ import { Provider } from 'react-redux';
 import { store } from './app/store';
 import App from './App';
 import { BrowserRouter as Router } from "react-router-dom";
+import Context from './app/Context';
+import { UserContextProvider } from './app/UserContextProvider';
+import FirebaseConnector from './app/FirebaseConnector';
+
+const azureAuth = {
+  initLoginContext: async () => { },
+};
 
 test('renders learn react link', () => {
   const { getByText } = render(
-    <Router>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </Router>
+    <Provider store={store}>
+      <UserContextProvider azureAuth={azureAuth}>
+        <Router>
+          <App />
+        </Router>
+      </UserContextProvider>
+    </Provider>
   );
 
   expect(getByText(/Pax Imperia/i)).toBeInTheDocument();

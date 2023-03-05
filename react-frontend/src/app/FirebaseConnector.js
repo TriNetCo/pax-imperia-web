@@ -1,11 +1,66 @@
 import { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { UserContext } from './UserContext';
-import { getFirebaseUser, initApp } from './AzureAuth';
+import UserContext from './UserContext';
 import AppConfig from '../AppConfig';
 
-const FirebaseConnector = ({children}) => {
+// TODO: This will likely be injected from somewhere else
+export const applicationLogicToCallOnAuthInit = () => {
+  console.log('TODO: add application logic');
+};
+
+export const redirectSuccessHandler = (userContext) => {
+  return (result) => {
+    if (result == null) return;
+
+    console.debug('redirectSuccessHandler: User appears to be logged in with Firebase Auth.');
+    const user = result.user;
+    const credential = result.credential;
+
+    userContext.fillUserInfoFromRedirect(user, credential);
+    // TODO: Add application logic for after successful authentication here
+    applicationLogicToCallOnAuthInit();
+    throw 'end handler chain';
+  };
+};
+
+export const redirectStuckHandler = (userContext) => {
+  return () => {
+    if (!checkIfWeAreInAPotentiallyStuckPendingState()) return;
+    console.debug('loginStatus was pending, but catchRedirectSignInMicrosoft response was null.  Setting status to logged_out in case we\'re in a stuck state.');
+    userContext.loginStatus = 'logged_out';
+    throw 'end handler chain';
+
+    function checkIfWeAreInAPotentiallyStuckPendingState() {
+      return userContext.loginStatus === 'pending';
+    }
+  };
+};
+
+export const alreadyLoggedInHandler = (userContext) => {
+  return (token) => {
+    userContext.token = token;
+    // TODO: Add application logic for after successful authentication here
+    applicationLogicToCallOnAuthInit();
+    throw 'end handler chain';
+  };
+};
+
+export const loginExpiredHandler = (userContext) => {
+  return () => {
+    if (checkIfOurLoginStatusIndicatesALoginEvenThoughFirebaseDisagrees()) {
+      console.warn('catchRedirectSignInMicrosoft: returned a null Firebase user, and userContext.loginStatus was logged_in.  Logging out.');
+      userContext.logout();
+      throw 'end handler chain';
+    }
+
+    function checkIfOurLoginStatusIndicatesALoginEvenThoughFirebaseDisagrees() {
+      return userContext.loginStatus === 'logged_in';
+    }
+  };
+};
+
+const FirebaseConnector = ({children, azureAuth}) => {
   const userContext = useContext(UserContext);
 
   useEffect(() => {
@@ -16,62 +71,14 @@ const FirebaseConnector = ({children}) => {
       return;
     }
 
-    initApp().then(result => {
-      if (result != null) {
-        console.debug('catchRedirectSignInMicrosoft: User appears to be logged in with Firebase Auth.');
-        const user = result.user;
-        const credential = result.credential;
-
-        let providerId = 'NO PROVIDER';
-        if (user.providerData[0]?.providerId != null) providerId = user.providerData[0]?.providerId;
-        console.log(`User logged in via ${providerId}`);
-
-        userContext.fillUserInfoFromRedirect(user, credential);
-        // TODO: Add application logic for after successful authentication here
-        return;
-      }
-
-      console.debug('catchRedirectSignInMicrosoft: resulted in a null return object');
-      console.debug('catchRedirectSignInMicrosoft: userContext.loginStatus:' + userContext.loginStatus);
-      if (checkIfWeAreInAPotentiallyStuckPendingState()) {
-        console.log('loginStatus was pending, but catchRedirectSignInMicrosoft response was null.  Setting status to logged_out in case we\'re in a stuck state.');
-        userContext.setLoginStatus('logged_out');
-        return;
-      }
-
-      const user = getFirebaseUser();
-      if (checkIfAlreadyLoggedInViaSomePersistenceFromFirebase(user)) {
-        user?.getIdToken()
-          .then((token) => {
-            userContext.setIdToken(token);
-            // TODO: Add application logic for after successful authentication here
-          })
-          .catch((err) => console.log(err));
-
-        return;
-      }
-
-      if (checkIfOurLoginStatusIndicatesALoginEvenThoughFirebaseDisagrees()) {
-        console.warn('catchRedirectSignInMicrosoft: returned a null Firebase user, and userContext.loginStatus was logged_in.  Logging out (possibly causing problems).');
-        userContext.logout();
-      }
-
-    }).catch(err => console.log(err));
+    azureAuth.initLoginContext({
+      redirectSuccessHandler: redirectSuccessHandler(userContext),
+      redirectStuckHandler: redirectStuckHandler(userContext),
+      alreadyLoggedInHandler: alreadyLoggedInHandler(userContext),
+      loginExpiredHandler: loginExpiredHandler(userContext),
+    });
 
   }, []);
-
-
-  const checkIfWeAreInAPotentiallyStuckPendingState = () => {
-    return userContext.loginStatus === 'pending';
-  };
-
-  const checkIfAlreadyLoggedInViaSomePersistenceFromFirebase = (user) => {
-    return user != null;
-  };
-
-  const checkIfOurLoginStatusIndicatesALoginEvenThoughFirebaseDisagrees = () => {
-    return userContext.loginStatus === 'logged_in';
-  };
 
   return (
     <>
@@ -81,7 +88,8 @@ const FirebaseConnector = ({children}) => {
 };
 
 FirebaseConnector.propTypes = {
-  children: PropTypes.element.isRequired,
+  children:  PropTypes.element.isRequired,
+  azureAuth: PropTypes.object.isRequired,
 };
 
 export default FirebaseConnector;
