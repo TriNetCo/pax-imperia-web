@@ -4,7 +4,7 @@ import { render as rtlRender } from "@testing-library/react";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
-import {UserContextProvider} from '../src/app/UserContextProvider';
+import { UserContextProvider } from '../src/app/UserContextProvider';
 
 
 function render(ui, { rootReducer, ...renderOptions } = {}) {
@@ -16,6 +16,7 @@ function render(ui, { rootReducer, ...renderOptions } = {}) {
   }
 
   function Wrapper({ children }) {
+
     return (
       <Provider store={store}>
         <UserContextProvider azureAuth={azureAuthMock}>

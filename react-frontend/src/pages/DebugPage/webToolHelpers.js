@@ -23,3 +23,14 @@ export const spoofSignIn = (provider) => {
   localStorage.setItem('loginStatus', 'logged_in');
   localStorage.setItem('providerId', provider);
 };
+
+export const clearLocalStorage = () => {
+  localStorage.removeItem('displayName');
+  localStorage.removeItem('email');
+  localStorage.removeItem('photoURL');
+  localStorage.removeItem('token');
+  localStorage.removeItem('tokenFromProvider');
+  localStorage.removeItem('lastSignInTime');
+  localStorage.removeItem('loginStatus');
+  localStorage.removeItem('providerId');
+};

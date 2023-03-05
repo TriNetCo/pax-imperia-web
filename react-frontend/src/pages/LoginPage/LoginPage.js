@@ -8,7 +8,9 @@ import {
 
 import { Link } from 'react-router-dom';
 
+let renderCount = 0;
 export default function LoginPage() {
+  renderCount++;
   const userContext = useContext(UserContext);
 
   const handleLogin = () => {
@@ -94,6 +96,7 @@ export default function LoginPage() {
         <Link to='/debug'>Debug Page</Link>
       </div>
 
+      <div>renderCount: {renderCount}</div>
     </>
   );
 }

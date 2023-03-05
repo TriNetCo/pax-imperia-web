@@ -4,19 +4,22 @@ import { Provider } from 'react-redux';
 import { store } from './app/store';
 import App from './App';
 import { BrowserRouter as Router } from "react-router-dom";
-import {createUserContext} from './app/UserContext';
 import Context from './app/Context';
-import AzureAuth from './app/AzureAuth';
+import { UserContextProvider } from './app/UserContextProvider';
+import FirebaseConnector from './app/FirebaseConnector';
 
+const azureAuth = {
+  initLoginContext: async () => { },
+};
 
 test('renders learn react link', () => {
   const { getByText } = render(
     <Provider store={store}>
-      <Context userContext={createUserContext()}>
+      <UserContextProvider azureAuth={azureAuth}>
         <Router>
           <App />
         </Router>
-      </Context>
+      </UserContextProvider>
     </Provider>
   );
 

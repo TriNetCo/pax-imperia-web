@@ -32,6 +32,7 @@ describe("FirebaseConnector tests", () => {
     azureAuth.signOutMicrosoft = () => {};
 
     userContext = createUserContext({azureAuth});
+    userContext.initUser( (internalProxy) => { userContext = internalProxy; });
   })
 
   test('redirectSuccessHandler will fillUserInfoFromRedirect', () => {

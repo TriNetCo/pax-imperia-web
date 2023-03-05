@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect, useDispatch } from 'react-redux';
 import { wsConnect, wsDisconnect } from '../modules/websocket';
-import { UserContextProvider } from './UserContextProvider';
 import PropTypes from 'prop-types';
 
 export const GameDataContext = React.createContext(null);

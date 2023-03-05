@@ -3,7 +3,7 @@ import React from 'react';
 let _azureAuth;
 let dataShell; // Proxy
 let data;      // Underlying Data
-let setUser = (proxy) => dataShell = proxy;  // Override this via initUser when running in React
+let setUser = (proxy) => dataShell = proxy;  // Override this via `userContext.initUser(setUser)` when running in React.  When running fancy tests, override with `userContext.initUser( (internalProxy) => { userContext = internalProxy; } )` you mad genious
 
 const CTX = {
   persistedFields: [
@@ -25,7 +25,9 @@ const CTX = {
   },
 
   setUserInfo: (info) => {
-    setUser(new Proxy(info, metaHandler));
+    data = {...info};
+    dataShell = new Proxy(data, metaHandler);
+    setUser(dataShell);
   },
 
   login: () => {
@@ -34,7 +36,7 @@ const CTX = {
   },
 
   logout: () => {
-    dataShell.updateKeys({
+    CTX.updateKeys({
       ...CTX
     });
     CTX.setUserInfo(dataShell);
@@ -47,7 +49,7 @@ const CTX = {
       ? usr.photoURL
       : '/web_assets/defaultProfilePicture.png';
 
-    dataShell.updateKeys({
+    CTX.updateKeys({
       ...CTX,
       displayName: usr.displayName,
       email: usr.email,
@@ -58,43 +60,26 @@ const CTX = {
       lastSignInTime: usr.metadata.lastSignInTime,
       loginStatus: 'logged_in',
     });
-    dataShell.updateStorage(dataShell);
+    CTX.updateStorage(dataShell);
 
     CTX.setUserInfo(dataShell);
   },
 
   fillUserInfoFromLocalStorage: () => {
-    // dataShell.updateKeys({
-    //   ...CTX,
-    //   ...CTX.pullNonNullLocalStorageValues(),
-    //   initialized:       true,
-    // });
-    Object.assign(data, {
+    CTX.updateKeys({
       ...CTX,
       ...CTX.pullNonNullLocalStorageValues(),
       initialized:       true,
     });
-
     CTX.setUserInfo(dataShell);
-  },
-
-  overrideStorage: (storage) => {
-    localStorage = storage;
   },
 
   // Private
 
   pullNonNullLocalStorageValues: () => {
-    const storageRaw = {
-      loginStatus:       localStorage.getItem('loginStatus'),
-      displayName:       localStorage.getItem('displayName'),
-      email:             localStorage.getItem('email'),
-      photoURL:          localStorage.getItem('photoURL'),
-      token:             localStorage.getItem('token'),
-      tokenFromProvider: localStorage.getItem('tokenFromProvider'),
-      providerId:        localStorage.getItem('providerId'),
-      lastSignInTime:    localStorage.getItem('lastSignInTime'),
-    };
+    let storageRaw = {};
+    CTX.persistedFields.forEach( (prop) => {
+      storageRaw[prop] = localStorage.getItem(prop); });
 
     // remove null properties
     return Object.fromEntries(Object.entries(storageRaw).filter(([_, v]) => v != null));
@@ -106,7 +91,7 @@ const CTX = {
       if (!CTX.shouldPropBeAllowed(prop, value)) {
         return false;
       }
-      dataShell[prop] = value;
+      data[prop] = value;
     }
   },
 
@@ -141,13 +126,13 @@ const CTX = {
 const metaHandler = {
   set(target, prop, value, receiver) {
     // Don't touch storage or the context state if we don't have anything to change
-    if (target[prop] === value) return true;
-    if (!target.shouldPropBeAllowed(prop, value)) return false;
+    if (target[prop] === value) {
+      return true;
+    }
+    if (!CTX.shouldPropBeAllowed(prop, value)) return false;
 
-    if ( target.shouldPropBePersisted(prop, value) ) {
+    if ( CTX.shouldPropBePersisted(prop, value) ) {
       localStorage.setItem(prop, value);
-      console.log('STORAGE SET: ' + prop);
-      if (prop == 'photoURL') console.error('setting photo');
     }
 
     target[prop] = value;
@@ -167,6 +152,5 @@ export const createUserContext = ({ azureAuth } = {}) => {
   return dataShell;
 };
 
-
-const UserContext = React.createContext(createImmutableUser(CTX));
+let UserContext = React.createContext();
 export default UserContext;
