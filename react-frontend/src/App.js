@@ -1,6 +1,6 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
 import './App.css';
+import { Route, Switch } from 'react-router-dom';
 import GameDashboardPage from './pages/GameDashboardPage';
 import DebugPage from './pages/DebugPage/DebugPage';
 import SystemPage from './pages/SystemPage';

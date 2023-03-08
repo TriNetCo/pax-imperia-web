@@ -1,9 +1,11 @@
+import defaultProfilePicture from 'src/shared/UserCard/defaultProfilePicture.png';
+
 export const spoofSignIn = (provider) => {
   if (provider == null) provider = 'microsoft.com';
   const usr = {
     displayName: 'Its Me',
     email: 'me@example.com',
-    photoURL: '/web_assets/defaultProfilePicture.png',
+    photoURL: defaultProfilePicture,
     accessToken: 'mockAccessToken',
     metadata: {
       lastSignInTime: 'Thu, 05 Jan 2023 23:35:09 GMT'

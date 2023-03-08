@@ -56,8 +56,8 @@ const SystemPage = () => {
             403.1
           </div>
           <div className='close-system-view'>
-            <IconButton onClick={handleCloseSystemView} color="secondary">
-              <Button />
+            <IconButton onClick={handleCloseSystemView} color="secondary" style={{width: '100%', height: '100%'}}>
+              <span style={{width: '20px', height: '20px'}}></span>
             </IconButton>
           </div>
         </div>

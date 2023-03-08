@@ -14,6 +14,11 @@ gcloud auth application-default login
 
 It's not supposed to do any caching.  It does caching.  Try `gcloud compute target-https-proxies list` and delete it along with the http one and the re-apply.
 
+```
+terraform destroy --target module.static_site.module.load_balancer.google_compute_target_https_proxy.default[0]
+terraform destroy --target module.static_site.module.load_balancer.google_compute_target_http_proxy.http[0]
+```
+
 ###### refs
 - [getting started](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/getting_started#using-terraform-cloud-as-the-backend) (skimmed...)
 - [init backend](https://cloud.google.com/docs/terraform/resource-management/store-state) to use GCP storage

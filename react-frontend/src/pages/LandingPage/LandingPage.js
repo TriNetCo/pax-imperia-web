@@ -1,5 +1,5 @@
 import LandingPageOptions from './LandingPageOptions';
-import UserCard from '../../shared/UserCard/UserCard';
+import UserCard from 'src/shared/UserCard/UserCard';
 
 const LandingPage = () => {
 

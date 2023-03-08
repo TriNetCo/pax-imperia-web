@@ -7,6 +7,9 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import './index.css';
+// TODO: This approach may be slightly glitchy due to some caching issues.  It may be better to just move these imports directly into the public/index.html so
+// I never have to worry about babel over-processing these css files or messing up on caching
+import 'pax-imperia-js/css/app.css';
 import 'pax-imperia-js/css/style.css';
 import 'pax-imperia-js/css/systems.css';
 import Context from './app/Context';

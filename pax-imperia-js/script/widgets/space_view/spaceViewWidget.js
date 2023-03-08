@@ -57,7 +57,7 @@ export class SpaceViewWidget {
 
         this.clientObjects.selectionSprite = new SpriteFlipbook(
             scene,
-            '/script/assets/sprite_sheets/selection_sprite_sheet.png',
+            '/assets/sprite_sheets/selection_sprite_sheet.png',
             1,  // nCols in sprite sheet
             10, // nRows
             0.04); // loopFrameDuration
