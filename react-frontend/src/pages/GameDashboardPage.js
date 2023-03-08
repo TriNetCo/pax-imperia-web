@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Galaxy from '../features/galaxy/Galaxy';
 import { useDispatch } from 'react-redux';
 import { newMessage } from '../modules/websocket';
-import UserCard from '../shared/UserCard/UserCard';
+import UserCard from 'src/shared/UserCard/UserCard';
 
 const GameDashboardPage = () => {
   const dispatch = useDispatch();

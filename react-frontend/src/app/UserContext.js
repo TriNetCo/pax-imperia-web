@@ -1,5 +1,7 @@
 import React from 'react';
 
+import defaultProfilePicture from 'src/shared/UserCard/defaultProfilePicture.png';
+
 let _azureAuth;
 let dataShell; // Proxy
 let data;      // Underlying Data
@@ -47,7 +49,7 @@ const CTX = {
   fillUserInfoFromRedirect: (usr, credential) => {
     const profileBlobPicUrl = (usr.photoURL != null && usr.photoURL !== '')
       ? usr.photoURL
-      : '/web_assets/defaultProfilePicture.png';
+      : defaultProfilePicture;
 
     CTX.updateKeys({
       ...CTX,

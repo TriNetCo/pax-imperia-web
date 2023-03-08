@@ -38,7 +38,7 @@ export class Wormhole extends Entity {
         // name: "Regor"
         // position: { x: 783, y: 378, z: 0.94 }
         this.type = 'wormhole';
-        this.assetPath = "/assets/sun.gltf";
+        this.assetPath = "/assets/planets/sun.gltf";
         this.size = 0.3;
         this.scale = {x: this.size, y: this.size, z: this.size};
         // this.position is in Galactic View coordinates

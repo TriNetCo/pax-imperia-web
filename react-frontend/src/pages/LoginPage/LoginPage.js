@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import UserContext from '../../app/UserContext';
-import UserCard from '../../shared/UserCard/UserCard';
+import UserCard from 'src/shared/UserCard/UserCard';
 
 import {
   CircularProgress

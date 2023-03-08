@@ -15,6 +15,7 @@
     "firebase": "^9.15.0",
     "pax-imperia-js": "file:..\\pax-imperia-js",
     "react": "^18.2.0",
+    "react-app-rewired": "^2.2.1",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^5.2.0",
@@ -23,9 +24,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "clean": "rm -rf node_modules/.cache/ node_modules/pax-imperia-js && npm install",
+    "start": "react-app-rewired start",
     "build": "react-scripts build",
-    "deploy": "bash -c 'source ../.env.prod && react-scripts build && gsutil -m cp -r build/* gs://pax-njax-org/'",
+    "deploy-app": "bash -c 'source ../.env.prod && react-scripts build && gsutil -m -o 'GSUtil:parallel_process_count=1' cp -r build/* gs://pax-njax-org/'",
+    "deploy-assets": "bash -c 'gsutil -m -o 'GSUtil:parallel_process_count=1' cp -r ../pax-imperia-js/assets/* gs://pax-njax-org/assets'",
     "test": "CI=true react-scripts test --color",
     "verify": "tsc && eslint --max-warnings=0 --fix src",
     "eject": "react-scripts eject"
