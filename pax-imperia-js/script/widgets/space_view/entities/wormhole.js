@@ -8,12 +8,10 @@ function makeTextSprite(text, opts) {
     var canvas = document.createElement('canvas');
     var context = canvas.getContext('2d');
     context.font = fontsize + "px " + fontface;
-    console.log('canvas.width', canvas.width)
 
     // get size data (height depends only on font size)
     var metrics = context.measureText(text);
     var textWidth = metrics.width;
-    console.log(text, 'textWidth', textWidth)
 
     // text color
     context.fillStyle = 'rgba(255, 255, 255, 1.0)';
@@ -44,8 +42,6 @@ export class Wormhole extends Entity {
         // this.position is in Galactic View coordinates
         // this.position = {x: -20, y: relativeZ, z: -10};
         this.position = this.calculateWormholeProjection(this.position, systemPosition);
-
-        console.log(this.position);
     }
 
     calculateWormholeProjection (wormholePosition, systemPosition) {
@@ -97,6 +93,7 @@ export class Wormhole extends Entity {
         let text = this.name || 'Sector' + this.id;
         let opts = {fontface: 'Tahoma'};
         let sprite = makeTextSprite(text, opts);
+        sprite.name = 'wormholeText';
         scene.add( sprite );
         sprite.position.set(this.position.x, this.position.y, this.position.z);
     }

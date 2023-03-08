@@ -50,17 +50,20 @@ export class SpaceViewDomManager {
             this.selectionSprite.unselect();
         }
 
+        let unselectableNames = ["selectionSprite", "wormholeText"];
+
         // Loops through intersected objects (sorted by distance)
         for (let i = 0; i < intersects.length; i++) {
-            let obj = this.getParentObject(intersects[i].object)
+            let obj = this.getParentObject(intersects[i].object);
             // Cannot select the selection sprite
-            if (obj.name != "selectionSprite") {
-                // If you click again on an object, you can select the
-                // object behind
-                if (obj != currentSelectionTarget) {
-                    this.selectionSprite.select(obj);
-                    break;
-                }
+            if ( unselectableNames.includes(obj.name) ) {
+              continue;
+            }
+            // If you click again on an object, you can select the
+            // object behind
+            if (obj != currentSelectionTarget) {
+                this.selectionSprite.select(obj);
+                break;
             }
         }
     }
