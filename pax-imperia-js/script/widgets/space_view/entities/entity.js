@@ -28,13 +28,15 @@ export class Entity {
                                           this.rotation,
                                           );
 
-        if (this.type == 'star') {
+        if (this.type === 'star') {
             let texture = object3d.children[0].material.map;
             object3d.children[0].material = new THREE.MeshBasicMaterial();
             object3d.children[0].material.map = texture;
         }
 
-        this.object3d = object3d
+        // make sure that object3d can link back to the entity
+        object3d.parentEntity = this;
+        this.object3d = object3d;
     }
 
     async loadObject3d (scene,

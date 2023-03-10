@@ -16,6 +16,7 @@ export class SpaceViewDomManager {
     attachDomEventsToCode() {
         this.addMouseMovement();
         this.addMouseClick();
+        this.addMouseDoubleClick();
     }
 
     addMouseMovement() {
@@ -35,6 +36,10 @@ export class SpaceViewDomManager {
         this.canvas.addEventListener('click', this.#clickHandler);
     }
 
+    addMouseDoubleClick() {
+        this.canvas.addEventListener('dblclick', this.#doubleClickHandler);
+    }
+
     #clickHandler = ( event ) => {
         // Arrow function / lambda so that "this" refers to SpaceViewDomManager
         // instead of canvas
@@ -42,8 +47,6 @@ export class SpaceViewDomManager {
         let raycaster = this.raycaster;
         raycaster.setFromCamera( this.mouse, this.camera );
         const intersects = raycaster.intersectObjects( this.scene.children );
-
-        let currentSelectionTarget = this.selectionSprite.selectionTarget
 
         // If no intersections, sets target to null
         if (intersects.length == 0) {
@@ -61,10 +64,20 @@ export class SpaceViewDomManager {
             }
             // If you click again on an object, you can select the
             // object behind
-            if (obj != currentSelectionTarget) {
+            if (obj != this.selectionSprite.selectionTarget) {
                 this.selectionSprite.select(obj);
                 break;
             }
+        }
+    }
+
+    #doubleClickHandler = ( event ) => {
+        let currentTarget = this.selectionSprite.selectionTarget;
+        if (currentTarget.parentEntity.type === "wormhole") {
+            let wormholeName = currentTarget.name;
+            let wormholeId = currentTarget.id;
+            // TODO: replace with code for navigating to wormhole system
+            alert(wormholeId + ": " + wormholeName);
         }
     }
 
