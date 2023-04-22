@@ -13,8 +13,11 @@ import MultiplayerLobbyPage from './pages/NewGame/MultiplayerLobbyPage';
 import NewGamePage from './pages/NewGame/NewGamePage';
 import SpeciesDesignPage from './pages/NewGame/SpeciesDesignPage';
 import AboutPage from './pages/AboutPage';
+import usePageTracking from './app/usePageTracking';
 
 function App() {
+  usePageTracking();
+
   return (
     <div className="App">
       <Switch>

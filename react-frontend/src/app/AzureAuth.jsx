@@ -6,7 +6,7 @@ import {
   OAuthProvider,
   signInWithRedirect
 } from 'firebase/auth';
-import { getAnalytics } from 'firebase/analytics';
+import { getAnalytics, logEvent } from 'firebase/analytics';
 import AppConfig from '../AppConfig';
 
 const config = {
@@ -161,4 +161,9 @@ export default class AzureAuth {
 
 }
 
-export { signInMicrosoft, signOutMicrosoft, initApp, getAuthOutput, getFirebaseUser, lookupMsAzureProfilePhoto };
+const _logEvent = (eventName, eventMessage) => {
+  if (analytics == null) return;
+  logEvent(analytics, eventName, {content: eventMessage});
+};
+
+export { signInMicrosoft, signOutMicrosoft, initApp, getAuthOutput, getFirebaseUser, lookupMsAzureProfilePhoto, _logEvent };
