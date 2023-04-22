@@ -6,6 +6,7 @@ import {
   OAuthProvider,
   signInWithRedirect
 } from 'firebase/auth';
+import { getAnalytics } from 'firebase/analytics';
 import AppConfig from '../AppConfig';
 
 const config = {
@@ -20,6 +21,7 @@ const config = {
 
 let app;
 let auth;
+let analytics;
 const provider = new OAuthProvider('microsoft.com').setCustomParameters({
   // tenant: config.tenant,
   // prompt: 'select_account',
@@ -28,6 +30,7 @@ const provider = new OAuthProvider('microsoft.com').setCustomParameters({
 
 async function initApp() {
   app  = await initializeApp(config);
+  analytics = getAnalytics(app);
   auth = await getAuth(app);
   // if (AppConfig.APP_ENV === 'local-test')
   //   connectAuthEmulator(auth, 'http://localhost:9099');
