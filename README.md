@@ -1,3 +1,5 @@
+TODO: Uninstall stretch-spaces and just adopt 4 space indentation because everyone uses that indentation for javascript by default, whereas not everyone has stretch-spaces configured.
+
 # Pax Imperia Clone
 
 Right now this is a clone of an old game.  But Pax is our benchmark game for an even cooler game built on top of it!  Our roadmap listing completed/ in-progress and planned features is in the [roadmap.md](roadmap.md) file.

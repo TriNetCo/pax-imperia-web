@@ -10,6 +10,10 @@ Terraform uses the configurations generated from the below stuff for interacting
 gcloud auth application-default login
 ```
 
+## Cert Rotation
+
+I'm managing the certs via my external Let's Encrypt automation that handles all my certs centrally.
+
 ## Caching issues
 
 It's not supposed to do any caching.  It does caching.  Try `gcloud compute target-https-proxies list` and delete it along with the http one and the re-apply.
