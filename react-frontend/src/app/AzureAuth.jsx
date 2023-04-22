@@ -16,7 +16,7 @@ const config = {
   storageBucket: `${AppConfig.GOOGLE_PROJECT_ID}.appspot.com`,
   messagingSenderId: '197061503647',
   appId: '1:197061503647:web:ddb8057e008e53ab6ad0aa',
-  measurementId: 'G-8QVSYPR5KT',
+  measurementId: 'G-7DWTH6NHTD',
 };
 
 let app;
