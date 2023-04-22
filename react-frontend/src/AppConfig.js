@@ -8,6 +8,7 @@ const getAppConfig = () => {
     case 'prod':
       return {
         APP_ENV:           appEnv,
+        BUILD_VERSION:     process.env.REACT_APP_PAX_BUILD_VERSION,
         SOCKET_URL:        process.env.REACT_APP_PAX_SOCKET_URL,
         BACKEND_URL:       process.env.REACT_APP_PAX_BACKEND_URL,
         AUTH_DOMAIN:       process.env.REACT_APP_AUTH_DOMAIN,
@@ -18,6 +19,7 @@ const getAppConfig = () => {
     default:
       return {
         APP_ENV:           'local',
+        BUILD_VERSION:     process.env.REACT_APP_PAX_BUILD_VERSION,
         SOCKET_URL:        'ws://localhost:3001/websocket',
         BACKEND_URL:       'http://localhost:3001',
         AUTH_DOMAIN:       process.env.REACT_APP_AUTH_DOMAIN,

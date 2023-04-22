@@ -20,6 +20,10 @@ import { UserContextProvider } from './app/UserContextProvider';
 const container = document.getElementById('root');
 const root = createRoot(container);
 
+import AppConfig from './AppConfig';
+
+console.log(`Loaded version ${AppConfig.BUILD_VERSION}`);
+
 const gameData = initGameData();
 const azureAuth = new AzureAuth();
 
