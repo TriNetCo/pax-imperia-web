@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import UserContext from '../../app/UserContext';
 import { spoofSignIn } from '../DebugPage/webToolHelpers';
 import { Button } from '@mui/material';
+import './LandingPageOptions.css';
 
 const LandingPageOptions = () => {
   const userContext = useContext(UserContext);
@@ -19,10 +20,10 @@ const LandingPageOptions = () => {
   if (userContext.loginStatus == 'logged_in')
     return (
       <div>
-        <ul>
+        <ul className='landing-page-options'>
           <li><Link to="/systems">Singleplayer</Link></li>
-          <li><Link to="/new_game">Multiplayer</Link></li>
-          <li><Link to="/about">About</Link></li>
+          <li><span to="/new_game">Multiplayer</span></li>
+          <li><span to="/about">About</span></li>
           <li>
             <Button onClick={handleLogout}>
               Logout
@@ -36,7 +37,7 @@ const LandingPageOptions = () => {
     <div>
       <ul>
         <li><Link to="/login">Login</Link></li>
-        <li><button onClick={handleLoginAsGuest}>(Dev) Login as Guest</button></li>
+        <li><Button onClick={handleLoginAsGuest}>(Dev) Login as Guest</Button></li>
         <li><Link to="/debug">(Dev) Debug Page</Link></li>
       </ul>
     </div>

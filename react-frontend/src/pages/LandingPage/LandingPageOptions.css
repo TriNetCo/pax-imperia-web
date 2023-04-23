@@ -1,0 +1,10 @@
+
+ul.landing-page-options li span {
+  color: #777;
+}
+
+ul.landing-page-options {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
