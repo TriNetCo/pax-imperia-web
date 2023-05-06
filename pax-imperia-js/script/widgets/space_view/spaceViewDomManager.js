@@ -76,10 +76,13 @@ export class SpaceViewDomManager {
         if (currentTarget.parentEntity.type === "wormhole") {
             let wormholeName = currentTarget.name;
             let wormholeId = currentTarget.id;
-            // TODO: replace with code for navigating to wormhole system
             alert(wormholeId + ": " + wormholeName);
+            // TODO: is this the right way to do system navigation?
+            const path = "/systems/" + wormholeId;
+            window.location.href = path;
         }
     }
+
 
     getParentObject (obj) {
         // Recursively goes through object to find the highest
