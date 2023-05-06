@@ -6,11 +6,32 @@ html, body {
 
 .page-wrap {
     width: 1024px;
+    padding-right: 25px;
+    padding-left: 25px;
     /* height: 100%; */
     margin-left: auto;
     margin-right: auto;
     border-left: solid;
     border-right: solid;
+    color: white;
+    background-image: url("../assets/backgrounds/a_futuristic_spaceship_dashboard_with_neon_lights.png");
+}
+.page-wrap a:link {color: #26C3E3;}
+.page-wrap a:visited {color: #26C3E3;}
+.page-wrap a:hover {color: #DE12D1;}
+
+.management-views {
+  background-color: black;
+}
+.misc-views {
+  background-color: black;
+}
+.dev-space {
+  background-color: black;
+}
+.links{
+  display: flex;
+  justify-content: center;
 }
 
 #generic-app-parent {

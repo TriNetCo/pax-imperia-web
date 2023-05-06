@@ -22,17 +22,15 @@ const GameDashboardPage = () => {
         <UserCard />
 
         <h1>Galactic View</h1>
-        <div>System: <span id="system-name"></span></div>
         <div id="lower-console"></div>
-
+        <center>
         <Galaxy/>
+        </center>
+        <div>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;System: <span id="system-name"></span></div>
 
-        <Link to="/systems/1"> System 1 </Link>
-        <button onClick={doSomething}>Do Something</button>
-
-        <div className="links" style={{ display: 'flex'}}>
+        <div className="links" style={{ display: 'flex' }}>
           <div className="management-views">
-            <h6>Management</h6>
+            <h5>Management</h5>
             <ul>
               <li><a href="fleet.html">Fleet</a></li>
               <li><a href="research.html">Research</a></li>
@@ -42,7 +40,7 @@ const GameDashboardPage = () => {
           </div>
 
           <div className="misc-views">
-            <h6>Misc Views</h6>
+            <h5>Misc Views</h5>
             <ul>
               <li><a href="config.html">Config</a></li>
               <li><a href="ship.html">Ship Design</a></li>
@@ -51,8 +49,16 @@ const GameDashboardPage = () => {
               <li><a href="species.html">Species Design</a></li>
             </ul>
           </div>
-        </div>
 
+          <div className="dev-space">
+            <h5>Dev Space</h5>
+            <ul>
+              <li><Link to="/systems/1"> System 1 </Link></li>
+              <li><button onClick={doSomething}>Do Something</button></li>
+            </ul>
+          </div>
+
+        </div>
       </div>
     </div>
   );

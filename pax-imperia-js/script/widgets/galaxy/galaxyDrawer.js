@@ -24,7 +24,7 @@ export class GalaxyDrawer {
     drawConnections() {
         let cx = this.cx;
         let galaxy = this.galaxy;
-        cx.strokeStyle = "orange";
+        cx.strokeStyle = "#E7A6FF"; //"orange";
         cx.lineWidth = 1;
         for (let i = 0, len = galaxy.connections.length; i < len; i++) {
             let startSystem = galaxy.systems[galaxy.connections[i][0]];
@@ -38,7 +38,7 @@ export class GalaxyDrawer {
 
     drawSystems() {
         let galaxy = this.galaxy;
-        let systemDrawColor = "rgb(150, 150, 150)";
+        let systemDrawColor = "#26C3E3"; // "rgb(150, 150, 150)";
         for (let i = 0; i < galaxy.systems.length; i++) {
             let system = galaxy.systems[i];
             this.drawDot(system.position.x, system.position.y, system.radius, systemDrawColor);
@@ -48,7 +48,7 @@ export class GalaxyDrawer {
     drawHoveredSystem() {
         let galaxy = this.galaxy;
         let systemNameLabel = this.systemNameLabel;
-        let hoverDrawColor = "rgb(255, 255, 255)";
+        let hoverDrawColor = "#DE12D1";//"rgb(255, 255, 255)";
         let nothingIsHovered = true;
         for (let i = 0; i < galaxy.systems.length; i++) {
             let system = galaxy.systems[i];
