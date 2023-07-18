@@ -9,12 +9,6 @@ import UserCard from 'src/shared/UserCard/UserCard';
 const GameDashboardPage = () => {
   const dispatch = useDispatch();
 
-  const doSomething = () => {
-    const msg = 'hihihi';
-    alert('Sending: ' + msg);
-    dispatch(newMessage(msg));
-  };
-
   return (
     <div className="page-wrap">
       <div id="app-parent">
@@ -26,9 +20,6 @@ const GameDashboardPage = () => {
         <div id="lower-console"></div>
 
         <Galaxy/>
-
-        <Link to="/systems/1"> System 1 </Link>
-        <button onClick={doSomething}>Do Something</button>
 
         <div className="links" style={{ display: 'flex'}}>
           <div className="management-views">

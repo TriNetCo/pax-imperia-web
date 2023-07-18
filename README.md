@@ -42,7 +42,7 @@ GCP (cloud platform)
   * Terraform            - Allows us to create resources in the cloud
                            (GCP) by defining them in a markup language and
                            using `terraform apply` to create/ delete cloud
-                           resources.
+                           resources.  (v 1.3.9)
 
   * Cloud SQL            - This is our cloud-native database product from GCP
 
