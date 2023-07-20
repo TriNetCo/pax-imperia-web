@@ -16,7 +16,7 @@ I'm managing the certs via my external Let's Encrypt automation that handles all
 
 ## Caching issues
 
-It's not supposed to do any caching.  It does caching.  Try `gcloud compute target-https-proxies list` and delete it along with the http one and the re-apply.
+It's not supposed to do any caching.  It does caching.  Try `gcloud compute target-https-proxies list` and delete it along with the http one and then re-apply.
 
 ```
 terraform destroy --target module.static_site.module.load_balancer.google_compute_target_https_proxy.default[0]
