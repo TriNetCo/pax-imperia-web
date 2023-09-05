@@ -8,9 +8,22 @@ Right now this is a clone of an old game.  But Pax is our benchmark game for an 
 
 ## Technical Overview
 
-This project was built with technologies divided across 3 main categories (frontend, backend, and cloud platform):
+This project was built with technologies divided across 4 main categories (game library, frontend, backend, and cloud platform):
 
 <pre>
+Javascript (game library)
+  * Three.JS             - This is the WebGL Framework we're using to render 3D
+                           scenes in the browser
+
+Javascript (frontend)
+  * React                - This is the SPA framework we're using to build our
+                           web application so that state and game rendering
+                           components can be managed elegantly (work forced me).
+
+  * Create React App     - This is the React Framework flavor we're using to
+                           build our react app so we don't have to get our hands
+                           too dirty with js compilation pipelines.
+
 Golang (backend)
   * Gin                   - This is the GoLang web framework we're using for all
                             HTTP endpoints
@@ -27,19 +40,6 @@ Golang (backend)
                             to learn how to program in GoLang.
 
   * Postgres              - Allows us to store data if the need should arise...
-
-Javascript (game library)
-  * Three.JS             - This is the WebGL Framework we're using to render 3D
-                           scenes in the browser
-
-Javascript (frontend)
-  * React                - This is the SPA framework we're using to build our
-                           web application so that state and game rendering
-                           components can be managed elegantly (work forced me).
-
-  * Create React App     - This is the React Framework flavor we're using to
-                           build our react app so we don't have to get our hands
-                           too dirty with js compilation pipelines.
 
 GCP (cloud platform)
   * Terraform            - Allows us to create resources in the cloud

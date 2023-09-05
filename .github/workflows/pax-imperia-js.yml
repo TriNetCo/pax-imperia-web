@@ -3,6 +3,7 @@ name: pax-imperia-js build
 on:
   push:
     paths:
+      - '.github/workflows/pax-imperia-js.yml'
       - 'react-frontend/**/*.js'
       - 'react-frontend/**/*.jsx'
       - 'react-frontend/**/*.cjs'

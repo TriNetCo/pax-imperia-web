@@ -3,6 +3,7 @@ name: react-frontend build
 on:
   push:
     paths:
+      - '.github/workflows/react-frontend.yml'
       - 'react-frontend/**/*.js'
       - 'react-frontend/**/*.jsx'
       - 'react-frontend/**/*.cjs'
