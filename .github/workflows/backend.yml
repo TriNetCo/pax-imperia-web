@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./pax-imperia-js
+        working-directory: ./backend
     steps:
       - uses: actions/checkout@v3
 
