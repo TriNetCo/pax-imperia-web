@@ -14,8 +14,8 @@ func TestAuthStuff() {
 	// opt := option.WithCredentialsFile("secrets/pax-imeria-clone-firebase-adminsdk-b7dfw-1c36eb54cd.json")
 	app, err := firebase.NewApp(context.Background(), nil)
 	if err != nil {
-		fmt.Errorf("error initializing app: %v", err)
-		return
+		msg := fmt.Errorf("error initializing app: %v", err)
+		log.Fatal(msg)
 	}
 
 	fmt.Print(app)

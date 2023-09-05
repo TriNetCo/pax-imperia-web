@@ -29,3 +29,11 @@ go run cmd/pax.go
 Now navigate to [http://localhost:3000](http://localhost:3000) to play the game!
 
 The main file to edit is of course `./public/index.html` for getting at the front end at the moment.
+
+
+### Run the Tests
+
+```
+go test ./...
+```
+
