@@ -21,13 +21,13 @@ const AboutPage = () => {
               <p>
           This is a hobby project a group of friends (TriNetCo) have been
           working on to play with some of the devops, data science, project
-          management, and game development practices they've acquired over
+          management, and game development practices they&apos;ve acquired over
           the years.
               </p>
               <p>
-          To no one's surprise, the development spanned longer
+          To no one&apos;s surprise, the development spanned longer
           than the month where we budgeted the bulk of the development work
-          and so below you'll find a humble listing of our current degree of
+          and so below you&apos;ll find a humble listing of our current degree of
           success.
               </p>
               <ul>
@@ -37,7 +37,7 @@ const AboutPage = () => {
                 <li>A solar system generator</li>
                 <li>The initial WebGL prototype for doing the solar system view</li>
                 <li>A datamodel for managing state in the game to support multiplayer</li>
-                <li>A great backlog that isn't daunting at all!</li>
+                <li>A great backlog that isn&apos;t daunting at all!</li>
                 <li>Update: added a <Link to="/">back</Link> button to this page.</li>
               </ul>
             </div>
