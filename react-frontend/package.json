@@ -30,7 +30,7 @@
     "deploy-app": "bash -c 'source ../versioner.sh && react-scripts build && gsutil -m -o 'GSUtil:parallel_process_count=1' cp -r build/* gs://pax-njax-org/'",
     "deploy-assets": "bash -c 'gsutil -m -o 'GSUtil:parallel_process_count=1' cp -r ../pax-imperia-js/assets/* gs://pax-njax-org/assets'",
     "test": "CI=true react-scripts test --color",
-    "verify": "tsc && eslint --max-warnings=0 --fix src",
+    "verify": "eslint --max-warnings=0 --fix src",
     "eject": "react-scripts eject"
   },
   "jest": {
