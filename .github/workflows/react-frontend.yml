@@ -3,9 +3,19 @@ name: react-frontend build
 on:
   push:
     paths:
-      - 'react-frontend/**'
-    paths-ignore:
-      - '**/*.md'
+      - 'react-frontend/**/*.js'
+      - 'react-frontend/**/*.jsx'
+      - 'react-frontend/**/*.cjs'
+      - 'react-frontend/**/*.json'
+      - 'react-frontend/**/*.conf'
+      - 'react-frontend/**/*.html'
+      - 'react-frontend/**/*.css'
+      - 'react-frontend/**/*.jpeg'
+      - 'react-frontend/**/*.png'
+      - 'react-frontend/**/*.svg'
+      - 'react-frontend/**/*.bin'
+      - 'react-frontend/**/*.gltf'
+      - 'react-frontend/**/*.fbx'
 
 jobs:
   build:
