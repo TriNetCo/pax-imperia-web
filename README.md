@@ -26,10 +26,11 @@ Golang (backend)
 
   * Postgres              - Allows us to store data if the need should arise...
 
-Javascript (frontend)
+Javascript (game library)
   * Three.JS             - This is the WebGL Framework we're using to render 3D
                            scenes in the browser
 
+Javascript (frontend)
   * React                - This is the SPA framework we're using to build our
                            web application so that state and game rendering
                            components can be managed elegantly (work forced me).
@@ -116,6 +117,9 @@ docker compose up --build -d db liquibase
 # Rebuild and boot the backend
 docker compose build backend frontend && docker compose up backend frontend
 ```
+
+### Setup the game library
+See [pax-imperia-js](pax-imperia-js/README.md).
 
 ### Setup the GoLang Backend
 See [backend](backend/README.md).
