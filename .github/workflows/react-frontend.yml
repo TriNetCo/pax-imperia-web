@@ -1,6 +1,9 @@
 name: react-frontend build
 
-on: [push]
+on:
+  push:
+    paths:
+      - 'react-frontend/**'
 
 jobs:
   build:

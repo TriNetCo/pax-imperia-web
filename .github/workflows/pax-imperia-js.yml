@@ -1,6 +1,9 @@
 name: pax-imperia-js build
 
-on: [push]
+on:
+  push:
+    paths:
+      - 'pax-imperia-js/**'
 
 jobs:
   build:
