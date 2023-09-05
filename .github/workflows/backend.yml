@@ -3,9 +3,9 @@ name: Backend
 on:
   push:
     paths:
-      - 'backend/**'
-    paths-ignore:
-      - '**/*.md'
+      - 'backend/**/*.go'
+      - 'backend/go.mod'
+      - 'backend/go.sum'
 
 jobs:
   build:

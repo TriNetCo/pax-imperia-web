@@ -3,9 +3,19 @@ name: pax-imperia-js build
 on:
   push:
     paths:
-      - 'pax-imperia-js/**'
-    paths-ignore:
-      - '**/*.md'
+      # select all files except for markdown files
+      - 'pax-imperia-js/**(?<!\.md)'
+      # - 'pax-imperia-js/**/*.js'
+      # - 'pax-imperia-js/**/*.cjs'
+      # - 'pax-imperia-js/**/*.json'
+      # - 'pax-imperia-js/**/*.html'
+      # - 'pax-imperia-js/**/*.css'
+      # - 'pax-imperia-js/**/*.jpeg'
+      # - 'pax-imperia-js/**/*.png'
+      # - 'pax-imperia-js/**/*.bin'
+      # - 'pax-imperia-js/**/*.gltf'
+      # - 'pax-imperia-js/**/*.fbx'
+
 
 jobs:
   build:
