@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'pax-imperia-js/**'
+    paths-ignore:
+      - '**/*.md'
 
 jobs:
   build:
