@@ -2,9 +2,10 @@ import * as THREE from 'three';
 
 export class SpaceViewDomManager {
 
-    constructor(config, clientObjects, system) {
+    constructor(config, clientObjects, system, systemClickHandler) {
         this.c = config;
         this.system = system;
+        this.systemClickHandler = systemClickHandler;
         this.canvas = clientObjects.cx.canvas;
         this.mouse = clientObjects.mouse;
         this.camera = clientObjects.camera;
@@ -74,17 +75,13 @@ export class SpaceViewDomManager {
     #doubleClickHandler = ( event ) => {
         let currentTarget = this.selectionSprite.selectionTarget;
         if (currentTarget.parentEntity.type === "wormhole") {
-            let wormholeName = currentTarget.name;
-            let wormholeId = currentTarget.id;
-            alert(wormholeId + ": " + wormholeName);
-            // TODO: is this the right way to do system navigation?
+            let wormholeId = currentTarget.parentEntity.id;
             const path = "/systems/" + wormholeId;
-            window.location.href = path;
+            this.systemClickHandler(path);
         }
     }
 
-
-    getParentObject (obj) {
+    getParentObject(obj) {
         // Recursively goes through object to find the highest
         // level object that is not the scene
 
@@ -103,7 +100,6 @@ export class SpaceViewDomManager {
         this.canvas.removeEventListener('click', this.#clickHandler);
         this.canvas.remove();
     }
-
 
     //////////////////////
     // Drawing Commands //
@@ -136,8 +132,8 @@ export class SpaceViewDomManager {
     }
 
     /* This function recursively walks up the tree of parents until it finds the root scene
-        * and removes the highest order group from that scene.
-        */
+     * and removes the highest order group from that scene.
+     */
     removeContainerFromScene(container) {
         let parent = container.parent;
 

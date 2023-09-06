@@ -10,12 +10,16 @@ const SpaceView = () => {
   let spaceViewWidget = data.spaceViewWidget;
   let requestId;
 
+  const systemClickHandler = (path) => {
+    history.push(path);
+  };
+
   useEffect(() => {
     let canvas = ref.current;
 
     (async() => {
       const systemIndex = parseInt(window.location.pathname.replace('/systems/', ''));
-      await spaceViewWidget.beginGame(systemIndex);
+      await spaceViewWidget.beginGame(systemIndex, systemClickHandler);
       const render = () => {
         spaceViewWidget.draw();
         requestId = requestAnimationFrame(render);

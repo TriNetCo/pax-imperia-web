@@ -23,12 +23,9 @@ export class SpaceViewWidget {
         this.clientObjects.mouse = mouse;
     }
 
-    async beginGame(systemIndex) {
-        console.log(systemIndex)
-        console.log(this.systemsData)
-        let systemData = this.systemsData[systemIndex]
-        systemData.ships = [{"name": "ship", "index": 0}]
-        this.system = new System(systemData);
+    async beginGame(systemIndex, systemClickHandler) {
+        this.systemClickHandler = systemClickHandler
+        this.setCurrentSystem(systemIndex)
 
         // TODO: fix this so the console is created by the widget
         // this.clientObjects.consoleDiv.innerHTML = "Resume";
@@ -62,12 +59,18 @@ export class SpaceViewWidget {
             10, // nRows
             0.04); // loopFrameDuration
 
-        this.spaceViewDomManager = new SpaceViewDomManager(this.c, this.clientObjects, this.system)
+        this.spaceViewDomManager = new SpaceViewDomManager(this.c, this.clientObjects, this.system, this.systemClickHandler)
         this.spaceViewDomManager.attachDomEventsToCode();
         this.spaceViewDomManager.populatePlanetList();
 
         this.spaceViewAnimator = new SpaceViewAnimator(this.c, this.clientObjects, this.system);
         await this.spaceViewAnimator.populateScene();
+    }
+
+    async setCurrentSystem(systemIndex) {
+        let systemData = this.systemsData[systemIndex]
+        systemData.ships = [{"name": "ship", "index": 0}]
+        this.system = new System(systemData);
     }
 
     draw() {
