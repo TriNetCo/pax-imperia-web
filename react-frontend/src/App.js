@@ -5,6 +5,7 @@ import GameDashboardPage from './pages/GameDashboardPage';
 import DebugPage from './pages/DebugPage/DebugPage';
 import SystemPage from './pages/SystemPage';
 import LoginPage from './pages/LoginPage/LoginPage';
+import ChatPage from './pages/ChatPage/ChatPage';
 import UsersPage from './features/users/UsersPage';
 import LandingPage from './pages/LandingPage/LandingPage';
 import ColonizerConfigPage from './pages/NewGame/ColonizerConfigPage';
@@ -30,6 +31,7 @@ function App() {
         <Route exact path="/debug" component={DebugPage} />
         <Route exact path="/users" component={UsersPage} />
         <Route exact path="/about" component={AboutPage} />
+        <Route exact path="/chat" component={ChatPage} />
 
         {/* End State for Menu and stuff */}
         <Route exact path="/"                          component={LandingPage}      />        {/* Shows the Sign-in stuff or the user's dashboard including 'newgame' button */}

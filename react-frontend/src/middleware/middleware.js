@@ -1,5 +1,17 @@
+/*
+* Summary of How Convoluted Redux Websocket Middleware Works:
+*
+* onMessage will run whenever this client receives a message from the server
+* then it will dispatch an action to the store, which will be handled by the reducer
+* the reducer will then update the state of the store
+* the store will then update the state of the component
+* for the component to re-render, it must be connected to the store
+* this is done by doing a `websocket = useSelector(selectWebsocket)` in the component
+* websocket.messages will be an array of all messages that the react client has received
+* see react-frontend/src/pages/ChatPage/ChatLobby.js for an example
+*/
+
 import * as actions from '../modules/websocket';
-// import { updateGame, } from '../modules/game';
 
 const socketMiddleware = () => {
   let socket = null;
@@ -15,11 +27,19 @@ const socketMiddleware = () => {
 
   const onMessage = store => (event) => {
     const payload = JSON.parse(event.data);
-    console.log('receiving server message');
+    // console.log('receiving server message ' + payload.message);
 
-    switch (payload.type) {
+    switch (payload.command) {
       case 'update_game_players':
         // store.dispatch(actions.updateGame(payload.game, payload.current_player));
+        break;
+      case 'NEW_MESSAGE':
+        console.log('received a message', payload.message);
+        // when we get a new message, we need to update the store by
+        // dispatching an action to the store
+        // but we don't dispatch actions.newMessage, because that would result in an infinite loop
+        // instead, we dispatch actions.newMessageFromServer
+        store.dispatch(actions.newMessageFromServer(payload.message));
         break;
       default:
         break;
