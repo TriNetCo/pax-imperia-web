@@ -57,10 +57,11 @@ export class SpaceViewAnimator {
 
     updateObjects() {
         // update ship position with slider bars
-        let xPosition = this.clientObjects.xSlider.value; // -1.5
-        let yPosition = this.clientObjects.ySlider.value; // 2.6
-        let zPosition = this.clientObjects.zSlider.value; // 6
-        this.system.ships[0].object3d.position.set(xPosition, yPosition, zPosition);
+        // slider bars disabled
+        // let xPosition = this.clientObjects.xSlider.value; // -1.5
+        // let yPosition = this.clientObjects.ySlider.value; // 2.6
+        // let zPosition = this.clientObjects.zSlider.value; // 6
+        // this.system.ships[0].object3d.position.set(xPosition, yPosition, zPosition);
         // ship.rotation.set(0.7, -1.6, 0.4);
 
         // seconds since clock reset
