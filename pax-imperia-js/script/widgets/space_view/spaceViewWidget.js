@@ -61,7 +61,7 @@ export class SpaceViewWidget {
 
         this.spaceViewDomManager = new SpaceViewDomManager(this.c, this.clientObjects, this.system, this.systemClickHandler)
         this.spaceViewDomManager.attachDomEventsToCode();
-        this.spaceViewDomManager.populatePlanetList();
+        this.spaceViewDomManager.populateSidebar();
 
         this.spaceViewAnimator = new SpaceViewAnimator(this.c, this.clientObjects, this.system);
         await this.spaceViewAnimator.populateScene();
@@ -71,6 +71,7 @@ export class SpaceViewWidget {
         let systemData = this.systemsData[systemIndex]
         systemData.ships = [{"name": "ship", "index": 0}]
         this.system = new System(systemData);
+        window.system = this.system;
     }
 
     draw() {

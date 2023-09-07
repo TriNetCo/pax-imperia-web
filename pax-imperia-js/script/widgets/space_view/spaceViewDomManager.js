@@ -84,7 +84,8 @@ export class SpaceViewDomManager {
             }
         }
 
-        this.populateSelectTargetText()
+        // this.populateSelectTargetText()
+        this.populateSidebar()
     }
 
     #doubleClickHandler = ( event ) => {
@@ -102,7 +103,8 @@ export class SpaceViewDomManager {
             this.moveShip(this.previousPreviousTarget)
         }
 
-        this.populateSelectTargetText()
+        // this.populateSelectTargetText()
+        this.populateSidebar()
     }
 
     moveShip(shipTarget) {
@@ -140,20 +142,86 @@ export class SpaceViewDomManager {
         this.canvas.remove();
     }
 
-    //////////////////////
-    // Drawing Commands //
-    //////////////////////
+    ///////////////////////////////
+    // Populate Sidebar Commands //
+    ///////////////////////////////
+
+    populateSidebar() {
+        this.populateList('star');
+        this.populateList('planet');
+        this.populateList('ship');
+        this.populateList('wormhole');
+        if (this.selectionSprite.selectionTarget) {
+            window.selectionTarget = this.selectionSprite.selectionTarget
+        }
+    }
+
+    populateList(entity_type) {
+        let listUl = document.getElementById(entity_type + "-list");
+        let html = '';
+        this.system[entity_type + "s"].forEach( entity => {
+            // let selectedThubmnail = " selected-thumbnail"
+            let selectedThubmnail = ""
+            let details = ""
+            if (this.selectionSprite.selectionTarget &&
+                this.selectionSprite.selectionTarget == entity.object3d) {
+                selectedThubmnail = " selected-thumbnail"
+                if (entity_type == 'planet') {
+                    details = `
+                        <br>Mediocre (x2)</br>
+                        <br>Pop: 7/8 :)</br>
+                        `
+                } else {
+                    details = "<br>TBD</br>"
+                }
+            }
+
+            html += `
+                <li>
+                    <div class="left-menu-thumbnail${selectedThubmnail}">
+                        <img src="${entity.assetThumbnailPath}"></img>
+                        <div class="right-side">
+                            <div class="star-details">${entity.name}${details}
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                `;
+            });
+        listUl.innerHTML = html;
+    }
+
 
     populatePlanetList() {
         let planetListUl = document.getElementById("planet-list");
-        let html = "<h3>Planets:</h3>";
-        html += "<ul>";
+        let html = '';
 
         this.system["planets"].forEach( planet => {
-            html += "<li onclick='alert(\"hi\")''>" + planet.name + "</li>";
-        });
+            let planetName = planet.name;
+            let selectedThubmnail = ""
+            let planetDetails = ""
+            if (this.selectionSprite.selectionTarget &&
+                this.selectionSprite.selectionTarget == planet.object3d) {
+                selectedThubmnail = " selected-thumbnail"
+                planetDetails = `
+                    <br>Mediocre (x2)</br>
+                    <br>Population: 7/8</br>
+                    <br>Habitability: :)</br>
+                    `
+            }
 
-        html += "</ul>";
+            html += `
+                <li>
+                    <div class="left-menu-thumbnail${selectedThubmnail}">
+                        <img src="/assets/thumbnails/oxygen_thumbnail.png"></img>
+                        <div class="right-side">
+                            <div class="planet-details">${planetName}${planetDetails}
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                `;
+        });
         planetListUl.innerHTML = html;
     }
 
@@ -170,6 +238,10 @@ export class SpaceViewDomManager {
         html += "</li></ul>";
         planetListUl.innerHTML = html;
     }
+
+    //////////////////////
+    // Drawing Commands //
+    //////////////////////
 
     putCursorOverContainer(container) {
         if (container.name == "selectionSprite") return; // Never put a cursor over the cursor itself

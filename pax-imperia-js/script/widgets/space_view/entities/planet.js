@@ -6,6 +6,7 @@ export class Planet extends Entity {
         this.type = 'planet';
         this.name = systemName + " " + (this.index + 1);
         this.assetPath = "/assets/planets/" + this.atmosphere + ".gltf";
+        this.assetThumbnailPath = "/assets/thumbnails/" + this.atmosphere + "_thumbnail.png";
         this.position = {x: 0, y: 0, z: 2 * this.distance_from_star};
     }
 

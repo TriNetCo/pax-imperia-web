@@ -96,7 +96,7 @@
     height: 768px;
 }
 
-ul.planet-list {
+ul.sidebar-list {
     /* flex-grow: 1; */
     list-style-type: none;
     padding: 0;
@@ -107,7 +107,7 @@ ul.planet-list {
     color: white;
 }
 
-#planet-list li {
+#sidebar-list li {
     margin-bottom: 20px;
 }
 
