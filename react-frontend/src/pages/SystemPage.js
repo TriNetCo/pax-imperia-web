@@ -72,6 +72,12 @@ const SystemPage = () => {
                 <li>Earth2</li>
               </ul>
             </div>
+            <div id="selected-target">
+              <h3>Selected Target:</h3>
+              <ul>
+                <li>None</li>
+              </ul>
+            </div>
             <div>
               <button id="btnGovernor">Governor</button>
             </div>

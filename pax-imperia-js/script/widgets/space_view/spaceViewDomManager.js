@@ -83,6 +83,8 @@ export class SpaceViewDomManager {
                 break;
             }
         }
+
+        this.populateSelectTargetText()
     }
 
     #doubleClickHandler = ( event ) => {
@@ -100,6 +102,7 @@ export class SpaceViewDomManager {
             this.moveShip(this.previousPreviousTarget)
         }
 
+        this.populateSelectTargetText()
     }
 
     moveShip(shipTarget) {
@@ -151,6 +154,20 @@ export class SpaceViewDomManager {
         });
 
         html += "</ul>";
+        planetListUl.innerHTML = html;
+    }
+
+    populateSelectTargetText() {
+        let planetListUl = document.getElementById("selected-target");
+        let html = "<h3>Selected Target:</h3><ul><li>";
+
+        if (this.selectionSprite.selectionTarget && this.selectionSprite.selectionTarget.name) {
+            html += this.selectionSprite.selectionTarget.name
+        } else {
+            html += "None";
+        }
+
+        html += "</li></ul>";
         planetListUl.innerHTML = html;
     }
 
