@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"sync"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -47,6 +48,9 @@ func getAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, albums)
 }
 
+var clients = make(map[*websocket.Conn]bool)
+var clientsMux sync.Mutex
+
 var wsupgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
@@ -60,13 +64,38 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	defer func() {
+		clientsMux.Lock()
+		delete(clients, conn)
+		clientsMux.Unlock()
+		conn.Close()
+	}()
+
+	clientsMux.Lock()
+	// this map is kind of confusing, but we create a key for the client using the connection pointer, and set the value to true
+	// we can access the connection pointer later to send messages to the client by iterating over the map
+	// weird syntax, but it works
+	// we could use an array of connections, but this is more efficient
+	clients[conn] = true
+	clientsMux.Unlock()
+
 	for {
-		t, msg, err := conn.ReadMessage()
+		messageType, msg, err := conn.ReadMessage()
 		if err != nil {
 			break
 		}
 		fmt.Println("Received Message:", string(msg))
-		conn.WriteMessage(t, msg)
+		// conn.WriteMessage(messageType, msg)  // this was how we originally just echoed back the message to the same client who sent it
+
+		// broadcast message to all clients
+		clientsMux.Lock()
+		for client := range clients {
+			if err := client.WriteMessage(messageType, msg); err != nil {
+				log.Println(err)
+				delete(clients, client)
+			}
+		}
+		clientsMux.Unlock()
 	}
 }
 
@@ -155,10 +184,10 @@ func doTest(c *gin.Context) {
 // }
 
 type user struct {
-	ID      int    `json:"id"`
-	Name    string `json:"name"`
-	Email   string `json:"email"`
-	Role    string `json:"role"`
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Role  string `json:"role"`
 	Token string `json:"token"`
 }
 

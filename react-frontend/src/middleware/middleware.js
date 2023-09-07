@@ -17,7 +17,7 @@ const socketMiddleware = () => {
   let socket = null;
 
   const onOpen = store => (event) => {
-    console.log('websocket open', event.target.url);
+    console.debug('websocket open', event.target.url);
     store.dispatch(actions.wsConnected(event.target.url));
   };
 
@@ -34,12 +34,12 @@ const socketMiddleware = () => {
         // store.dispatch(actions.updateGame(payload.game, payload.current_player));
         break;
       case 'NEW_MESSAGE':
-        console.log('received a message', payload.message);
         // when we get a new message, we need to update the store by
         // dispatching an action to the store
         // but we don't dispatch actions.newMessage, because that would result in an infinite loop
         // instead, we dispatch actions.newMessageFromServer
         store.dispatch(actions.newMessageFromServer(payload.message));
+        console.debug('received a message', payload.message);
         break;
       default:
         break;
@@ -73,11 +73,11 @@ const socketMiddleware = () => {
         console.log('websocket closed');
         break;
       case 'NEW_MESSAGE':
-        console.log('sending a message', action.msg);
-        socket.send(JSON.stringify({ command: 'NEW_MESSAGE', message: action.msg }));
+        console.debug('sending a message', action.data);
+        socket.send(JSON.stringify({ command: 'NEW_MESSAGE', message: action.data }));
         break;
       default:
-        console.log('the next action:', action);
+        // console.log('the next action:', action);
         return next(action);
     }
   };

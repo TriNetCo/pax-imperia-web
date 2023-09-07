@@ -5,9 +5,8 @@ export const wsConnected = host => ({ type: 'WS_CONNECTED', host });
 export const wsDisconnected = host => ({ type: 'WS_DISCONNECTED', host });
 export const wsError = host => ({ type: 'WS_ERROR', host });
 
-// NEW_MESSAGE...
-export const newMessage = msg => ({ type: 'NEW_MESSAGE', msg });
-export const newMessageFromServer = msg => ({ type: 'NEW_MESSAGE_FROM_SERVER', msg });
+export const newMessage = data => ({ type: 'NEW_MESSAGE', data });
+export const newMessageFromServer = data => ({ type: 'NEW_MESSAGE_FROM_SERVER', data });
 export const updateGame = (json, player) => ({ type: 'SET_GAME', data: json, player });
 
 const initialState = {
@@ -26,7 +25,7 @@ export const websocketReducer = (state = { ...initialState }, action) => {
     case 'SET_GAME':
       return { ...state, game: action.data, current_player: action.player };
     case 'NEW_MESSAGE_FROM_SERVER':
-      return { ...state, messages: [...state.messages, action.msg] };
+      return { ...state, messages: [...state.messages, action.data] };
     default:
       console.log('websocketReducer: default action: ' + action.type);
       return state;
