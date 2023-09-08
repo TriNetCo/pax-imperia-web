@@ -6,6 +6,7 @@ export class Ship extends Entity {
         this.type = 'ship';
         this.name = "ship";
         this.assetPath = '/assets/ships/GalacticLeopard6.fbx';
+        this.assetThumbnailPath = "/assets/thumbnails/ship_thumbnail.png";
         this.size = 0.0002;
         this.scale = {x: this.size, y: this.size, z: this.size};
         this.position = {x: -1.5, y: 2.6, z: 6};
