@@ -160,12 +160,11 @@ export class SpaceViewDomManager {
         let listUl = document.getElementById(entity_type + "-list");
         let html = '';
         this.system[entity_type + "s"].forEach( entity => {
-            // let selectedThubmnail = " selected-thumbnail"
-            let selectedThubmnail = ""
+            let selectedThumbnail = ""
             let details = ""
             if (this.selectionSprite.selectionTarget &&
                 this.selectionSprite.selectionTarget == entity.object3d) {
-                selectedThubmnail = " selected-thumbnail"
+                    selectedThumbnail = " selected-thumbnail"
                 if (entity_type == 'planet') {
                     details = `
                         <br>Mediocre (x2)</br>
@@ -178,7 +177,7 @@ export class SpaceViewDomManager {
 
             html += `
                 <li>
-                    <div class="left-menu-thumbnail${selectedThubmnail}">
+                    <div class="left-menu-thumbnail ${selectedThumbnail}">
                         <img src="${entity.assetThumbnailPath}"></img>
                         <div class="right-side">
                             <div class="star-details">${entity.name}${details}
@@ -202,7 +201,7 @@ export class SpaceViewDomManager {
             let planetDetails = ""
             if (this.selectionSprite.selectionTarget &&
                 this.selectionSprite.selectionTarget == planet.object3d) {
-                selectedThubmnail = " selected-thumbnail"
+                selectedThubmnail = "selected-thumbnail"
                 planetDetails = `
                     <br>Mediocre (x2)</br>
                     <br>Population: 7/8</br>
@@ -212,7 +211,7 @@ export class SpaceViewDomManager {
 
             html += `
                 <li>
-                    <div class="left-menu-thumbnail${selectedThubmnail}">
+                    <div class="left-menu-thumbnail ${selectedThubmnail}">
                         <img src="/assets/thumbnails/oxygen_thumbnail.png"></img>
                         <div class="right-side">
                             <div class="planet-details">${planetName}${planetDetails}

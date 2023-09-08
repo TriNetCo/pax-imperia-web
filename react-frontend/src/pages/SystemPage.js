@@ -65,15 +65,15 @@ const SystemPage = () => {
         <div className="flex-container">
 
           <div className="flex-container-left">
-            <div class="left-menu-div">
+            <div className="left-menu-div">
                             <h6 id="stars">&#9660; Solar:</h6>
-                            <ul id="star-list" class="sidebar-list"></ul>
+                            <ul id="star-list" className="sidebar-list"></ul>
                             <h6 id="planets">&#9660; Planets:</h6>
-                            <ul id="planet-list" class="sidebar-list"></ul>
+                            <ul id="planet-list" className="sidebar-list"></ul>
                             <h6 id="ships">&#9654; Ships:</h6>
-                            <ul id="ship-list" class="sidebar-list"></ul>
+                            <ul id="ship-list" className="sidebar-list"></ul>
                             <h6 id="wormholes">&#9654; Wormholes:</h6>
-                            <ul id="wormhole-list" class="sidebar-list"></ul>
+                            <ul id="wormhole-list" className="sidebar-list"></ul>
                         </div>
                         <div>
                             <button id="btnGovernor">Governor</button>
