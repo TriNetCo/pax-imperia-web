@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -49,6 +50,7 @@ func getAlbums(c *gin.Context) {
 }
 
 var clients = make(map[*websocket.Conn]bool)
+var chatRooms = make(map[string]ChatRoom)
 var clientsMux sync.Mutex
 
 var wsupgrader = websocket.Upgrader{
@@ -85,17 +87,94 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		fmt.Println("Received Message:", string(msg))
-		// conn.WriteMessage(messageType, msg)  // this was how we originally just echoed back the message to the same client who sent it
 
-		// broadcast message to all clients
+		// We need to parse the json message into a struct
+		var message Message
+		err = json.Unmarshal(msg, &message)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
+		fmt.Println("Message: ", message.Command)
+		fmt.Println("Payload: ", message.Payload)
+
 		clientsMux.Lock()
-		for client := range clients {
-			if err := client.WriteMessage(messageType, msg); err != nil {
-				log.Println(err)
-				delete(clients, client)
+
+		switch message.Command {
+		case "JOIN_CHAT_LOBBY":
+			handleJoinChatLobby(conn, message)
+		case "NEW_MESSAGE":
+			handleSay(conn, message)
+		default:
+			fmt.Println("Unknown command")
+			// broadcast message to all clients
+			for client := range clients {
+				if err := client.WriteMessage(messageType, msg); err != nil {
+					log.Println(err)
+					delete(clients, client)
+				}
 			}
 		}
+
 		clientsMux.Unlock()
+	}
+}
+
+func handleSay(conn *websocket.Conn, message Message) {
+	// broadcast message to all clients in this chat lobby
+	chatLobbyId, ok := message.Payload["chat_lobby_id"].(string)
+	if !ok {
+		fmt.Println("Chat Room ID not found or not a string")
+		return
+	}
+
+	chatRoom, exists := chatRooms[chatLobbyId]
+	if !exists {
+		fmt.Println("Chat Room not found")
+		return
+	}
+
+	for client := range chatRoom.Clients {
+		if err := client.WriteJSON(message); err != nil {
+			log.Println(err)
+			delete(chatRoom.Clients, client)
+		}
+	}
+}
+
+func handleJoinChatLobby(conn *websocket.Conn, message Message) {
+	if chatLobbyId, ok := message.Payload["chat_lobby_id"].(string); ok {
+		fmt.Println("Chat Room ID:", chatLobbyId)
+
+		chatRoom, exists := chatRooms[chatLobbyId]
+		if !exists {
+			fmt.Printf("Creating lobby: %s\n", chatLobbyId)
+
+			chatRoom = ChatRoom{
+				Name:    chatLobbyId,
+				Clients: make(map[*websocket.Conn]bool),
+			}
+		}
+
+		// Check if the client has already joined the lobby
+		if _, exists := chatRoom.Clients[conn]; exists {
+			fmt.Println("Client already joined lobby")
+			return
+		}
+
+		chatRoom.Clients[conn] = true
+		chatRooms[chatLobbyId] = chatRoom
+		var response = Message{
+			Command: "JOIN_CHAT_LOBBY_RESPONSE",
+			Payload: map[string]interface{}{
+				"status":      "success",
+				"chatLobbyId": chatLobbyId,
+				"message":     "Joined chat lobby",
+			},
+		}
+		conn.WriteJSON(response)
+		fmt.Printf("Client joined lobby: %s\n", chatLobbyId)
+	} else {
+		fmt.Println("Chat Room ID not found or not a string")
 	}
 }
 

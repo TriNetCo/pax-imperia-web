@@ -1,8 +1,23 @@
-import React, { useState } from 'react';
+import {useState, useContext} from 'react';
+import UserContext from '../../app/UserContext';
+import {useSelector, useDispatch} from 'react-redux';
+import {selectWebsocket, joinChatLobby} from '../../modules/websocket';
+
 
 const ChatLobbyControls = () => {
 
+  const websocket = useSelector(selectWebsocket);
+  const dispatch = useDispatch();
+  const userContext = useContext(UserContext);
   const [currentChatLobby, setCurrentChatLobby] = useState(null);
+
+  const handleChatLobbyIdChange = event => {
+    setCurrentChatLobby(event.target.value);
+  };
+
+  const handleJoinLobbyClick = () => {
+    dispatch(joinChatLobby(userContext.email, currentChatLobby));
+  };
 
   return (
     <div className="chat-lobby-controls">
@@ -10,8 +25,8 @@ const ChatLobbyControls = () => {
 
       <div className='flexy-container'>
         <div className="chat-lobby-input">
-          <input type="text" placeholder="Enter a chat lobby name" />
-          <button>Join</button>
+          <input type="text" onChange={handleChatLobbyIdChange} placeholder="Enter a chat lobby name" />
+          <button onClick={handleJoinLobbyClick}>Join</button>
         </div>
 
         <div className="chat-lobby-input">

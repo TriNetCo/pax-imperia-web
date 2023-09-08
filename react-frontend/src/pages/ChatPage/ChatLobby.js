@@ -18,6 +18,7 @@ const ChatLobby = () => {
       message: msgToSend,
       user: currentUser,
       userEmail: userContext.email,
+      chat_lobby_id: websocket.chatLobbyId,
     };
     dispatch(newMessage(outboundMsg));
     setMsgToSend('');
@@ -52,6 +53,7 @@ const ChatLobby = () => {
 
   return (
     <div className="chat-lobby">
+      <div>Lobby ID: { websocket.chatLobbyId }</div>
       <div>Connection Status: { websocket.status } </div>
       {/* We need a way to set our username for debugging */}
       <div>

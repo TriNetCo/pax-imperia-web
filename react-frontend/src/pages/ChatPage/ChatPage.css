@@ -18,6 +18,7 @@
     color: white;
     max-width: 600px;
     margin: 5% auto;
+    margin: 10px auto 20px auto;
     border: 2px solid #5A6D8D;
     border-radius: 8px;
     background-color: rgba(10, 20, 40, 0.8); /* A dark semi-transparent background */
@@ -35,18 +36,21 @@
 }
 
 .chat-users {
-    display: flex-column;
-    justify-content: space-around;
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 20px;
-    width: 100px;
+    height: 40px;
 }
 
 .chat-user {
     flex: 1;
     text-align: center;
-    padding: 10px;
+    padding: 5px;
     border-radius: 4px;
     background: rgba(0, 0, 0, 0.5);
+    margin: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
 .chat-messages {
@@ -102,9 +106,10 @@
     background-color: rgba(10, 20, 40, 0.8); /* A dark semi-transparent background */
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
     padding: 20px;
-
-    margin: 5% auto;
+    padding-bottom: 32px;
+    margin: 20px auto 20px auto;
     width: 600px;
+    height: 50px;
 }
 
 .flexy-container {
@@ -124,7 +129,6 @@
 .chat-lobby-title {
     font-size: 1.5em;
     text-align: center;
-    margin-bottom: 10px;
     border-bottom: 2px solid #5A6D8D;
     color: #FFD700; /* Golden for a highlighted touch */
 }

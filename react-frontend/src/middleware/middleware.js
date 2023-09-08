@@ -26,20 +26,26 @@ const socketMiddleware = () => {
   };
 
   const onMessage = store => (event) => {
-    const payload = JSON.parse(event.data);
-    // console.log('receiving server message ' + payload.message);
+    const message = JSON.parse(event.data);
+    console.debug('receiving server message ' + message);
 
-    switch (payload.command) {
+    switch (message.command) {
+      case 'JOIN_CHAT_LOBBY_RESPONSE':
+        if (message.payload.status === 'success') {
+          console.debug('JOIN_CHAT_LOBBY_RESPONSE', message);
+
+          store.dispatch(actions.acceptJoinChatLobby(message.payload.chatLobbyId));
+        }
       case 'update_game_players':
-        // store.dispatch(actions.updateGame(payload.game, payload.current_player));
+        // store.dispatch(actions.updateGame(message.game, message.current_player));
         break;
       case 'NEW_MESSAGE':
         // when we get a new message, we need to update the store by
         // dispatching an action to the store
         // but we don't dispatch actions.newMessage, because that would result in an infinite loop
         // instead, we dispatch actions.newMessageFromServer
-        store.dispatch(actions.newMessageFromServer(payload.message));
-        console.debug('received a message', payload.message);
+        store.dispatch(actions.newMessageFromServer(message.payload));
+        console.debug('received a message', message.payload.message);
         break;
       default:
         break;
@@ -73,8 +79,18 @@ const socketMiddleware = () => {
         console.log('websocket closed');
         break;
       case 'NEW_MESSAGE':
-        console.debug('sending a message', action.data);
-        socket.send(JSON.stringify({ command: 'NEW_MESSAGE', message: action.data }));
+        console.debug('sending a message ', action.data);
+        socket.send(JSON.stringify({
+          command: 'NEW_MESSAGE',
+          payload: action.data,
+        }));
+        break;
+      case 'JOIN_CHAT_LOBBY':
+        console.debug('joining chat lobby ', action.chat_lobby_id);
+        socket.send(JSON.stringify({
+          command: 'JOIN_CHAT_LOBBY',
+          payload: { user: action.user, chat_lobby_id: action.chat_lobby_id }
+        }));
         break;
       default:
         // console.log('the next action:', action);
