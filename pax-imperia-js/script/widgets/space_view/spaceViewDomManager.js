@@ -48,12 +48,6 @@ export class SpaceViewDomManager {
         // Keep track of target before click
         this.previousPreviousTarget = this.previousTarget;
         this.previousTarget = this.selectionSprite.selectionTarget;
-        //if (this.previousTarget && this.previousTarget.name) {
-        //    console.log('previousTarget', this.previousTarget.name);
-        //}
-        //if (this.previousPreviousTarget && this.previousPreviousTarget.name) {
-        //    console.log('previousPreviousTarget', this.previousPreviousTarget.name);
-        //}
 
         // Arrow function / lambda so that "this" refers to SpaceViewDomManager
         // instead of canvas
@@ -97,8 +91,6 @@ export class SpaceViewDomManager {
         }
 
         // gets the target before double click
-        console.log('double click previousPreviousTarget', this.previousPreviousTarget);
-
         if (this.previousPreviousTarget && this.previousPreviousTarget.name && this.previousPreviousTarget.name == "ship") {
             this.moveShip(this.previousPreviousTarget)
         }
@@ -115,7 +107,7 @@ export class SpaceViewDomManager {
         const shipPlane = new THREE.Plane(new THREE.Vector3( 0, 0, shipTarget.position.z ), -shipTarget.position.z);
         const intersects = new THREE.Vector3();
         this.raycaster.ray.intersectPlane(shipPlane, intersects);
-        shipTarget.position.set(intersects.x, intersects.y, intersects.z);
+        shipTarget.parentEntity.destinationPoint = {x: intersects.x, y: intersects.y, z: intersects.z}
 
         // set ship as target after moving
         this.selectionSprite.select(shipTarget);

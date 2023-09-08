@@ -43,7 +43,6 @@ export class SpriteFlipbook {
             const p = selectionTarget.position;
             this.setPosition(p.x, p.y, p.z);
             if (selectionTarget.name == "ship") {
-                console.log("Ship selected");
                 this.setScale({ x: 1, y: 1, z: 1});
             } else {
                 this.setScale(selectionTarget.scale);

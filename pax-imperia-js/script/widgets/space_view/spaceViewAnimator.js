@@ -80,6 +80,10 @@ export class SpaceViewAnimator {
             planet.update(elapsedTime);
         }
 
+        for (const ship of this.system['ships']) {
+            ship.update(deltaTime);
+        }
+
     }
 
     async populateScene() {
