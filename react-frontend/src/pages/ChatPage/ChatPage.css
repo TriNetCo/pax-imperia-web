@@ -95,3 +95,36 @@
 .chat-input button:hover {
     background-color: #E0B400;
 }
+
+.chat-lobby-controls {
+    border: 2px solid #5A6D8D;
+    border-radius: 8px;
+    background-color: rgba(10, 20, 40, 0.8); /* A dark semi-transparent background */
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+
+    margin: 5% auto;
+    width: 600px;
+}
+
+.flexy-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-lobby-input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 4px 0 0 4px;
+    color: #000;
+}
+
+.chat-lobby-title {
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #5A6D8D;
+    color: #FFD700; /* Golden for a highlighted touch */
+}

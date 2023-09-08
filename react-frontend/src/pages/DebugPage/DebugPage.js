@@ -6,6 +6,7 @@ import UserContext from '../../app/UserContext';
 import { useHistory } from 'react-router-dom';
 import { getAuthOutput } from '../../app/AzureAuth';
 import AppConfig from '../../AppConfig';
+import { Link } from 'react-router-dom';
 
 export default function DebugPage() {
   const history = useHistory();
@@ -90,6 +91,7 @@ export default function DebugPage() {
         <div>Token: {userContext.token}</div>
         <div>Token From Provider (for profile pic lookups): {userContext.tokenFromProvider}</div>
         <div>Token Expiration: ??</div>
+        <Link to="/chat">Chat Room</Link>
       </div>
 
       <h6>Websocket Console</h6>
