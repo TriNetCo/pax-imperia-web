@@ -66,20 +66,20 @@ const SystemPage = () => {
 
           <div className="flex-container-left">
             <div className="left-menu-div">
-                            <h6 id="stars">&#9660; Solar:</h6>
-                            <ul id="star-list" className="sidebar-list"></ul>
-                            <h6 id="planets">&#9660; Planets:</h6>
-                            <ul id="planet-list" className="sidebar-list"></ul>
-                            <h6 id="ships">&#9654; Ships:</h6>
-                            <ul id="ship-list" className="sidebar-list"></ul>
-                            <h6 id="wormholes">&#9654; Wormholes:</h6>
-                            <ul id="wormhole-list" className="sidebar-list"></ul>
-                        </div>
-                        <div>
-                            <button id="btnGovernor">Governor</button>
-                        </div>
+              <h6 id="stars">&#9660; Solar:</h6>
+              <ul id="star-list" className="sidebar-list"></ul>
+              <h6 id="planets">&#9660; Planets:</h6>
+              <ul id="planet-list" className="sidebar-list"></ul>
+              <h6 id="ships">&#9654; Ships:</h6>
+              <ul id="ship-list" className="sidebar-list"></ul>
+              <h6 id="wormholes">&#9654; Wormholes:</h6>
+              <ul id="wormhole-list" className="sidebar-list"></ul>
+            </div>
+            <div>
+              <button id="btnGovernor">Governor</button>
+            </div>
 
-                    </div>
+          </div>
           <div id="canvas-and-buttons">
             <SpaceView />
 
