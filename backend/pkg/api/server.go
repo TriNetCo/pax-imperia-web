@@ -49,7 +49,7 @@ func getAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, albums)
 }
 
-var clients = make(map[*websocket.Conn]bool)
+var clients = make(map[*websocket.Conn]ClientData)
 var chatRooms = make(map[string]ChatRoom)
 var clientsMux sync.Mutex
 
@@ -78,7 +78,8 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 	// we can access the connection pointer later to send messages to the client by iterating over the map
 	// weird syntax, but it works
 	// we could use an array of connections, but this is more efficient
-	clients[conn] = true
+	var client = ClientData{}
+	clients[conn] = client
 	clientsMux.Unlock()
 
 	for {
@@ -94,12 +95,15 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println("error:", err)
 		}
+		fmt.Println("Client email: ", client.Email)
 		fmt.Println("Message: ", message.Command)
 		fmt.Println("Payload: ", message.Payload)
 
 		clientsMux.Lock()
 
 		switch message.Command {
+		case "AUTHENTICATE":
+			handleAuthenticate(conn, client, message)
 		case "JOIN_CHAT_LOBBY":
 			handleJoinChatLobby(conn, message)
 		case "NEW_MESSAGE":
@@ -119,6 +123,44 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func handleAuthenticate(conn *websocket.Conn, client ClientData, message Message) {
+	// broadcast message to all clients in this chat lobby
+	displayName, ok := message.Payload["displayName"].(string)
+	if !ok {
+		fmt.Println("DisplayName not found or not a string")
+		return
+	}
+
+	email, ok := message.Payload["email"].(string)
+	if !ok {
+		fmt.Println("Email not found or not a string")
+		return
+	}
+
+	token, ok := message.Payload["token"].(string)
+	if !ok {
+		fmt.Println("Token not found or not a string")
+		return
+	}
+
+	// TODO: validate token
+
+	client.DisplayName = displayName
+	client.Email = email
+	client.Token = token
+
+	clients[conn] = client
+
+	var response = Message{
+		Command: "AUTHENTICATE_RESPONSE",
+		Payload: map[string]interface{}{
+			"status": "AUTHENTICATED",
+		},
+	}
+	conn.WriteJSON(response)
+	fmt.Printf("Client authenticated: %s\n", displayName)
+}
+
 func handleSay(conn *websocket.Conn, message Message) {
 	// broadcast message to all clients in this chat lobby
 	chatLobbyId, ok := message.Payload["chat_lobby_id"].(string)
@@ -132,6 +174,8 @@ func handleSay(conn *websocket.Conn, message Message) {
 		fmt.Println("Chat Room not found")
 		return
 	}
+
+	message.Payload["user"] = clients[conn].DisplayName
 
 	for client := range chatRoom.Clients {
 		if err := client.WriteJSON(message); err != nil {

@@ -35,7 +35,7 @@ const ChatLobby = () => {
   };
 
   const handleChangeCurrentUser = event => {
-    setCurrentUser(event.target.value);
+    userContext.setDisplayName(event.target.value);
   };
 
   const enableEditButton = () => {
@@ -55,10 +55,11 @@ const ChatLobby = () => {
     <div className="chat-lobby">
       <div>Lobby ID: { websocket.chatLobbyId }</div>
       <div>Connection Status: { websocket.status } </div>
+      <div>Authentication Status: { websocket.authenticationStatus } </div>
       {/* We need a way to set our username for debugging */}
       <div>
         Current User:
-        <input className="edit-username-field" disabled={true} type="text" value={currentUser} onChange={handleChangeCurrentUser} />
+        <input className="edit-username-field" disabled={true} type="text" value={userContext.displayName} onChange={handleChangeCurrentUser} />
         <button className="edit-username-btn" onClick={enableEditButton} >Edit</button>
       </div>
 

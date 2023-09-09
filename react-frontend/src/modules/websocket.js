@@ -10,6 +10,8 @@ export const newMessageFromServer = data => ({ type: 'NEW_MESSAGE_FROM_SERVER', 
 export const acceptJoinChatLobby = chatLobbyId => ({ type: 'ACCEPT_JOIN_CHAT_LOBBY', chatLobbyId });
 export const updateGame = (json, player) => ({ type: 'SET_GAME', data: json, player });
 export const joinChatLobby = (user, chat_lobby_id) => ({ type: 'JOIN_CHAT_LOBBY', user, chat_lobby_id });
+export const authenticate = (email, displayName, token) => ({ type: 'AUTHENTICATE', email, displayName, token });
+export const authenticateResponse = (status) => ({ type: 'AUTHENTICATE_RESPONSE', status });
 
 const initialState = {
   time: null,
@@ -17,6 +19,7 @@ const initialState = {
   host: null,
   messages: [],
   chatLobbyId: null,
+  authenticationStatus: 'UNAUTHENTICATED',
 };
 
 export const websocketReducer = (state = { ...initialState }, action) => {
@@ -31,6 +34,8 @@ export const websocketReducer = (state = { ...initialState }, action) => {
       return { ...state, messages: [...state.messages, action.data] };
     case 'ACCEPT_JOIN_CHAT_LOBBY':
       return { ...state, chatLobbyId: action.chatLobbyId };
+    case 'AUTHENTICATE_RESPONSE':
+      return { ...state, authenticationStatus: action.status };
     default:
       console.log('websocketReducer: default action: ' + action.type);
       return state;

@@ -9,13 +9,14 @@ type Message struct {
 }
 
 type ClientData struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Games    []Game `json:"games"`
+	DisplayName string `json:"displayName"`
+	Email       string `json:"email"`
+	Token       string `json:"token"`
 }
 
 type Game struct {
-	Id string `json:"id"`
+	Id      string `json:"id"`
+	Clients map[*websocket.Conn]bool
 }
 
 type ChatRoom struct {

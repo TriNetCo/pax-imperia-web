@@ -27,15 +27,19 @@ const socketMiddleware = () => {
 
   const onMessage = store => (event) => {
     const message = JSON.parse(event.data);
-    console.debug('receiving server message ' + message);
+    console.debug('receiving server message ' + message.command);
 
     switch (message.command) {
       case 'JOIN_CHAT_LOBBY_RESPONSE':
         if (message.payload.status === 'success') {
           console.debug('JOIN_CHAT_LOBBY_RESPONSE', message);
-
           store.dispatch(actions.acceptJoinChatLobby(message.payload.chatLobbyId));
         }
+        break;
+      case 'AUTHENTICATE_RESPONSE':
+        console.debug('AUTHENTICATE_RESPONSE', message.payload.status);
+        store.dispatch(actions.authenticateResponse(message.payload.status));
+        break;
       case 'update_game_players':
         // store.dispatch(actions.updateGame(message.game, message.current_player));
         break;
@@ -92,8 +96,15 @@ const socketMiddleware = () => {
           payload: { user: action.user, chat_lobby_id: action.chat_lobby_id }
         }));
         break;
+      case 'AUTHENTICATE':
+        console.debug('authenticating ', action.email);
+        socket.send(JSON.stringify({
+          command: 'AUTHENTICATE',
+          payload: { email: action.email, displayName: action.displayName, token: action.token }
+        }));
+        break;
       default:
-        // console.log('the next action:', action);
+        console.debug('the next action:', action);
         return next(action);
     }
   };
