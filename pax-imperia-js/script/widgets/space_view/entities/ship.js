@@ -2,8 +2,8 @@ import { Entity } from './entity.js'
 import * as THREE from 'three';
 
 export class Ship extends Entity {
-    constructor (data, systemName) {
-        super(data, systemName);
+    constructor (data, systemName, systemId) {
+        super(data, systemName, systemId);
         this.type = 'ship';
         this.assetPath = '/assets/ships/GalacticLeopard6.fbx';
         this.assetThumbnailPath = "/assets/thumbnails/ship_thumbnail.png";
@@ -25,7 +25,7 @@ export class Ship extends Entity {
             if (distanceFromDest <= this.speed) {
                 // TODO: send via wormhole
                 // selectionTarget.parentEntity.id;
-                this.deleteEntity(system);
+                this.delete(system);
             }
         }
         if (this.destinationTarget) {

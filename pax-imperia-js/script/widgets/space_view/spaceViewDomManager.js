@@ -79,6 +79,11 @@ export class SpaceViewDomManager {
 
         // this.populateSelectTargetText()
         this.populateSidebar()
+
+        // expose selectionTarget to dev console
+        if (this.selectionSprite.selectionTarget) {
+            window.selectionTarget = this.selectionSprite.selectionTarget
+        }
     }
 
     #doubleClickHandler = ( event ) => {
@@ -149,9 +154,6 @@ export class SpaceViewDomManager {
         this.populateList('planet');
         this.populateList('ship');
         this.populateList('wormhole');
-        if (this.selectionSprite.selectionTarget) {
-            window.selectionTarget = this.selectionSprite.selectionTarget
-        }
     }
 
     populateList(entity_type) {

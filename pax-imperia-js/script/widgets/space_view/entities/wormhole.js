@@ -30,8 +30,8 @@ function makeTextSprite(text, opts) {
 }
 
 export class Wormhole extends Entity {
-    constructor (data, systemName, systemPosition) {
-        super(data, systemName);
+    constructor (data, systemName, systemId, systemPosition) {
+        super(data, systemName, systemId);
         // id: 20
         // name: "Regor"
         // position: { x: 783, y: 378, z: 0.94 }

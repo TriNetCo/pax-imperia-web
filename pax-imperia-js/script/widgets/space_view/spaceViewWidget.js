@@ -17,6 +17,7 @@ export class SpaceViewWidget {
         this.c = config;
         this.clientObjects = clientObjects;
         this.systemsData = systemsData;
+        // make systemsData global
         window.systemsData = systemsData;
 
         const mouse = new THREE.Vector2(0,0);
@@ -62,6 +63,8 @@ export class SpaceViewWidget {
         this.spaceViewDomManager = new SpaceViewDomManager(this.c, this.clientObjects, this.system, this.systemClickHandler)
         this.spaceViewDomManager.attachDomEventsToCode();
         this.spaceViewDomManager.populateSidebar();
+        // make spaceViewDomManager global
+        window.spaceViewDomManager = this.spaceViewDomManager;
 
         this.spaceViewAnimator = new SpaceViewAnimator(this.c, this.clientObjects, this.system);
         await this.spaceViewAnimator.populateScene();

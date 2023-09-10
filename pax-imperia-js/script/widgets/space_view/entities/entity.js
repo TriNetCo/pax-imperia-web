@@ -9,11 +9,13 @@ import { FBXLoader } from '/node_modules/three/examples/jsm/loaders/FBXLoader.js
 import { unpackData } from '../../../models/helpers.js'
 
 export class Entity {
-    constructor (data, systemName = "") {
+    constructor (data, systemName = "", systemId) {
         this.type = "";
         this.size = 1;
         this.position = {x: 0, y: 0, z: 0};
         this.rotation = {x: 0, y: 0, z: 0};
+        this.systemId = systemId;
+        this.data = data;
         unpackData(data, this);
         this.scale = {x: this.size, y: this.size, z: this.size};
     }
@@ -80,15 +82,37 @@ export class Entity {
         return object3d;
     }
 
-    deleteEntity(system) {
+    delete(system) {
+        this.deleteObject3d();
+        this.deleteEntity(system);
+        this.deleteData();
+    }
+
+    deleteObject3d() {
         // delete 3d object from scene
         this.scene.remove(this.object3d);
+    }
+
+    deleteEntity(system) {
         // delete entity from system
-        let i = system[this.type + 's'].findIndex(x => x.name === this.name);
+        const i = system[this.type + 's'].findIndex(x => x.name === this.name);
         system[this.type + 's'].splice(i, 1);
-        // delete entity from systemData
-        i = system.systemData[this.type + 's'].findIndex(x => x.name === this.name);
-        system.systemData[this.type + 's'].splice(i, 1);
+        // update sidebar
+        window.spaceViewDomManager.populateSidebar();
+    }
+
+    deleteData() {
+        // delete from systemData
+        const systemData = window.systemsData[this.systemId];
+        const i = systemData[this.type + 's'].findIndex(x => x.name === this.name);
+        systemData[this.type + 's'].splice(i, 1);
+    }
+
+    createData(systemId) {
+        // create entity in systemsData
+        const systemData = window.systemsData[systemId];
+        // TODO
+        // systemData[this.type + 's'].push(this);
     }
 
 }

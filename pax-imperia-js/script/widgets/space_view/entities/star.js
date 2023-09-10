@@ -1,8 +1,8 @@
 import { Entity } from './entity.js'
 
 export class Star extends Entity {
-    constructor (data, systemName) {
-        super(data, systemName);
+    constructor (data, systemName, systemId) {
+        super(data, systemName, systemId);
         this.type = 'star';
         this.name = systemName;
         this.assetPath = "/assets/planets/sun.gltf";
