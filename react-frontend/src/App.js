@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { Route, Switch } from 'react-router-dom';
+import { Route, HashRouter, Switch } from 'react-router-dom';
 import GameDashboardPage from './pages/GameDashboardPage';
 import DebugPage from './pages/DebugPage/DebugPage';
 import SystemPage from './pages/SystemPage';
@@ -21,7 +21,7 @@ function App() {
 
   return (
     <div className="App">
-      <Switch>
+      <HashRouter>
         <Route exact path="/"      component={LandingPage} />
         <Route exact path="/game"  component={GameDashboardPage} />
         <Route exact path="/game/dashboard" component={GameDashboardPage} />
@@ -47,7 +47,7 @@ function App() {
         <Route exact path="/game/:gameId" component={GameDashboardPage} />
         <Route exact path="/game/:gameId/systems/:systemId" component={SystemPage} />
 
-      </Switch>
+      </HashRouter>
     </div>
   );
 }
