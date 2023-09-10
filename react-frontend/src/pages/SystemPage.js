@@ -52,9 +52,7 @@ const SystemPage = () => {
             Game Paused
           </div>
 
-          <div className="console-message" id="time">
-            403.1
-          </div>
+          <div className="console-message" id="time"></div>
           <div className='close-system-view'>
             <IconButton onClick={handleCloseSystemView} color="secondary" style={{width: '100%', height: '100%'}}>
               <span style={{width: '20px', height: '20px'}}></span>
