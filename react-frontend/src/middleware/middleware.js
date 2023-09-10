@@ -12,6 +12,7 @@
 */
 
 import * as actions from '../modules/websocket';
+import {systemMessageUserJoinedChat} from '../modules/websocket';
 
 const socketMiddleware = () => {
   let socket = null;
@@ -30,10 +31,16 @@ const socketMiddleware = () => {
     console.debug('receiving server message ' + message.command);
 
     switch (message.command) {
+      case 'SYSTEM_MESSAGE_CHAT_USER_LIST':
+        store.dispatch(actions.systemMessageChatUserList(message.payload));
+        break;
+      case 'SYSTEM_MESSAGE_USER_JOINED_CHAT':
+        store.dispatch(actions.systemMessageUserJoinedChat(message.payload));
+        break;
       case 'JOIN_CHAT_LOBBY_RESPONSE':
         if (message.payload.status === 'success') {
           console.debug('JOIN_CHAT_LOBBY_RESPONSE', message);
-          store.dispatch(actions.acceptJoinChatLobby(message.payload.chatLobbyId));
+          store.dispatch(actions.joinChatLobbyResponse(message.payload.chatLobbyId, message.payload.chatLobbyUsers));
         }
         break;
       case 'AUTHENTICATE_RESPONSE':

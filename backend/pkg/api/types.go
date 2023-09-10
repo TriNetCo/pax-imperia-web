@@ -16,10 +16,10 @@ type ClientData struct {
 
 type Game struct {
 	Id      string `json:"id"`
-	Clients map[*websocket.Conn]bool
+	Clients map[*websocket.Conn]ClientData
 }
 
 type ChatRoom struct {
 	Name    string
-	Clients map[*websocket.Conn]bool
+	Clients map[*websocket.Conn]ClientData
 }

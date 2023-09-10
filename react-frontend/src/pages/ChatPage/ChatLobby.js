@@ -3,6 +3,7 @@ import UserContext from '../../app/UserContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { newMessage, selectWebsocket } from '../../modules/websocket';
 import ChatMessages from './ChatMessages';
+import ChatLobbyUsers from './ChatLobbyUsers';
 
 const ChatLobby = () => {
 
@@ -11,12 +12,10 @@ const ChatLobby = () => {
   const websocket = useSelector(selectWebsocket);
   const userContext = useContext(UserContext);
 
-  const [currentUser, setCurrentUser] = useState('User1');
-
   const sendMessage = () => {
     const outboundMsg = {
       message: msgToSend,
-      user: currentUser,
+      user: userContext.displayName,
       userEmail: userContext.email,
       chat_lobby_id: websocket.chatLobbyId,
     };
@@ -35,7 +34,7 @@ const ChatLobby = () => {
   };
 
   const handleChangeCurrentUser = event => {
-    userContext.setDisplayName(event.target.value);
+    userContext.displayName = event.target.value;
   };
 
   const enableEditButton = () => {
@@ -56,6 +55,7 @@ const ChatLobby = () => {
       <div>Lobby ID: { websocket.chatLobbyId }</div>
       <div>Connection Status: { websocket.status } </div>
       <div>Authentication Status: { websocket.authenticationStatus } </div>
+      <div>chatLobbyUsers: { websocket.chatLobbyUsers }</div>
       {/* We need a way to set our username for debugging */}
       <div>
         Current User:
@@ -64,10 +64,7 @@ const ChatLobby = () => {
       </div>
 
       <div className="chat-lobby-header">Lobby</div>
-      <div className="chat-users">
-        <div className="chat-user">User1</div>
-        <div className="chat-user">User2</div>
-      </div>
+      <ChatLobbyUsers />
       <ChatMessages />
       <div className="chat-input">
         <input type="text" value={msgToSend} onChange={handleMessageChange}

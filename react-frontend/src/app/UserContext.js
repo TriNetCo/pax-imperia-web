@@ -32,10 +32,6 @@ const CTX = {
     setUser(dataShell);
   },
 
-  setDisplayName: (name) => {
-    setDisplayName(name);
-  },
-
   login: () => {
     localStorage.setItem('loginStatus', 'pending');
     _azureAuth.signInMicrosoft();
@@ -129,11 +125,7 @@ const CTX = {
 
 };
 
-const setDisplayName = (name) => {
-  dataShell.displayName = name;
-  CTX.updateStorage(dataShell);
-  CTX.setUserInfo(dataShell);
-};
+
 
 const metaHandler = {
   set(target, prop, value, receiver) {

@@ -68,7 +68,7 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 
 	defer func() {
 		clientsMux.Lock()
-		delete(clients, conn)
+		cleanUpDeadConnection(conn)
 		clientsMux.Unlock()
 		conn.Close()
 	}()
@@ -110,11 +110,11 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 			handleSay(conn, message)
 		default:
 			fmt.Println("Unknown command")
-			// broadcast message to all clients
+			// broadcast message to all clients just for fun
 			for client := range clients {
 				if err := client.WriteMessage(messageType, msg); err != nil {
 					log.Println(err)
-					delete(clients, client)
+					cleanUpDeadConnection(client)
 				}
 			}
 		}
@@ -177,12 +177,7 @@ func handleSay(conn *websocket.Conn, message Message) {
 
 	message.Payload["user"] = clients[conn].DisplayName
 
-	for client := range chatRoom.Clients {
-		if err := client.WriteJSON(message); err != nil {
-			log.Println(err)
-			delete(chatRoom.Clients, client)
-		}
-	}
+	sendMessageToAllChatroomParticipants(chatRoom, message)
 }
 
 func handleJoinChatLobby(conn *websocket.Conn, message Message) {
@@ -195,7 +190,7 @@ func handleJoinChatLobby(conn *websocket.Conn, message Message) {
 
 			chatRoom = ChatRoom{
 				Name:    chatLobbyId,
-				Clients: make(map[*websocket.Conn]bool),
+				Clients: make(map[*websocket.Conn]ClientData),
 			}
 		}
 
@@ -205,21 +200,73 @@ func handleJoinChatLobby(conn *websocket.Conn, message Message) {
 			return
 		}
 
-		chatRoom.Clients[conn] = true
+		var chatLobbyUsers = getChatLobbyUsers(chatRoom)
+
+		chatRoom.Clients[conn] = clients[conn]
 		chatRooms[chatLobbyId] = chatRoom
+
 		var response = Message{
 			Command: "JOIN_CHAT_LOBBY_RESPONSE",
 			Payload: map[string]interface{}{
-				"status":      "success",
-				"chatLobbyId": chatLobbyId,
-				"message":     "Joined chat lobby",
+				"status":         "success",
+				"chatLobbyId":    chatLobbyId,
+				"chatLobbyUsers": chatLobbyUsers,
+				"message":        "Joined chat lobby",
 			},
 		}
+
+		debugPrintStruct(response)
 		conn.WriteJSON(response)
+
+		// Announce user joined to all members of the chatroom
+		var userJoinAnnouncement = Message{
+			Command: "SYSTEM_MESSAGE_USER_JOINED_CHAT",
+			Payload: map[string]interface{}{
+				"status":      "success",
+				"chatLobbyId": chatLobbyId,
+				"displayName": clients[conn].DisplayName,
+				"email":       clients[conn].Email,
+			},
+		}
+
+		sendMessageToAllChatroomParticipants(chatRoom, userJoinAnnouncement)
 		fmt.Printf("Client joined lobby: %s\n", chatLobbyId)
 	} else {
 		fmt.Println("Chat Room ID not found or not a string")
 	}
+}
+
+func debugPrintStruct(response Message) {
+	responseJson, _ := json.Marshal(response)
+	fmt.Println("JOIN_CHAT_LOBBY_RESPONSE:\n", string(responseJson))
+}
+
+// Private-ish methods...
+
+func getChatLobbyUsers(chatRoom ChatRoom) []string {
+	displayNames := make([]string, 0)
+	for client := range chatRoom.Clients {
+		displayNames = append(displayNames, clients[client].DisplayName)
+	}
+	return displayNames
+}
+
+func sendMessageToAllChatroomParticipants(chatRoom ChatRoom, message Message) {
+	for client := range chatRoom.Clients {
+		if err := client.WriteJSON(message); err != nil {
+			log.Println(err)
+			cleanUpDeadConnection(client)
+		}
+	}
+}
+
+func cleanUpDeadConnection(client *websocket.Conn) {
+	clientsMux.Lock()
+	delete(clients, client)
+	for _, chatRoom := range chatRooms {
+		delete(chatRoom.Clients, client)
+	}
+	clientsMux.Unlock()
 }
 
 func doTest(c *gin.Context) {
