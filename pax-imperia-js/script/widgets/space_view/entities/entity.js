@@ -91,6 +91,10 @@ export class Entity {
     }
 
     deleteObject3d() {
+        // unselect if selected object is being deleted
+        if (window.spaceViewDomManager.selectionSprite.selectionTarget == this.object3d) {
+            window.spaceViewDomManager.selectionSprite.unselect()
+        }
         // delete 3d object from scene
         this.scene.remove(this.object3d);
     }
