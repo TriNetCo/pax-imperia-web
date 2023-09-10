@@ -1,4 +1,4 @@
-import { unpackData } from '../../../models/helpers.js'
+import { unpackData, getRandomNum } from '../../../models/helpers.js'
 import { Star } from './star.js';
 import { Planet } from './planet.js';
 import { Ship } from './ship.js';
@@ -12,6 +12,7 @@ export class System {
         this.planets = this.createRepresentations(systemData.planets, Planet, this.name, this.id);
         this.wormholes = this.createRepresentations(systemData.connections, Wormhole, this.name, this.id, systemData.position);
         this.ships = this.createRepresentations(systemData.ships, Ship, this.name, this.id);
+        this.placeWormholedShips();
     }
 
     createRepresentations (entitiesData, cls, systemName, systemId, systemPosition=null) {
@@ -21,6 +22,18 @@ export class System {
             representations.push(representation);
         };
         return representations;
+    }
+
+    placeWormholedShips() {
+        for (const ship of this.ships) {
+            if (ship.previousSystemId) {
+                const wormhole = this.wormholes.find(x => x.id === ship.previousSystemId);
+                ship.position.x = wormhole.position.x + getRandomNum(-2, 2, 2);
+                ship.position.y = wormhole.position.y + getRandomNum(-2, 2, 2);
+                ship.position.z = wormhole.position.z + 1;
+            }
+        };
+
     }
 
     async load (scene) {
