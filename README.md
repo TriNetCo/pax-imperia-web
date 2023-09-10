@@ -3,6 +3,7 @@
 ![pax-imperia-js](https://github.com/trinetco/pax-imperia-clone/actions/workflows/pax-imperia-js.yml/badge.svg)
 ![react-frontend](https://github.com/trinetco/pax-imperia-clone/actions/workflows/react-frontend.yml/badge.svg)
 ![backend](https://github.com/trinetco/pax-imperia-clone/actions/workflows/backend.yml/badge.svg)
+[WIP Demo](https://trinetco.github.io/pax-imperia-clone)
 
 Right now this is a clone of an old game.  But Pax is our benchmark game for an even cooler game built on top of it!  Our roadmap listing completed/ in-progress and planned features is in the [roadmap.md](roadmap.md) file.
 
