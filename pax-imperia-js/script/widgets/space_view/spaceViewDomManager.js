@@ -14,6 +14,13 @@ export class SpaceViewDomManager {
         this.raycaster = new THREE.Raycaster();
         this.currentTarget = null;
         this.previousTarget = null;
+
+        window.clickThumbnail = (targetType, targetName) => {
+            const entity = this.system[targetType + 's'].find(x => x.name === targetName);
+            this.selectionSprite.select(entity.object3d);
+            this.populateSidebar();
+        };
+
     }
 
     attachDomEventsToCode() {
@@ -177,7 +184,7 @@ export class SpaceViewDomManager {
 
             html += `
                 <li>
-                    <div class="left-menu-thumbnail ${selectedThumbnail}">
+                    <div class="left-menu-thumbnail ${selectedThumbnail}" onclick="clickThumbnail('${entity.type}', '${entity.name}')">
                         <img src="${entity.assetThumbnailPath}"></img>
                         <div class="right-side">
                             <div class="star-details">${entity.name}${details}
@@ -189,7 +196,6 @@ export class SpaceViewDomManager {
             });
         listUl.innerHTML = html;
     }
-
 
     populatePlanetList() {
         let planetListUl = document.getElementById("planet-list");
