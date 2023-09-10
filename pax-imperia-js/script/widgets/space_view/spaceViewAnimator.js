@@ -1,5 +1,5 @@
-// import * as THREE from '/node_modules/three/build/three.module.js';
-import * as THREE from 'three';
+// import * as THREE from 'three';
+import * as THREE from '/node_modules/three/build/three.module.js';
 
 export class SpaceViewAnimator {
 
@@ -7,7 +7,6 @@ export class SpaceViewAnimator {
         this.c = config;
         this.clientObjects = clientObjects;
         this.system = system;
-        // debugger;
 
         this.scene = clientObjects.scene;
         this.selectionSprite = clientObjects.selectionSprite;
@@ -15,8 +14,7 @@ export class SpaceViewAnimator {
         this.camera = clientObjects.camera;
         this.cx = clientObjects.cx;
         this.mouse = clientObjects.mouse;
-
-        this.clock = new THREE.Clock();
+        this.clock = clientObjects.gameClock;
     }
 
     drawLoop() {
@@ -68,6 +66,7 @@ export class SpaceViewAnimator {
         let deltaTime = this.clock.getDelta();
         // seconds since clock started (avoiding getElapsedTime() which resets clock)
         let elapsedTime = this.clock.elapsedTime;
+        document.getElementById("time").innerHTML = elapsedTime.toFixed(0);
 
         // TODO: use elapsedTime instead of deltaTime
         this.selectionSprite.update(deltaTime);

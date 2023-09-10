@@ -1,22 +1,25 @@
 import { GalaxyDrawer } from './galaxyDrawer.js';
 import { GalaxyDomManager } from './galaxyDomManager.js';
+// import * as THREE from 'three';
+import * as THREE from '/node_modules/three/build/three.module.js';
 
 export class GalaxyWidget {
 
     galaxyDrawer;
     galaxyDomManager;
 
-
     constructor(config, gameData) {
         this.c = config;
-        console.log("count: " + config.systemCount);
         this.mouse = { x: 0, y: 0 };
         this.galaxy = gameData.galaxy;
+        window.gameClock = window.gameClock ? window.gameClock : new THREE.Clock();
+        if (!window.gameClock.running) {
+            window.gameClock.start();
+        }
     }
 
     beginGame(canvas, systemClickHandler) {
         let c = this.c;
-        console.log('beginGame systemCount: ' + c.systemCount)
 
         canvas.width = c.canvasWidth;
         canvas.height = c.canvasHeight;

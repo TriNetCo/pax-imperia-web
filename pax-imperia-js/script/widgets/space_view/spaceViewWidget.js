@@ -23,6 +23,7 @@ export class SpaceViewWidget {
 
         const mouse = new THREE.Vector2(0,0);
         this.clientObjects.mouse = mouse;
+        this.clientObjects.gameClock = window.gameClock;
     }
 
     async beginGame(systemIndex, systemClickHandler) {

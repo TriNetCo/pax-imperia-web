@@ -5,8 +5,6 @@ import { getRandomNum } from './helpers.js'
 export class Galaxy {
 
     constructor(galaxyWidgetSettings){
-        console.log("Constructing galaxy");
-        console.log('Constructor system count: ' + galaxyWidgetSettings.systemCount)
         // Should systems be called systemsData?
         this.systems = this.generateSystems(galaxyWidgetSettings);
         this.connections = this.generateConnections();
@@ -29,7 +27,7 @@ export class Galaxy {
             // Try maxPlacementAttempts times to find a system far enough away
             // from existing systems
             while (!this.isValidDistance(systems, position, c.systemBuffer)) {
-                console.log("retrying placement");
+                console.debug("retrying star placement");
                 position = this.generateSystemPosition(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
                 i = i + 1;
                 if (i == c.maxPlacementAttempts) {
@@ -72,7 +70,7 @@ export class Galaxy {
         let connections = [];
         let connectedSystems = [];
         while (connectedSystems.length < this.systems.length && this.systems.length > 1){
-            console.log("Looped");
+            console.debug("Gaxlaxy generation looped");
             let minDist = Infinity;
             let minI;
             let minJ;
