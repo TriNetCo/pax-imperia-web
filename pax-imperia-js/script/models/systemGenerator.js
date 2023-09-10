@@ -9,12 +9,13 @@ export class SystemGenerator {
         this.connections = [];
         this.stars = [this.generateStar(c)];
         this.planets = this.generatePlanets(c);
+        // Place a ship in every system
+        this.ships = this.generateShips(c);
         // Use manual system for debugging
         if (false) {
             this.stars = this.manualStars
             this.planets = this.manualPlanets
         }
-        this.ships = [];
     }
 
     generateData(){
@@ -63,6 +64,25 @@ export class SystemGenerator {
             planets.push(planet);
         };
         return planets;
+    }
+
+    generateShips(c) {
+        let ships = [];
+        let shipCount = getRandomNum(1, 3, 0);
+        for (let i = 0; i < shipCount; i++) {
+            let shipX = getRandomNum(-10, 10, 2);
+            let shipY = getRandomNum(-10, 10, 2);
+            let shipZ = getRandomNum(this.stars[0].size, 12, 2);
+            let ship = {
+                "name": "ship" + i,
+                "index": i,
+                "position": {x: shipX, y: shipY, z: shipZ}
+            }
+            ships.push(ship);
+
+
+        }
+        return ships;
     }
 
     toJson() {

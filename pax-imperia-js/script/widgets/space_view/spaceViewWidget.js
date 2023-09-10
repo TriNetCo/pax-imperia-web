@@ -69,7 +69,7 @@ export class SpaceViewWidget {
 
     async setCurrentSystem(systemIndex) {
         let systemData = this.systemsData[systemIndex]
-        systemData.ships = [{"name": "ship", "index": 0}]
+        // systemData.ships = [{"name": "ship", "index": 0}]
         this.system = new System(systemData);
         window.system = this.system;
     }

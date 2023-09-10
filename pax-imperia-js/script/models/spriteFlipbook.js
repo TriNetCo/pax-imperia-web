@@ -42,7 +42,7 @@ export class SpriteFlipbook {
             this.sprite.visible = true;
             const p = selectionTarget.position;
             this.setPosition(p.x, p.y, p.z);
-            if (selectionTarget.name == "ship") {
+            if (selectionTarget.parentEntity.type == "ship") {
                 this.setScale({ x: 1, y: 1, z: 1});
             } else {
                 this.setScale(selectionTarget.scale);

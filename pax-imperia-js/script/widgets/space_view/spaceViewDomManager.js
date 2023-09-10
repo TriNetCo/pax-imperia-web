@@ -91,7 +91,9 @@ export class SpaceViewDomManager {
         }
 
         // gets the target before double click
-        if (this.previousPreviousTarget && this.previousPreviousTarget.name && this.previousPreviousTarget.name == "ship") {
+        if (this.previousPreviousTarget &&
+            this.previousPreviousTarget.parentEntity &&
+            this.previousPreviousTarget.parentEntity.type == "ship") {
             this.moveShip(this.previousPreviousTarget)
         }
 
