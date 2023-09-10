@@ -21,8 +21,8 @@ const SpaceView = () => {
       let pathname = window.location.pathname;
       const hashString = window.location.hash;
 
-      if (hashString.includes("#/systems")) {
-        pathname = hashString.replace("#/", "/");
+      if (hashString.includes('#/systems')) {
+        pathname = hashString.replace('#/', '/');
       }
 
       const systemIndex = parseInt(pathname.replace('/systems/', ''));
