@@ -69,15 +69,15 @@ export class Wormhole extends Entity {
         let wormholeX = 0;
         if (relativeY >= 0) {
             if (relativeX >= 0) {
-                wormholeX = this.getScaledNumber(angle, Math.PI/2, 0, -12, -4);
+                wormholeX = this.getScaledNumber(angle, Math.PI/2, 0, -12, -5);
             } else {
-                wormholeX = this.getScaledNumber(angle, 0, -Math.PI/2, -20, -12);
+                wormholeX = this.getScaledNumber(angle, 0, -Math.PI/2, -19, -12);
             };
         } else {
             if (relativeX >= 0) {
-                wormholeX = this.getScaledNumber(angle, 0, -Math.PI/2, 4, 12);
+                wormholeX = this.getScaledNumber(angle, 0, -Math.PI/2, 5, 12);
             } else {
-                wormholeX = this.getScaledNumber(angle, Math.PI/2, 0, 12, 20);
+                wormholeX = this.getScaledNumber(angle, Math.PI/2, 0, 12, 19);
             };
         };
 

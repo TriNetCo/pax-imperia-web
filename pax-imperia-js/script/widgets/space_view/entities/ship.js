@@ -23,9 +23,10 @@ export class Ship extends Entity {
             this.destinationTarget.parentEntity.type == 'wormhole') {
             // if ship is close enough to wormhole, move it to the next system
             const distanceFromDest = this.object3d.position.distanceTo(this.destinationTarget.position);
+            const wormholeId = this.destinationTarget.parentEntity.id;
             if (distanceFromDest <= this.speed) {
                 // copy ship data to wormhole system
-                this.pushData(selectionTarget.parentEntity.id);
+                this.pushData(wormholeId);
                 // delete ship from current system
                 this.delete(system);
             }
