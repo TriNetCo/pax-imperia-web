@@ -21,7 +21,7 @@ function App() {
 
   return (
     <div className="App">
-      <Switch>
+      <HashRouter>
         <Route exact path="/game"  component={GameDashboardPage} />
         <Route exact path="/game/dashboard" component={GameDashboardPage} />
         <Route exact path="/systems" component={GameDashboardPage} />
@@ -46,7 +46,7 @@ function App() {
         <Route exact path="/game/:gameId" component={GameDashboardPage} />
         <Route exact path="/game/:gameId/systems/:systemId" component={SystemPage} />
 
-      </Switch>
+      </HashRouter>
     </div>
   );
 }

@@ -19,6 +19,7 @@ export class Entity {
         this.data = data;
         unpackData(data, this);
         this.scale = {x: this.size, y: this.size, z: this.size};
+        this.basePath = window.location.hash.includes("#") ? "/pax-imperia-clone" : ""
     }
 
     async load (scene) {

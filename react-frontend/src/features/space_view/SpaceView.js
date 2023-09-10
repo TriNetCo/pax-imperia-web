@@ -18,7 +18,14 @@ const SpaceView = () => {
     let canvas = ref.current;
 
     (async() => {
-      const systemIndex = parseInt(window.location.pathname.replace('/systems/', ''));
+      let pathname = window.location.pathname;
+      const hashString = window.location.hash;
+
+      if (hashString.includes("#/systems")) {
+        pathname = hashString.replace("#/", "/");
+      }
+
+      const systemIndex = parseInt(pathname.replace('/systems/', ''));
       await spaceViewWidget.beginGame(systemIndex, systemClickHandler);
       const render = () => {
         spaceViewWidget.draw();

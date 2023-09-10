@@ -1,7 +1,7 @@
 {
   "name": "react-frontend",
   "version": "0.1.0",
-  "homepage-disabled": "https://TriNetCo.github.io/pax-imperia-clone/",
+  "homepage": "https://TriNetCo.github.io/pax-imperia-clone/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.9.0",
@@ -28,6 +28,8 @@
     "clean": "rm -rf node_modules/.cache/ node_modules/pax-imperia-js && npm install",
     "start": "react-app-rewired start",
     "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "deploy-app": "bash -c 'source ../versioner.sh && react-scripts build && gsutil -m -o 'GSUtil:parallel_process_count=1' cp -r build/* gs://pax-njax-org/'",
     "deploy-assets": "bash -c 'gsutil -m -o 'GSUtil:parallel_process_count=1' cp -r ../pax-imperia-js/assets/* gs://pax-njax-org/assets'",
     "test": "CI=true react-scripts test --color",

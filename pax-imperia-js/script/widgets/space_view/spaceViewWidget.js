@@ -19,6 +19,7 @@ export class SpaceViewWidget {
         this.systemsData = systemsData;
         // make systemsData global
         window.systemsData = systemsData;
+        this.basePath = window.location.hash.includes("#") ? "/pax-imperia-clone" : "";
 
         const mouse = new THREE.Vector2(0,0);
         this.clientObjects.mouse = mouse;
@@ -55,7 +56,7 @@ export class SpaceViewWidget {
 
         this.clientObjects.selectionSprite = new SpriteFlipbook(
             scene,
-            '/assets/sprite_sheets/selection_sprite_sheet.png',
+            this.basePath + '/assets/sprite_sheets/selection_sprite_sheet.png',
             1,  // nCols in sprite sheet
             10, // nRows
             0.04); // loopFrameDuration

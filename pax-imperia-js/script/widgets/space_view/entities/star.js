@@ -5,8 +5,8 @@ export class Star extends Entity {
         super(data, systemName, systemId);
         this.type = 'star';
         this.name = systemName;
-        this.assetPath = "/assets/planets/sun.gltf";
-        this.assetThumbnailPath = "/assets/thumbnails/sun_thumbnail.png";
+        this.assetPath = this.basePath + "/assets/planets/sun.gltf";
+        this.assetThumbnailPath = this.basePath + "/assets/thumbnails/sun_thumbnail.png";
     }
 
     update (elapsedTime) {

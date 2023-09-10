@@ -5,8 +5,8 @@ export class Ship extends Entity {
     constructor (data, systemName, systemId) {
         super(data, systemName, systemId);
         this.type = 'ship';
-        this.assetPath = '/assets/ships/GalacticLeopard6.fbx';
-        this.assetThumbnailPath = "/assets/thumbnails/ship_thumbnail.png";
+        this.assetPath = this.basePath + '/assets/ships/GalacticLeopard6.fbx';
+        this.assetThumbnailPath = this.basePath + "/assets/thumbnails/ship_thumbnail.png";
         this.size = 0.0002;
         this.scale = {x: this.size, y: this.size, z: this.size};
         // this.position = {x: -1.5, y: 2.6, z: 6};
