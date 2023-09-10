@@ -126,7 +126,6 @@ const CTX = {
 };
 
 
-
 const metaHandler = {
   set(target, prop, value, receiver) {
     // Don't touch storage or the context state if we don't have anything to change
