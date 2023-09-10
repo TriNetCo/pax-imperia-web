@@ -25,3 +25,11 @@ export const unpackData = (data, context) => {
         context[key] = data[key];
     }
 }
+
+export const packData = (context) => {
+    let data = {}
+    for (var key in context){
+        data[key] = context[key];
+    }
+    return(data);
+}

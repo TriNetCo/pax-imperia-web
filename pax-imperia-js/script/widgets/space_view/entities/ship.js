@@ -15,6 +15,7 @@ export class Ship extends Entity {
         this.speed = 0.2;
         this.destinationPoint = null; // x, y, z coordinates
         this.destinationTarget = null; // 3d object
+        this.previousSystemId = typeof this.previousSystemId === 'undefined' ? null : this.previousSystemId
     }
 
     update (deltaTime, system) {
@@ -23,8 +24,9 @@ export class Ship extends Entity {
             // if ship is close enough to wormhole, move it to the next system
             const distanceFromDest = this.object3d.position.distanceTo(this.destinationTarget.position);
             if (distanceFromDest <= this.speed) {
-                // TODO: send via wormhole
-                // selectionTarget.parentEntity.id;
+                // copy ship data to wormhole system
+                this.pushData(selectionTarget.parentEntity.id);
+                // delete ship from current system
                 this.delete(system);
             }
         }

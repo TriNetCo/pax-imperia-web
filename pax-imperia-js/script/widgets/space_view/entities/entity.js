@@ -7,6 +7,7 @@ import { FBXLoader } from '/node_modules/three/examples/jsm/loaders/FBXLoader.js
 // import { FBXLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/jsm/loaders/FBXLoader.js";
 
 import { unpackData } from '../../../models/helpers.js'
+import { packData } from '../../../models/helpers.js'
 
 export class Entity {
     constructor (data, systemName = "", systemId) {
@@ -108,11 +109,14 @@ export class Entity {
         systemData[this.type + 's'].splice(i, 1);
     }
 
-    createData(systemId) {
+    pushData(systemId) {
         // create entity in systemsData
         const systemData = window.systemsData[systemId];
-        // TODO
-        // systemData[this.type + 's'].push(this);
+        let entityData = packData(this);
+        // update with new systemId
+        entityData.previousSystemId = entityData.systemId;
+        entityData.systemId = systemId;
+        systemData[this.type + 's'].push(entityData);
     }
 
 }
