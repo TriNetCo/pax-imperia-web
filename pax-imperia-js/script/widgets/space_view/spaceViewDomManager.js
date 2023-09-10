@@ -94,26 +94,30 @@ export class SpaceViewDomManager {
         if (this.previousPreviousTarget &&
             this.previousPreviousTarget.parentEntity &&
             this.previousPreviousTarget.parentEntity.type == "ship") {
-            this.moveShip(this.previousPreviousTarget)
+            this.moveShip(this.previousPreviousTarget, this.previousTarget);
         }
 
         // this.populateSelectTargetText()
-        this.populateSidebar()
+        this.populateSidebar();
     }
 
-    moveShip(shipTarget) {
-        console.log('Moving ship')
+    moveShip(ship3d, previousTarget) {
+        console.log('Moving ship');
+        // ship3d is the 3d object and shipEntity is the JS object
+        const shipEntity = ship3d.parentEntity;
+        // save target info when an object was selected for ship to move toward
+        shipEntity.destinationTarget = previousTarget;
 
         // find intersection between mouseclick and plane of ship
         this.raycaster.setFromCamera( this.mouse, this.camera );
-        const shipPlane = new THREE.Plane(new THREE.Vector3( 0, 0, shipTarget.position.z ), -shipTarget.position.z);
+        const shipPlane = new THREE.Plane(new THREE.Vector3( 0, 0, ship3d.position.z ), -ship3d.position.z);
         const intersects = new THREE.Vector3();
         this.raycaster.ray.intersectPlane(shipPlane, intersects);
-        shipTarget.parentEntity.destinationPoint = {x: intersects.x, y: intersects.y, z: intersects.z}
+        shipEntity.destinationPoint = {x: intersects.x, y: intersects.y, z: intersects.z}
 
-        // set ship as target after moving
-        this.selectionSprite.select(shipTarget);
-        this.previousTarget = shipTarget;
+        // re-set ship as target after moving
+        this.selectionSprite.select(ship3d);
+        this.previousTarget = ship3d;
     }
 
     getParentObject(obj) {

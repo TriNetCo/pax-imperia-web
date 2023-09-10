@@ -14,9 +14,16 @@ export class Ship extends Entity {
         this.rotation = {x: 0.7, y: -1.6, z: 0.4};
         this.speed = 0.2;
         this.destinationPoint = null;
+        this.destinationTarget = null;
     }
 
     update (deltaTime) {
+        if (this.destinationTarget) {
+            const destX = this.destinationTarget.position.x;
+            const destY = this.destinationTarget.position.y;
+            const destZ = this.destinationTarget.position.z + this.destinationTarget.scale.z*2;
+            this.destinationPoint = {"x": destX, "y": destY, "z": destZ};
+        }
         if (this.destinationPoint) {
             const positionVector = new THREE.Vector3().copy(this.object3d.position);
             const destinationVector = new THREE.Vector3().copy(this.destinationPoint);
