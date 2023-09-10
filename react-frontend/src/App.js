@@ -22,7 +22,6 @@ function App() {
   return (
     <div className="App">
       <HashRouter>
-        <Route exact path="/"      component={LandingPage} />
         <Route exact path="/game"  component={GameDashboardPage} />
         <Route exact path="/game/dashboard" component={GameDashboardPage} />
         <Route exact path="/systems" component={GameDashboardPage} />

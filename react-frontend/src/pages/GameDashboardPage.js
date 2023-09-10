@@ -10,29 +10,39 @@ const GameDashboardPage = () => {
 
   return (
     <div className="page-wrap">
-      <div id="app-parent">
+      <div id="app-parent" className="systems-screen">
         <div className="wrap-block"></div>
         <UserCard />
 
-        <h1>Galactic View</h1>
-        <div>System: <span id="system-name"></span></div>
-        <div id="lower-console"></div>
 
-        <Galaxy/>
+
+        <div className="galaxy-flexer">
+          <div>
+            <h1>Galactic View</h1>
+
+            <div>System: <span id="system-name"></span></div>
+            <div id="lower-console"></div>
+            <Galaxy/>
+          </div>
+
+        </div>
 
         <div className="links" style={{ display: 'flex'}}>
           <div className="management-views">
-            <h6>Management</h6>
+            <div className="header">Management</div>
             <ul>
-              <li><a href="fleet.html">Fleet</a></li>
+              <li>The links are disabled,</li>
+              <li>please click the stars in </li>
+              <li>the starchart instead :)</li>
+              {/* <li><a href="fleet.html">Fleet</a></li> */}
               <li><a href="research.html">Research</a></li>
-              <li><a href="swords.html">Foriegn Policy</a></li>
+              {/* <li><a href="swords.html">Foriegn Policy</a></li> */}
               <li><a href="domestic.html">Domestic Policy</a></li>
             </ul>
           </div>
 
           <div className="misc-views">
-            <h6>Misc Views</h6>
+            <div className="header">Misc Views</div>
             <ul>
               <li><a href="config.html">Config</a></li>
               <li><a href="ship.html">Ship Design</a></li>

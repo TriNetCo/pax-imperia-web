@@ -42,6 +42,45 @@ html, body {
   background-image: url("../assets/backgrounds/title_background.png");
 }
 
+.systems-screen {
+  background-image: url("../assets/backgrounds/title_background.png");
+  background-blend-mode: overlay, normal;
+  background-color: rgba(160 150 150 / 35%);
+}
+
+.galaxy-flexer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  color: white;
+}
+
+.links {
+    display: flex;
+    justify-content: space-around;
+}
+
+.links div {
+    background-color: rgba(241, 239, 239, 0.8);
+    border-radius: 10px;
+    width: 260px;
+    padding: 10px;
+}
+
+.links div li {
+    list-style: none;
+    padding: 2px;
+}
+
+.links div .header {
+    margin: 0 auto;
+    width: 90%;
+    text-align: center;
+    font-size: 1.2em;
+}
+
 .landing-menu {
   width:      240px;
   background-color: rgba(0,0,0,0.4);
