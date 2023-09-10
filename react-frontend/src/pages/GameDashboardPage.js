@@ -15,7 +15,6 @@ const GameDashboardPage = () => {
         <UserCard />
 
 
-
         <div className="galaxy-flexer">
           <div>
             <h1>Galactic View</h1>
