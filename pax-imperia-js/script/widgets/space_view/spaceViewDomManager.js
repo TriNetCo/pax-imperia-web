@@ -12,8 +12,8 @@ export class SpaceViewDomManager {
         this.scene = clientObjects.scene;
         this.selectionSprite = clientObjects.selectionSprite;
         this.raycaster = new THREE.Raycaster();
+        this.currentTarget = null;
         this.previousTarget = null;
-        this.previousPreviousTarget = null;
     }
 
     attachDomEventsToCode() {
@@ -44,10 +44,9 @@ export class SpaceViewDomManager {
     }
 
     #clickHandler = ( event ) => {
-
         // Keep track of target before click
-        this.previousPreviousTarget = this.previousTarget;
-        this.previousTarget = this.selectionSprite.selectionTarget;
+        this.previousTarget = this.currentTarget;
+        this.currentTarget = this.selectionSprite.selectionTarget;
 
         // Arrow function / lambda so that "this" refers to SpaceViewDomManager
         // instead of canvas
@@ -83,30 +82,31 @@ export class SpaceViewDomManager {
     }
 
     #doubleClickHandler = ( event ) => {
-        let currentTarget = this.selectionSprite.selectionTarget;
-        if (currentTarget && currentTarget.parentEntity.type === "wormhole") {
-            let wormholeId = currentTarget.parentEntity.id;
-            const path = "/systems/" + wormholeId;
-            this.systemClickHandler(path);
-        }
+        // check if the target before double click was a ship
+        if (this.previousTarget &&
+            this.previousTarget.parentEntity &&
+            this.previousTarget.parentEntity.type == "ship") {
+            this.moveShip(this.previousTarget, this.currentTarget);
+        } else {
+            // doesn't enter the wormhole if a ship was being moved
+            if (this.currentTarget && this.currentTarget.parentEntity.type === "wormhole") {
+                let wormholeId = this.currentTarget.parentEntity.id;
+                const path = "/systems/" + wormholeId;
+                this.systemClickHandler(path);
+            }
 
-        // gets the target before double click
-        if (this.previousPreviousTarget &&
-            this.previousPreviousTarget.parentEntity &&
-            this.previousPreviousTarget.parentEntity.type == "ship") {
-            this.moveShip(this.previousPreviousTarget, this.previousTarget);
         }
 
         // this.populateSelectTargetText()
         this.populateSidebar();
     }
 
-    moveShip(ship3d, previousTarget) {
+    moveShip(ship3d, currentTarget) {
         console.log('Moving ship');
         // ship3d is the 3d object and shipEntity is the JS object
         const shipEntity = ship3d.parentEntity;
         // save target info when an object was selected for ship to move toward
-        shipEntity.destinationTarget = previousTarget;
+        shipEntity.destinationTarget = currentTarget;
 
         // find intersection between mouseclick and plane of ship
         this.raycaster.setFromCamera( this.mouse, this.camera );
@@ -117,7 +117,7 @@ export class SpaceViewDomManager {
 
         // re-set ship as target after moving
         this.selectionSprite.select(ship3d);
-        this.previousTarget = ship3d;
+        this.currentTarget = ship3d;
     }
 
     getParentObject(obj) {

@@ -73,8 +73,9 @@ export class SystemGenerator {
             let shipX = getRandomNum(-10, 10, 2);
             let shipY = getRandomNum(-10, 10, 2);
             let shipZ = getRandomNum(this.stars[0].size, 12, 2);
+            // give ships unique names
             let ship = {
-                "name": "ship" + i,
+                "name": "ship_" + this.id + "_" + i,
                 "index": i,
                 "position": {x: shipX, y: shipY, z: shipZ}
             }

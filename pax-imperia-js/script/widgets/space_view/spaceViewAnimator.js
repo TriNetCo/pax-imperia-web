@@ -81,7 +81,7 @@ export class SpaceViewAnimator {
         }
 
         for (const ship of this.system['ships']) {
-            ship.update(deltaTime);
+            ship.update(deltaTime, this.system);
         }
 
     }

@@ -12,6 +12,7 @@ export class System {
         this.planets = this.createRepresentations(systemData.planets, Planet, this.name);
         this.wormholes = this.createRepresentations(systemData.connections, Wormhole, this.name, systemData.position);
         this.ships = this.createRepresentations(systemData.ships, Ship, this.name);
+        this.systemData = systemData;
     }
 
     createRepresentations (entitiesData, cls, systemName, systemPosition=null) {

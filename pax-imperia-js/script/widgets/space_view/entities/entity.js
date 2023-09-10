@@ -19,6 +19,7 @@ export class Entity {
     }
 
     async load (scene) {
+        this.scene = scene;
         console.log("loading " + this.type + ": " + this.name);
         let object3d = await this.loadObject3d(scene,
                                           this.name,
@@ -77,6 +78,17 @@ export class Entity {
 
         });
         return object3d;
+    }
+
+    deleteEntity(system) {
+        // delete 3d object from scene
+        this.scene.remove(this.object3d);
+        // delete entity from system
+        let i = system[this.type + 's'].findIndex(x => x.name === this.name);
+        system[this.type + 's'].splice(i, 1);
+        // delete entity from systemData
+        i = system.systemData[this.type + 's'].findIndex(x => x.name === this.name);
+        system.systemData[this.type + 's'].splice(i, 1);
     }
 
 }
