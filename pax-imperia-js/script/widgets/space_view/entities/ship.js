@@ -1,4 +1,5 @@
-import { Entity } from './entity.js'
+import { Entity } from './entity.js';
+import { roundToDecimal } from '../../../models/helpers.js';
 import * as THREE from '/node_modules/three/build/three.module.js';
 
 export class Ship extends Entity {
@@ -7,7 +8,7 @@ export class Ship extends Entity {
         this.type = 'ship';
         this.assetPath = this.basePath + '/assets/ships/GalacticLeopard6.fbx';
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/ship_thumbnail.png";
-        this.size = 0.0002;
+        this.size = 0.0001;
         this.scale = {x: this.size, y: this.size, z: this.size};
         // this.position = {x: -1.5, y: 2.6, z: 6};
         // this.name = "ship";
@@ -16,7 +17,9 @@ export class Ship extends Entity {
         this.destinationPoint = null; // x, y, z coordinates
         this.destinationTarget = null; // 3d object
         this.orbitTarget = null; // 3d object
-        this.previousSystemId = typeof this.previousSystemId === 'undefined' ? null : this.previousSystemId
+        this.orbitAngle = null;
+        this.previousSystemId = typeof this.previousSystemId === 'undefined' ? null : this.previousSystemId;
+        this.status = null;
     }
 
     update (deltaTime, system) {
@@ -25,10 +28,31 @@ export class Ship extends Entity {
                 this.checkAndSendThroughWormhole();
         }
         if (this.destinationTarget) {
-            this.updateToDestinationTarget();
+            // set destination point to current coordinates
+            this.updateTargetDestinationPoint();
         }
         if (this.destinationPoint) {
             this.updateToDestinationPoint();
+        } else if (this.orbitTarget) {
+            this.updateOrbit(deltaTime);
+        }
+        this.updateStatus();
+    };
+
+    updateStatus () {
+        const previousStatus = this.status;
+        if (this.destinationTarget) {
+            this.status = 'Destination: ' + this.destinationTarget.parentEntity.name + ' ' + this.destinationTarget.parentEntity.type;
+        } else if (this.destinationPoint) {
+            this.status = 'Destination: ' + roundToDecimal(this.destinationPoint.x, 2) + ", " +
+                roundToDecimal(this.destinationPoint.y, 2) + ", " +
+                roundToDecimal(this.destinationPoint.z, 2);
+            console.log(this.status);
+        } else if (this.orbitTarget) {
+            this.status = 'Orbiting: ' + this.orbitTarget.parentEntity.name + ' ' + this.orbitTarget.parentEntity.type;
+        }
+        if (previousStatus != this.status) {
+            window.spaceViewDomManager.populateSidebar();
         }
     }
 
@@ -54,6 +78,7 @@ export class Ship extends Entity {
         if (distanceFromDest <= this.speed) {
             this.object3d.position.copy(destinationVector);
             this.destinationPoint = null;
+            this.destinationTarget = null;
         } else {
             const displacementVector = destinationVector
                 .sub(positionVector)
@@ -64,15 +89,33 @@ export class Ship extends Entity {
         }
     }
 
-    updateToDestinationTarget() {
+    updateTargetDestinationPoint() {
         const destX = this.destinationTarget.position.x;
         const destY = this.destinationTarget.position.y;
         let destZ = this.destinationTarget.position.z;
         // put ship in front of stars and planets so they can be seen
         if (['star', 'planet'].includes(this.destinationTarget.parentEntity.type)){
             destZ += this.destinationTarget.scale.z*2;
+            this.orbitTarget = this.destinationTarget;
         }
         this.destinationPoint = {"x": destX, "y": destY, "z": destZ};
+    }
+
+    updateOrbit() {
+        const centerX = this.orbitTarget.position.x;
+        const centerZ = this.orbitTarget.position.z;
+        const centerY = this.orbitTarget.position.y;
+        const orbitDist = this.orbitTarget.scale.z*2
+
+        if (!this.orbitAngle) {
+            this.orbitAngle = Math.PI/2;
+        }
+        this.orbitAngle += this.speed/32 * Math.PI;
+
+        this.object3d.position.x = centerX + orbitDist * Math.cos(this.orbitAngle);
+        this.object3d.position.z = centerZ + orbitDist * Math.sin(this.orbitAngle);
+        this.object3d.position.y = centerY;
+
     }
 
 }

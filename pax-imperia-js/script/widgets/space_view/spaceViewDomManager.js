@@ -119,6 +119,9 @@ export class SpaceViewDomManager {
         const shipEntity = ship3d.parentEntity;
         // save target info when an object was selected for ship to move toward
         shipEntity.destinationTarget = currentTarget;
+        // clear orbit target in case it was orbiting
+        shipEntity.orbitTarget = null;
+        shipEntity.orbitAngle = null;
 
         // find intersection between mouseclick and plane of ship
         this.raycaster.setFromCamera( this.mouse, this.camera );
@@ -177,6 +180,8 @@ export class SpaceViewDomManager {
                         <br>Mediocre (x2)</br>
                         <br>Pop: 7/8 :)</br>
                         `
+                } else if (entity_type == 'ship') {
+                    details = `<br>${entity.status}</br>`
                 } else {
                     details = "<br>TBD</br>"
                 }
