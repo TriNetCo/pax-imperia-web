@@ -14,7 +14,6 @@ const GameDashboardPage = () => {
         <div className="wrap-block"></div>
         <UserCard />
 
-
         <div className="galaxy-flexer">
           <div>
             <h1>Galactic View</h1>
@@ -43,10 +42,11 @@ const GameDashboardPage = () => {
           <div className="misc-views">
             <div className="header">Misc Views</div>
             <ul>
-              <li><a href="config.html">Config</a></li>
+              <li><Link to="/chat">Chat</Link></li>
+              <li><Link to="/config">Config</Link></li>
               <li><a href="ship.html">Ship Design</a></li>
-              <li><a href="surface.html">Surface View</a></li>
-              <li><a href="new_game.html">New Game Parameters</a></li>
+              {/* <li><a href="surface.html">Surface View</a></li> */}
+              {/* <li><a href="new_game.html">New Game Parameters</a></li> */}
               <li><a href="species.html">Species Design</a></li>
             </ul>
           </div>

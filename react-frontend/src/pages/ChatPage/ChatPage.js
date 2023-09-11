@@ -6,6 +6,8 @@ import './ChatPage.css';
 // import { selectWebsocket } from 'src/modules/websocket';
 // import { useSelector } from 'react-redux';
 
+
+// A ChatPage is a link to a chat room with galaxy data that the owner can define
 const ChatPage = () => {
 //   const websocket = useSelector(selectWebsocket);
 
@@ -15,9 +17,6 @@ const ChatPage = () => {
         <div className="wrap-block"></div>
         <UserCard />
 
-        {/* { websocket.chatLobbyId ?
-          <ChatLobby /> :
-          <ChatLobbyControls /> } */}
         <ChatLobbyControls />
 
         <ChatLobby />

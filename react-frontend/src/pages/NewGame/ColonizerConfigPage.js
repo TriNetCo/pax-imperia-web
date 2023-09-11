@@ -1,4 +1,5 @@
 import { useHistory } from 'react-router-dom';
+import NewGameBreadCrumb from './NewGameBreadCrumb';
 
 const ColonizerConfigPage = () => {
   const history = useHistory();

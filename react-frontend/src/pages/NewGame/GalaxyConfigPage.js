@@ -7,11 +7,6 @@ const GalaxyConfigPage = () => {
       <h1>GalaxyConfig Page</h1>
 
       <div>
-        TODO:  Add slider bars and cool stuff to this page!!!
-      </div>
-
-      <div>
-
         <div>System: <span id="system-name"></span></div>
         <div id="lower-console"></div>
 
@@ -19,8 +14,10 @@ const GalaxyConfigPage = () => {
 
       </div>
 
-      <button>Generate System</button>
-      <button>Start Lobby</button>
+      <button>Re-Generate System</button>
+      <div>
+        TODO:  Add slider bars and cool stuff to this page!!!
+      </div>
     </>
   );
 };

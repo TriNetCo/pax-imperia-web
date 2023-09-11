@@ -1,9 +1,10 @@
 import React, { useState, useContext } from 'react';
 import UserContext from '../../app/UserContext';
 import { useDispatch, useSelector } from 'react-redux';
-import { newMessage, selectWebsocket } from '../../modules/websocket';
+import {newMessage, selectWebsocket, authenticate, joinChatLobby} from '../../modules/websocket';
 import ChatMessages from './ChatMessages';
 import ChatLobbyUsers from './ChatLobbyUsers';
+import { GameDataContext } from 'src/app/Context';
 
 const ChatLobby = () => {
 
@@ -11,6 +12,7 @@ const ChatLobby = () => {
   const dispatch = useDispatch();
   const websocket = useSelector(selectWebsocket);
   const userContext = useContext(UserContext);
+  const data = useContext(GameDataContext);
 
   const sendMessage = () => {
     const outboundMsg = {

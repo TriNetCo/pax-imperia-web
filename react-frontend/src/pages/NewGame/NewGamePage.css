@@ -1,0 +1,79 @@
+.newgame-wrap {
+    max-width: 666px;
+    margin-left: auto;
+    margin-right: auto;
+
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.big-header {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    width: 620px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    border-radius: 15px;
+    padding: 15px 10px;
+    border: 2px solid #5A6D8D;
+    color: #ffc400;
+    background-color:rgba(10, 20, 40, 0.8);
+}
+
+.breadcrumb {
+    list-style-type: none;
+    max-width: 620px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex; /* Use flexbox for horizontal alignment */
+    justify-content: flex-start; /* Align items to the start */
+    align-items: center; /* Vertically center align items */
+    /* background: rgba(0, 0, 0, 0.8); */
+    background-color: rgba(10, 20, 40, 0.8);
+
+    border: 2px solid #5A6D8D;
+    border-radius: 10px; /* Rounded corners for aesthetic appeal */
+    padding: 10px; /* Padding around the items */
+    margin-bottom: 20px; /* Bottom margin for spacing */
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+}
+
+.breadcrumb-item {
+    position: relative; /* Set to relative to allow pseudo-element positioning */
+    margin: 0 10px; /* Margins between items */
+    padding: 5px 0; /* Vertical padding for better appearance */
+    user-select: none;
+}
+
+.breadcrumb-item.active {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.breadcrumb-item.active a {
+    color: #ffc400; /* Golden color for the active item */
+}
+
+.breadcrumb-item a {
+    color: #a9a9a9; /* Light grey color for the links */
+    text-decoration: none; /* Remove underline from links */
+    transition: color 0.3s ease-in-out; /* Transition for a smoother hover effect */
+}
+
+.breadcrumb-item a:hover {
+    color: #FFD700; /* Golden color on hover */
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: ">";
+    color: #FFD700; /* Golden separator */
+    position: absolute; /* Absolute positioning to place it correctly */
+    left: -15px; /* Positioning before the item */
+    top: 50%; /* Vertically centered */
+    transform: translateY(-50%); /* Centering using transform */
+}

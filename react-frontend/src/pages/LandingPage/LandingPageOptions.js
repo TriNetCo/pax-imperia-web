@@ -22,7 +22,8 @@ const LandingPageOptions = () => {
       <div>
         <ul className='landing-page-options'>
           <li><Link to="/systems">Singleplayer</Link></li>
-          <li><span to="/new_game">Multiplayer</span></li>
+          {/* <li><span to="/new_game">Multiplayer</span></li> */}
+          <li><Link to="/new_game">Multiplayer</Link></li>
           <li><Link to="/about">About</Link></li>
           <li>
             <Button onClick={handleLogout}>
