@@ -3,6 +3,7 @@ export class GalaxyDrawer {
     constructor(config) {
         this.cx = config.cx;
         this.galaxy = config.galaxy;
+        this.systemsData = config.galaxy.systems;
         this.systemNameLabel = config.systemNameLabel;
         this.mouse = config.mouse;
     }
@@ -23,12 +24,27 @@ export class GalaxyDrawer {
 
     drawConnections() {
         let cx = this.cx;
-        let galaxy = this.galaxy;
+        let systemsData = this.systemsData;
+        let connections = this.collectConnections(systemsData);
+
+        // Let's test to see if the connections are the same
+        // for(let i = 0, len = connections.length; i < len; i++) {
+        //     const connectionNew = connections[i];
+        //     const connectionOld = this.galaxy.connections[i];
+        //     for (let j = 0, len2 = connectionNew.length; j < len2; j++) {
+        //         if (connectionNew[j] != connectionOld[j]) {
+        //             console.debug('connections are different');
+        //             console.debug('connectionOld: ', connectionOld);
+        //             console.debug('connectionNew: ', connectionNew);
+        //         }
+        //     }
+        // }
+
         cx.strokeStyle = "orange";
         cx.lineWidth = 1;
-        for (let i = 0, len = galaxy.connections.length; i < len; i++) {
-            let startSystem = galaxy.systems[galaxy.connections[i][0]];
-            let endSystem = galaxy.systems[galaxy.connections[i][1]];
+        for (let i = 0, len = connections.length; i < len; i++) {
+            let startSystem = this.systemsData[connections[i][0]];
+            let endSystem = this.systemsData[connections[i][1]];
             cx.beginPath();
             cx.moveTo(startSystem.position.x, startSystem.position.y);
             cx.lineTo(endSystem.position.x, endSystem.position.y);
@@ -36,11 +52,31 @@ export class GalaxyDrawer {
         }
     }
 
+    // this.galaxy.connections.sort()[0]
+    collectConnections(systemsData) {
+        let connections = [];
+        for (let i = 0, len = systemsData.length; i < len; i++) {
+            let system = systemsData[i];
+            let sourceConnections = system.connections.sort();
+            for (let j = 0, len2 = sourceConnections.length; j < len2; j++) {
+                // connection = {id: 1, name: 'Reticulum', position: {x,y,z}}
+                let connection = sourceConnections[j];
+                // We need to make sure we don't add the same connection twice
+                // (i.e. 0 -> 1 and 1 -> 0)
+                if (connection.id > i) {
+                    connections.push([i, connection.id]);
+                }
+
+            }
+        }
+        return connections.sort();
+    }
+
     drawSystems() {
         let galaxy = this.galaxy;
         let systemDrawColor = "rgb(150, 150, 150)";
-        for (let i = 0; i < galaxy.systems.length; i++) {
-            let system = galaxy.systems[i];
+        for (let i = 0; i < this.systemsData.length; i++) {
+            let system = this.systemsData[i];
             this.drawDot(system.position.x, system.position.y, system.radius, systemDrawColor);
         }
     }
@@ -50,8 +86,8 @@ export class GalaxyDrawer {
         let systemNameLabel = this.systemNameLabel;
         let hoverDrawColor = "rgb(255, 255, 255)";
         let nothingIsHovered = true;
-        for (let i = 0; i < galaxy.systems.length; i++) {
-            let system = galaxy.systems[i];
+        for (let i = 0; i < this.systemsData.length; i++) {
+            let system = this.systemsData[i];
             if (this.isMouseHovering(system)) {
                 systemNameLabel.innerHTML = system.name;
                 let hoverDrawRadius = system.radius + 2;

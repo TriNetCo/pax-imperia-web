@@ -30,7 +30,6 @@ function generateGalaxy() {
     let gameData = {
         galaxy: new Galaxy(config)
     };
-    window.gameData = gameData; // for debugging
 
     galaxyWidget = new GalaxyWidget(config, gameData);
     galaxyWidget.beginGame(canvas, systemClickHandler);
