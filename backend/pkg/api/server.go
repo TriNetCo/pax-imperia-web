@@ -65,6 +65,7 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Failed to set websocket upgrade: %+v", err)
 		return
 	}
+	fmt.Print("Client connected\n")
 
 	defer func() {
 		clientsMux.Lock()
@@ -74,7 +75,8 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	clientsMux.Lock()
-	// this map is kind of confusing, but we create a key for the client using the connection pointer, and set the value to true
+	// this map is kind of confusing, but we create a key for the client using the connection pointer, and
+	// set the value to true a struct containing the client's email and display name
 	// we can access the connection pointer later to send messages to the client by iterating over the map
 	// weird syntax, but it works
 	// we could use an array of connections, but this is more efficient
@@ -85,9 +87,11 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 	for {
 		messageType, msg, err := conn.ReadMessage()
 		if err != nil {
+			fmt.Println("Client disconnected")
+			fmt.Println(err)
 			break
 		}
-		fmt.Println("Received Message:", string(msg))
+		// fmt.Println("Received Message:", string(msg))
 
 		// We need to parse the json message into a struct
 		var message Message
@@ -95,9 +99,9 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println("error:", err)
 		}
-		fmt.Println("Client email: ", client.Email)
-		fmt.Println("Message: ", message.Command)
-		fmt.Println("Payload: ", message.Payload)
+		// fmt.Println("Client email: ", client.Email)
+		// fmt.Println("Message: ", message.Command)
+		// fmt.Println("Payload: ", message.Payload)
 
 		clientsMux.Lock()
 
@@ -182,7 +186,7 @@ func handleSay(conn *websocket.Conn, message Message) {
 
 func handleJoinChatLobby(conn *websocket.Conn, message Message) {
 	if chatLobbyId, ok := message.Payload["chat_lobby_id"].(string); ok {
-		fmt.Println("Chat Room ID:", chatLobbyId)
+		// fmt.Println("Chat Room ID:", chatLobbyId)
 
 		chatRoom, exists := chatRooms[chatLobbyId]
 		if !exists {
@@ -215,7 +219,7 @@ func handleJoinChatLobby(conn *websocket.Conn, message Message) {
 			},
 		}
 
-		debugPrintStruct(response)
+		// debugPrintStruct(response)
 		conn.WriteJSON(response)
 
 		// Announce user joined to all members of the chatroom
@@ -230,7 +234,7 @@ func handleJoinChatLobby(conn *websocket.Conn, message Message) {
 		}
 
 		sendMessageToAllChatroomParticipants(chatRoom, userJoinAnnouncement)
-		fmt.Printf("Client joined lobby: %s\n", chatLobbyId)
+		fmt.Printf("Client joined lobby: %s -> %s\n", clients[conn].DisplayName, chatLobbyId)
 	} else {
 		fmt.Println("Chat Room ID not found or not a string")
 	}
@@ -261,12 +265,12 @@ func sendMessageToAllChatroomParticipants(chatRoom ChatRoom, message Message) {
 }
 
 func cleanUpDeadConnection(client *websocket.Conn) {
-	clientsMux.Lock()
+	// clientsMux.Lock()
 	delete(clients, client)
 	for _, chatRoom := range chatRooms {
 		delete(chatRoom.Clients, client)
 	}
-	clientsMux.Unlock()
+	// clientsMux.Unlock()
 }
 
 func doTest(c *gin.Context) {
