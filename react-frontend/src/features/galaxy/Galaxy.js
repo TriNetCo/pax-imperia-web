@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useRef, useContext } from 'react';
-import {GameDataContext} from '../../app/Context';
+import { GameDataContext } from '../../app/Context';
 import { useHistory } from 'react-router-dom';
 
 const Galaxy = () => {

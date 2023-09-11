@@ -47,6 +47,11 @@ const socketMiddleware = () => {
         console.debug('AUTHENTICATE_RESPONSE', message.payload.status);
         store.dispatch(actions.authenticateResponse(message.payload.status));
         break;
+      case 'GET_GAME_CONFIGURATION_RESPONSE':
+        console.debug('GET_GAME_CONFIGURATION_RESPONSE', message.payload);
+        window.newGameData = message.payload;
+        store.dispatch(actions.getGameConfigurationResponse(message.payload));
+        break;
       case 'update_game_players':
         // store.dispatch(actions.updateGame(message.game, message.current_player));
         break;
@@ -97,10 +102,10 @@ const socketMiddleware = () => {
         }));
         break;
       case 'JOIN_CHAT_LOBBY':
-        console.debug('joining chat lobby ', action.chat_lobby_id);
+        console.debug('joining chat lobby ', action.chatLobbyId);
         socket.send(JSON.stringify({
           command: 'JOIN_CHAT_LOBBY',
-          payload: { user: action.user, chat_lobby_id: action.chat_lobby_id }
+          payload: { user: action.user, chatLobbyId: action.chatLobbyId }
         }));
         break;
       case 'AUTHENTICATE':
@@ -108,6 +113,20 @@ const socketMiddleware = () => {
         socket.send(JSON.stringify({
           command: 'AUTHENTICATE',
           payload: { email: action.email, displayName: action.displayName, token: action.token }
+        }));
+        break;
+      case 'SET_GAME_CONFIGURATION':
+        console.debug('sending game configuration ', action.payload);
+        socket.send(JSON.stringify({
+          command: 'SET_GAME_CONFIGURATION',
+          payload: action.payload
+        }));
+        break;
+      case 'GET_GAME_CONFIGURATION':
+        console.debug('getting game configuration ', action.chatLobbyId);
+        socket.send(JSON.stringify({
+          command: 'GET_GAME_CONFIGURATION',
+          payload: { chatLobbyId: action.chatLobbyId }
         }));
         break;
       default:

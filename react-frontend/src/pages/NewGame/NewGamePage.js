@@ -7,9 +7,9 @@ import SpeciesDesignPage from './SpeciesDesignPage';
 import GalaxyConfigPage from './GalaxyConfigPage';
 import ChatLobby from '../ChatPage/ChatLobby';
 import GameDashboardPage from '../GameDashboardPage';
-import {authenticate, joinChatLobby} from '../../modules/websocket';
+import {authenticate, getGameConfiguration, joinChatLobby, setGameConfiguration, selectWebsocket} from '../../modules/websocket';
 import './NewGamePage.css';
-import { useDispatch } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import UserContext from 'src/app/UserContext';
 import UserCard from 'src/shared/UserCard/UserCard';
 
@@ -18,6 +18,8 @@ const NewGameLayout = () => {
   const dispatch = useDispatch();
   const userContext = useContext(UserContext);
   const data = useContext(GameDataContext);
+  const websocket = useSelector(selectWebsocket);
+  const chatLobbyId = '1234';
 
   //   useEffect(() => {
   //     createNewMultiplayerGame();
@@ -35,10 +37,26 @@ const NewGameLayout = () => {
   };
 
   const createNewLobby = () =>  {
-    const lobbyId = '1234';
     dispatch(authenticate(userContext.email, userContext.displayName, userContext.token));
-    dispatch(joinChatLobby(userContext.email, lobbyId));
+    dispatch(joinChatLobby(userContext.email, chatLobbyId));
   };
+
+  const setGameData = () => {
+    const galaxy = data.galaxyWidget.galaxy;
+    const systemsJson = JSON.stringify(galaxy.systems);
+
+    dispatch(setGameConfiguration(chatLobbyId, systemsJson));
+  };
+
+  const downloadGameData = () => {
+    dispatch(getGameConfiguration(chatLobbyId));
+  };
+
+  const overrideGameData = () => {
+    data.galaxyWidget.systems = JSON.parse(websocket.systemsJson);
+    data.galaxyWidget.updateGalaxyData(JSON.parse(websocket.systemsJson));
+  };
+
 
   return (
     <>
@@ -46,6 +64,9 @@ const NewGameLayout = () => {
       <div className="newgame-wrap">
         <div className="big-header">New Multiplayer Game</div>
         <button onClick={createNewLobby}>Create or Join New Lobby</button>
+        <button onClick={setGameData}>Set Game Data</button>
+        <button onClick={downloadGameData}>Download Game Data</button>
+        <button onClick={overrideGameData}>Override Game Data</button>
         <NewGameBreadCrumb />
         <Switch>
           <Route exact path="/new_game" component={ChatLobby} />

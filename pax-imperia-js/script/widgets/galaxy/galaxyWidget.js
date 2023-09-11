@@ -31,6 +31,17 @@ export class GalaxyWidget {
         this.galaxyDomManager.attachDomEventsToCode();
     }
 
+    updateGalaxyData(systemsData) {
+        this.detachFromDom();
+
+        this.galaxy.systems = systemsData;
+
+        let systemNameLabel = document.getElementById("system-name");
+        this.galaxyDrawer = new GalaxyDrawer({cx: cx, galaxy: this.galaxy, systemNameLabel: systemNameLabel, mouse: this.mouse});
+        this.galaxyDomManager = new GalaxyDomManager(cx, this.galaxy.systems, this.galaxyDrawer, systemClickHandler, this.mouse)
+        this.galaxyDomManager.attachDomEventsToCode();
+    }
+
     draw() {
         this.galaxyDrawer.drawLoop();
     }

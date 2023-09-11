@@ -112,6 +112,11 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 			handleJoinChatLobby(conn, message)
 		case "NEW_MESSAGE":
 			handleSay(conn, message)
+		case "SET_GAME_CONFIGURATION":
+			// message = { "systems": "systemData..." }
+			handleSetGameConfiguration(conn, message)
+		case "GET_GAME_CONFIGURATION":
+			handleGetGameConfiguration(conn, message)
 		default:
 			fmt.Println("Unknown command")
 			// broadcast message to all clients just for fun
@@ -125,6 +130,57 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 
 		clientsMux.Unlock()
 	}
+}
+
+func handleGetGameConfiguration(conn *websocket.Conn, message Message) {
+	// The client will request the game configuration from the server
+	// The server will send the game configuration to the client
+	// The client will then display the game configuration to the user
+
+	chatRoom, exists := chatRooms[message.Payload["chatLobbyId"].(string)]
+	if !exists {
+		fmt.Println("Chat Room not found")
+		return
+	}
+
+	var response = Message{
+		Command: "GET_GAME_CONFIGURATION_RESPONSE",
+		Payload: map[string]interface{}{
+			"status":      "success",
+			"systemsJson": chatRoom.Game.SystemsJson,
+			"time":        "5.00",
+		},
+	}
+	conn.WriteJSON(response)
+	fmt.Println("Game configuration sent")
+}
+
+func handleSetGameConfiguration(conn *websocket.Conn, message Message) {
+	// The client will generate the game configuration and send it to the server
+	// We will need to store that configuration in the chat room
+	// The server will then send the game configuration to all other clients in the chat room
+	chatLobbyId := message.Payload["chatLobbyId"].(string)
+
+	chatRoom, exists := chatRooms[chatLobbyId]
+	if !exists {
+		fmt.Println("Chat Room not found")
+		return
+	}
+
+	systemsJson, ok := message.Payload["systemsJson"].(string)
+	if !ok {
+		fmt.Println("systems field not found in payload")
+		return
+	}
+
+	chatRoom.Game = Game{
+		Id:          chatLobbyId,
+		SystemsJson: systemsJson,
+	}
+
+	chatRooms[chatLobbyId] = chatRoom
+
+	fmt.Println("Game configuration set")
 }
 
 func handleAuthenticate(conn *websocket.Conn, client ClientData, message Message) {
@@ -167,7 +223,7 @@ func handleAuthenticate(conn *websocket.Conn, client ClientData, message Message
 
 func handleSay(conn *websocket.Conn, message Message) {
 	// broadcast message to all clients in this chat lobby
-	chatLobbyId, ok := message.Payload["chat_lobby_id"].(string)
+	chatLobbyId, ok := message.Payload["chatLobbyId"].(string)
 	if !ok {
 		fmt.Println("Chat Room ID not found or not a string")
 		return
@@ -185,7 +241,7 @@ func handleSay(conn *websocket.Conn, message Message) {
 }
 
 func handleJoinChatLobby(conn *websocket.Conn, message Message) {
-	if chatLobbyId, ok := message.Payload["chat_lobby_id"].(string); ok {
+	if chatLobbyId, ok := message.Payload["chatLobbyId"].(string); ok {
 		// fmt.Println("Chat Room ID:", chatLobbyId)
 
 		chatRoom, exists := chatRooms[chatLobbyId]

@@ -19,7 +19,7 @@ const ChatLobby = () => {
       message: msgToSend,
       user: userContext.displayName,
       userEmail: userContext.email,
-      chat_lobby_id: websocket.chatLobbyId,
+      chatLobbyId: websocket.chatLobbyId,
     };
     dispatch(newMessage(outboundMsg));
     setMsgToSend('');

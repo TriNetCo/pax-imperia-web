@@ -133,9 +133,3 @@ See [react-frontend](react-frontend/README.md).
 
 ### Cloud Deployment Stuff
 Check out the [cloud docs](cloud_infrastructure/README.md).
-
-
-{/* <Route exact path="/new_game/colonizer_config" component={ColonizerConfigPage} />     Choose your species here, or click to design one */}
-        <Route exact path="/new_game/species_design"   component={SpeciesDesignPage} />
-        <Route exact path="/new_game/galaxy_config"    component={GalaxyConfigPage} />        {/* Define the galaxy parameters and generate a galaxy here */}
-        <Route exact path="/new_game/lobby/:lobbyToken"  component={MultiplayerLobbyPage}  /> A lobby is a link to a chat room with galaxy data that the owner can define

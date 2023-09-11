@@ -17,7 +17,7 @@ const initGameData = () => {
   let systemsData = JSON.parse(JSON.stringify(galaxy.systems));
 
   const data = {
-    galaxyWidget :
+    galaxyWidget:
       new GalaxyWidget(GameSettings.galaxyWidget, gameData),
     spaceViewWidget:
       new SpaceViewWidget(GameSettings.spaceViewWidget, {}, systemsData)
