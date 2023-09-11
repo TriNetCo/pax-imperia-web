@@ -7,6 +7,8 @@ export class GalaxyWidget {
 
     galaxyDrawer;
     galaxyDomManager;
+    canvas;
+    systemClickHandler;
 
     constructor(config, gameData) {
         this.c = config;
@@ -19,6 +21,8 @@ export class GalaxyWidget {
     }
 
     beginGame(canvas, systemClickHandler) {
+        this.canvas = canvas;
+        this.systemClickHandler = systemClickHandler;
         let c = this.c;
 
         canvas.width = c.canvasWidth;
@@ -31,7 +35,12 @@ export class GalaxyWidget {
         this.galaxyDomManager.attachDomEventsToCode();
     }
 
-    updateGalaxyData(systemsData) {
+    updateGalaxyData(systemsData, galaxy) {
+        let canvas = this.canvas;
+        let systemClickHandler = this.systemClickHandler;
+        this.galaxy = galaxy;
+
+        let cx = canvas.getContext("2d");
         this.detachFromDom();
 
         this.galaxy.systems = systemsData;

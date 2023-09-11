@@ -44,8 +44,9 @@ const NewGameLayout = () => {
   const setGameData = () => {
     const galaxy = data.galaxyWidget.galaxy;
     const systemsJson = JSON.stringify(galaxy.systems);
+    const connectionsJson = JSON.stringify(galaxy.connections);
 
-    dispatch(setGameConfiguration(chatLobbyId, systemsJson));
+    dispatch(setGameConfiguration(chatLobbyId, systemsJson, connectionsJson));
   };
 
   const downloadGameData = () => {
@@ -53,8 +54,17 @@ const NewGameLayout = () => {
   };
 
   const overrideGameData = () => {
-    data.galaxyWidget.systems = JSON.parse(websocket.systemsJson);
-    data.galaxyWidget.updateGalaxyData(JSON.parse(websocket.systemsJson));
+    const systemsData = JSON.parse(websocket.systemsJson);
+    const connectionsJson = JSON.parse(websocket.connectionsJson);
+    window.systemsData = systemsData;
+    data.spaceViewWidget.systems = systemsData;
+    data.spaceViewWidget.connections = connectionsJson;
+    data.galaxyWidget.systems = systemsData;
+    data.galaxyWidget.connections = connectionsJson;
+
+    data.galaxyWidget.updateGalaxyData(systemsData, data.galaxyWidget.galaxy);
+
+    window.galaxyWidget = data.galaxyWidget;
   };
 
 

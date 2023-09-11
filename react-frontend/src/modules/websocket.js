@@ -14,7 +14,7 @@ export const authenticate = (email, displayName, token) => ({ type: 'AUTHENTICAT
 export const authenticateResponse = (status) => ({ type: 'AUTHENTICATE_RESPONSE', status });
 export const systemMessageUserJoinedChat = (payload) => ({ type: 'SYSTEM_MESSAGE_USER_JOINED_CHAT', payload });
 export const systemMessageChatUserList = (payload) => ({ type: 'SYSTEM_MESSAGE_CHAT_USER_LIST', payload });
-export const setGameConfiguration = (chatLobbyId, systemsJson) => ({ type: 'SET_GAME_CONFIGURATION', payload: { chatLobbyId, systemsJson } });
+export const setGameConfiguration = (chatLobbyId, systemsJson, connectionsJson) => ({ type: 'SET_GAME_CONFIGURATION', payload: { chatLobbyId, systemsJson, connectionsJson } });
 export const getGameConfiguration = (chatLobbyId) => ({ type: 'GET_GAME_CONFIGURATION', chatLobbyId });
 export const getGameConfigurationResponse = (payload) => ({ type: 'GET_GAME_CONFIGURATION_RESPONSE', payload });
 
@@ -27,6 +27,7 @@ const initialState = {
   chatLobbyUsers: [],
   authenticationStatus: 'UNAUTHENTICATED',
   systemsJson: null,
+  connectionsJson: null,
 };
 
 export const websocketReducer = (state = { ...initialState }, action) => {
@@ -48,7 +49,10 @@ export const websocketReducer = (state = { ...initialState }, action) => {
     case 'AUTHENTICATE_RESPONSE':
       return { ...state, authenticationStatus: action.status };
     case 'GET_GAME_CONFIGURATION_RESPONSE':
-      return { ...state, systemsJson: action.payload.systemsJson, time: action.payload.time };
+      return { ...state,
+        systemsJson: action.payload.systemsJson,
+        connectionsJson: action.payload.connectionsJson,
+        time: action.payload.time };
     default:
       console.log('websocketReducer: default action: ' + action.type);
       return state;
