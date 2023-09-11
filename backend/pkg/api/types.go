@@ -15,8 +15,9 @@ type ClientData struct {
 }
 
 type Game struct {
-	Id          string `json:"id"`
-	SystemsJson string `json:"systemsJson"`
+	Id              string `json:"id"`
+	SystemsJson     string `json:"systemsJson"`
+	ConnectionsJson string `json:"connectionsJson"`
 }
 
 type ChatRoom struct {
