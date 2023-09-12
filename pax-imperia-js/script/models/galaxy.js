@@ -2,13 +2,19 @@ import { StarName } from './starName.js';
 import { SystemGenerator } from './systemGenerator.js';
 import { getRandomNum } from './helpers.js'
 
+// entity
 export class Galaxy {
 
-    constructor(galaxyWidgetSettings){
-        // Should systems be called systemsData?
-        this.systems = this.generateSystems(galaxyWidgetSettings);
-        this.connections = this.generateConnections();
-        this.addConnectionsToSystems();
+    constructor(galaxyWidgetSettings = null, systemsJson = ""){
+        // Should systems be called systemsJson
+        if (systemsJson === "") {
+            // assert galaxyWidgetSettings is not null
+            this.systems = this.generateSystems(galaxyWidgetSettings)
+            this.connections = this.generateConnections();
+            this.addConnectionsToSystems();
+        } else {
+            this.systems = JSON.parse(systemsJson)
+        }
     }
 
     // parameters of galaxies:

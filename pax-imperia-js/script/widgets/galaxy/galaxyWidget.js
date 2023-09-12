@@ -14,6 +14,7 @@ export class GalaxyWidget {
         this.c = config;
         this.mouse = { x: 0, y: 0 };
         this.galaxy = gameData.galaxy;
+        window.systemsData = this.galaxy.systems;
         window.gameClock = window.gameClock ? window.gameClock : new THREE.Clock();
         if (!window.gameClock.running) {
             window.gameClock.start();
@@ -35,15 +36,14 @@ export class GalaxyWidget {
         this.galaxyDomManager.attachDomEventsToCode();
     }
 
-    updateGalaxyData(systemsData, galaxy) {
+    updateGalaxyData(systemsStringThatHasBeenParsed) {
         let canvas = this.canvas;
         let systemClickHandler = this.systemClickHandler;
-        this.galaxy = galaxy;
+
+        this.galaxy.systems = systemsStringThatHasBeenParsed;
 
         let cx = canvas.getContext("2d");
         this.detachFromDom();
-
-        this.galaxy.systems = systemsData;
 
         let systemNameLabel = document.getElementById("system-name");
         this.galaxyDrawer = new GalaxyDrawer({cx: cx, galaxy: this.galaxy, systemNameLabel: systemNameLabel, mouse: this.mouse});

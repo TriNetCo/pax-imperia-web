@@ -6,6 +6,7 @@ export class GalaxyDrawer {
         this.systemsData = config.galaxy.systems;
         this.systemNameLabel = config.systemNameLabel;
         this.mouse = config.mouse;
+        this.connections = this.collectConnections(this.systemsData);
     }
 
     drawLoop() {
@@ -23,23 +24,8 @@ export class GalaxyDrawer {
     }
 
     drawConnections() {
-        let cx = this.cx;
-        let systemsData = this.systemsData;
-        let connections = this.collectConnections(systemsData);
-
-        // Let's test to see if the connections are the same
-        // for(let i = 0, len = connections.length; i < len; i++) {
-        //     const connectionNew = connections[i];
-        //     const connectionOld = this.galaxy.connections[i];
-        //     for (let j = 0, len2 = connectionNew.length; j < len2; j++) {
-        //         if (connectionNew[j] != connectionOld[j]) {
-        //             console.debug('connections are different');
-        //             console.debug('connectionOld: ', connectionOld);
-        //             console.debug('connectionNew: ', connectionNew);
-        //         }
-        //     }
-        // }
-
+        const cx = this.cx;
+        const connections = this.connections;
         cx.strokeStyle = "orange";
         cx.lineWidth = 1;
         for (let i = 0, len = connections.length; i < len; i++) {
@@ -52,13 +38,12 @@ export class GalaxyDrawer {
         }
     }
 
-    // this.galaxy.connections.sort()[0]
     collectConnections(systemsData) {
-        let connections = [];
+        const connections = [];
         for (let i = 0, len = systemsData.length; i < len; i++) {
             let system = systemsData[i];
             let sourceConnections = system.connections.sort();
-            for (let j = 0, len2 = sourceConnections.length; j < len2; j++) {
+            for (let j = 0; j < sourceConnections.length; j++) {
                 // connection = {id: 1, name: 'Reticulum', position: {x,y,z}}
                 let connection = sourceConnections[j];
                 // We need to make sure we don't add the same connection twice
@@ -66,7 +51,6 @@ export class GalaxyDrawer {
                 if (connection.id > i) {
                     connections.push([i, connection.id]);
                 }
-
             }
         }
         return connections.sort();

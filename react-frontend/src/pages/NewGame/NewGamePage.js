@@ -54,17 +54,8 @@ const NewGameLayout = () => {
   };
 
   const overrideGameData = () => {
-    const systemsData = JSON.parse(websocket.systemsJson);
-    const connectionsJson = JSON.parse(websocket.connectionsJson);
-    window.systemsData = systemsData;
-    data.spaceViewWidget.systems = systemsData;
-    data.spaceViewWidget.connections = connectionsJson;
-    data.galaxyWidget.systems = systemsData;
-    data.galaxyWidget.connections = connectionsJson;
-
-    data.galaxyWidget.updateGalaxyData(systemsData, data.galaxyWidget.galaxy);
-
-    window.galaxyWidget = data.galaxyWidget;
+    const systemsStringThatHasBeenParsed = JSON.parse(websocket.systemsJson);
+    data.galaxyWidget.updateGalaxyData(systemsStringThatHasBeenParsed);
   };
 
 
