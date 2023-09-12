@@ -146,10 +146,9 @@ func handleGetGameConfiguration(conn *websocket.Conn, message Message) {
 	var response = Message{
 		Command: "GET_GAME_CONFIGURATION_RESPONSE",
 		Payload: map[string]interface{}{
-			"status":          "success",
-			"systemsJson":     chatRoom.Game.SystemsJson,
-			"connectionsJson": chatRoom.Game.ConnectionsJson,
-			"time":            "5.00",
+			"status":      "success",
+			"systemsJson": chatRoom.Game.SystemsJson,
+			"time":        "5.00",
 		},
 	}
 	conn.WriteJSON(response)
@@ -174,16 +173,9 @@ func handleSetGameConfiguration(conn *websocket.Conn, message Message) {
 		return
 	}
 
-	connectionsJson, ok := message.Payload["connectionsJson"].(string)
-	if !ok {
-		fmt.Println("connections field not found in payload")
-		return
-	}
-
 	chatRoom.Game = Game{
-		Id:              chatLobbyId,
-		SystemsJson:     systemsJson,
-		ConnectionsJson: connectionsJson,
+		Id:          chatLobbyId,
+		SystemsJson: systemsJson,
 	}
 
 	chatRooms[chatLobbyId] = chatRoom

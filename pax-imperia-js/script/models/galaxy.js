@@ -10,8 +10,8 @@ export class Galaxy {
         if (systemsJson === "") {
             // assert galaxyWidgetSettings is not null
             this.systems = this.generateSystems(galaxyWidgetSettings)
-            this.connections = this.generateConnections();
-            this.addConnectionsToSystems();
+            const connections = this.generateConnections();
+            this.addConnectionsToSystems(connections);
         } else {
             this.systems = JSON.parse(systemsJson)
         }
@@ -108,8 +108,8 @@ export class Galaxy {
         return connections;
     }
 
-    addConnectionsToSystems() {
-        this.connections.forEach( connection => {
+    addConnectionsToSystems(connections) {
+        connections.forEach( connection => {
             let i = connection[0];
             let j = connection[1];
             this.addConnectionToSystem(i, j);

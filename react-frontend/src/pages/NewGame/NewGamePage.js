@@ -44,9 +44,8 @@ const NewGameLayout = () => {
   const setGameData = () => {
     const galaxy = data.galaxyWidget.galaxy;
     const systemsJson = JSON.stringify(galaxy.systems);
-    const connectionsJson = JSON.stringify(galaxy.connections);
 
-    dispatch(setGameConfiguration(chatLobbyId, systemsJson, connectionsJson));
+    dispatch(setGameConfiguration(chatLobbyId, systemsJson));
   };
 
   const downloadGameData = () => {
