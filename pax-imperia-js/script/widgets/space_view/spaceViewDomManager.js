@@ -17,7 +17,7 @@ export class SpaceViewDomManager {
 
         window.clickThumbnail = (targetType, targetName) => {
             const entity = this.system[targetType + 's'].find(x => x.name === targetName);
-            this.selectionSprite.select(entity.object3d);
+            this.selectTarget(entity.object3d);
             this.populateSidebar();
         };
 
@@ -28,6 +28,10 @@ export class SpaceViewDomManager {
         };
 
     }
+
+    ///////////////////////
+    // Attach Dom Events //
+    ///////////////////////
 
     attachDomEventsToCode() {
         this.addMouseMovement();
@@ -57,37 +61,9 @@ export class SpaceViewDomManager {
     }
 
     #clickHandler = ( event ) => {
-        let consoleLogName = 'none';
-        // Keep track of target before click
-        this.previousPreviousTarget = this.previousTarget;
-        if (this.previousPreviousTarget && this.previousPreviousTarget.parentEntity) {
-            consoleLogName = this.previousPreviousTarget.parentEntity.name;
-        }
-        console.log('previousPreviousTarget', consoleLogName);
-        this.previousTarget = this.selectionSprite.selectionTarget;
-        consoleLogName = 'none';
-        if (this.previousTarget && this.previousTarget.parentEntity) {
-            consoleLogName = this.previousTarget.parentEntity.name;
-        }
-        console.log('previousTarget', consoleLogName);
-
-        this.findSelectionTarget(event);
-
-        if (this.previousTarget &&
-            this.previousTarget.parentEntity.type == "ship" &&
-            this.previousTarget.parentEntity.buttonState == 'move') {
-                console.log('moving');
-                this.moveShip(this.previousTarget, this.selectionSprite.selectionTarget);
-                this.previousTarget.parentEntity.buttonState = null;
-        }
-
-        // this.populateSelectTargetText()
+        const selectionTarget = this.findSelectionTarget(event);
+        this.selectTarget(selectionTarget);
         this.populateSidebar();
-
-        // expose selectionTarget to dev console
-        if (this.selectionSprite.selectionTarget) {
-            window.selectionTarget = this.selectionSprite.selectionTarget;
-        }
     }
 
     #doubleClickHandler = ( event ) => {
@@ -95,7 +71,8 @@ export class SpaceViewDomManager {
         if (this.previousPreviousTarget &&
             this.previousPreviousTarget.parentEntity &&
             this.previousPreviousTarget.parentEntity.type == "ship") {
-            this.moveShip(this.previousPreviousTarget, this.previousTarget);
+            this.moveShip(this.previousPreviousTarget, this.previousTarget, 'default');
+            this.previousTarget = this.previousPreviousTarget;
         } else {
             // doesn't enter the wormhole if a ship was being moved
             if (this.previousTarget && this.previousTarget.parentEntity.type === "wormhole") {
@@ -105,80 +82,110 @@ export class SpaceViewDomManager {
             }
 
         }
-
-        // this.populateSelectTargetText()
         this.populateSidebar();
     }
 
+    ///////////////////
+    // Click Helpers //
+    ///////////////////
+
+    selectTarget(object3d) {
+        // Keep track of target before new selection
+        this.previousPreviousTarget = this.previousTarget;
+        this.previousTarget = this.selectionSprite.selectionTarget;
+
+        // Select new target
+        if (object3d) {
+            this.selectionSprite.select(object3d);
+        } else {
+            this.selectionSprite.unselect();
+        }
+
+        if (this.previousTarget &&
+            this.previousTarget.parentEntity.type == "ship" &&
+            this.previousTarget.parentEntity.buttonState) {
+                this.moveShip(this.previousTarget, this.selectionSprite.selectionTarget, this.previousTarget.parentEntity.buttonState);
+                // clear button state
+                this.previousTarget.parentEntity.buttonState = null;
+        }
+    }
+
     findSelectionTarget(event) {
-        // Arrow function / lambda so that "this" refers to SpaceViewDomManager
-        // instead of canvas
+        // cannot click on these types of objects
+        const unselectableNames = ["selectionSprite", "wormholeText"];
+
         event.preventDefault();
         let raycaster = this.raycaster;
         raycaster.setFromCamera( this.mouse, this.camera );
         const intersects = raycaster.intersectObjects( this.scene.children );
-
-        // If no intersections, sets target to null
-        if (intersects.length == 0) {
-            this.selectionSprite.unselect();
-        }
-
-        let unselectableNames = ["selectionSprite", "wormholeText"];
 
         // Loops through intersected objects (sorted by distance)
         for (let i = 0; i < intersects.length; i++) {
             let obj = this.getParentObject(intersects[i].object);
             // Cannot select the selection sprite
             if ( unselectableNames.includes(obj.name) ) {
-              continue;
+                continue;
             }
             // If you click again on an object, you can select the
             // object behind
             if (obj != this.selectionSprite.selectionTarget) {
-                this.selectionSprite.select(obj);
-                break;
+                //this.selectionSprite.select(obj);
+                return obj;
             }
         }
-
-        let consoleLogName = 'none';
-        if (this.selectionSprite.selectionTarget && this.selectionSprite.selectionTarget.parentEntity) {
-            consoleLogName = this.selectionSprite.selectionTarget.parentEntity.name;
-        }
-        console.log('selectionTarget', consoleLogName);
-    }
-
-    moveShip(ship3d, previousTarget) {
-        // ship3d is the 3d object and shipEntity is the JS object
-        const shipEntity = ship3d.parentEntity;
-        // clear all movement
-        shipEntity.resetMovement();
-        // save target info when an object was selected for ship to move toward
-        shipEntity.destinationTarget = previousTarget;
-
-        // find intersection between mouseclick and plane of ship
-        this.raycaster.setFromCamera( this.mouse, this.camera );
-        const shipPlane = new THREE.Plane(new THREE.Vector3( 0, 0, ship3d.position.z ), -ship3d.position.z);
-        const intersects = new THREE.Vector3();
-        this.raycaster.ray.intersectPlane(shipPlane, intersects);
-        shipEntity.destinationPoint = {x: intersects.x, y: intersects.y, z: intersects.z};
-
-        // re-set ship as target after moving
-        this.selectionSprite.select(ship3d);
-        this.previousTarget = ship3d;
+        return null;
     }
 
     getParentObject(obj) {
         // Recursively goes through object to find the highest
         // level object that is not the scene
-
         let parent = obj.parent;
-
         if (parent.type == "Scene") {
             return (obj);
         } else {
             return (this.getParentObject(parent));
         }
+    }
 
+    moveShip(ship3d, target=null, mode='default') {
+        // ship3d is the 3d object and shipEntity is the JS object
+        const shipEntity = ship3d.parentEntity;
+        // clear all movement
+        shipEntity.resetMovement();
+
+        if (mode == 'colonize' &&
+            target &&
+            target.parentEntity.type != 'planet') {
+                alert("Only planets can be colonized");
+                return;
+        }
+
+        // set targets based on movement mode
+        // default behavior moves to target and orbits
+        if (['default', 'move', 'orbit', 'colonize'].includes(mode) && target) {
+            shipEntity.destinationTarget = target;
+        }
+        if (['default', 'orbit'].includes(mode) && target) {
+            shipEntity.orbitTarget = target;
+        }
+        if (mode == 'colonize' && target) {
+            shipEntity.colonizeTarget = target;
+        }
+        if (['default', 'move'].includes(mode) && !target) {
+            this.setShipDestinationPoint(ship3d, shipEntity);
+        }
+
+        // re-set ship as target after moving
+        this.selectionSprite.select(ship3d);
+    }
+
+    setShipDestinationPoint(ship3d, shipEntity) {
+        // find intersection between mouse click and plane of ship
+        this.raycaster.setFromCamera( this.mouse, this.camera );
+        const shipPlane = new THREE.Plane(new THREE.Vector3( 0, 0, ship3d.position.z ), -ship3d.position.z);
+        const intersects = new THREE.Vector3();
+        this.raycaster.ray.intersectPlane(shipPlane, intersects);
+        shipEntity.destinationPoint = {x: intersects.x, y: intersects.y, z: intersects.z};
     }
 
     detachFromDom() {
@@ -307,6 +314,36 @@ export class SpaceViewDomManager {
             parent.remove(container);
         } else {
             this.removeContainerFromScene(container.parent);
+        }
+    }
+
+    targetDebugging() {
+        // debugging
+        let consoleLogName = 'none';
+        if (this.previousPreviousTarget && this.previousPreviousTarget.parentEntity) {
+            consoleLogName = this.previousPreviousTarget.parentEntity.name;
+        }
+        console.log('previousPreviousTarget', consoleLogName);
+        consoleLogName = 'none';
+        if (this.previousTarget && this.previousTarget.parentEntity) {
+            consoleLogName = this.previousTarget.parentEntity.name;
+        }
+        console.log('previousTarget', consoleLogName);
+
+        consoleLogName = 'none';
+        if (this.selectionSprite.selectionTarget && this.selectionSprite.selectionTarget.parentEntity) {
+            consoleLogName = this.selectionSprite.selectionTarget.parentEntity.name;
+        }
+        console.log('selectionTarget', consoleLogName);
+
+        // expose selectionTarget to dev console
+        if (this.selectionSprite.selectionTarget) {
+            window.selectionTarget = this.selectionSprite.selectionTarget;
+        }
+
+        if (this.previousTarget &&
+            this.previousTarget.parentEntity.buttonState ) {
+            console.log("previousTarget buttonState", this.previousTarget.parentEntity.buttonState)
         }
     }
 
