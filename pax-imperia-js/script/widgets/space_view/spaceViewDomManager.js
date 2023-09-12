@@ -21,6 +21,10 @@ export class SpaceViewDomManager {
             this.populateSidebar();
         };
 
+        window.handleTargetButton = (buttonState) => {
+            this.selectionSprite.selectionTarget.parentEntity.buttonState = buttonState;
+        };
+
     }
 
     attachDomEventsToCode() {
@@ -84,8 +88,16 @@ export class SpaceViewDomManager {
             }
         }
 
+        if (this.previousTarget &&
+            this.previousTarget.parentEntity.type == "ship" &&
+            this.previousTarget.parentEntity.buttonState == 'move') {
+                console.log('moving')
+                this.moveShip(this.previousTarget, this.currentTarget);
+                //this.previousTarget.parentEntity.buttonState = null;
+        }
+
         // this.populateSelectTargetText()
-        this.populateSidebar()
+        this.populateSidebar();
 
         // expose selectionTarget to dev console
         if (this.selectionSprite.selectionTarget) {
@@ -114,14 +126,12 @@ export class SpaceViewDomManager {
     }
 
     moveShip(ship3d, currentTarget) {
-        console.log('Moving ship');
         // ship3d is the 3d object and shipEntity is the JS object
         const shipEntity = ship3d.parentEntity;
+        // clear all movement
+        shipEntity.resetMovement();
         // save target info when an object was selected for ship to move toward
         shipEntity.destinationTarget = currentTarget;
-        // clear orbit target in case it was orbiting
-        shipEntity.orbitTarget = null;
-        shipEntity.orbitAngle = null;
 
         // find intersection between mouseclick and plane of ship
         this.raycaster.setFromCamera( this.mouse, this.camera );
@@ -164,6 +174,7 @@ export class SpaceViewDomManager {
         this.populateList('planet');
         this.populateList('ship');
         this.populateList('wormhole');
+        this.populateButtons();
     }
 
     populateList(entity_type) {
@@ -235,18 +246,13 @@ export class SpaceViewDomManager {
         planetListUl.innerHTML = html;
     }
 
-    populateSelectTargetText() {
-        let planetListUl = document.getElementById("selected-target");
-        let html = "<h3>Selected Target:</h3><ul><li>";
-
-        if (this.selectionSprite.selectionTarget && this.selectionSprite.selectionTarget.name) {
-            html += this.selectionSprite.selectionTarget.name
-        } else {
-            html += "None";
+    populateButtons() {
+        let buttonsUI = document.getElementById("buttons");
+        let html = "";
+        if (this.selectionSprite.selectionTarget) {
+            html = this.selectionSprite.selectionTarget.parentEntity.buttons;
         }
-
-        html += "</li></ul>";
-        planetListUl.innerHTML = html;
+        buttonsUI.innerHTML = html;
     }
 
     //////////////////////

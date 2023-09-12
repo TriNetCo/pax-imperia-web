@@ -8,7 +8,7 @@ export class Ship extends Entity {
         this.type = 'ship';
         this.assetPath = this.basePath + '/assets/ships/GalacticLeopard6.fbx';
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/ship_thumbnail.png";
-        this.size = 0.0001;
+        this.size = 0.00015;
         this.scale = {x: this.size, y: this.size, z: this.size};
         // this.position = {x: -1.5, y: 2.6, z: 6};
         // this.name = "ship";
@@ -20,6 +20,12 @@ export class Ship extends Entity {
         this.orbitAngle = null;
         this.previousSystemId = typeof this.previousSystemId === 'undefined' ? null : this.previousSystemId;
         this.status = null;
+        this.buttons = `
+            <button id="move" onclick="handleTargetButton('move')">Move</button>
+            <button id="orbit" onclick="handleTargetButton('orbit')">Orbit</button>
+            <button id="land" onclick="handleTargetButton('land')">Land</button>
+            `;
+        this.buttonState = null;
     }
 
     update (deltaTime, system) {
@@ -47,7 +53,6 @@ export class Ship extends Entity {
             this.status = 'Destination: ' + roundToDecimal(this.destinationPoint.x, 2) + ", " +
                 roundToDecimal(this.destinationPoint.y, 2) + ", " +
                 roundToDecimal(this.destinationPoint.z, 2);
-            console.log(this.status);
         } else if (this.orbitTarget) {
             this.status = 'Orbiting: ' + this.orbitTarget.parentEntity.name + ' ' + this.orbitTarget.parentEntity.type;
         }
@@ -56,12 +61,21 @@ export class Ship extends Entity {
         }
     }
 
+    resetMovement() {
+        this.destinationPoint = null;
+        this.destinationTarget = null;
+        this.orbitTarget = null;
+        this.orbitAngle = null;
+        this.status = null;
+    }
+
     checkAndSendThroughWormhole() {
         // if ship is close enough to wormhole, move it to the next system
         const distanceFromDest = this.object3d.position.distanceTo(this.destinationTarget.position);
         const wormholeId = this.destinationTarget.parentEntity.id;
         if (distanceFromDest <= this.speed) {
             // copy ship data to wormhole system data
+            this.resetMovement();
             this.pushData(wormholeId);
             // delete ship from current system
             this.delete(system);

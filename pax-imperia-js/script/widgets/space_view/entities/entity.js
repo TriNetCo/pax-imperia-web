@@ -17,6 +17,7 @@ export class Entity {
         this.rotation = {x: 0, y: 0, z: 0};
         this.systemId = systemId;
         this.data = data;
+        this.buttons = '';
         unpackData(data, this);
         this.scale = {x: this.size, y: this.size, z: this.size};
         this.basePath = window.location.hash.includes("#") ? "/pax-imperia-clone" : ""
