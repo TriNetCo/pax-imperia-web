@@ -73,12 +73,12 @@ export class SpaceViewDomManager {
 
         this.findSelectionTarget(event);
 
-        if (this.previousPreviousTarget &&
-            this.previousPreviousTarget.parentEntity.type == "ship" &&
-            this.previousPreviousTarget.parentEntity.buttonState == 'move') {
+        if (this.previousTarget &&
+            this.previousTarget.parentEntity.type == "ship" &&
+            this.previousTarget.parentEntity.buttonState == 'move') {
                 console.log('moving');
                 this.moveShip(this.previousTarget, this.selectionSprite.selectionTarget);
-                this.previousPreviousTarget.parentEntity.buttonState = null;
+                this.previousTarget.parentEntity.buttonState = null;
         }
 
         // this.populateSelectTargetText()
