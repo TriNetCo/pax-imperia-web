@@ -23,6 +23,8 @@ export class SpaceViewDomManager {
 
         window.handleTargetButton = (buttonState) => {
             this.selectionSprite.selectionTarget.parentEntity.buttonState = buttonState;
+            // let user know which button is selected
+            document.getElementById(buttonState).style.background='#A9A9A9'; // default color ButtonFace
         };
 
     }
@@ -55,45 +57,28 @@ export class SpaceViewDomManager {
     }
 
     #clickHandler = ( event ) => {
+        let consoleLogName = 'none'
         // Keep track of target before click
         this.previousTarget = this.currentTarget;
+        if (this.previousTarget && this.previousTarget.parentEntity) {
+            consoleLogName = this.previousTarget.parentEntity.name
+        }
+        console.log('previousTarget', consoleLogName);
         this.currentTarget = this.selectionSprite.selectionTarget;
-
-        // Arrow function / lambda so that "this" refers to SpaceViewDomManager
-        // instead of canvas
-        event.preventDefault();
-        let raycaster = this.raycaster;
-        raycaster.setFromCamera( this.mouse, this.camera );
-        const intersects = raycaster.intersectObjects( this.scene.children );
-
-        // If no intersections, sets target to null
-        if (intersects.length == 0) {
-            this.selectionSprite.unselect();
+        consoleLogName = 'none'
+        if (this.currentTarget && this.currentTarget.parentEntity) {
+            consoleLogName = this.currentTarget.parentEntity.name
         }
+        console.log('currentTarget', consoleLogName);
 
-        let unselectableNames = ["selectionSprite", "wormholeText"];
-
-        // Loops through intersected objects (sorted by distance)
-        for (let i = 0; i < intersects.length; i++) {
-            let obj = this.getParentObject(intersects[i].object);
-            // Cannot select the selection sprite
-            if ( unselectableNames.includes(obj.name) ) {
-              continue;
-            }
-            // If you click again on an object, you can select the
-            // object behind
-            if (obj != this.selectionSprite.selectionTarget) {
-                this.selectionSprite.select(obj);
-                break;
-            }
-        }
+        this.findSelectionTarget(event)
 
         if (this.previousTarget &&
             this.previousTarget.parentEntity.type == "ship" &&
             this.previousTarget.parentEntity.buttonState == 'move') {
                 console.log('moving')
-                this.moveShip(this.previousTarget, this.currentTarget);
-                //this.previousTarget.parentEntity.buttonState = null;
+                this.moveShip(this.currentTarget, this.selectionSprite.selectionTarget);
+                this.previousTarget.parentEntity.buttonState = null;
         }
 
         // this.populateSelectTargetText()
@@ -123,6 +108,43 @@ export class SpaceViewDomManager {
 
         // this.populateSelectTargetText()
         this.populateSidebar();
+    }
+
+    findSelectionTarget(event) {
+        // Arrow function / lambda so that "this" refers to SpaceViewDomManager
+        // instead of canvas
+        event.preventDefault();
+        let raycaster = this.raycaster;
+        raycaster.setFromCamera( this.mouse, this.camera );
+        const intersects = raycaster.intersectObjects( this.scene.children );
+
+        // If no intersections, sets target to null
+        if (intersects.length == 0) {
+            this.selectionSprite.unselect();
+        }
+
+        let unselectableNames = ["selectionSprite", "wormholeText"];
+
+        // Loops through intersected objects (sorted by distance)
+        for (let i = 0; i < intersects.length; i++) {
+            let obj = this.getParentObject(intersects[i].object);
+            // Cannot select the selection sprite
+            if ( unselectableNames.includes(obj.name) ) {
+              continue;
+            }
+            // If you click again on an object, you can select the
+            // object behind
+            if (obj != this.selectionSprite.selectionTarget) {
+                this.selectionSprite.select(obj);
+                break;
+            }
+        }
+
+        let consoleLogName = 'none'
+        if (this.selectionSprite.selectionTarget && this.selectionSprite.selectionTarget.parentEntity) {
+            consoleLogName = this.selectionSprite.selectionTarget.parentEntity.name
+        }
+        console.log('selectionTarget', consoleLogName);
     }
 
     moveShip(ship3d, currentTarget) {
