@@ -42,9 +42,7 @@ const NewGameLayout = () => {
   };
 
   const setGameData = () => {
-    const galaxy = data.galaxyWidget.galaxy;
-    const systemsJson = JSON.stringify(galaxy.systems);
-
+    const systemsJson = data.galaxyWidget.exportGalaxyData();
     dispatch(setGameConfiguration(chatLobbyId, systemsJson));
   };
 
@@ -53,8 +51,7 @@ const NewGameLayout = () => {
   };
 
   const overrideGameData = () => {
-    const systemsStringThatHasBeenParsed = JSON.parse(websocket.systemsJson);
-    data.galaxyWidget.updateGalaxyData(systemsStringThatHasBeenParsed);
+    data.galaxyWidget.importGalaxyData(websocket.systemsJson);
   };
 
 

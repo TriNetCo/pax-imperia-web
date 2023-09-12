@@ -1,6 +1,6 @@
 import { Entity } from './entity.js';
 import { roundToDecimal } from '../../../models/helpers.js';
-import * as THREE from '/node_modules/three/build/three.module.js';
+import * as THREE from 'three';
 
 export class Ship extends Entity {
     constructor (data, systemName, systemId) {

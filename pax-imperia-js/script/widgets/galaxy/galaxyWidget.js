@@ -1,7 +1,6 @@
 import { GalaxyDrawer } from './galaxyDrawer.js';
 import { GalaxyDomManager } from './galaxyDomManager.js';
-// import * as THREE from 'three';
-import * as THREE from '/node_modules/three/build/three.module.js';
+import * as THREE from 'three';
 
 export class GalaxyWidget {
 
@@ -14,10 +13,15 @@ export class GalaxyWidget {
         this.c = config;
         this.mouse = { x: 0, y: 0 };
         this.galaxy = gameData.galaxy;
-        window.systemsData = this.galaxy.systems;
-        window.gameClock = window.gameClock ? window.gameClock : new THREE.Clock();
-        if (!window.gameClock.running) {
-            window.gameClock.start();
+        this.gameClock = new THREE.Clock();
+
+        if (typeof(window) !== 'undefined') {  // These globals break tests hard...
+            window.systemsData = this.galaxy.systems;
+            window.gameClock = window.gameClock ? window.gameClock : this.gameClock;
+        }
+
+        if (!this.gameClock.running) {
+            this.gameClock.start();
         }
     }
 
@@ -36,11 +40,17 @@ export class GalaxyWidget {
         this.galaxyDomManager.attachDomEventsToCode();
     }
 
-    updateGalaxyData(systemsStringThatHasBeenParsed) {
+    exportGalaxyData() {
+        return JSON.stringify(this.galaxy.systems);
+    }
+
+    importGalaxyData(systemsJson) {
         let canvas = this.canvas;
         let systemClickHandler = this.systemClickHandler;
 
-        this.galaxy.systems = systemsStringThatHasBeenParsed;
+        this.galaxy.systems = JSON.parse(systemsJson);
+
+        if (this.canvas === undefined) return;
 
         let cx = canvas.getContext("2d");
         this.detachFromDom();

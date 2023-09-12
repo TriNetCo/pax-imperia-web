@@ -4,7 +4,7 @@ import { SpaceViewDomManager } from './spaceViewDomManager.js';
 import { System } from './entities/system.js';
 
 // import * as THREE from 'three';
-import * as THREE from '/node_modules/three/build/three.module.js';
+import * as THREE from 'three';
 
 import { SpriteFlipbook } from '../../models/spriteFlipbook.js'
 
