@@ -1,9 +1,11 @@
+// This is a SystemsDataDrawer, but we haven't renamed everything so it
+// might be confusing that this class doesn't interact with the Galaxy
+// class at all
 export class GalaxyDrawer {
 
     constructor(config) {
         this.cx = config.cx;
-        this.galaxy = config.galaxy;
-        this.systemsData = config.galaxy.systems;
+        this.systemsData = config.systemsData;
         this.systemNameLabel = config.systemNameLabel;
         this.mouse = config.mouse;
         this.connections = this.collectConnections(this.systemsData);
@@ -57,7 +59,6 @@ export class GalaxyDrawer {
     }
 
     drawSystems() {
-        let galaxy = this.galaxy;
         let systemDrawColor = "rgb(150, 150, 150)";
         for (let i = 0; i < this.systemsData.length; i++) {
             let system = this.systemsData[i];
@@ -66,7 +67,6 @@ export class GalaxyDrawer {
     }
 
     drawHoveredSystem() {
-        let galaxy = this.galaxy;
         let systemNameLabel = this.systemNameLabel;
         let hoverDrawColor = "rgb(255, 255, 255)";
         let nothingIsHovered = true;

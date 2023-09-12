@@ -32,16 +32,14 @@ test('galaxyDrawer can call drawBackground', () => {
 });
 
 test('collectConnections works correctly', () => {
-    const galaxy = new Galaxy(c, systemsJson);
     const systems = JSON.parse(systemsJson);
 
     const galaxyDrawer = new GalaxyDrawer({
         cx: mockCx,
-        galaxy: galaxy,
+        systemsData: systems,
         systemNameLabel: mockSystemNameLabel,
         mouse: mockMouse });
 
-    //const actualConnections = galaxyDrawer.collectConnections(JSON.parse(systemsJson));
     const actualConnections = galaxyDrawer.collectConnections(systems);
     const expectedConnections = [
         [0, 2],

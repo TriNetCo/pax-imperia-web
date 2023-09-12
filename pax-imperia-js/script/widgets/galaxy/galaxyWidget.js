@@ -31,7 +31,7 @@ export class GalaxyWidget {
         let cx = canvas.getContext("2d");
 
         let systemNameLabel = document.getElementById("system-name");
-        this.galaxyDrawer = new GalaxyDrawer({cx: cx, galaxy: this.galaxy, systemNameLabel: systemNameLabel, mouse: this.mouse});
+        this.galaxyDrawer = new GalaxyDrawer({cx: cx, systemsData: this.galaxy.systems, systemNameLabel: systemNameLabel, mouse: this.mouse});
         this.galaxyDomManager = new GalaxyDomManager(cx, this.galaxy.systems, this.galaxyDrawer, systemClickHandler, this.mouse)
         this.galaxyDomManager.attachDomEventsToCode();
     }
@@ -46,7 +46,7 @@ export class GalaxyWidget {
         this.detachFromDom();
 
         let systemNameLabel = document.getElementById("system-name");
-        this.galaxyDrawer = new GalaxyDrawer({cx: cx, galaxy: this.galaxy, systemNameLabel: systemNameLabel, mouse: this.mouse});
+        this.galaxyDrawer = new GalaxyDrawer({cx: cx, systemsData: this.galaxy.systems, systemNameLabel: systemNameLabel, mouse: this.mouse});
         this.galaxyDomManager = new GalaxyDomManager(cx, this.galaxy.systems, this.galaxyDrawer, systemClickHandler, this.mouse)
         this.galaxyDomManager.attachDomEventsToCode();
     }
