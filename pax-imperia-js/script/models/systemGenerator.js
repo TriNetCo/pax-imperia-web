@@ -18,6 +18,8 @@ export class SystemGenerator {
         }
     }
 
+    // this function serializes the data to an object without actually
+    // serializing it to a string which a database and network connection would want
     generateData(){
         let data = {};
         for (var key in this) {

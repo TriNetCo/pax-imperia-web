@@ -27,7 +27,6 @@ export class Galaxy {
             // Try maxPlacementAttempts times to find a system far enough away
             // from existing systems
             while (!this.isValidDistance(systems, position, c.systemBuffer)) {
-                console.debug("retrying star placement");
                 position = this.generateSystemPosition(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
                 i = i + 1;
                 if (i == c.maxPlacementAttempts) {
@@ -70,7 +69,6 @@ export class Galaxy {
         let connections = [];
         let connectedSystems = [];
         while (connectedSystems.length < this.systems.length && this.systems.length > 1){
-            console.debug("Gaxlaxy generation looped");
             let minDist = Infinity;
             let minI;
             let minJ;
