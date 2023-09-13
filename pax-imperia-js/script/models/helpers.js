@@ -33,3 +33,35 @@ export const packData = (context) => {
     }
     return(data);
 }
+
+export class Queue extends Array {
+    constructor (n, startingArray = null) {
+        if (!startingArray) {
+            startingArray = new Array(n).fill(null);
+        } else {
+            startingArray = startingArray.slice(0,n);
+            const fillArray = new Array(n - startingArray.length).fill(null);
+            startingArray = startingArray.concat(fillArray);
+        }
+        if (n > 1) {
+            super(...startingArray);
+        } else {
+            super(n);
+            this[0] = startingArray[0];
+        }
+
+    }
+
+    push(item) {
+        for (let i = this.length - 1; i >= 0; i--) {
+            this[i] = this[i - 1];
+        }
+        this[0] = item;
+    }
+
+    clear() {
+        for (let i = this.length - 1; i >= 0; i--) {
+            this[i] = null;
+        }
+    }
+}

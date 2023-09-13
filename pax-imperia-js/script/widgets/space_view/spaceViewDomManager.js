@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Queue } from '../../models/helpers.js';
 
 export class SpaceViewDomManager {
 
@@ -14,6 +15,7 @@ export class SpaceViewDomManager {
         this.raycaster = new THREE.Raycaster();
         this.previousTarget = null;
         this.previousPreviousTarget = null;
+        this.previousTargets = new Queue(3);
 
         window.clickThumbnail = (targetType, targetName) => {
             const entity = this.system[targetType + 's'].find(x => x.name === targetName);
@@ -64,6 +66,7 @@ export class SpaceViewDomManager {
         const selectionTarget = this.findSelectionTarget(event);
         this.selectTarget(selectionTarget);
         this.populateSidebar();
+        this.targetDebugging();
     }
 
     #doubleClickHandler = ( event ) => {
@@ -203,7 +206,7 @@ export class SpaceViewDomManager {
         this.populateList('planet');
         this.populateList('ship');
         this.populateList('wormhole');
-        this.populateButtons();
+        this.populateConsoleBody();
     }
 
     populateList(entity_type) {
@@ -214,17 +217,7 @@ export class SpaceViewDomManager {
             let details = ""
             if (this.selectionSprite.selectionTarget &&
                 this.selectionSprite.selectionTarget == entity.object3d) {
-                    selectedThumbnail = " selected-thumbnail"
-                if (entity_type == 'planet') {
-                    details = `
-                        <br>Mediocre (x2)</br>
-                        <br>Pop: 7/8 :)</br>
-                        `
-                } else if (entity_type == 'ship') {
-                    details = `<br>${entity.status}</br>`
-                } else {
-                    details = "<br>TBD</br>"
-                }
+                    selectedThumbnail = " selected-thumbnail";
             }
 
             html += `
@@ -275,13 +268,12 @@ export class SpaceViewDomManager {
         planetListUl.innerHTML = html;
     }
 
-    populateButtons() {
-        let buttonsUI = document.getElementById("buttons");
+    populateConsoleBody() {
         let html = "";
         if (this.selectionSprite.selectionTarget) {
-            html = this.selectionSprite.selectionTarget.parentEntity.buttons;
+            html = this.selectionSprite.selectionTarget.parentEntity.returnConsoleHTML();
         }
-        buttonsUI.innerHTML = html;
+        document.getElementById("lower-console-body").innerHTML = html;
     }
 
     //////////////////////

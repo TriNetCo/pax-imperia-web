@@ -6,8 +6,7 @@ import { FBXLoader } from '/node_modules/three/examples/jsm/loaders/FBXLoader.js
 // import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/jsm/loaders/GLTFLoader.js";
 // import { FBXLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/jsm/loaders/FBXLoader.js";
 
-import { unpackData } from '../../../models/helpers.js'
-import { packData } from '../../../models/helpers.js'
+import { packData, unpackData } from '../../../models/helpers.js'
 
 export class Entity {
     constructor (data, systemName = "", systemId) {
@@ -17,7 +16,7 @@ export class Entity {
         this.rotation = {x: 0, y: 0, z: 0};
         this.systemId = systemId;
         this.data = data;
-        this.buttons = '';
+        this.consoleBody = '';
         unpackData(data, this);
         this.scale = {x: this.size, y: this.size, z: this.size};
         this.basePath = window.location.hash.includes("#") ? "/pax-imperia-clone" : ""
@@ -73,10 +72,10 @@ export class Entity {
                 obj.name = name;
                 obj.children[0].name = name;
                 scene.add( obj );
-                console.log("Finished loading!");
+                // console.log("Finished loading!");
                 resolve(obj);
             }, function ( xhr ) {
-                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+                // console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
             }, function ( error ) {
                 console.error( error );
             } );
@@ -125,4 +124,14 @@ export class Entity {
         systemData[this.type + 's'].push(entityData);
     }
 
+    returnConsoleTitle() {
+        return '<div>' + this.type.toUpperCase() + ': ' + this.name + '</div>';
+    }
+
+    returnConsoleHTML() {
+        let html = '';
+        html += this.returnConsoleTitle();
+        html += this.consoleBody;
+        return html;
+    }
 }

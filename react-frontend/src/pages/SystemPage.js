@@ -87,11 +87,9 @@ const SystemPage = () => {
               </div>
 
               <div id="lower-console">
-                <div>
-                  Lower Console
-                </div>
-                <p>Zoom <input id="distance-slider" type="range" min="15" max="300" step="1" defaultValue="50" onInput={distanceSliderOnInput}/></p>
-                <div id='buttons'></div>
+                <div>Lower Console</div>
+                <div>Zoom <input id="distance-slider" type="range" min="15" max="300" step="1" defaultValue="50" onInput={distanceSliderOnInput}/></div>
+                <div id='lower-console-body'></div>
               </div>
             </div>
 

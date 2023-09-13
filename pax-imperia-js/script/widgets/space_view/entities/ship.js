@@ -13,13 +13,7 @@ export class Ship extends Entity {
         this.rotation = {x: 0.7, y: -1.6, z: 0.4};
         this.speed = 0.2;
         this.previousSystemId = typeof this.previousSystemId === 'undefined' ? null : this.previousSystemId;
-        this.buttons = `
-            <button id="move" onclick="handleTargetButton('move')">Move</button>
-            <button id="orbit" onclick="handleTargetButton('orbit')">Orbit</button>
-            <button id="colonize" onclick="handleTargetButton('colonize')">Colonize</button>
-            `;
         this.buttonState = null;
-        this.status = null;
         // movement animation attributes
         this.destinationPoint = null; // x, y, z coordinates
         this.destinationTarget = null; // 3d object
@@ -48,23 +42,23 @@ export class Ship extends Entity {
         } else if (this.orbitTarget) {
             this.updateOrbit(deltaTime);
         }
-        this.updateStatus();
+        this.updateConsoleBody();
     };
 
-    updateStatus () {
-        const previousStatus = this.status;
+    updateConsoleBody () {
+        const previousConsoleBody = this.consoleBody;
+        this.consoleBody = '<div>';
         if (this.destinationTarget) {
-            this.status = 'Destination: ' + this.destinationTarget.parentEntity.name + ' ' + this.destinationTarget.parentEntity.type;
+            this.consoleBody += 'Destination: ' + this.destinationTarget.parentEntity.name + ' ' + this.destinationTarget.parentEntity.type;
         } else if (this.destinationPoint) {
-            this.status = 'Destination: ' + roundToDecimal(this.destinationPoint.x, 2) + ", " +
+            this.consoleBody += 'Destination: ' + roundToDecimal(this.destinationPoint.x, 2) + ", " +
                 roundToDecimal(this.destinationPoint.y, 2) + ", " +
                 roundToDecimal(this.destinationPoint.z, 2);
         } else if (this.orbitTarget) {
-            this.status = 'Orbiting: ' + this.orbitTarget.parentEntity.name + ' ' + this.orbitTarget.parentEntity.type;
-        } else {
-            this.status = null;
+            this.consoleBody += 'Orbiting: ' + this.orbitTarget.parentEntity.name + ' ' + this.orbitTarget.parentEntity.type;
         }
-        if (previousStatus != this.status) {
+        this.consoleBody += '</div>';
+        if (previousConsoleBody != this.consoleBody) {
             window.spaceViewDomManager.populateSidebar();
         }
     }
@@ -76,7 +70,6 @@ export class Ship extends Entity {
         this.orbitAngle = null;
         this.colonizeTarget = null;
         this.colonizeAnimationProgress = null;
-        this.status = null;
     }
 
     checkAndSendThroughWormhole() {
@@ -159,7 +152,18 @@ export class Ship extends Entity {
         this.object3d.position.x = centerX + orbitDist * Math.cos(this.orbitAngle);
         this.object3d.position.z = centerZ + orbitDist * Math.sin(this.orbitAngle);
         this.object3d.position.y = centerY;
+    }
 
+    returnConsoleHTML() {
+        let html = '';
+        html += this.returnConsoleTitle();
+        html += `<div>
+            <button id="move" onclick="handleTargetButton('move')">Move</button>
+            <button id="orbit" onclick="handleTargetButton('orbit')">Orbit</button>
+            <button id="colonize" onclick="handleTargetButton('colonize')">Colonize</button>
+            </div>`;
+        html += this.consoleBody;
+        return html;
     }
 
 }

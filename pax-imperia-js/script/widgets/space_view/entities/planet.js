@@ -8,6 +8,11 @@ export class Planet extends Entity {
         this.assetPath = this.basePath + "/assets/planets/" + this.atmosphere + ".gltf";
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/" + this.atmosphere + "_thumbnail.png";
         this.position = {x: 0, y: 0, z: 2 * this.distance_from_star};
+        this.consoleBody = `
+            <div>Mediocre (x2)</div>
+            <div>Population: 7/8</div>
+            <div>Habitability: :)</div>
+            `;
     }
 
     update (elapsedTime) {
