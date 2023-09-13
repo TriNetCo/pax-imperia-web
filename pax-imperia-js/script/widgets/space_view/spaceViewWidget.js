@@ -2,10 +2,7 @@ import { Galaxy } from '../../models/galaxy.js';
 import { SpaceViewAnimator } from './spaceViewAnimator.js';
 import { SpaceViewDomManager } from './spaceViewDomManager.js';
 import { System } from './entities/system.js';
-
-// import * as THREE from 'three';
 import * as THREE from 'three';
-
 import { SpriteFlipbook } from '../../models/spriteFlipbook.js'
 
 export class SpaceViewWidget {

@@ -52,3 +52,19 @@ The domain model got huge so it lives [here](complete_domain_model.md).  Usually
 ##### System Domain Model:
 
 [This](system_model.md). is just a glimps of the Domain Model associated with Systems, so includes all the 3D/ Space stuff, but not the mundane User/ research/ etc stuff.
+
+##### Graphics Pipeline Diagram:
+
+This section describes how a planet is rendered in orbit around it's sun.
+
+###### SpaceViewWidget
+
+At the top-most level, `SpaceViewWidget` will setup a camera and stuff via a call to `beginGame`.  Once that setup is dealt with, `spaceViewWidget.draw()` will be called 60 times per second via the `requestAnimationFrame` API.  This renders to a canvas element at 60fps.
+
+###### SpaceViewAnimator
+
+`spaceViewWidget.draw()` is just a call to `SpaceViewAnimator.drawLoop()`.  `SpaceViewAnimator` has access to the system data and will iterate over all space entities, calling their respective update functions, one being `Planet#update()`.
+
+###### Entity - Planet
+
+We're now on the final stop of the Graphics Pipeline journey.  Planet objects enherit from the `Entity` class.  When `Planet#update()` is called, the position of the planet will be updated to account for the game time.  Orbits follow a simple calculation that is completely deterministic and so two clients need only know the initical configuration and the current time to draw the planets in a synchronized manor.
