@@ -6,7 +6,7 @@ export const wsDisconnected = host => ({ type: 'WS_DISCONNECTED', host });
 export const wsError = host => ({ type: 'WS_ERROR', host });
 
 export const newMessage = payload => ({ type: 'NEW_MESSAGE', payload });
-export const newMessageFromServer = data => ({ type: 'NEW_MESSAGE_FROM_SERVER', data });
+export const newMessageFromServer = payload => ({ type: 'NEW_MESSAGE_FROM_SERVER', payload });
 export const updateGame = (json, player) => ({ type: 'SET_GAME', data: json, player });
 export const joinChatLobby = (user, chatLobbyId) => ({ type: 'JOIN_CHAT_LOBBY', user, chatLobbyId });
 export const joinChatLobbyResponse = (chatLobbyId, chatLobbyUsers) => ({ type: 'JOIN_CHAT_LOBBY_RESPONSE', chatLobbyId, chatLobbyUsers });
@@ -38,7 +38,7 @@ export const websocketReducer = (state = { ...initialState }, action) => {
     case 'SET_GAME':
       return { ...state, game: action.data, current_player: action.player };
     case 'NEW_MESSAGE_FROM_SERVER':
-      return { ...state, messages: [...state.messages, action.data] };
+      return { ...state, messages: [...state.messages, action.payload] };
     case 'JOIN_CHAT_LOBBY_RESPONSE':
       return { ...state, chatLobbyId: action.chatLobbyId, chatLobbyUsers: action.chatLobbyUsers };
     case 'SYSTEM_MESSAGE_USER_JOINED_CHAT':

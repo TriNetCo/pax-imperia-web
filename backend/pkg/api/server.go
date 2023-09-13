@@ -111,6 +111,7 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 		case "JOIN_CHAT_LOBBY":
 			handleJoinChatLobby(conn, message)
 		case "NEW_MESSAGE":
+			fmt.Println("Received Message:", string(msg))
 			handleSay(conn, message)
 		case "SET_GAME_CONFIGURATION":
 			// message = { "systems": "systemData..." }

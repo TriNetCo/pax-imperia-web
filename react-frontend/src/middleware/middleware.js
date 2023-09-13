@@ -95,10 +95,10 @@ const socketMiddleware = () => {
         console.log('websocket closed');
         break;
       case 'NEW_MESSAGE':
-        console.debug('sending a message ', action.data);
+        console.debug('sending a message ', action.payload);
         socket.send(JSON.stringify({
           command: 'NEW_MESSAGE',
-          payload: action.data,
+          payload: action.payload,
         }));
         break;
       case 'JOIN_CHAT_LOBBY':
