@@ -20,7 +20,7 @@ export class SpaceViewDomManager {
         window.clickThumbnail = (targetType, targetName) => {
             const entity = this.system[targetType + 's'].find(x => x.name === targetName);
             this.selectTarget(entity.object3d);
-            this.populateSidebar();
+            this.populateHtml();
         };
 
         window.handleTargetButton = (buttonState) => {
@@ -65,7 +65,7 @@ export class SpaceViewDomManager {
     #clickHandler = ( event ) => {
         const selectionTarget = this.findSelectionTarget(event);
         this.selectTarget(selectionTarget);
-        this.populateSidebar();
+        this.populateHtml();
         this.targetDebugging();
     }
 
@@ -85,7 +85,7 @@ export class SpaceViewDomManager {
             }
 
         }
-        this.populateSidebar();
+        this.populateHtml();
     }
 
     ///////////////////
@@ -201,11 +201,14 @@ export class SpaceViewDomManager {
     // Populate Sidebar Commands //
     ///////////////////////////////
 
-    populateSidebar() {
+    populateHtml() {
+        // sidebar lists
         this.populateList('star');
         this.populateList('planet');
         this.populateList('ship');
         this.populateList('wormhole');
+
+        // lower console
         this.populateConsoleBody();
     }
 
@@ -235,45 +238,12 @@ export class SpaceViewDomManager {
         listUl.innerHTML = html;
     }
 
-    populatePlanetList() {
-        let planetListUl = document.getElementById("planet-list");
-        let html = '';
-
-        this.system["planets"].forEach( planet => {
-            let planetName = planet.name;
-            let selectedThubmnail = ""
-            let planetDetails = ""
-            if (this.selectionSprite.selectionTarget &&
-                this.selectionSprite.selectionTarget == planet.object3d) {
-                selectedThubmnail = "selected-thumbnail"
-                planetDetails = `
-                    <br>Mediocre (x2)</br>
-                    <br>Population: 7/8</br>
-                    <br>Habitability: :)</br>
-                    `
-            }
-
-            html += `
-                <li>
-                    <div class="left-menu-thumbnail ${selectedThubmnail}">
-                        <img src="/assets/thumbnails/oxygen_thumbnail.png"></img>
-                        <div class="right-side">
-                            <div class="planet-details">${planetName}${planetDetails}
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                `;
-        });
-        planetListUl.innerHTML = html;
-    }
-
     populateConsoleBody() {
         let html = "";
         if (this.selectionSprite.selectionTarget) {
-            html = this.selectionSprite.selectionTarget.parentEntity.returnConsoleHTML();
+            html = this.selectionSprite.selectionTarget.parentEntity.returnConsoleHtml();
         }
-        document.getElementById("lower-console-body").innerHTML = html;
+        document.getElementById("lower-console").innerHTML = html;
     }
 
     //////////////////////

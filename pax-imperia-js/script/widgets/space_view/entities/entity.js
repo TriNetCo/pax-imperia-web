@@ -104,7 +104,7 @@ export class Entity {
         const i = system[this.type + 's'].findIndex(x => x.name === this.name);
         system[this.type + 's'].splice(i, 1);
         // update sidebar
-        window.spaceViewDomManager.populateSidebar();
+        window.spaceViewDomManager.populateHtml();
     }
 
     deleteData() {
@@ -128,7 +128,7 @@ export class Entity {
         return '<div>' + this.type.toUpperCase() + ': ' + this.name + '</div>';
     }
 
-    returnConsoleHTML() {
+    returnConsoleHtml() {
         let html = '';
         html += this.returnConsoleTitle();
         html += this.consoleBody;

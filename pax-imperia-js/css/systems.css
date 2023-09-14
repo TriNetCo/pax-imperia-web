@@ -61,6 +61,8 @@
     background-image: url("../assets/backgrounds/system_view_left_f.png");
     background-repeat: no-repeat;
     background-size: contain;
+
+    user-select: none;
 }
 
 #btnGovernor {
@@ -82,10 +84,22 @@
 }
 
 #galaxy-and-console {
+    position: relative;
     height: 184px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    user-select: none;
+}
+
+#hud {
+    position: absolute;
+    top: 490px;
+    background-color: rgba(255, 255, 255, 0.1);
+    right: 0px;
+    color: white;
+    border-radius: 15px;
+    padding: 15px;
     user-select: none;
 }
 

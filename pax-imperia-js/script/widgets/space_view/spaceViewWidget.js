@@ -61,7 +61,7 @@ export class SpaceViewWidget {
 
         this.spaceViewDomManager = new SpaceViewDomManager(this.c, this.clientObjects, this.system, this.systemClickHandler)
         this.spaceViewDomManager.attachDomEventsToCode();
-        this.spaceViewDomManager.populateSidebar();
+        this.spaceViewDomManager.populateHtml();
         // make spaceViewDomManager global
         window.spaceViewDomManager = this.spaceViewDomManager;
 

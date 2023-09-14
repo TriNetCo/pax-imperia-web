@@ -8,13 +8,13 @@ const SystemPage = () => {
   const history = useHistory();
 
 
-  const distanceSliderOnInput = () => {
-    var input = document.getElementById('distance-slider');
-    var currentVal = input.value;
-    this.setState({
-      value: currentVal
-    });
-  };
+  // const distanceSliderOnInput = () => {
+  //   var input = document.getElementById('distance-slider');
+  //   var currentVal = input.value;
+  //   this.setState({
+  //     value: currentVal
+  //   });
+  // };
 
   const xSliderOnInput = () => {
     var input = document.getElementById('x-slider');
@@ -81,15 +81,19 @@ const SystemPage = () => {
           <div id="canvas-and-buttons">
             <SpaceView />
 
+            <div id="hud">
+              <div>
+                <span>Zoom</span>
+                <input id="distance-slider" type="range" min="15" max="300" step="1" defaultValue="50"/>
+              </div>
+            </div>
+
             <div id="galaxy-and-console" className="flex-container">
               <div id="galaxy">
                 Galaxy
               </div>
 
               <div id="lower-console">
-                <div>Lower Console</div>
-                <div>Zoom <input id="distance-slider" type="range" min="15" max="300" step="1" defaultValue="50" onInput={distanceSliderOnInput}/></div>
-                <div id='lower-console-body'></div>
               </div>
             </div>
 

@@ -59,7 +59,7 @@ export class Ship extends Entity {
         }
         this.consoleBody += '</div>';
         if (previousConsoleBody != this.consoleBody) {
-            window.spaceViewDomManager.populateSidebar();
+            window.spaceViewDomManager.populateHtml();
         }
     }
 
@@ -154,7 +154,7 @@ export class Ship extends Entity {
         this.object3d.position.y = centerY;
     }
 
-    returnConsoleHTML() {
+    returnConsoleHtml() {
         let html = '';
         html += this.returnConsoleTitle();
         html += `<div>
