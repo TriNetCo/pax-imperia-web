@@ -31,85 +31,59 @@ export class SpaceViewDomManager {
 
     }
 
-    ///////////////////////
-    // Attach Dom Events //
-    ///////////////////////
-
-    attachDomEventsToCode() {
-        this.addMouseMovement();
-        this.addMouseClick();
-        this.addMouseDoubleClick();
-    }
-
-    addMouseMovement() {
-        this.mouseMovementHandler = ( event ) => {
-            // calculate pointer position in normalized device coordinates
-            // (-1 to +1) for both components
-            const h = this.canvas.height;
-            const w = this.canvas.width;
-            this.mouse.x = (event.offsetX / w) * 2 - 1;
-            this.mouse.y = -(event.offsetY / h) * 2 + 1;
-        }
-
-        this.canvas.addEventListener('mousemove', this.mouseMovementHandler);
-    }
-
-    addMouseClick() {
-        this.canvas.addEventListener('click', this.#clickHandler);
-    }
-
-    addMouseDoubleClick() {
-        this.canvas.addEventListener('dblclick', this.#doubleClickHandler);
-    }
+    ////////////////////
+    // Click Handlers //
+    ////////////////////
 
     #clickHandler = ( event ) => {
         const selectionTarget = this.findSelectionTarget(event);
         this.selectTarget(selectionTarget);
         this.populateHtml();
-        this.targetDebugging();
     }
 
     #doubleClickHandler = ( event ) => {
+        // on a doubleclick, previousTargets queue will look like:
+        //     0: double-clicked object or object behind,
+        //     1: double-clicked object,
+        //     2: object before double-click
+        // so it is safest to use previousTargets[1] as double-click target
+        const clickTarget = this.previousTargets[1]
         // check if the target before double click was a ship
-        if (this.previousPreviousTarget &&
-            this.previousPreviousTarget.parentEntity &&
-            this.previousPreviousTarget.parentEntity.type == "ship") {
-            this.moveShip(this.previousPreviousTarget, this.previousTarget, 'default');
-            this.previousTarget = this.previousPreviousTarget;
+        if (this.previousTargets[2] &&
+            this.previousTargets[2].parentEntity &&
+            this.previousTargets[2].parentEntity.type == "ship") {
+                this.moveShip(this.previousTargets[2], clickTarget, 'default');
         } else {
-            // doesn't enter the wormhole if a ship was being moved
-            if (this.previousTarget && this.previousTarget.parentEntity.type === "wormhole") {
-                let wormholeId = this.previousTarget.parentEntity.id;
-                const path = "/systems/" + wormholeId;
-                this.systemClickHandler(path);
+            // navigate through wormhole (unless ship was just moved through wormhole)
+            if (clickTarget &&
+                clickTarget.parentEntity.type === "wormhole") {
+                    const wormholeId = clickTarget.parentEntity.id;
+                    const path = "/systems/" + wormholeId;
+                    this.systemClickHandler(path);
             }
-
         }
         this.populateHtml();
     }
 
-    ///////////////////
-    // Click Helpers //
-    ///////////////////
+    ///////////////////////////
+    // Click Handler Helpers //
+    ///////////////////////////
 
     selectTarget(object3d) {
-        // Keep track of target before new selection
-        this.previousPreviousTarget = this.previousTarget;
-        this.previousTarget = this.selectionSprite.selectionTarget;
-
-        // Select new target
+        // select new target
         if (object3d) {
             this.selectionSprite.select(object3d);
         } else {
             this.selectionSprite.unselect();
         }
+        // add latest target to queue
+        this.previousTargets.push(this.selectionSprite.selectionTarget);
 
-        if (this.previousTarget &&
-            this.previousTarget.parentEntity.type == "ship" &&
-            this.previousTarget.parentEntity.buttonState) {
-                this.moveShip(this.previousTarget, this.selectionSprite.selectionTarget, this.previousTarget.parentEntity.buttonState);
-                // clear button state
-                this.previousTarget.parentEntity.buttonState = null;
+        if (this.previousTargets[1] &&
+            this.previousTargets[1].parentEntity.type == "ship" &&
+            this.previousTargets[1].parentEntity.buttonState) {
+                const buttonState = this.previousTargets[1].parentEntity.buttonState
+                this.moveShip(this.previousTargets[1], this.previousTargets[0], buttonState);
         }
     }
 
@@ -118,25 +92,28 @@ export class SpaceViewDomManager {
         const unselectableNames = ["selectionSprite", "wormholeText"];
 
         event.preventDefault();
-        let raycaster = this.raycaster;
-        raycaster.setFromCamera( this.mouse, this.camera );
-        const intersects = raycaster.intersectObjects( this.scene.children );
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        const intersects = this.raycaster.intersectObjects(this.scene.children);
 
+        let selection = null;
         // Loops through intersected objects (sorted by distance)
         for (let i = 0; i < intersects.length; i++) {
             let obj = this.getParentObject(intersects[i].object);
-            // Cannot select the selection sprite
-            if ( unselectableNames.includes(obj.name) ) {
+            if (unselectableNames.includes(obj.name)) {
                 continue;
             }
-            // If you click again on an object, you can select the
-            // object behind
-            if (obj != this.selectionSprite.selectionTarget) {
-                //this.selectionSprite.select(obj);
-                return obj;
+            // If current selectionTarget clicked again, remember it
+            // but look for an object behind to select instead
+            if (obj == this.selectionSprite.selectionTarget) {
+                selection = obj;
+            } else {
+                // Returns a selection different from current selectionTarget
+                selection = obj
+                return selection;
             }
         }
-        return null;
+        // Returns null unless the current selectionTarget was selected again
+        return selection;
     }
 
     getParentObject(obj) {
@@ -179,7 +156,9 @@ export class SpaceViewDomManager {
         }
 
         // re-set ship as target after moving
-        this.selectionSprite.select(ship3d);
+        this.selectTarget(ship3d);
+        // clear ship button state
+        shipEntity.buttonState = null;
     }
 
     setShipDestinationPoint(ship3d, shipEntity) {
@@ -189,12 +168,6 @@ export class SpaceViewDomManager {
         const intersects = new THREE.Vector3();
         this.raycaster.ray.intersectPlane(shipPlane, intersects);
         shipEntity.destinationPoint = {x: intersects.x, y: intersects.y, z: intersects.z};
-    }
-
-    detachFromDom() {
-        this.canvas.removeEventListener('mousemove', this.mouseMovementHandler);
-        this.canvas.removeEventListener('click', this.#clickHandler);
-        this.canvas.remove();
     }
 
     ///////////////////////////////
@@ -246,6 +219,43 @@ export class SpaceViewDomManager {
         document.getElementById("lower-console").innerHTML = html;
     }
 
+    ///////////////////////
+    // Attach Dom Events //
+    ///////////////////////
+
+    attachDomEventsToCode() {
+        this.addMouseMovement();
+        this.addMouseClick();
+        this.addMouseDoubleClick();
+    }
+
+    addMouseMovement() {
+        this.mouseMovementHandler = ( event ) => {
+            // calculate pointer position in normalized device coordinates
+            // (-1 to +1) for both components
+            const h = this.canvas.height;
+            const w = this.canvas.width;
+            this.mouse.x = (event.offsetX / w) * 2 - 1;
+            this.mouse.y = -(event.offsetY / h) * 2 + 1;
+        }
+
+        this.canvas.addEventListener('mousemove', this.mouseMovementHandler);
+    }
+
+    addMouseClick() {
+        this.canvas.addEventListener('click', this.#clickHandler);
+    }
+
+    addMouseDoubleClick() {
+        this.canvas.addEventListener('dblclick', this.#doubleClickHandler);
+    }
+
+    detachFromDom() {
+        this.canvas.removeEventListener('mousemove', this.mouseMovementHandler);
+        this.canvas.removeEventListener('click', this.#clickHandler);
+        this.canvas.remove();
+    }
+
     //////////////////////
     // Drawing Commands //
     //////////////////////
@@ -276,36 +286,6 @@ export class SpaceViewDomManager {
             parent.remove(container);
         } else {
             this.removeContainerFromScene(container.parent);
-        }
-    }
-
-    targetDebugging() {
-        // debugging
-        let consoleLogName = 'none';
-        if (this.previousPreviousTarget && this.previousPreviousTarget.parentEntity) {
-            consoleLogName = this.previousPreviousTarget.parentEntity.name;
-        }
-        console.log('previousPreviousTarget', consoleLogName);
-        consoleLogName = 'none';
-        if (this.previousTarget && this.previousTarget.parentEntity) {
-            consoleLogName = this.previousTarget.parentEntity.name;
-        }
-        console.log('previousTarget', consoleLogName);
-
-        consoleLogName = 'none';
-        if (this.selectionSprite.selectionTarget && this.selectionSprite.selectionTarget.parentEntity) {
-            consoleLogName = this.selectionSprite.selectionTarget.parentEntity.name;
-        }
-        console.log('selectionTarget', consoleLogName);
-
-        // expose selectionTarget to dev console
-        if (this.selectionSprite.selectionTarget) {
-            window.selectionTarget = this.selectionSprite.selectionTarget;
-        }
-
-        if (this.previousTarget &&
-            this.previousTarget.parentEntity.buttonState ) {
-            console.log("previousTarget buttonState", this.previousTarget.parentEntity.buttonState)
         }
     }
 
