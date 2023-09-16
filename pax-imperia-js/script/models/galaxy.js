@@ -126,3 +126,4 @@ export class Galaxy {
         this.systems[systemId].connections.push(connection);
     }
 }
+
