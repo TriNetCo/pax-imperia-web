@@ -1,6 +1,6 @@
 import { GalaxyDrawer } from './galaxyDrawer.js';
 import { GalaxyDomManager } from './galaxyDomManager.js';
-import { Galaxy } from '../../models/galaxy.js'
+import { packData } from '../../models/helpers.js';
 import * as THREE from 'three';
 
 export class GalaxyWidget {
@@ -50,8 +50,9 @@ export class GalaxyWidget {
         this.galaxyDomManager.attachDomEventsToCode();
     }
 
-    exportGalaxyData() {
-        return JSON.stringify(this.galaxy.systems);
+    exportGalaxyDataToJson() {
+        const systemsData = packData(this.galaxy.systems);
+        return JSON.stringify(systemsData);
     }
 
     importGalaxyData(systemsJson) {

@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 
-import { GLTFLoader } from '/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-import { FBXLoader } from '/node_modules/three/examples/jsm/loaders/FBXLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
+// import { GLTFLoader } from '/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+// import { FBXLoader } from '/node_modules/three/examples/jsm/loaders/FBXLoader.js';
 
 // import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/jsm/loaders/GLTFLoader.js";
 // import { FBXLoader } from "https://cdn.jsdelivr.net/npm/three@0.147.0/examples/jsm/loaders/FBXLoader.js";
@@ -19,7 +21,10 @@ export class Entity {
         this.consoleBody = '';
         unpackData(data, this);
         this.scale = {x: this.size, y: this.size, z: this.size};
-        this.basePath = window.location.hash.includes("#") ? "/pax-imperia-clone" : ""
+        this.basePath = '';
+        if (typeof(window) !== 'undefined' && window.location.hash.includes("#")) {
+            this.basePath = "/pax-imperia-clone";
+        }
     }
 
     async load (scene) {
