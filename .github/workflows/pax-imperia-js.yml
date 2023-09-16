@@ -4,19 +4,19 @@ on:
   push:
     paths:
       - '.github/workflows/pax-imperia-js.yml'
-      - 'react-frontend/**/*.js'
-      - 'react-frontend/**/*.jsx'
-      - 'react-frontend/**/*.cjs'
-      - 'react-frontend/**/*.json'
-      - 'react-frontend/**/*.conf'
-      - 'react-frontend/**/*.html'
-      - 'react-frontend/**/*.css'
-      - 'react-frontend/**/*.jpeg'
-      - 'react-frontend/**/*.png'
-      - 'react-frontend/**/*.svg'
-      - 'react-frontend/**/*.bin'
-      - 'react-frontend/**/*.gltf'
-      - 'react-frontend/**/*.fbx'
+      - 'pax-imperia-js/**/*.js'
+      - 'pax-imperia-js/**/*.jsx'
+      - 'pax-imperia-js/**/*.cjs'
+      - 'pax-imperia-js/**/*.json'
+      - 'pax-imperia-js/**/*.conf'
+      - 'pax-imperia-js/**/*.html'
+      - 'pax-imperia-js/**/*.css'
+      - 'pax-imperia-js/**/*.jpeg'
+      - 'pax-imperia-js/**/*.png'
+      - 'pax-imperia-js/**/*.svg'
+      - 'pax-imperia-js/**/*.bin'
+      - 'pax-imperia-js/**/*.gltf'
+      - 'pax-imperia-js/**/*.fbx'
 
 jobs:
   build:

@@ -1,4 +1,4 @@
-name: react-frontend build
+name: react-frontend build for main
 
 on:
   push:

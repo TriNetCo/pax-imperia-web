@@ -44,4 +44,3 @@ const Galaxy = () => {
 };
 
 export default Galaxy;
-
