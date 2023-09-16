@@ -36,6 +36,7 @@ export class SpaceViewDomManager {
     ////////////////////
 
     #clickHandler = ( event ) => {
+        event.preventDefault();
         const selectionTarget = this.findSelectionTarget(event);
         this.selectTarget(selectionTarget);
         this.populateHtml();
@@ -91,7 +92,6 @@ export class SpaceViewDomManager {
         // cannot click on these types of objects
         const unselectableNames = ["selectionSprite", "wormholeText"];
 
-        event.preventDefault();
         this.raycaster.setFromCamera(this.mouse, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children);
 
@@ -201,7 +201,7 @@ export class SpaceViewDomManager {
                     <div class="left-menu-thumbnail ${selectedThumbnail}" onclick="clickThumbnail('${entity.type}', '${entity.name}')">
                         <img src="${entity.assetThumbnailPath}"></img>
                         <div class="right-side">
-                            <div class="star-details">${entity.name}${details}
+                            <div class="details">${entity.name}${details}
                             </div>
                         </div>
                     </div>
@@ -259,19 +259,6 @@ export class SpaceViewDomManager {
     //////////////////////
     // Drawing Commands //
     //////////////////////
-
-    putCursorOverContainer(container) {
-        if (container.name == "selectionSprite") return; // Never put a cursor over the cursor itself
-        let parent = container.parent;
-
-        if (parent.type == "Scene") {
-            this.selectionSprite.select(container);
-            console.log("Selected: " + container.name)
-            // lowerConsole.print("Selected: " + container.name);
-        } else {
-            this.putCursorOverContainer(parent)
-        }
-    }
 
     /* This function recursively walks up the tree of parents until it finds the root scene
      * and removes the highest order group from that scene.
