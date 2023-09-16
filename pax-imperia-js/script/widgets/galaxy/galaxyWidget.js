@@ -1,6 +1,7 @@
 import { GalaxyDrawer } from './galaxyDrawer.js';
 import { GalaxyDomManager } from './galaxyDomManager.js';
 import { packData } from '../../models/helpers.js';
+import { Galaxy } from '../../models/galaxy.js';
 import * as THREE from 'three';
 
 export class GalaxyWidget {
@@ -51,16 +52,16 @@ export class GalaxyWidget {
     }
 
     exportGalaxyDataToJson() {
-        const systemsData = packData(this.galaxy.systems);
-        return JSON.stringify(systemsData);
+        const systemsJson = JSON.stringify(this.galaxy.systems);
+        return systemsJson;
     }
 
     importGalaxyData(systemsJson) {
         let canvas = this.canvas;
         let systemClickHandler = this.systemClickHandler;
 
-        // this.galaxy = new Galaxy(null, systemsJson);
-        this.galaxy.replaceSystemsData(systemsJson);
+        this.galaxy = new Galaxy(null, systemsJson);
+        // this.galaxy.replaceSystemsData(systemsJson);
 
         if (this.canvas === undefined) return;
 

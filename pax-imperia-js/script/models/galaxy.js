@@ -2,7 +2,6 @@ import { StarName } from './starName.js';
 import { SystemGenerator } from './systemGenerator.js';
 import { getRandomNum } from './helpers.js';
 import { System } from '../../script/widgets/space_view/entities/system.js'
-// import { packData, unpackData } from './helpers.js';
 
 
 export class Galaxy {

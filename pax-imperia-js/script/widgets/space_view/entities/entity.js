@@ -27,6 +27,17 @@ export class Entity {
         }
     }
 
+    toJSON() {
+        return ({
+            index: this.index,
+            atmosphere: this.atmosphere,
+            size: this.size,
+            distance_from_star: this.distance_from_star,
+            spin_speed: this.spin_speed,
+            starting_angle: this.starting_angle
+        });
+    }
+
     async load (scene) {
         this.scene = scene;
         console.log("loading " + this.type + ": " + this.name);
@@ -90,23 +101,19 @@ export class Entity {
     }
 
     unselect() {
+        // TODO: remove spaceViewDomManager global
         if (window.spaceViewDomManager.selectionSprite.selectionTarget == this.object3d) {
             window.spaceViewDomManager.unselectTarget();
         }
     }
 
-    delete(galaxy) {
-        this.deleteObject3d();
-        this.deleteEntity(galaxy);
-    }
-
-    deleteObject3d() {
+    removeObject3d() {
         this.unselect()
         // delete 3d object from scene
         this.scene.remove(this.object3d);
     }
 
-    deleteEntity(galaxy) {
+    removeFromSystem(galaxy) {
         // delete entity from system object
         // find index of entity in list of entities in system
         const systemEntities = galaxy.systems[this.systemId][this.type + 's']
@@ -115,15 +122,6 @@ export class Entity {
         systemEntities.splice(i, 1);
         // update sidebar
         window.spaceViewDomManager.populateHtml();
-    }
-
-    pushToSystem(systemId, galaxy) {
-        // create entity in systemsData
-        const system = galaxy.systems[systemId];
-        // update with new systemId
-        this.previousSystemId = this.systemId;
-        this.systemId = systemId;
-        system[this.type + 's'].push(this);
     }
 
     returnConsoleTitle() {

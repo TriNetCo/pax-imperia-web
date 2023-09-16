@@ -1,5 +1,5 @@
 import { Entity } from './entity.js';
-import { roundToDecimal } from '../../../models/helpers.js';
+import { roundToDecimal, getRandomNum } from '../../../models/helpers.js';
 import * as THREE from 'three';
 
 export class Ship extends Entity {
@@ -21,6 +21,14 @@ export class Ship extends Entity {
         this.orbitAngle = null; // radians
         this.colonizeTarget = null; // 3d object
         this.colonizeAnimationProgress = null; // 0 to 1
+    }
+
+    toJSON() {
+        return ({
+            name: this.name,
+            index: this.index,
+            position: this.position,
+        });
     }
 
     update (deltaTime, system, galaxy) {
@@ -74,16 +82,36 @@ export class Ship extends Entity {
 
     checkAndSendThroughWormhole(galaxy) {
         // if ship is close enough to wormhole, move it to the next system
-        const distanceFromDest = this.object3d.position.distanceTo(this.destinationTarget.position);
+        const distanceFromDest = this.object3d.position.distanceTo(
+            this.destinationTarget.position);
         const wormholeId = this.destinationTarget.parentEntity.id;
         if (distanceFromDest <= this.speed) {
             // copy ship data to wormhole system data
             this.resetMovement();
+            this.removeObject3d();
             // delete ship from current system
-            this.delete(galaxy);
+            this.removeFromSystem(galaxy);
             // move to new system
             this.pushToSystem(wormholeId, galaxy);
+            this.setPositionNearWormhole(wormholeId, galaxy);
         }
+    }
+
+    pushToSystem(systemId, galaxy) {
+        // create entity in systemsData
+        const system = galaxy.systems[systemId];
+        // update with new systemId
+        this.previousSystemId = this.systemId;
+        this.systemId = systemId;
+        system[this.type + 's'].push(this);
+    }
+
+    setPositionNearWormhole(wormholeId, galaxy) {
+        const destSystem = galaxy.systems[wormholeId];
+        const wormhole = destSystem.wormholes.find(x => x.id === this.previousSystemId);
+        this.position.x = wormhole.position.x + getRandomNum(-2, 2, 2);
+        this.position.y = wormhole.position.y + getRandomNum(-2, 2, 2);
+        this.position.z = wormhole.position.z + 1;
     }
 
     updateToDestinationPoint() {
@@ -124,7 +152,8 @@ export class Ship extends Entity {
         this.colonizeAnimationProgress += this.speed/20;
         // delete ship once landing animation finished
         if (this.colonizeAnimationProgress >= 1) {
-            this.delete(galaxy)
+            this.removeObject3d();
+            this.removeFromSystem(galaxy)
             return
         }
         // get planet's current coordinates

@@ -1,8 +1,8 @@
-import { unpackData, packData, getRandomNum } from '../../../models/helpers.js'
 import { Star } from './star.js';
 import { Planet } from './planet.js';
 import { Ship } from './ship.js';
 import { Wormhole } from './wormhole.js';
+import { unpackData } from '../../../models/helpers.js'
 
 export class System {
 
@@ -12,7 +12,20 @@ export class System {
         this.planets = this.createRepresentations(systemData.planets, Planet, this.name, this.id);
         this.wormholes = this.createRepresentations(systemData.connections, Wormhole, this.name, this.id, systemData.position);
         this.ships = this.createRepresentations(systemData.ships, Ship, this.name, this.id);
-        this.placeWormholedShips();
+    }
+
+    toJSON() {
+        const systemJson = {
+            id: this.id,
+            name: this.name,
+            position: this.position,
+            radius: this.radius,
+            connections: this.connections,
+            stars: this.stars,
+            planets: this.planets,
+            ships: this.ships
+        };
+        return systemJson;
     }
 
     createRepresentations (entitiesData, cls, systemName, systemId, systemPosition=null) {
@@ -22,18 +35,6 @@ export class System {
             representations.push(representation);
         };
         return representations;
-    }
-
-    placeWormholedShips() {
-        for (const ship of this.ships) {
-            if (ship.previousSystemId) {
-                const wormhole = this.wormholes.find(x => x.id === ship.previousSystemId);
-                ship.position.x = wormhole.position.x + getRandomNum(-2, 2, 2);
-                ship.position.y = wormhole.position.y + getRandomNum(-2, 2, 2);
-                ship.position.z = wormhole.position.z + 1;
-            }
-        };
-
     }
 
     async load (scene) {
