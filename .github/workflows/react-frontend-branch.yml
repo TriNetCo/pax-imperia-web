@@ -1,0 +1,42 @@
+name: react-frontend build for branches
+
+on:
+  push:
+    branches:
+      - '*'
+      - '!main'
+    paths:
+      - '.github/workflows/react-frontend.yml'
+      - 'react-frontend/**/*.js'
+      - 'react-frontend/**/*.jsx'
+      - 'react-frontend/**/*.cjs'
+      - 'react-frontend/**/*.json'
+      - 'react-frontend/**/*.conf'
+      - 'react-frontend/**/*.html'
+      - 'react-frontend/**/*.css'
+      - 'react-frontend/**/*.jpeg'
+      - 'react-frontend/**/*.png'
+      - 'react-frontend/**/*.svg'
+      - 'react-frontend/**/*.bin'
+      - 'react-frontend/**/*.gltf'
+      - 'react-frontend/**/*.fbx'
+
+jobs:
+  build:
+    defaults:
+      run:
+        working-directory: ./react-frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./react-frontend/build
