@@ -88,6 +88,13 @@ export class SpaceViewDomManager {
         }
     }
 
+    unselectTarget() {
+        if (this.selectionSprite.selectionTarget) {
+            this.selectionSprite.unselect();
+            this.previousTargets.push(null);
+        }
+    }
+
     findSelectionTarget(event) {
         // cannot click on these types of objects
         const unselectableNames = ["selectionSprite", "wormholeText"];

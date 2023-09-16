@@ -84,44 +84,41 @@ export class Entity {
         return object3d;
     }
 
-    delete(system) {
+    unselect() {
+        if (window.spaceViewDomManager.selectionSprite.selectionTarget == this.object3d) {
+            window.spaceViewDomManager.unselectTarget();
+        }
+    }
+
+    delete(galaxy) {
         this.deleteObject3d();
-        this.deleteEntity(system);
-        this.deleteData();
+        this.deleteEntity(galaxy);
     }
 
     deleteObject3d() {
-        // unselect if selected object is being deleted
-        if (window.spaceViewDomManager.selectionSprite.selectionTarget == this.object3d) {
-            window.spaceViewDomManager.selectionSprite.unselect()
-        }
+        this.unselect()
         // delete 3d object from scene
         this.scene.remove(this.object3d);
     }
 
-    deleteEntity(system) {
-        // delete entity from system
-        const i = system[this.type + 's'].findIndex(x => x.name === this.name);
-        system[this.type + 's'].splice(i, 1);
+    deleteEntity(galaxy) {
+        // delete entity from system object
+        // find index of entity in list of entities in system
+        const systemEntities = galaxy.systems[this.systemId][this.type + 's']
+        const i = systemEntities.findIndex(x => x.name === this.name);
+        // remove from list of entities in system
+        systemEntities.splice(i, 1);
         // update sidebar
         window.spaceViewDomManager.populateHtml();
     }
 
-    deleteData() {
-        // delete from systemData
-        const systemData = window.systemsData[this.systemId];
-        const i = systemData[this.type + 's'].findIndex(x => x.name === this.name);
-        systemData[this.type + 's'].splice(i, 1);
-    }
-
-    pushData(systemId) {
+    pushToSystem(systemId, galaxy) {
         // create entity in systemsData
-        const systemData = window.systemsData[systemId];
-        let entityData = packData(this);
+        const system = galaxy.systems[systemId];
         // update with new systemId
-        entityData.previousSystemId = entityData.systemId;
-        entityData.systemId = systemId;
-        systemData[this.type + 's'].push(entityData);
+        this.previousSystemId = this.systemId;
+        this.systemId = systemId;
+        system[this.type + 's'].push(this);
     }
 
     returnConsoleTitle() {

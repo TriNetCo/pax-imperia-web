@@ -1,4 +1,4 @@
-import { unpackData, getRandomNum } from '../../../models/helpers.js'
+import { unpackData, packData, getRandomNum } from '../../../models/helpers.js'
 import { Star } from './star.js';
 import { Planet } from './planet.js';
 import { Ship } from './ship.js';
@@ -43,4 +43,5 @@ export class System {
             await entity.load(scene);
         }
     }
+
 }

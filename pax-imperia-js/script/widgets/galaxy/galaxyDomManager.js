@@ -1,8 +1,8 @@
 export class GalaxyDomManager {
 
-    constructor(cx, systems, galaxyDrawer, systemClickHandler, mouse) {
+    constructor(cx, galaxy, galaxyDrawer, systemClickHandler, mouse) {
         this.canvas = cx.canvas;
-        this.systems = systems;
+        this.galaxy = galaxy;
         this.galaxyDrawer = galaxyDrawer;
         this.systemClickHandler = systemClickHandler;
         this.mouse = mouse;
@@ -23,13 +23,13 @@ export class GalaxyDomManager {
     }
 
     addMouseClick() {
-        this.clickHandler = (e) => {
+        this.clickHandler = (event) => {
             console.log("mouseClicked");
-            this.mouse.x = e.offsetX;
-            this.mouse.y = e.offsetY;
+            this.mouse.x = event.offsetX;
+            this.mouse.y = event.offsetY;
 
             // check if we're clicking a star system
-            this.systems.forEach( system => {
+            this.galaxy.systems.forEach( system => {
                 if (this.galaxyDrawer.isMouseHovering(system)) {
                     const path = "/systems/" + system.id;
                     this.systemClickHandler(path);

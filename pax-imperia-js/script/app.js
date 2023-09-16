@@ -31,7 +31,7 @@ function generateGalaxy() {
         galaxy: new Galaxy(config)
     };
 
-    galaxyWidget = new GalaxyWidget(config, gameData);
+    galaxyWidget = new GalaxyWidget(config, galaxy);
     galaxyWidget.beginGame(canvas, systemClickHandler);
 }
 

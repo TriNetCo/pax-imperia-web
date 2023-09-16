@@ -23,11 +23,11 @@ export class Ship extends Entity {
         this.colonizeAnimationProgress = null; // 0 to 1
     }
 
-    update (deltaTime, system) {
+    update (deltaTime, system, galaxy) {
         // first, check if ship should be sent through wormhole
         if (this.destinationTarget &&
             this.destinationTarget.parentEntity.type == 'wormhole') {
-                this.checkAndSendThroughWormhole();
+                this.checkAndSendThroughWormhole(galaxy);
         }
         // then, update destination point if moving to a target or colonizing
         if (this.destinationTarget) {
@@ -72,16 +72,17 @@ export class Ship extends Entity {
         this.colonizeAnimationProgress = null;
     }
 
-    checkAndSendThroughWormhole() {
+    checkAndSendThroughWormhole(galaxy) {
         // if ship is close enough to wormhole, move it to the next system
         const distanceFromDest = this.object3d.position.distanceTo(this.destinationTarget.position);
         const wormholeId = this.destinationTarget.parentEntity.id;
         if (distanceFromDest <= this.speed) {
             // copy ship data to wormhole system data
             this.resetMovement();
-            this.pushData(wormholeId);
             // delete ship from current system
-            this.delete(system);
+            this.delete(galaxy);
+            // move to new system
+            this.pushToSystem(wormholeId, galaxy);
         }
     }
 
@@ -123,7 +124,7 @@ export class Ship extends Entity {
         this.colonizeAnimationProgress += this.speed/20;
         // delete ship once landing animation finished
         if (this.colonizeAnimationProgress >= 1) {
-            this.delete(system)
+            this.delete(galaxy)
             return
         }
         // get planet's current coordinates

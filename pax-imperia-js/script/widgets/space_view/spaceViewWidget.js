@@ -1,7 +1,5 @@
-import { Galaxy } from '../../models/galaxy.js';
 import { SpaceViewAnimator } from './spaceViewAnimator.js';
 import { SpaceViewDomManager } from './spaceViewDomManager.js';
-import { System } from './entities/system.js';
 import * as THREE from 'three';
 import { SpriteFlipbook } from '../../models/spriteFlipbook.js'
 
@@ -10,12 +8,12 @@ export class SpaceViewWidget {
     spaceViewAnimator;
     spaceViewDomManager;
 
-    constructor(config, clientObjects, systemsData) {
+    constructor(config, clientObjects, galaxy) {
         this.c = config;
         this.clientObjects = clientObjects;
-        this.systemsData = systemsData;
-        // make systemsData global
-        window.systemsData = systemsData;
+        this.galaxy = galaxy;
+        // debug
+        window.galaxy = galaxy;
         this.basePath = window.location.hash.includes("#") ? "/pax-imperia-clone" : "";
 
         const mouse = new THREE.Vector2(0,0);
@@ -65,15 +63,13 @@ export class SpaceViewWidget {
         // make spaceViewDomManager global
         window.spaceViewDomManager = this.spaceViewDomManager;
 
-        this.spaceViewAnimator = new SpaceViewAnimator(this.c, this.clientObjects, this.system);
+        this.spaceViewAnimator = new SpaceViewAnimator(this.c, this.clientObjects, this.system, this.galaxy);
         await this.spaceViewAnimator.populateScene();
     }
 
     async setCurrentSystem(systemIndex) {
-        let systemData = this.systemsData[systemIndex]
-        // systemData.ships = [{"name": "ship", "index": 0}]
-        this.system = new System(systemData);
-        window.system = this.system;
+        this.system = this.galaxy.systems[systemIndex];
+        // window.system = this.system;
     }
 
     draw() {

@@ -6,6 +6,7 @@ export class SpaceViewAnimator {
         this.c = config;
         this.clientObjects = clientObjects;
         this.system = system;
+        this.galaxy = galaxy;
 
         this.scene = clientObjects.scene;
         this.selectionSprite = clientObjects.selectionSprite;
@@ -71,7 +72,7 @@ export class SpaceViewAnimator {
         }
 
         for (const ship of this.system['ships']) {
-            ship.update(deltaTime, this.system);
+            ship.update(deltaTime, this.system, this.galaxy);
         }
 
     }
