@@ -1,3 +1,4 @@
+import React from 'react';
 import LandingPageOptions from './LandingPageOptions';
 import UserCard from 'src/shared/UserCard/UserCard';
 

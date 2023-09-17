@@ -18,7 +18,7 @@ const getAppConfig = () => {
     case 'local':
     default:
       return {
-        APP_ENV:           'local',
+        APP_ENV:           appEnv ? appEnv : 'local',
         BUILD_VERSION:     process.env.REACT_APP_PAX_BUILD_VERSION,
         SOCKET_URL:        'ws://localhost:3001/websocket',
         BACKEND_URL:       'http://localhost:3001',

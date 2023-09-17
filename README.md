@@ -80,6 +80,7 @@ More detailed architectural documentation is located [here](docs/architectural_d
 - React + WebGL... http://www.petecorey.com/blog/2019/08/19/animating-a-canvas-with-react-hooks/
 - React Context?? https://www.freecodecamp.org/news/react-context-for-beginners/#:~:text=React%20context%20caveats-,What%20is%20React%20context%3F,across%20our%20components%20more%20easily.
 - Websocket (very regret) https://dev.to/aduranil/how-to-use-websockets-with-redux-a-step-by-step-guide-to-writing-understanding-connecting-socket-middleware-to-your-project-km3
+- [Type Hinting](https://dev.to/sumansarkar/how-to-use-jsdoc-annotations-with-vscode-for-intellisense-7co) without the baggage.
 
 ###### CSS
 - Nesting Flexboxes: https://www.quackit.com/css/flexbox/tutorial/nested_flex_containers.cfm

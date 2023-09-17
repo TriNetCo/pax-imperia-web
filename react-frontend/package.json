@@ -1,6 +1,8 @@
 {
   "name": "react-frontend",
   "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.js",
   "homepage": "https://TriNetCo.github.io/pax-imperia-clone/",
   "private": true,
   "dependencies": {
@@ -11,8 +13,8 @@
     "@mui/material": "^5.6.2",
     "@mui/x-data-grid": "^5.10.0",
     "@reduxjs/toolkit": "^1.9.1",
-    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/user-event": "^14.4.3",
+    "cjs-loader": "^0.1.0",
     "firebase": "^9.15.0",
     "pax-imperia-js": "file:..\\pax-imperia-js",
     "react": "^18.2.0",
@@ -33,15 +35,10 @@
     "deploy": "gh-pages -d build",
     "deploy-app": "bash -c 'source ../versioner.sh && react-scripts build && gsutil -m -o 'GSUtil:parallel_process_count=1' cp -r build/* gs://pax-njax-org/'",
     "deploy-assets": "bash -c 'gsutil -m -o 'GSUtil:parallel_process_count=1' cp -r ../pax-imperia-js/assets/* gs://pax-njax-org/assets'",
-    "test": "CI=true react-scripts test --color",
+    "test": "REACT_APP_PAX_APP_ENV=local-test CI=true react-scripts test --color",
+    "test-debug": "REACT_APP_PAX_APP_ENV=local-test react-scripts --inspect-brk test --runInBand --no-cache",
     "verify": "eslint --max-warnings=0 --fix src",
     "eject": "react-scripts eject"
-  },
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/tools/fileMock.js",
-      "\\.(css|less)$": "<rootDir>/tools/styleMock.js"
-    }
   },
   "babel": {
     "presets": [
@@ -67,7 +64,9 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
-    "gh-pages": "^6.0.0"
+    "gh-pages": "^6.0.0",
+    "jest-fetch-mock": "^3.0.3"
   }
 }

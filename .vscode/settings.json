@@ -1,0 +1,17 @@
+{
+    "jest.rootPath": "pax-imperia-js",
+    "jest.disabledWorkspaceFolders": [
+        "node_modules",
+        "./react-frontend/",
+    ],
+    "jest.autoClearTerminal": false,
+    "jest.autoRun": {
+        "watch": false,
+        "onStartup?": ["all-tests"],
+        "onSave?": false,
+    },
+    "jest.autoRevealOutput": "on-run",
+    "jest.debugMode": true,
+    "jest.jestCommandLine": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    // "jest.jestCommandLine": "node --experimental-vm-modules pax-imperia-js/node_modules/jest/bin/jest.js",
+}

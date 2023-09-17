@@ -3,6 +3,17 @@ import { SpaceViewDomManager } from './spaceViewDomManager.js';
 import * as THREE from 'three';
 import { SpriteFlipbook } from '../../models/spriteFlipbook.js'
 
+/**
+ * Encapsulates all of the logic related to rendering the SpaceView canvas
+ * elements and supporting HTML.
+ *
+ * @constructor
+ * @param {object} config        - The configurations defined in gameSettings.js.
+ * @param {object} clientObjects - clientObjects, or rather dom elements that are used by
+ *                                 the widget to render the game or controls.
+ * @param {object} systemsData   - The system data which includes planets, stars,
+ *                                 connections, ships, etc.
+ */
 export class SpaceViewWidget {
 
     spaceViewAnimator;

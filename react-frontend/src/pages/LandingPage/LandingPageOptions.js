@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import UserContext from '../../app/UserContext';
 import { spoofSignIn } from '../DebugPage/webToolHelpers';

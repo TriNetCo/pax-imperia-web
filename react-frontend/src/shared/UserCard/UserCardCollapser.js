@@ -1,6 +1,6 @@
 import { Avatar, Button, Collapse, IconButton } from '@mui/material';
 import PropTypes from 'prop-types';
-import { useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import UserContext from '../../app/UserContext';
