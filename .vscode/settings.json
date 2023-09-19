@@ -1,10 +1,7 @@
 {
-    "jest.rootPath": "pax-imperia-js",
-    // "jest.testExplorer": {"showInlineError": true},
-    "jest.disabledWorkspaceFolders": [
-        "node_modules",
-        // "./react-frontend/",
-    ],
+    "jest.nodeEnv": {
+        "NODE_OPTIONS": "--experimental-vm-modules"
+    },
     "jest.autoClearTerminal": false,
     "jest.autoRun": {
         "watch": false,
@@ -14,9 +11,9 @@
     "jest.autoRevealOutput": "on-run",
     "jest.debugMode": true,
     "jest.jestCommandLine": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    // "jest.jestCommandLine": "node --experimental-vm-modules pax-imperia-js/node_modules/jest/bin/jest.js",
+    // "jest.jestCommandLine": "node --experimental-vm-modules react-frontend/node_modules/jest/bin/jest.js",
 
-    "jestrunner.projectPath": "./react-frontend/",
+    // "jestrunner.projectPath": "./react-frontend/",
     // "jestrunner.jestCommand": "npm run test --",
     // "jestrunner.debugOptions": {
     //     "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
@@ -29,6 +26,6 @@
     //       "--color"
     //     ]
     // },
-    "jestrunner.changeDirectoryToWorkspaceRoot": true,
+    // "jestrunner.changeDirectoryToWorkspaceRoot": true,
 
 }

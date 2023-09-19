@@ -85,6 +85,15 @@ More detailed architectural documentation is located [here](docs/architectural_d
 ###### CSS
 - Nesting Flexboxes: https://www.quackit.com/css/flexbox/tutorial/nested_flex_containers.cfm
 
+###### DevX
+The workflow went pretty side-ways with this.  It seems like there aren't any extensions out there that support configuring the run and debug settings for the tests, and therefore none really have much monorepo support.  My current workflow involves opening the root of this repo in vscode.  kavod-io.vscode-jest-test-adapter, hbenl.vscode-test-explorer, and the built-in test explorer (I think) will fight over displaying the tests in the test explorer panels.  react-frontend and pax-imperia-js will work, just not within the same pane.  Also, there are three 'run' buttons for running tests by navigating to a specific test.  There's
+
+1. A checkmark in the gutter,
+2. A gray 'run' button above the test, and
+3. Enigmatically, a second gray 'run' button above the test
+
+For CI/ CD, `npm test` will always work.  I recommend just using the CLI generally.  Good Luck!
+
 ### Game Design
 Here's some ideas/ brainstorms about the [game design](docs/game_design.md).
 
