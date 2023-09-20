@@ -14,7 +14,7 @@ const GalaxyConfigPage = () => {
 
       </div>
 
-      <button>Re-Generate System</button>
+      <button>Re-Generate System (Disabled)</button>
       <div>
         TODO:  Add slider bars and cool stuff to this page!!!
       </div>

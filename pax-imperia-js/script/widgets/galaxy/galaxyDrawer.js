@@ -1,14 +1,11 @@
-// This is a SystemsDataDrawer, but we haven't renamed everything so it
-// might be confusing that this class doesn't interact with the Galaxy
-// class at all
 export class GalaxyDrawer {
 
     constructor(config) {
         this.cx = config.cx;
-        this.systemsData = config.systemsData;
+        this.galaxy = config.galaxy;
         this.systemNameLabel = config.systemNameLabel;
         this.mouse = config.mouse;
-        this.connections = this.collectConnections(this.systemsData);
+        this.connections = this.collectConnections(this.galaxy.systems);
     }
 
     drawLoop() {
@@ -31,8 +28,8 @@ export class GalaxyDrawer {
         cx.strokeStyle = "orange";
         cx.lineWidth = 1;
         for (let i = 0, len = connections.length; i < len; i++) {
-            let startSystem = this.systemsData[connections[i][0]];
-            let endSystem = this.systemsData[connections[i][1]];
+            let startSystem = this.galaxy.systems[connections[i][0]];
+            let endSystem = this.galaxy.systems[connections[i][1]];
             cx.beginPath();
             cx.moveTo(startSystem.position.x, startSystem.position.y);
             cx.lineTo(endSystem.position.x, endSystem.position.y);
@@ -40,10 +37,10 @@ export class GalaxyDrawer {
         }
     }
 
-    collectConnections(systemsData) {
+    collectConnections(systems) {
         const connections = [];
-        for (let i = 0, len = systemsData.length; i < len; i++) {
-            let system = systemsData[i];
+        for (let i = 0, len = systems.length; i < len; i++) {
+            let system = systems[i];
             let sourceConnections = system.connections.sort();
             for (let j = 0; j < sourceConnections.length; j++) {
                 // connection = {id: 1, name: 'Reticulum', position: {x,y,z}}
@@ -60,8 +57,8 @@ export class GalaxyDrawer {
 
     drawSystems() {
         let systemDrawColor = "rgb(150, 150, 150)";
-        for (let i = 0; i < this.systemsData.length; i++) {
-            let system = this.systemsData[i];
+        for (let i = 0; i < this.galaxy.systems.length; i++) {
+            let system = this.galaxy.systems[i];
             this.drawDot(system.position.x, system.position.y, system.radius, systemDrawColor);
         }
     }
@@ -70,8 +67,8 @@ export class GalaxyDrawer {
         let systemNameLabel = this.systemNameLabel;
         let hoverDrawColor = "rgb(255, 255, 255)";
         let nothingIsHovered = true;
-        for (let i = 0; i < this.systemsData.length; i++) {
-            let system = this.systemsData[i];
+        for (let i = 0; i < this.galaxy.systems.length; i++) {
+            let system = this.galaxy.systems[i];
             if (this.isMouseHovering(system)) {
                 systemNameLabel.innerHTML = system.name;
                 let hoverDrawRadius = system.radius + 2;

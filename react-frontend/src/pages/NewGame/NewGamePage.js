@@ -42,7 +42,7 @@ const NewGameLayout = () => {
   };
 
   const setGameData = () => {
-    const systemsJson = data.galaxyWidget.exportGalaxyData();
+    const systemsJson = data.galaxyWidget.exportGalaxyDataToJson();
     dispatch(setGameConfiguration(chatLobbyId, systemsJson));
   };
 
