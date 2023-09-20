@@ -30,13 +30,13 @@ export class Galaxy {
         }
 
         if (systemsJson === "") {
-            const systemsData = initializeNewGalaxy(galaxyWidgetSettings);
+            const systemsData = this.initializeNewGalaxy(galaxyWidgetSettings);
             this.systems = this.unpackSystemsData(systemsData);
             return;
         }
 
         if (galaxyWidgetSettings === null) {
-            const systemsData = loadGalaxyFromJson(systemsJson);
+            const systemsData = this.loadGalaxyFromJson(systemsJson);
             this.systems = this.unpackSystemsData(systemsData);
             return;
         }
@@ -50,7 +50,7 @@ export class Galaxy {
     }
 
     loadGalaxyFromJson(systemsJson) {
-        systemsData = JSON.parse(systemsJson);
+        return JSON.parse(systemsJson);
     }
 
     unpackSystemsData(systemsData) {
