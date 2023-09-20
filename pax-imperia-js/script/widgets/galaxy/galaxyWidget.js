@@ -17,7 +17,7 @@ export class GalaxyWidget {
         this.galaxy = galaxy;
         this.gameClock = new THREE.Clock();
 
-        if (typeof(window) !== 'undefined') {  // These globals break tests hard...
+        if (typeof (window) !== 'undefined') {  // These globals break tests hard...
             // window.systemsData = this.galaxy.systems;
             window.gameClock = window.gameClock ? window.gameClock : this.gameClock;
         }
@@ -41,7 +41,8 @@ export class GalaxyWidget {
             cx: cx,
             galaxy: this.galaxy,
             systemNameLabel: systemNameLabel,
-            mouse: this.mouse});
+            mouse: this.mouse
+        });
         this.galaxyDomManager = new GalaxyDomManager(
             cx,
             this.galaxy,
@@ -61,9 +62,8 @@ export class GalaxyWidget {
         let systemClickHandler = this.systemClickHandler;
 
         this.galaxy = new Galaxy(null, systemsJson);
-        // this.galaxy.replaceSystemsData(systemsJson);
 
-        if (this.canvas === undefined) return;
+        if (this.canvas === undefined) return;  // Keep this for a unit testing hack so I wouldn't have to mock the browser's jazz
 
         let cx = canvas.getContext("2d");
         this.detachFromDom();
@@ -73,13 +73,14 @@ export class GalaxyWidget {
             cx: cx,
             galaxy: this.galaxy,
             systemNameLabel: systemNameLabel,
-            mouse: this.mouse});
+            mouse: this.mouse
+        });
         this.galaxyDomManager = new GalaxyDomManager(
             cx,
             this.galaxy,
             this.galaxyDrawer,
             systemClickHandler,
-            this.mouse)
+            this.mouse);
         this.galaxyDomManager.attachDomEventsToCode();
     }
 
