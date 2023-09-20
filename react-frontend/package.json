@@ -1,7 +1,6 @@
 {
   "name": "react-frontend",
   "version": "0.1.0",
-  "type": "module",
   "main": "src/index.js",
   "homepage": "https://TriNetCo.github.io/pax-imperia-clone/",
   "private": true,
