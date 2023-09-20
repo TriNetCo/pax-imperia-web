@@ -8,42 +8,42 @@ export const GameDataContext = React.createContext(null);
 
 const websocketPort = '3001';
 export const connectAndJoin = (dispatch) => {
-  const host = `ws://127.0.0.1:${websocketPort}/websocket`;
+    const host = `ws://127.0.0.1:${websocketPort}/websocket`;
 
-  // This is where we start using the websocket middleware...
-  dispatch(wsConnect(host));
+    // This is where we start using the websocket middleware...
+    dispatch(wsConnect(host));
 };
 export const disconnect = (dispatch) => {
-  dispatch(wsDisconnect());
+    dispatch(wsDisconnect());
 };
 
 const Context = ({children, gameData}) => {
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-  useEffect( () => {
-    connectAndJoin(dispatch);
-  }, []);
+    useEffect( () => {
+        connectAndJoin(dispatch);
+    }, []);
 
-  return (
-    <GameDataContext.Provider value={gameData}>
-      {children}
-    </GameDataContext.Provider>
+    return (
+        <GameDataContext.Provider value={gameData}>
+            {children}
+        </GameDataContext.Provider>
 
-  );
+    );
 };
 
 Context.propTypes = {
-  children: PropTypes.element.isRequired,
-  gameData: PropTypes.object,
+    children: PropTypes.element.isRequired,
+    gameData: PropTypes.object,
 };
 
 function mapDispatchToProps(dispatch) {
-  return {
-    actions: {
-      wsConnect: bindActionCreators(wsConnect, dispatch),
-      wsDisconnect: bindActionCreators(wsDisconnect, dispatch),
-    },
-  };
+    return {
+        actions: {
+            wsConnect: bindActionCreators(wsConnect, dispatch),
+            wsDisconnect: bindActionCreators(wsDisconnect, dispatch),
+        },
+    };
 }
 
 export default connect(mapDispatchToProps)(Context);

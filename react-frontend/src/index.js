@@ -28,19 +28,19 @@ const gameData = initGameData();
 const azureAuth = new AzureAuth();
 
 root.render(
-  <Provider store={store}>
-    <UserContextProvider azureAuth={azureAuth}>
-      <Context gameData={gameData}>
-        <FirebaseConnector azureAuth={azureAuth}>
-          {/* <React.StrictMode> */}
-          <Router basename={process.env.REACT_APP_PUBLIC_SUFIX}>
-            <App />
-          </Router>
-          {/* </React.StrictMode> */}
-        </FirebaseConnector>
-      </Context>
-    </UserContextProvider>
-  </Provider>
+    <Provider store={store}>
+        <UserContextProvider azureAuth={azureAuth}>
+            <Context gameData={gameData}>
+                <FirebaseConnector azureAuth={azureAuth}>
+                    {/* <React.StrictMode> */}
+                    <Router basename={process.env.REACT_APP_PUBLIC_SUFIX}>
+                        <App />
+                    </Router>
+                    {/* </React.StrictMode> */}
+                </FirebaseConnector>
+            </Context>
+        </UserContextProvider>
+    </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

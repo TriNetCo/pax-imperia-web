@@ -4,19 +4,19 @@ import { GameSettings } from 'pax-imperia-js/script/gameSettings';
 import { Galaxy } from 'pax-imperia-js/script/models/galaxy';
 
 const initGameData = () => {
-  //////////
-  // Main //
-  //////////
+    //////////
+    // Main //
+    //////////
 
-  let galaxy = new Galaxy(GameSettings.galaxyWidget);
+    let galaxy = new Galaxy(GameSettings.galaxyWidget);
 
-  const data = {
-    galaxyWidget:
+    const data = {
+        galaxyWidget:
       new GalaxyWidget(GameSettings.galaxyWidget, galaxy),
-    spaceViewWidget:
+        spaceViewWidget:
       new SpaceViewWidget(GameSettings.spaceViewWidget, {}, galaxy)
-  };
-  return data;
+    };
+    return data;
 };
 
 export { initGameData };

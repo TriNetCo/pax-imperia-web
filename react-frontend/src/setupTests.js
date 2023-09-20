@@ -36,37 +36,37 @@ import { cleanup } from '@testing-library/react';
 // to fix a bug where it says Cannot read properties of null (reading 'registered')
 // we need to
 
-require('jest-fetch-mock').enableMocks()
+require('jest-fetch-mock').enableMocks();
 
 global.console = {
-  ...console,
-  // uncomment to ignore a specific log level
-  // log: jest.fn(),
-  debug: jest.fn(),
-  info: jest.fn(),
-  warn: jest.fn(),
-  // error: jest.fn(),
+    ...console,
+    // uncomment to ignore a specific log level
+    // log: jest.fn(),
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    // error: jest.fn(),
 };
 
 class LocalStorageMock {
     constructor() {
-      this.store = {};
+        this.store = {};
     }
 
     clear() {
-      this.store = {};
+        this.store = {};
     }
 
     getItem(key) {
-      return this.store[key] || null;
+        return this.store[key] || null;
     }
 
     setItem(key, value) {
-      this.store[key] = String(value);
+        this.store[key] = String(value);
     }
 
     removeItem(key) {
-      delete this.store[key];
+        delete this.store[key];
     }
 }
 

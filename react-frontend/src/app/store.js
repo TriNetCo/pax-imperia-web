@@ -5,11 +5,11 @@ import wsMiddleware from '../middleware/middleware';
 import { websocketReducer } from '../modules/websocket';
 
 export const store = configureStore({
-  reducer: {
-    counter: counterReducer,
-    users: usersReducer,
-    websocket: websocketReducer
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(wsMiddleware),
+    reducer: {
+        counter: counterReducer,
+        users: usersReducer,
+        websocket: websocketReducer
+    },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(wsMiddleware),
 });

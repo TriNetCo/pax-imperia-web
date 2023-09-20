@@ -11,19 +11,19 @@ import './ChatPage.css';
 const ChatPage = () => {
 //   const websocket = useSelector(selectWebsocket);
 
-  return (
-    <div className="page-wrap">
-      <div id="generic-app-parent" className="title-screen">
-        <div className="wrap-block"></div>
-        <UserCard />
+    return (
+        <div className="page-wrap">
+            <div id="generic-app-parent" className="title-screen">
+                <div className="wrap-block"></div>
+                <UserCard />
 
-        <ChatLobbyControls />
+                <ChatLobbyControls />
 
-        <ChatLobby />
+                <ChatLobby />
 
-      </div>
-    </div>
-  );
+            </div>
+        </div>
+    );
 };
 
 export default ChatPage;

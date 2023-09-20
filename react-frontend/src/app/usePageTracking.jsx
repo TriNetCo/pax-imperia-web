@@ -3,16 +3,16 @@ import { useLocation } from 'react-router-dom';
 import { _logEvent } from './AzureAuth';
 
 const usePageTracking = () => {
-  const location = useLocation();
+    const location = useLocation();
 
-  useEffect(() => {
-    const eventName = 'navigation';
-    const eventMessage = `${location.pathname}${location.search}`;
-    console.log(`${eventName}: ${eventMessage}`);
+    useEffect(() => {
+        const eventName = 'navigation';
+        const eventMessage = `${location.pathname}${location.search}`;
+        console.log(`${eventName}: ${eventMessage}`);
 
-    _logEvent(eventName, eventMessage);
+        _logEvent(eventName, eventMessage);
 
-  }, [location]);
+    }, [location]);
 };
 
 export default usePageTracking;
