@@ -27,17 +27,14 @@ function generateGalaxy() {
     let lowerConsoleDiv = document.getElementById("lower-console");
     lowerConsoleDiv.innerHTML = "";
 
-    let gameData = {
-        galaxy: new Galaxy(config)
-    };
-
+    const galaxy = Galaxy.generateFromConfig(config);
     galaxyWidget = new GalaxyWidget(config, galaxy);
     galaxyWidget.beginGame(canvas, systemClickHandler);
 }
 
 generateGalaxy();
 
-regenButton.onclick = function() { generateGalaxy(); }
+regenButton.onclick = function () { generateGalaxy(); }
 
 function draw() {
     galaxyWidget.draw();

@@ -61,7 +61,7 @@ export class GalaxyWidget {
         let canvas = this.canvas;
         let systemClickHandler = this.systemClickHandler;
 
-        this.galaxy = new Galaxy(null, systemsJson);
+        this.galaxy = Galaxy.initializeFromJson(systemsJson);
 
         if (this.canvas === undefined) return;  // Keep this for a unit testing hack so I wouldn't have to mock the browser's jazz
 

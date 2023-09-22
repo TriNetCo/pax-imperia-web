@@ -1,7 +1,7 @@
 import { StarName } from './starName.js';
 import { SystemGenerator } from './systemGenerator.js';
 import { getRandomNum } from './helpers.js';
-import { System } from '../../script/widgets/space_view/entities/system.js'
+import { System } from '../../script/widgets/space_view/entities/system.js';
 
 
 export class Galaxy {
@@ -21,36 +21,24 @@ export class Galaxy {
      * @param {number} galaxyWidgetSettings.maxPlanetCount description
      * @param {number} galaxyWidgetSettings.minPlanetSize description
      * @param {number} galaxyWidgetSettings.maxPlanetSize description
-     * @param {string} systemsJson A JSON string representing the systemsJson data
      */
-    constructor(galaxyWidgetSettings = null, systemsJson = "") {
-        if (galaxyWidgetSettings === null && systemsJson === "") {
-            console.error("Galaxy cannot be constructed with a null galaxyWidgetSetting and an empty systemsJson string");
-            return;
-        }
-
-        if (systemsJson === "") {
-            const systemsData = this.initializeNewGalaxy(galaxyWidgetSettings);
-            this.systems = this.unpackSystemsData(systemsData);
-            return;
-        }
-
-        if (galaxyWidgetSettings === null) {
-            const systemsData = this.loadGalaxyFromJson(systemsJson);
-            this.systems = this.unpackSystemsData(systemsData);
-            return;
-        }
+    static generateFromConfig(galaxyWidgetSettings) {
+        const galaxy = new Galaxy();
+        const systemsData = galaxy.generateSystems(galaxyWidgetSettings);
+        const connections = galaxy.generateConnections(systemsData);
+        galaxy.addConnectionsToSystems(systemsData, connections);
+        galaxy.systems = galaxy.unpackSystemsData(systemsData);
+        return galaxy;
     }
 
-    initializeNewGalaxy(galaxyWidgetSettings) {
-        const systemsData = this.generateSystems(galaxyWidgetSettings);
-        const connections = this.generateConnections(systemsData);
-        this.addConnectionsToSystems(systemsData, connections);
-        return systemsData;
-    }
-
-    loadGalaxyFromJson(systemsJson) {
-        return JSON.parse(systemsJson);
+    /**
+    * @param {string} systemsJson A JSON string representing the systemsJson data
+    */
+    static initializeFromJson(systemsJson) {
+        const galaxy = new Galaxy();
+        const systemsData = JSON.parse(systemsJson);
+        galaxy.systems = galaxy.unpackSystemsData(systemsData);
+        return galaxy;
     }
 
     unpackSystemsData(systemsData) {

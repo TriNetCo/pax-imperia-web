@@ -8,7 +8,7 @@ const initGameData = () => {
     // Main //
     //////////
 
-    let galaxy = new Galaxy(GameSettings.galaxyWidget);
+    let galaxy =  Galaxy.generateFromConfig(GameSettings.galaxyWidget);
 
     const data = {
         galaxyWidget:

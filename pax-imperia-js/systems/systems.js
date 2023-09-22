@@ -78,7 +78,7 @@ let systemDataOld = {
 
 // placeholder get system data
 let gameSettings = GameSettings;
-let galaxy = new Galaxy(gameSettings.galaxyWidget);
+let galaxy = Galaxy.generateFromConfig(gameSettings.galaxyWidget);
 let systemData = JSON.parse(JSON.stringify(galaxy.systems[0]));
 
 // types of state
