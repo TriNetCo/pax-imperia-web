@@ -6,90 +6,90 @@ import AppConfig from '../AppConfig';
 
 // TODO: This will likely be injected from somewhere else
 export const applicationLogicToCallOnAuthInit = () => {
-  console.log('TODO: add application logic');
+    console.log('TODO: add application logic');
 };
 
 export const redirectSuccessHandler = (userContext) => {
-  return (result) => {
-    if (result == null) return;
+    return (result) => {
+        if (result == null) return;
 
-    console.debug('redirectSuccessHandler: User appears to be logged in with Firebase Auth.');
-    const user = result.user;
-    const credential = result.credential;
+        console.debug('redirectSuccessHandler: User appears to be logged in with Firebase Auth.');
+        const user = result.user;
+        const credential = result.credential;
 
-    userContext.fillUserInfoFromRedirect(user, credential);
-    // TODO: Add application logic for after successful authentication here
-    applicationLogicToCallOnAuthInit();
-    throw 'end handler chain';
-  };
+        userContext.fillUserInfoFromRedirect(user, credential);
+        // TODO: Add application logic for after successful authentication here
+        applicationLogicToCallOnAuthInit();
+        throw 'end handler chain';
+    };
 };
 
 export const redirectStuckHandler = (userContext) => {
-  return () => {
-    if (!checkIfWeAreInAPotentiallyStuckPendingState()) return;
-    console.debug('loginStatus was pending, but catchRedirectSignInMicrosoft response was null.  Setting status to logged_out in case we\'re in a stuck state.');
-    userContext.loginStatus = 'logged_out';
-    throw 'end handler chain';
+    return () => {
+        if (!checkIfWeAreInAPotentiallyStuckPendingState()) return;
+        console.debug('loginStatus was pending, but catchRedirectSignInMicrosoft response was null.  Setting status to logged_out in case we\'re in a stuck state.');
+        userContext.loginStatus = 'logged_out';
+        throw 'end handler chain';
 
-    function checkIfWeAreInAPotentiallyStuckPendingState() {
-      return userContext.loginStatus === 'pending';
-    }
-  };
+        function checkIfWeAreInAPotentiallyStuckPendingState() {
+            return userContext.loginStatus === 'pending';
+        }
+    };
 };
 
 export const alreadyLoggedInHandler = (userContext) => {
-  return (token) => {
-    userContext.token = token;
-    // TODO: Add application logic for after successful authentication here
-    applicationLogicToCallOnAuthInit();
-    throw 'end handler chain';
-  };
+    return (token) => {
+        userContext.token = token;
+        // TODO: Add application logic for after successful authentication here
+        applicationLogicToCallOnAuthInit();
+        throw 'end handler chain';
+    };
 };
 
 export const loginExpiredHandler = (userContext) => {
-  return () => {
-    if (checkIfOurLoginStatusIndicatesALoginEvenThoughFirebaseDisagrees()) {
-      console.warn('catchRedirectSignInMicrosoft: returned a null Firebase user, and userContext.loginStatus was logged_in.  Logging out.');
-      userContext.logout();
-      throw 'end handler chain';
-    }
+    return () => {
+        if (checkIfOurLoginStatusIndicatesALoginEvenThoughFirebaseDisagrees()) {
+            console.warn('catchRedirectSignInMicrosoft: returned a null Firebase user, and userContext.loginStatus was logged_in.  Logging out.');
+            userContext.logout();
+            throw 'end handler chain';
+        }
 
-    function checkIfOurLoginStatusIndicatesALoginEvenThoughFirebaseDisagrees() {
-      return userContext.loginStatus === 'logged_in';
-    }
-  };
+        function checkIfOurLoginStatusIndicatesALoginEvenThoughFirebaseDisagrees() {
+            return userContext.loginStatus === 'logged_in';
+        }
+    };
 };
 
 const FirebaseConnector = ({children, azureAuth}) => {
-  const userContext = useContext(UserContext);
+    const userContext = useContext(UserContext);
 
-  useEffect(() => {
-    console.debug('socket connector is attaching');
+    useEffect(() => {
+        console.debug('socket connector is attaching');
 
-    if (AppConfig.APP_ENV === 'local-test') {
-      // TODO: Add application logic for after successful authentication here
-      return;
-    }
+        if (AppConfig.APP_ENV === 'local-test') {
+            // TODO: Add application logic for after successful authentication here
+            return;
+        }
 
-    azureAuth.initLoginContext({
-      redirectSuccessHandler: redirectSuccessHandler(userContext),
-      redirectStuckHandler: redirectStuckHandler(userContext),
-      alreadyLoggedInHandler: alreadyLoggedInHandler(userContext),
-      loginExpiredHandler: loginExpiredHandler(userContext),
-    });
+        azureAuth.initLoginContext({
+            redirectSuccessHandler: redirectSuccessHandler(userContext),
+            redirectStuckHandler: redirectStuckHandler(userContext),
+            alreadyLoggedInHandler: alreadyLoggedInHandler(userContext),
+            loginExpiredHandler: loginExpiredHandler(userContext),
+        });
 
-  }, []);
+    }, []);
 
-  return (
-    <>
-      {children}
-    </>
-  );
+    return (
+        <>
+            {children}
+        </>
+    );
 };
 
 FirebaseConnector.propTypes = {
-  children:  PropTypes.element.isRequired,
-  azureAuth: PropTypes.object.isRequired,
+    children:  PropTypes.element.isRequired,
+    azureAuth: PropTypes.object.isRequired,
 };
 
 export default FirebaseConnector;

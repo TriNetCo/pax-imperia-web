@@ -1,0 +1,52 @@
+{
+    "folders": [
+      {
+        "name": "ROOT",
+        "path": "../"
+      },
+      {
+        "name": "backend",
+        "path": "../backend"
+      },
+      {
+        "name": "react-frontend",
+        "path": "../react-frontend"
+      },
+      {
+        "name": "pax-imperia-js",
+        "path": "../pax-imperia-js",
+      },
+    //   {
+    //     "name": "cloud_infrastructure",
+    //     "path": "../cloud_infrastructure",
+    //   },
+    ],
+    "settings": {
+        "jestrunner.changeDirectoryToWorkspaceRoot": true,
+        "go.testExplorer.enable": false,
+        "jest.disabledWorkspaceFolders": [
+            "ROOT",
+            "backend",
+            "cloud_infrastructure",
+            "react-frontend"
+        ],
+        "jestTestExplorer.flattenExplorer": false,
+        "jestTestExplorer.logfile": "/tmp/log.txt",
+        // "jestrunner.projectPath": "./react-frontend/",
+        "jestrunner.jestCommand": "npm run test --",
+        "jestrunner.debugOptions": {
+        "runtimeExecutable": "${workspaceFolder:react-frontend}/node_modules/.bin/react-scripts",
+        "runtimeArgs": [
+          "test",
+          "--config=${workspaceFolder:react-frontend}/jest.config.cjs"
+          "${fileBasename}",
+          "--runInBand",
+          "--no-cache",
+          "--watchAll=false",
+          "--color",
+          "--"
+        ]
+    },
+
+    }
+}

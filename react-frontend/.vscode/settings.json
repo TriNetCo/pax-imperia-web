@@ -1,0 +1,27 @@
+{
+    "jest.autoClearTerminal": false,
+    "jest.autoRun": {
+        "watch": false,
+        "onStartup?": ["all-tests"],
+        "onSave?": false,
+    },
+    "jest.autoRevealOutput": "on-run",
+    "jest.debugMode": true,
+    "jest.jestCommandLine": "node --experimental-vm-modules node_modules/.bin/react-scripts test --config=./jest.config.cjs --runInBand --no-cache --watchAll=false --color",
+
+    "jestrunner.projectPath": "./react-frontend/",
+    "jestrunner.jestCommand": "npm run test --",
+    "jestrunner.debugOptions": {
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
+        "runtimeArgs": [
+          "test",
+          "${fileBasename}",
+          "--runInBand",
+          "--no-cache",
+          "--watchAll=false",
+          "--color"
+        ]
+    },
+    "jestrunner.changeDirectoryToWorkspaceRoot": true,
+
+}

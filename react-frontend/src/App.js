@@ -17,33 +17,33 @@ import AboutPage from './pages/AboutPage';
 import usePageTracking from './app/usePageTracking';
 
 function App() {
-  usePageTracking();
+    usePageTracking();
 
-  return (
-    <div className="App">
-      <HashRouter>
-        <Route exact path="/game"  component={GameDashboardPage} />
-        <Route exact path="/game/dashboard" component={GameDashboardPage} />
-        <Route exact path="/systems" component={GameDashboardPage} />
-        <Route exact path="/systems/:systemId" component={SystemPage} />
-        <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/debug" component={DebugPage} />
-        <Route exact path="/users" component={UsersPage} />
-        <Route exact path="/about" component={AboutPage} />
-        <Route exact path="/chat" component={ChatPage} />
+    return (
+        <div className="App">
+            <HashRouter>
+                <Route exact path="/game"  component={GameDashboardPage} />
+                <Route exact path="/game/dashboard" component={GameDashboardPage} />
+                <Route exact path="/systems" component={GameDashboardPage} />
+                <Route exact path="/systems/:systemId" component={SystemPage} />
+                <Route exact path="/login" component={LoginPage} />
+                <Route exact path="/debug" component={DebugPage} />
+                <Route exact path="/users" component={UsersPage} />
+                <Route exact path="/about" component={AboutPage} />
+                <Route exact path="/chat" component={ChatPage} />
 
-        {/* End State for Menu and stuff */}
-        <Route exact path="/"                          component={LandingPage}      />        {/* Shows the Sign-in stuff or the user's dashboard including 'newgame' button */}
+                {/* End State for Menu and stuff */}
+                <Route exact path="/"                          component={LandingPage}      />        {/* Shows the Sign-in stuff or the user's dashboard including 'newgame' button */}
 
-        <Route path="/new_game" component={NewGameLayout} />
+                <Route path="/new_game" component={NewGameLayout} />
 
-        {/* End State for Game Pages: */}
-        <Route exact path="/game/:gameId" component={GameDashboardPage} />
-        <Route exact path="/game/:gameId/systems/:systemId" component={SystemPage} />
+                {/* End State for Game Pages: */}
+                <Route exact path="/game/:gameId" component={GameDashboardPage} />
+                <Route exact path="/game/:gameId/systems/:systemId" component={SystemPage} />
 
-      </HashRouter>
-    </div>
-  );
+            </HashRouter>
+        </div>
+    );
 }
 
 export default App;

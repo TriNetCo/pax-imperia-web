@@ -12,26 +12,19 @@
       "webRoot": "${workspaceFolder}"
     },
     {
+      "name": "Debug CRA Tests",
       "type": "node",
-      "name": "vscode-jest-tests.v2",
       "request": "launch",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
       "args": [
         "test",
-        "--",
-        "test",
         "--runInBand",
-        "--watchAll=false",
-        "--testNamePattern",
-        "${jest.testNamePattern}",
-        "--runTestsByPath",
-        "${jest.testFile}"
-      ],
-      "cwd": "/Users/john/dev/game_dev/pax-imperia-clone/react-frontend",
+        "--no-cache",
+        "--watchAll=false"],
+      "cwd": "${workspaceRoot}",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "disableOptimisticBPs": true,
-      "runtimeExecutable": "npm",
-      "protocol": "inspector"
-    }
+      "env": { "CI": "true" },
+    },
   ]
 }

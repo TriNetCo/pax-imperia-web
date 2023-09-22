@@ -19,42 +19,42 @@ export const getGameConfiguration = (chatLobbyId) => ({ type: 'GET_GAME_CONFIGUR
 export const getGameConfigurationResponse = (payload) => ({ type: 'GET_GAME_CONFIGURATION_RESPONSE', payload });
 
 const initialState = {
-  time: null,
-  status: null,
-  host: null,
-  messages: [],
-  chatLobbyId: null,
-  chatLobbyUsers: [],
-  authenticationStatus: 'UNAUTHENTICATED',
-  systemsJson: null,
+    time: null,
+    status: null,
+    host: null,
+    messages: [],
+    chatLobbyId: null,
+    chatLobbyUsers: [],
+    authenticationStatus: 'UNAUTHENTICATED',
+    systemsJson: null,
 };
 
 export const websocketReducer = (state = { ...initialState }, action) => {
-  switch (action.type) {
-    case 'WS_CONNECTED':
-      return { ...state, host: action.host, status: 'WS_CONNECTED' };
-    case 'WS_DISCONNECTED':
-      return { ...state, status: 'WS_DISCONNECTED' };
-    case 'SET_GAME':
-      return { ...state, game: action.data, current_player: action.player };
-    case 'NEW_MESSAGE_FROM_SERVER':
-      return { ...state, messages: [...state.messages, action.payload] };
-    case 'JOIN_CHAT_LOBBY_RESPONSE':
-      return { ...state, chatLobbyId: action.chatLobbyId, chatLobbyUsers: action.chatLobbyUsers };
-    case 'SYSTEM_MESSAGE_USER_JOINED_CHAT':
-      return { ...state, chatLobbyUsers: [...state.chatLobbyUsers, action.payload.displayName ] };
-    case 'SYSTEM_MESSAGE_CHAT_USER_LIST':
-      return { ...state, chatLobbyUsers: action.payload };
-    case 'AUTHENTICATE_RESPONSE':
-      return { ...state, authenticationStatus: action.status };
-    case 'GET_GAME_CONFIGURATION_RESPONSE':
-      return { ...state,
-        systemsJson: action.payload.systemsJson,
-        time: action.payload.time };
-    default:
-      console.log('websocketReducer: default action: ' + action.type);
-      return state;
-  }
+    switch (action.type) {
+        case 'WS_CONNECTED':
+            return { ...state, host: action.host, status: 'WS_CONNECTED' };
+        case 'WS_DISCONNECTED':
+            return { ...state, status: 'WS_DISCONNECTED' };
+        case 'SET_GAME':
+            return { ...state, game: action.data, current_player: action.player };
+        case 'NEW_MESSAGE_FROM_SERVER':
+            return { ...state, messages: [...state.messages, action.payload] };
+        case 'JOIN_CHAT_LOBBY_RESPONSE':
+            return { ...state, chatLobbyId: action.chatLobbyId, chatLobbyUsers: action.chatLobbyUsers };
+        case 'SYSTEM_MESSAGE_USER_JOINED_CHAT':
+            return { ...state, chatLobbyUsers: [...state.chatLobbyUsers, action.payload.displayName ] };
+        case 'SYSTEM_MESSAGE_CHAT_USER_LIST':
+            return { ...state, chatLobbyUsers: action.payload };
+        case 'AUTHENTICATE_RESPONSE':
+            return { ...state, authenticationStatus: action.status };
+        case 'GET_GAME_CONFIGURATION_RESPONSE':
+            return { ...state,
+                systemsJson: action.payload.systemsJson,
+                time: action.payload.time };
+        default:
+            console.log('websocketReducer: default action: ' + action.type);
+            return state;
+    }
 };
 
 export const selectWebsocket = (state) => state.websocket;
