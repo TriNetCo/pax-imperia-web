@@ -11,21 +11,4 @@
     "jest.autoRevealOutput": "on-run",
     "jest.debugMode": true,
     "jest.jestCommandLine": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    // "jest.jestCommandLine": "node --experimental-vm-modules react-frontend/node_modules/jest/bin/jest.js",
-
-    // "jestrunner.projectPath": "./react-frontend/",
-    // "jestrunner.jestCommand": "npm run test --",
-    // "jestrunner.debugOptions": {
-    //     "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
-    //     "runtimeArgs": [
-    //       "test",
-    //       "${fileBasename}",
-    //       "--runInBand",
-    //       "--no-cache",
-    //       "--watchAll=false",
-    //       "--color"
-    //     ]
-    // },
-    // "jestrunner.changeDirectoryToWorkspaceRoot": true,
-
 }

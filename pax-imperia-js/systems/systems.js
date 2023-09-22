@@ -108,6 +108,3 @@ function draw() {
 await spaceViewWidget.beginGame(0);
 
 draw();
-
-
-const svw = new SpaceViewWidget()
