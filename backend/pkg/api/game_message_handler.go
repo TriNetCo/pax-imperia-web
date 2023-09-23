@@ -132,9 +132,8 @@ func handleSetGameConfiguration(conn *websocket.Conn, message Message) {
 		return
 	}
 
-	systemsJson, ok := message.Payload["systemsJson"].(string)
+	systemsJson, ok := tryExtractFromPayload(message.Payload, "systemsJson")
 	if !ok {
-		fmt.Println("systems field not found in payload")
 		return
 	}
 
@@ -150,21 +149,18 @@ func handleSetGameConfiguration(conn *websocket.Conn, message Message) {
 
 func handleAuthenticate(conn *websocket.Conn, client ClientData, message Message) {
 	// broadcast message to all clients in this chat lobby
-	displayName, ok := message.Payload["displayName"].(string)
+	displayName, ok := tryExtractFromPayload(message.Payload, "displayName")
 	if !ok {
-		fmt.Println("DisplayName not found or not a string")
 		return
 	}
 
-	email, ok := message.Payload["email"].(string)
+	email, ok := tryExtractFromPayload(message.Payload, "email")
 	if !ok {
-		fmt.Println("Email not found or not a string")
 		return
 	}
 
-	token, ok := message.Payload["token"].(string)
+	token, ok := tryExtractFromPayload(message.Payload, "token")
 	if !ok {
-		fmt.Println("Token not found or not a string")
 		return
 	}
 
@@ -186,11 +182,10 @@ func handleAuthenticate(conn *websocket.Conn, client ClientData, message Message
 	fmt.Printf("Client authenticated: %s\n", displayName)
 }
 
+// Broadcast message to all clients in this chat lobby
 func handleSay(conn *websocket.Conn, message Message) {
-	// broadcast message to all clients in this chat lobby
-	chatLobbyId, ok := message.Payload["chatLobbyId"].(string)
+	chatLobbyId, ok := tryExtractFromPayload(message.Payload, "chatLobbyId")
 	if !ok {
-		fmt.Println("Chat Room ID not found or not a string")
 		return
 	}
 
@@ -290,4 +285,12 @@ func cleanUpDeadConnection(client *websocket.Conn) {
 	for _, chatRoom := range chatRooms {
 		delete(chatRoom.Clients, client)
 	}
+}
+
+func tryExtractFromPayload(payload map[string]interface{}, key string) (string, bool) {
+	value, ok := payload[key].(string)
+	if !ok {
+		fmt.Printf("%s not found or not a string\n", key)
+	}
+	return value, ok
 }
