@@ -12,7 +12,7 @@ import (
 
 var clients = make(map[*websocket.Conn]ClientData)
 var chatRooms = make(map[string]ChatRoom)
-var clientsMux sync.Mutex
+var dataMux sync.Mutex
 
 var wsupgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -33,13 +33,13 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Print("Client connected\n")
 
 	defer func() {
-		clientsMux.Lock()
+		dataMux.Lock()
 		cleanUpDeadConnection(conn)
-		clientsMux.Unlock()
+		dataMux.Unlock()
 		conn.Close()
 	}()
 
-	clientsMux.Lock()
+	dataMux.Lock()
 	// this map is kind of confusing, but we create a key for the client using the connection pointer, and
 	// set the value to true a struct containing the client's email and display name
 	// we can access the connection pointer later to send messages to the client by iterating over the map
@@ -47,7 +47,7 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 	// we could use an array of connections, but this is more efficient???
 	var client = ClientData{}
 	clients[conn] = client
-	clientsMux.Unlock()
+	dataMux.Unlock()
 
 	for {
 		messageType, msg, err := conn.ReadMessage()
@@ -68,7 +68,7 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 		// fmt.Println("Message: ", message.Command)
 		// fmt.Println("Payload: ", message.Payload)
 
-		clientsMux.Lock()
+		dataMux.Lock()
 
 		switch message.Command {
 		case "AUTHENTICATE":
@@ -93,7 +93,7 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		clientsMux.Unlock()
+		dataMux.Unlock()
 	}
 }
 
