@@ -1,15 +1,19 @@
 package testutils
 
-import "github.com/gorilla/websocket"
+import (
+	"github.com/gorilla/websocket"
+	"github.com/stretchr/testify/mock"
+)
 
 type MockWsConnection struct {
+	mock.Mock
 	LastWrittenMessage interface{}
 	Conn               *websocket.Conn
 }
 
 func (m *MockWsConnection) WriteJSON(v interface{}) error {
-	m.LastWrittenMessage = v
-	return nil
+	args := m.Called(v)
+	return args.Error(0)
 }
 
 func (m *MockWsConnection) Close() error {

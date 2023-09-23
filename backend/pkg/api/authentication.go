@@ -34,7 +34,6 @@ func handleAuthenticateUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"Authenticated": false})
-	return
 }
 
 func validateToken(token string) (isValid bool, email string, uid string, err error) {
@@ -48,19 +47,19 @@ func validateToken(token string) (isValid bool, email string, uid string, err er
 
 	app, initErr := initFirebaseApp()
 	if initErr != nil {
-		err = fmt.Errorf("error initializing app: %v\n", initErr)
+		err = fmt.Errorf("error initializing app: %v", initErr)
 		return
 	}
 
 	client, err := app.Auth(context.Background())
 	if err != nil {
-		err = fmt.Errorf("error getting Auth client: %v\n", err)
+		err = fmt.Errorf("error getting Auth client: %v", err)
 		return
 	}
 
 	validatedToken, err := client.VerifyIDToken(context.Background(), token)
 	if err != nil {
-		err = fmt.Errorf("error verifying ID token: %v\n", err)
+		err = fmt.Errorf("error verifying ID token: %v", err)
 		return
 	}
 
@@ -69,13 +68,6 @@ func validateToken(token string) (isValid bool, email string, uid string, err er
 	email = validatedToken.Claims["email"].(string)
 	uid = validatedToken.UID
 	return
-}
-
-func getAppEnv() (appEnv string) {
-	if rpm_env := os.Getenv("PAX_APP_ENV_GOLANG"); rpm_env != "" {
-		return rpm_env
-	}
-	return "local-dev"
 }
 
 func isFirebaseAuthDisabled() (isFirebaseAuthEnabled bool) {
@@ -114,7 +106,7 @@ func doTest(c *gin.Context) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")

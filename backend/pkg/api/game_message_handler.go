@@ -148,29 +148,45 @@ func extractFromPayload(payload map[string]interface{}, keys ...string) (map[str
 	return values, true
 }
 
-func handleAuthenticate(conn WebSocketConnection, client ClientData, message Message) {
+func handleAuthenticate(conn WebSocketConnection, client ClientData, message Message) error {
 	keys := []string{"displayName", "email", "token"}
 	values, ok := extractFromPayload(message.Payload, keys...)
 	if !ok {
-		return
+		return fmt.Errorf("failed to extract values from payload")
 	}
+
+	authStatus := simpleValidateToken(values["token"])
 
 	client.DisplayName = values["displayName"]
 	client.Email = values["email"]
 	client.Token = values["token"]
-
-	// TODO: validate token
-
+	client.AuthStatus = authStatus
 	clients[conn.GetConn()] = client
 
 	var response = Message{
 		Command: "AUTHENTICATE_RESPONSE",
 		Payload: map[string]interface{}{
-			"status": "AUTHENTICATED",
+			"status": authStatus,
 		},
 	}
+
 	conn.WriteJSON(response)
+
+	if authStatus == "UNAUTHENTICATED" {
+		fmt.Printf("Client failed to authenticate: %s\n", values["displayName"])
+		return fmt.Errorf("failed to authenticate")
+	}
+
 	fmt.Printf("Client authenticated: %s\n", values["displayName"])
+	return nil
+}
+
+// TODO: check authentication.go for a better implementation
+func simpleValidateToken(token string) string {
+	if token == "invalid_token" {
+		return "UNAUTHENTICATED"
+	}
+	return "AUTHENTICATED"
 }
 
 func handleSay(conn *websocket.Conn, message Message) {

@@ -22,6 +22,7 @@ func RunServer() {
 	if listenAddress == "" {
 		listenAddress = "localhost"
 		log.Printf("defaulting to listenAddress %s", listenAddress)
+		log.Println("AppEnv: ", getAppEnv())
 	}
 
 	// sc, err := subscription.GenerateSubscriptionController()
@@ -90,4 +91,11 @@ func healthCheck(c *gin.Context) {
 
 func livenessCheck(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "UP"})
+}
+
+func getAppEnv() (appEnv string) {
+	if rpm_env := os.Getenv("PAX_APP_ENV_GOLANG"); rpm_env != "" {
+		return rpm_env
+	}
+	return "local-dev"
 }

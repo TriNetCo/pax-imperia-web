@@ -12,6 +12,7 @@ type ClientData struct {
 	DisplayName string `json:"displayName"`
 	Email       string `json:"email"`
 	Token       string `json:"token"`
+	AuthStatus  string `json:"authStatus"`
 }
 
 type Game struct {
