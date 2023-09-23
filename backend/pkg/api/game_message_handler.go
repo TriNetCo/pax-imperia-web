@@ -9,6 +9,11 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+type ServerConfiguration struct {
+	VerboseMode bool `json:"verboseMode"`
+}
+
+var serverConfiguration = ServerConfiguration{}
 var clients = make(map[*websocket.Conn]ClientData)
 var chatRooms = make(map[string]ChatRoom)
 var dataMux sync.Mutex
@@ -17,7 +22,7 @@ var dataMux sync.Mutex
  * comes into the server, this function will be called.
  */
 func listenToClientMessages(conn *websocket.Conn) {
-	fmt.Print("Client connected\n")
+	fmt.Print("Client connected: ", &conn, "\n")
 
 	defer func() {
 		dataMux.Lock()
@@ -60,7 +65,8 @@ func listenToClientMessages(conn *websocket.Conn) {
 
 		switch message.Command {
 		case "AUTHENTICATE":
-			handleAuthenticate(conn, client, message)
+			var newConn WebSocketConnection = &WebSocketConnAdapter{Conn: conn}
+			handleAuthenticate(newConn, client, message)
 		case "JOIN_CHAT_LOBBY":
 			handleJoinChatLobby(conn, message)
 		case "NEW_MESSAGE":
@@ -128,30 +134,34 @@ func handleSetGameConfiguration(conn *websocket.Conn, message Message) {
 	fmt.Println("Game configuration set")
 }
 
-func handleAuthenticate(conn *websocket.Conn, client ClientData, message Message) {
-	// broadcast message to all clients in this chat lobby
-	displayName, ok := tryExtractFromPayload(message.Payload, "displayName")
+func extractFromPayload(payload map[string]interface{}, keys ...string) (map[string]string, bool) {
+	values := make(map[string]string)
+
+	for _, key := range keys {
+		value, ok := payload[key].(string)
+		if !ok {
+			return nil, false
+		}
+		values[key] = value
+	}
+
+	return values, true
+}
+
+func handleAuthenticate(conn WebSocketConnection, client ClientData, message Message) {
+	keys := []string{"displayName", "email", "token"}
+	values, ok := extractFromPayload(message.Payload, keys...)
 	if !ok {
 		return
 	}
 
-	email, ok := tryExtractFromPayload(message.Payload, "email")
-	if !ok {
-		return
-	}
-
-	token, ok := tryExtractFromPayload(message.Payload, "token")
-	if !ok {
-		return
-	}
+	client.DisplayName = values["displayName"]
+	client.Email = values["email"]
+	client.Token = values["token"]
 
 	// TODO: validate token
 
-	client.DisplayName = displayName
-	client.Email = email
-	client.Token = token
-
-	clients[conn] = client
+	clients[conn.GetConn()] = client
 
 	var response = Message{
 		Command: "AUTHENTICATE_RESPONSE",
@@ -160,10 +170,9 @@ func handleAuthenticate(conn *websocket.Conn, client ClientData, message Message
 		},
 	}
 	conn.WriteJSON(response)
-	fmt.Printf("Client authenticated: %s\n", displayName)
+	fmt.Printf("Client authenticated: %s\n", values["displayName"])
 }
 
-// Broadcast message to all clients in this chat lobby
 func handleSay(conn *websocket.Conn, message Message) {
 	chatLobbyId, ok := tryExtractFromPayload(message.Payload, "chatLobbyId")
 	if !ok {
@@ -172,7 +181,7 @@ func handleSay(conn *websocket.Conn, message Message) {
 
 	chatRoom, exists := chatRooms[chatLobbyId]
 	if !exists {
-		fmt.Println("Chat Room not found")
+		fmt.Println("Error: Chat Room not found, ", chatLobbyId)
 		return
 	}
 
@@ -197,7 +206,7 @@ func handleJoinChatLobby(conn *websocket.Conn, message Message) {
 
 		// Check if the client has already joined the lobby
 		if _, exists := chatRoom.Clients[conn]; exists {
-			fmt.Println("Client already joined lobby")
+			fmt.Println("Error: Client already in lobby")
 			return
 		}
 
@@ -216,8 +225,9 @@ func handleJoinChatLobby(conn *websocket.Conn, message Message) {
 			},
 		}
 
-		// debugPrintStruct(response)
-		conn.WriteJSON(response)
+		if serverConfiguration.VerboseMode {
+			debugPrintStruct(response)
+		}
 
 		// Announce user joined to all members of the chatroom
 		var userJoinAnnouncement = Message{
