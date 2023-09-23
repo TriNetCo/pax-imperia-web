@@ -5,8 +5,10 @@ export class Planet extends Entity {
         super(data, systemName, systemId);
         this.type = 'planet';
         this.name = systemName + " " + (this.index + 1);
-        this.assetPath = this.basePath + "/assets/planets/" + this.atmosphere + ".gltf";
-        this.assetThumbnailPath = this.basePath + "/assets/thumbnails/" + this.atmosphere + "_thumbnail.png";
+        // this.assetPath = this.basePath + "/assets/planets/" + this.atmosphere + ".gltf";
+        this.assetPath = this.basePath + "/assets/orbitals/meshes/planetbasemodel.glb";
+        this.texturePath = this.basePath + "/assets/orbitals/textures/earthlike/" + this.atmosphere + ".png";
+        this.assetThumbnailPath = this.basePath + "/assets/thumbnails/oxygen_thumbnail.png";
         this.position = {x: 0, y: 0, z: 2 * this.distance_from_star};
         this.consoleBody = `
             <div>Mediocre (x2)</div>
@@ -14,6 +16,7 @@ export class Planet extends Entity {
             <div>Habitability: :)</div>
             `;
     }
+
 
     update (elapsedTime) {
         let speedMultiplier = 3;

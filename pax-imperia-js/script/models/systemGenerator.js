@@ -56,7 +56,8 @@ export class SystemGenerator {
 
             let planet = {
                 "index": i,
-                "atmosphere": "oxygen",
+                // "atmosphere": "oxygen",
+                "atmosphere": "earthlike000" + getRandomNum(1, 9, 0),
                 "size": planetSize,
                 "distance_from_star": planetDistance,
                 "spin_speed": 1,

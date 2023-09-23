@@ -35,13 +35,10 @@ export class Entity {
 
     async load(scene) {
         this.scene = scene;
-        console.log("loading " + this.type + ": " + this.name);
-        let object3d = await this.loadObject3d(scene,
-            this.name,
+        // console.log("loading " + this.type + ": " + this.name);
+        let object3d = await this.loadObject3d(
+            scene,
             this.assetPath,
-            this.scale,
-            this.position,
-            this.rotation,
         );
 
         if (this.type === 'star') {
@@ -50,43 +47,58 @@ export class Entity {
             object3d.children[0].material.map = texture;
         }
 
+        this.loadTexture(object3d);
+        this.setLoadAttributes(object3d);
+
         // make sure that object3d can link back to the entity
         object3d.parentEntity = this;
         this.object3d = object3d;
     }
 
-    async loadObject3d(scene,
-        name,
-        assetPath,
-        scale = { x: 1, y: 1, z: 1 },
-        position = { x: 0, y: 0, z: 0 },
-        rotation = { x: 0, y: 0, z: 0 }) {
-        let assetPathSplit = assetPath.split(".")
-        let fileExt = assetPathSplit[assetPathSplit.length - 1]
+    loadTexture(object3d) {
+        if (this.texturePath) {
+            const textureLoader = new THREE.TextureLoader();
+            textureLoader.load(this.texturePath, function(texture) {
+                texture.flipY = false;
+
+                object3d.traverse(function(child) {
+                    if (child.isMesh) {
+                        child.material.map = texture;
+                        child.material.needsUpdate = true;
+                    }
+                });
+            });
+        }
+    }
+
+    setLoadAttributes(object3d) {
+        object3d.position.set(this.position.x, this.position.y, this.position.z);
+        object3d.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z); // x, y, z radians
+        object3d.scale.set(this.scale.x, this.scale.y, this.scale.z);
+        object3d.name = this.name;
+        object3d.children[0].name = this.name;
+    }
+
+    async loadObject3d(scene, assetPath) {
+        const assetPathSplit = assetPath.split(".");
+        const fileExt = assetPathSplit[assetPathSplit.length - 1];
         let loader;
-        if (fileExt == 'gltf') {
+        if (fileExt == 'gltf' || fileExt == 'glb') {
             loader = new GLTFLoader();
         } else if (fileExt == 'fbx') {
             loader = new FBXLoader();
         }
-        let object3d = new Promise(function (resolve, reject) {
+        const object3d = new Promise(function (resolve, reject) {
             loader.load(assetPath, function (input) {
                 let obj;
-                if (fileExt == 'gltf') {
+                if (fileExt == 'gltf' || fileExt == 'glb') {
                     obj = input.scene;
                 } else if (fileExt == 'fbx') {
                     obj = input;
                 }
-                obj.position.set(position.x, position.y, position.z);
-                obj.rotation.set(rotation.x, rotation.y, rotation.z); // x, y, z radians
-                obj.scale.set(scale.x, scale.y, scale.z);
-                obj.name = name;
-                obj.children[0].name = name;
                 scene.add(obj);
-                // console.log("Finished loading!");
                 resolve(obj);
             }, function (xhr) {
-                // console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
             }, function (error) {
                 console.error(error);
             });
