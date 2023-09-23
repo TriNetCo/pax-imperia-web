@@ -47,6 +47,14 @@ export class Entity {
             object3d.children[0].material.map = texture;
         }
 
+        if (this.type === 'planet') {
+            let texture = object3d.children[0].material.map;
+            object3d.children[0].material = new THREE.MeshStandardMaterial();
+            object3d.children[0].material.map = texture;
+            object3d.children[0].material.metalness = 0;
+            object3d.children[0].material.roughness = 0.6;
+        }
+
         this.loadTexture(object3d);
         this.setLoadAttributes(object3d);
 

@@ -93,22 +93,26 @@ export class SpaceViewAnimator {
         // light.lookAt(0,0,0);
         // scene.add( light );
 
-        var sunLight = new THREE.PointLight(new THREE.Color(), 3.25, 1000);
+        var sunLight = new THREE.PointLight(new THREE.Color(), .7, 1000);
         scene.add(sunLight);
 
-        this.headLamp = new THREE.DirectionalLight(0xffffff, 1);
+        var ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+        scene.add(ambientLight);
+
+        var keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        keyLight.position.set(35, 38, 15);
+        scene.add(keyLight);
+
+        this.headLamp = new THREE.DirectionalLight(0xffffff, 0);
         this.headLamp.position.set(22, 22, 25);
         scene.add(this.headLamp);
-
-        //var ambientLight = new THREE.AmbientLight( 0xffffff, 0.05 );
-        //scene.add( ambientLight );
 
         // Add Camera
 
         let camera = this.camera;
         scene.add(camera);
 
-        var cameraLight = new THREE.PointLight(new THREE.Color(), 1, 10000);
+        var cameraLight = new THREE.PointLight(new THREE.Color(), 0, 10000);
         scene.add(cameraLight);
         camera.add(cameraLight);
 
