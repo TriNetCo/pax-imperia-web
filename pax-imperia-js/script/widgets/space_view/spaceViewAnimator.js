@@ -83,16 +83,6 @@ export class SpaceViewAnimator {
 
         // Add Lights
 
-        // var light = new THREE.DirectionalLight( 0xffffff, 1 );
-        // light.position.set(22, 22, 25);
-        // light.lookAt(0,0,0);
-        // scene.add( light );
-
-        // light = new THREE.DirectionalLight( 0xffffff, 1 );
-        // light.position.set(2, 2, 5);
-        // light.lookAt(0,0,0);
-        // scene.add( light );
-
         var sunLight = new THREE.PointLight(new THREE.Color(), .7, 1000);
         scene.add(sunLight);
 
