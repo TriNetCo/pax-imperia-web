@@ -3,23 +3,23 @@ import { roundToDecimal, getRandomNum } from '../../../models/helpers.js';
 import * as THREE from 'three';
 
 export class Ship extends Entity {
-    constructor (data, systemName, systemId) {
+    constructor(data, systemName, systemId) {
         super(data, systemName, systemId);
         this.type = 'ship';
         this.assetPath = this.basePath + '/assets/ships/GalacticLeopard6.fbx';
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/ship_thumbnail.png";
         this.size = 0.00015;
-        this.scale = {x: this.size, y: this.size, z: this.size};
-        this.rotation = {x: 0.7, y: -1.6, z: 0.4};
+        this.scale = { x: this.size, y: this.size, z: this.size };
+        this.rotation = { x: 0.7, y: -1.6, z: 0.4 };
         this.speed = 0.2;
         this.previousSystemId = typeof this.previousSystemId === 'undefined' ? null : this.previousSystemId;
         this.buttonState = null;
         // movement animation attributes
         this.destinationPoint = null; // x, y, z coordinates
-        this.destinationTarget = null; // 3d object
-        this.orbitTarget = null; // 3d object
-        this.orbitAngle = null; // radians
-        this.colonizeTarget = null; // 3d object
+        this.destinationTarget = null; // entity object
+        this.orbitTarget = null; // entity object
+        this.orbitStartTime = null; // radians
+        this.colonizeTarget = null; // entity object
         this.colonizeAnimationProgress = null; // 0 to 1
     }
 
@@ -31,11 +31,11 @@ export class Ship extends Entity {
         });
     }
 
-    update (deltaTime, system, galaxy) {
+    update(elapsedTime, deltaTime, system, galaxy) {
         // first, check if ship should be sent through wormhole
         if (this.destinationTarget &&
-            this.destinationTarget.parentEntity.type == 'wormhole') {
-                this.checkAndSendThroughWormhole(galaxy);
+            this.destinationTarget.type == 'wormhole') {
+            this.checkAndSendThroughWormhole(galaxy);
         }
         // then, update destination point if moving to a target or colonizing
         if (this.destinationTarget) {
@@ -48,22 +48,29 @@ export class Ship extends Entity {
         if (this.destinationPoint) {
             this.updateToDestinationPoint();
         } else if (this.orbitTarget) {
-            this.updateOrbit(deltaTime);
+            this.updateOrbit(elapsedTime);
         }
         this.updateConsoleBody();
     };
 
-    updateConsoleBody () {
+    updateConsoleBody() {
         const previousConsoleBody = this.consoleBody;
         this.consoleBody = '<div>';
         if (this.destinationTarget) {
-            this.consoleBody += 'Destination: ' + this.destinationTarget.parentEntity.name + ' ' + this.destinationTarget.parentEntity.type;
+            this.consoleBody += 'Destination: ' +
+                this.destinationTarget.name + ' ' +
+                this.destinationTarget.type;
         } else if (this.destinationPoint) {
-            this.consoleBody += 'Destination: ' + roundToDecimal(this.destinationPoint.x, 2) + ", " +
-                roundToDecimal(this.destinationPoint.y, 2) + ", " +
+            this.consoleBody += 'Destination: ' +
+                roundToDecimal(this.destinationPoint.x, 2) +
+                ", " +
+                roundToDecimal(this.destinationPoint.y, 2) +
+                ", " +
                 roundToDecimal(this.destinationPoint.z, 2);
         } else if (this.orbitTarget) {
-            this.consoleBody += 'Orbiting: ' + this.orbitTarget.parentEntity.name + ' ' + this.orbitTarget.parentEntity.type;
+            this.consoleBody += 'Orbiting: ' +
+                this.orbitTarget.name + ' ' +
+                this.orbitTarget.type;
         }
         this.consoleBody += '</div>';
         if (previousConsoleBody != this.consoleBody) {
@@ -75,7 +82,7 @@ export class Ship extends Entity {
         this.destinationPoint = null;
         this.destinationTarget = null;
         this.orbitTarget = null;
-        this.orbitAngle = null;
+        this.orbitStartTime = null;
         this.colonizeTarget = null;
         this.colonizeAnimationProgress = null;
     }
@@ -83,8 +90,8 @@ export class Ship extends Entity {
     checkAndSendThroughWormhole(galaxy) {
         // if ship is close enough to wormhole, move it to the next system
         const distanceFromDest = this.object3d.position.distanceTo(
-            this.destinationTarget.position);
-        const wormholeId = this.destinationTarget.parentEntity.id;
+            this.destinationTarget.object3d.position);
+        const wormholeId = this.destinationTarget.id;
         if (distanceFromDest <= this.speed) {
             // copy ship data to wormhole system data
             this.resetMovement();
@@ -136,20 +143,19 @@ export class Ship extends Entity {
     }
 
     updateTargetDestinationPoint() {
-        const destX = this.destinationTarget.position.x;
-        const destY = this.destinationTarget.position.y;
-        let destZ = this.destinationTarget.position.z;
+        const destX = this.destinationTarget.object3d.position.x;
+        const destY = this.destinationTarget.object3d.position.y;
+        let destZ = this.destinationTarget.object3d.position.z;
         // put ship in front of stars and planets so they can be seen
-        if (['star', 'planet'].includes(this.destinationTarget.parentEntity.type)){
-            destZ += this.destinationTarget.scale.z*2;
-            // this.orbitTarget = this.destinationTarget;
+        if (['star', 'planet'].includes(this.destinationTarget.type)) {
+            destZ += this.destinationTarget.object3d.scale.z * 2;
         }
-        this.destinationPoint = {"x": destX, "y": destY, "z": destZ};
+        this.destinationPoint = { "x": destX, "y": destY, "z": destZ };
     }
 
     updateColonize() {
         // update animation progress
-        this.colonizeAnimationProgress += this.speed/20;
+        this.colonizeAnimationProgress += this.speed / 20;
         // delete ship once landing animation finished
         if (this.colonizeAnimationProgress >= 1) {
             this.removeObject3d();
@@ -157,30 +163,34 @@ export class Ship extends Entity {
             return
         }
         // get planet's current coordinates
-        const destX = this.colonizeTarget.position.x;
-        const destY = this.colonizeTarget.position.y;
+        const destX = this.colonizeTarget.object3d.position.x;
+        const destY = this.colonizeTarget.object3d.position.y;
         // slowly descend in z direction
-        let destZ = this.colonizeTarget.position.z +
-            this.colonizeTarget.scale.z * (2 - this.colonizeAnimationProgress);
-        this.destinationPoint = {"x": destX, "y": destY, "z": destZ};
+        let destZ = this.colonizeTarget.object3d.position.z +
+            this.colonizeTarget.object3d.scale.z * (2 - this.colonizeAnimationProgress);
+        this.destinationPoint = { "x": destX, "y": destY, "z": destZ };
         // shrink ship
         const size = this.size * (1 - this.colonizeAnimationProgress);
         this.object3d.scale.set(size, size, size);
     }
 
-    updateOrbit() {
-        const centerX = this.orbitTarget.position.x;
-        const centerZ = this.orbitTarget.position.z;
-        const centerY = this.orbitTarget.position.y;
-        const orbitDist = this.orbitTarget.scale.z*2
+    updateOrbit(elapsedTime) {
+        const centerX = this.orbitTarget.object3d.position.x;
+        const centerZ = this.orbitTarget.object3d.position.z;
+        const centerY = this.orbitTarget.object3d.position.y;
+        const orbitDist = this.orbitTarget.object3d.scale.z * 2;
 
-        if (!this.orbitAngle) {
-            this.orbitAngle = Math.PI/2;
+        if (!this.orbitStartTime) {
+            this.orbitStartTime = elapsedTime;
         }
-        this.orbitAngle += this.speed/32 * Math.PI;
 
-        this.object3d.position.x = centerX + orbitDist * Math.cos(this.orbitAngle);
-        this.object3d.position.z = centerZ + orbitDist * Math.sin(this.orbitAngle);
+        const startAngle = Math.PI / 2;
+        const timeOrbiting = elapsedTime - this.orbitStartTime;
+        const orbitSpeed = this.speed / orbitDist * 2 + 0.05;
+        const orbitAngle = startAngle + timeOrbiting * orbitSpeed * Math.PI;
+
+        this.object3d.position.x = centerX + orbitDist * Math.cos(orbitAngle);
+        this.object3d.position.z = centerZ + orbitDist * Math.sin(orbitAngle);
         this.object3d.position.y = centerY;
     }
 

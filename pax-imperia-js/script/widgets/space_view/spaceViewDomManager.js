@@ -26,7 +26,7 @@ export class SpaceViewDomManager {
         window.handleTargetButton = (buttonState) => {
             this.selectionSprite.selectionTarget.parentEntity.buttonState = buttonState;
             // let user know which button is selected
-            document.getElementById(buttonState).style.background='#A9A9A9'; // default color ButtonFace
+            document.getElementById(buttonState).style.background = '#A9A9A9'; // default color ButtonFace
         };
 
     }
@@ -35,14 +35,14 @@ export class SpaceViewDomManager {
     // Click Handlers //
     ////////////////////
 
-    #clickHandler = ( event ) => {
+    #clickHandler = (event) => {
         event.preventDefault();
         const selectionTarget = this.findSelectionTarget(event);
         this.selectTarget(selectionTarget);
         this.populateHtml();
     }
 
-    #doubleClickHandler = ( event ) => {
+    #doubleClickHandler = (event) => {
         // on a doubleclick, previousTargets queue will look like:
         //     0: double-clicked object or object behind,
         //     1: double-clicked object,
@@ -53,14 +53,14 @@ export class SpaceViewDomManager {
         if (this.previousTargets[2] &&
             this.previousTargets[2].parentEntity &&
             this.previousTargets[2].parentEntity.type == "ship") {
-                this.moveShip(this.previousTargets[2], clickTarget, 'default');
+            this.moveShip(this.previousTargets[2], clickTarget, 'default');
         } else {
             // navigate through wormhole (unless ship was just moved through wormhole)
             if (clickTarget &&
                 clickTarget.parentEntity.type === "wormhole") {
-                    const wormholeId = clickTarget.parentEntity.id;
-                    const path = "/systems/" + wormholeId;
-                    this.systemClickHandler(path);
+                const wormholeId = clickTarget.parentEntity.id;
+                const path = "/systems/" + wormholeId;
+                this.systemClickHandler(path);
             }
         }
         this.populateHtml();
@@ -83,8 +83,8 @@ export class SpaceViewDomManager {
         if (this.previousTargets[1] &&
             this.previousTargets[1].parentEntity.type == "ship" &&
             this.previousTargets[1].parentEntity.buttonState) {
-                const buttonState = this.previousTargets[1].parentEntity.buttonState
-                this.moveShip(this.previousTargets[1], this.previousTargets[0], buttonState);
+            const buttonState = this.previousTargets[1].parentEntity.buttonState
+            this.moveShip(this.previousTargets[1], this.previousTargets[0], buttonState);
         }
     }
 
@@ -134,29 +134,30 @@ export class SpaceViewDomManager {
         }
     }
 
-    moveShip(ship3d, target=null, mode='default') {
+    moveShip(ship3d, target = null, mode = 'default') {
         // ship3d is the 3d object and shipEntity is the JS object
         const shipEntity = ship3d.parentEntity;
+        const targetEntity = target ? target.parentEntity : null;
         // clear all movement
         shipEntity.resetMovement();
 
         if (mode == 'colonize' &&
             target &&
             target.parentEntity.type != 'planet') {
-                alert("Only planets can be colonized");
-                return;
+            alert("Only planets can be colonized");
+            return;
         }
 
         // set targets based on movement mode
         // default behavior moves to target and orbits
         if (['default', 'move', 'orbit', 'colonize'].includes(mode) && target) {
-            shipEntity.destinationTarget = target;
+            shipEntity.destinationTarget = targetEntity;
         }
         if (['default', 'orbit'].includes(mode) && target) {
-            shipEntity.orbitTarget = target;
+            shipEntity.orbitTarget = targetEntity;
         }
         if (mode == 'colonize' && target) {
-            shipEntity.colonizeTarget = target;
+            shipEntity.colonizeTarget = targetEntity;
         }
         if (['default', 'move'].includes(mode) && !target) {
             this.setShipDestinationPoint(ship3d, shipEntity);
@@ -170,11 +171,11 @@ export class SpaceViewDomManager {
 
     setShipDestinationPoint(ship3d, shipEntity) {
         // find intersection between mouse click and plane of ship
-        this.raycaster.setFromCamera( this.mouse, this.camera );
-        const shipPlane = new THREE.Plane(new THREE.Vector3( 0, 0, ship3d.position.z ), -ship3d.position.z);
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        const shipPlane = new THREE.Plane(new THREE.Vector3(0, 0, ship3d.position.z), -ship3d.position.z);
         const intersects = new THREE.Vector3();
         this.raycaster.ray.intersectPlane(shipPlane, intersects);
-        shipEntity.destinationPoint = {x: intersects.x, y: intersects.y, z: intersects.z};
+        shipEntity.destinationPoint = { x: intersects.x, y: intersects.y, z: intersects.z };
     }
 
     ///////////////////////////////
@@ -195,12 +196,12 @@ export class SpaceViewDomManager {
     populateList(entity_type) {
         let listUl = document.getElementById(entity_type + "-list");
         let html = '';
-        this.system[entity_type + "s"].forEach( entity => {
+        this.system[entity_type + "s"].forEach(entity => {
             let selectedThumbnail = ""
             let details = ""
             if (this.selectionSprite.selectionTarget &&
                 this.selectionSprite.selectionTarget == entity.object3d) {
-                    selectedThumbnail = " selected-thumbnail";
+                selectedThumbnail = " selected-thumbnail";
             }
 
             html += `
@@ -214,7 +215,7 @@ export class SpaceViewDomManager {
                     </div>
                 </li>
                 `;
-            });
+        });
         listUl.innerHTML = html;
     }
 
@@ -237,7 +238,7 @@ export class SpaceViewDomManager {
     }
 
     addMouseMovement() {
-        this.mouseMovementHandler = ( event ) => {
+        this.mouseMovementHandler = (event) => {
             // calculate pointer position in normalized device coordinates
             // (-1 to +1) for both components
             const h = this.canvas.height;
@@ -275,8 +276,8 @@ export class SpaceViewDomManager {
 
         if (parent.type == "Scene") {
             console.log("Deleting object at (" + container.position.x
-            + ", " + container.position.y
-            + ", " + container.position.z + ")");
+                + ", " + container.position.y
+                + ", " + container.position.z + ")");
             parent.remove(container);
         } else {
             this.removeContainerFromScene(container.parent);

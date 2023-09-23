@@ -32,20 +32,20 @@ export class SpaceViewAnimator {
     async animate() {
         this.resetCamera()
         this.updateObjects()
-        this.renderer.render( this.scene, this.camera );
+        this.renderer.render(this.scene, this.camera);
     }
 
     resetCamera() {
         // Reset camera in real time
         //////////////////////////////
 
-        let distance =  parseFloat( this.clientObjects.distanceSlider.value );
+        let distance = parseFloat(this.clientObjects.distanceSlider.value);
 
         // cameraPivot.rotation.set(xRotation, yRotation, 0.0);
         this.cameraPivot.rotation.set(-0.6, 0.05, -3);
 
         this.cameraPivot.position.set(0, 0, distance);
-        this.camera.lookAt( this.scene.position );
+        this.camera.lookAt(this.scene.position);
 
         this.headLamp.position.set(0, 0, distance);
         // headLamp.lookAt(this.scene.position);
@@ -72,7 +72,7 @@ export class SpaceViewAnimator {
         }
 
         for (const ship of this.system['ships']) {
-            ship.update(deltaTime, this.system, this.galaxy);
+            ship.update(elapsedTime, deltaTime, this.system, this.galaxy);
         }
 
     }
@@ -96,9 +96,9 @@ export class SpaceViewAnimator {
         var sunLight = new THREE.PointLight(new THREE.Color(), 1.25, 1000);
         scene.add(sunLight);
 
-        this.headLamp = new THREE.DirectionalLight( 0xffffff, 1 );
+        this.headLamp = new THREE.DirectionalLight(0xffffff, 1);
         this.headLamp.position.set(22, 22, 25);
-        scene.add( this.headLamp );
+        scene.add(this.headLamp);
 
         //var ambientLight = new THREE.AmbientLight( 0xffffff, 0.05 );
         //scene.add( ambientLight );
@@ -114,7 +114,7 @@ export class SpaceViewAnimator {
 
         this.cameraPivot = new THREE.Group();
         camera.position.set(0, 0, 50);
-        camera.lookAt( scene.position );
+        camera.lookAt(scene.position);
         this.cameraPivot.add(camera);
         scene.add(this.cameraPivot);
 
