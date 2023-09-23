@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -14,22 +13,10 @@ var clients = make(map[*websocket.Conn]ClientData)
 var chatRooms = make(map[string]ChatRoom)
 var dataMux sync.Mutex
 
-var wsupgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
-
 /* This is the main websocket handler for the server.  Whenever a message
  * comes into the server, this function will be called.
- *
  */
-func wshandler(w http.ResponseWriter, r *http.Request) {
-	wsupgrader.CheckOrigin = func(r *http.Request) bool { return true }
-	conn, err := wsupgrader.Upgrade(w, r, nil)
-	if err != nil {
-		fmt.Printf("Failed to set websocket upgrade: %+v", err)
-		return
-	}
+func listenToClientMessages(conn *websocket.Conn) {
 	fmt.Print("Client connected\n")
 
 	defer func() {
@@ -40,6 +27,7 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	dataMux.Lock()
+
 	// this map is kind of confusing, but we create a key for the client using the connection pointer, and
 	// set the value to true a struct containing the client's email and display name
 	// we can access the connection pointer later to send messages to the client by iterating over the map
@@ -50,7 +38,7 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 	dataMux.Unlock()
 
 	for {
-		messageType, msg, err := conn.ReadMessage()
+		_, msg, err := conn.ReadMessage()
 		if err != nil {
 			fmt.Println("Client disconnected")
 			fmt.Println(err)
@@ -83,14 +71,7 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 		case "GET_GAME_CONFIGURATION":
 			handleGetGameConfiguration(conn, message)
 		default:
-			fmt.Println("Unknown command: " + message.Command)
-			// broadcast message to all clients just for fun
-			for client := range clients {
-				if err := client.WriteMessage(messageType, msg); err != nil {
-					log.Println(err)
-					cleanUpDeadConnection(client)
-				}
-			}
+			fmt.Println("ERROR: Unknown command, " + message.Command)
 		}
 
 		dataMux.Unlock()
