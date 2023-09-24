@@ -17,6 +17,20 @@ on:
       - 'react-frontend/**/*.bin'
       - 'react-frontend/**/*.gltf'
       - 'react-frontend/**/*.fbx'
+      # Keep this synchronized with pax-imperia-js.yml, GH Actions doesn't support variables yet...
+      - 'pax-imperia-js/**/*.js'
+      - 'pax-imperia-js/**/*.jsx'
+      - 'pax-imperia-js/**/*.cjs'
+      - 'pax-imperia-js/**/*.json'
+      - 'pax-imperia-js/**/*.conf'
+      - 'pax-imperia-js/**/*.html'
+      - 'pax-imperia-js/**/*.css'
+      - 'pax-imperia-js/**/*.jpeg'
+      - 'pax-imperia-js/**/*.png'
+      - 'pax-imperia-js/**/*.svg'
+      - 'pax-imperia-js/**/*.bin'
+      - 'pax-imperia-js/**/*.gltf'
+      - 'pax-imperia-js/**/*.fbx'
 
 jobs:
 
