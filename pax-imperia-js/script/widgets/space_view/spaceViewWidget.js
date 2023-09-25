@@ -19,17 +19,17 @@ export class SpaceViewWidget {
     spaceViewAnimator;
     spaceViewDomManager;
 
-    constructor(config, clientObjects, galaxy) {
+    constructor(config, clientObjects, gameStateInterface) {
         this.c = config;
         this.clientObjects = clientObjects;
-        this.galaxy = galaxy;
+        this.galaxy = gameStateInterface.galaxy;
         // debug
-        window.galaxy = galaxy;
+        window.galaxy = this.galaxy;
         this.basePath = window.location.hash.includes("#") ? "/pax-imperia-clone" : "";
 
         const mouse = new THREE.Vector2(0,0);
         this.clientObjects.mouse = mouse;
-        this.clientObjects.gameClock = window.gameClock;
+        this.clientObjects.gameClock = gameStateInterface.gameClock;
     }
 
     async beginGame(systemIndex, systemClickHandler) {

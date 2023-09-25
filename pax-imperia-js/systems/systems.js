@@ -1,6 +1,7 @@
 import { SpaceViewWidget } from '/script/widgets/space_view/spaceViewWidget.js'
 import { GameSettings } from '/script/gameSettings.js';
 import { Galaxy } from '/script/models/galaxy.js';
+import { GameStateInterface } from '/script/gameStateInterface/gameStateInterface.js';
 
 ///////////////////////
 // Input System Data //
@@ -79,7 +80,7 @@ let systemDataOld = {
 // placeholder get system data
 let gameSettings = GameSettings;
 let galaxy = Galaxy.generateFromConfig(gameSettings.galaxyWidget);
-let systemData = JSON.parse(JSON.stringify(galaxy.systems[0]));
+let gameStateInterface = new GameStateInterface({ galaxy: galaxy });
 
 // types of state
 //   config settings (game settings, widget settings)
@@ -97,7 +98,7 @@ let clientObjects = {};
 clientObjects.consoleDiv = document.getElementById("console-message");
 clientObjects.lowerConsoleDiv = document.getElementById("lower-console");
 
-let spaceViewWidget = new SpaceViewWidget(config, clientObjects, systemData);
+let spaceViewWidget = new SpaceViewWidget(config, clientObjects, gameStateInterface);
 window.spaceViewWidget = spaceViewWidget; // debugging
 
 function draw() {
