@@ -86,6 +86,7 @@ export class SpaceViewDomManager {
             const buttonState = this.previousTargets[1].parentEntity.buttonState
             this.moveShip(this.previousTargets[1], this.previousTargets[0], buttonState);
         }
+        window.selectionTarget = this.selectionSprite.selectionTarget;
     }
 
     unselectTarget() {

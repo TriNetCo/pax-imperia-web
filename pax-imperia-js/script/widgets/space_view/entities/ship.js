@@ -46,7 +46,7 @@ export class Ship extends Entity {
         }
         // finally, move to destination point or update orbit
         if (this.destinationPoint) {
-            this.updateToDestinationPoint();
+            this.updateToDestinationPoint(deltaTime);
         } else if (this.orbitTarget) {
             this.updateOrbit(elapsedTime);
         }
@@ -121,10 +121,11 @@ export class Ship extends Entity {
         this.position.z = wormhole.position.z + 1;
     }
 
-    updateToDestinationPoint() {
+    updateToDestinationPoint(deltaTime) {
         const positionVector = new THREE.Vector3().copy(this.object3d.position);
         const destinationVector = new THREE.Vector3().copy(this.destinationPoint);
         const distanceFromDest = positionVector.distanceTo(destinationVector);
+        const speedMultiplier = this.speed * deltaTime * 60;
 
         // If the destinationPoint is within [speed] units away from this.position,
         // then move to destination and set destinationPoint to null
@@ -136,7 +137,7 @@ export class Ship extends Entity {
             const displacementVector = destinationVector
                 .sub(positionVector)
                 .normalize()
-                .multiplyScalar(this.speed, this.speed, this.speed);
+                .multiplyScalar(speedMultiplier, speedMultiplier, speedMultiplier);
             const finalVector = positionVector.add(displacementVector);
             this.object3d.position.copy(finalVector);
         }
