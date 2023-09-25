@@ -2,7 +2,6 @@ import { GalaxyDrawer } from './galaxyDrawer.js';
 import { GalaxyDomManager } from './galaxyDomManager.js';
 import { packData } from '../../models/helpers.js';
 import { Galaxy } from '../../models/galaxy.js';
-import * as THREE from 'three';
 
 export class GalaxyWidget {
 
@@ -11,19 +10,16 @@ export class GalaxyWidget {
     canvas;
     systemClickHandler;
 
-    constructor(config, galaxy) {
+    constructor(config, galaxy, gameStateInterface) {
         this.c = config;
         this.mouse = { x: 0, y: 0 };
         this.galaxy = galaxy;
-        this.gameClock = new THREE.Clock();
+        this.gameClock = gameStateInterface.gameClock;
 
         if (typeof (window) !== 'undefined') {  // These globals break tests hard...
             // window.systemsData = this.galaxy.systems;
+            // TODO: clean this up, it's not needed anymore?
             window.gameClock = window.gameClock ? window.gameClock : this.gameClock;
-        }
-
-        if (!this.gameClock.running) {
-            this.gameClock.start();
         }
     }
 

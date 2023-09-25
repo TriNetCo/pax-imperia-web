@@ -66,6 +66,20 @@ export class SpaceViewDomManager {
         this.populateHtml();
     }
 
+    #rightClickHandler = (event) => {
+        event.preventDefault();
+        const currentSelection = this.selectionSprite.selectionTarget;
+        if (!currentSelection) {
+            return;
+        }
+
+        // Right-click handler for selected ships
+        if (currentSelection.parentEntity.type == "ship") {
+            const clickTarget = this.findSelectionTarget(event);
+            this.moveShip(currentSelection, clickTarget, 'default');
+        }
+    }
+
     ///////////////////////////
     // Click Handler Helpers //
     ///////////////////////////
@@ -96,6 +110,13 @@ export class SpaceViewDomManager {
         }
     }
 
+    /*
+     * This function finds the object that the mouse is currently over (handy to fire
+     * in the click handlers).
+     * @param {event} event - the click event
+     * @returns {THREE.Object3D} - the object that was clicked on
+     * @returns {null} - if no object was clicked on
+     */
     findSelectionTarget(event) {
         // cannot click on these types of objects
         const unselectableNames = ["selectionSprite", "wormholeText"];
@@ -135,12 +156,27 @@ export class SpaceViewDomManager {
         }
     }
 
+    /*
+     * This function moves a ship to a target. If the target is a planet, it will orbit.
+     * If the target is a wormhole, it will move through the wormhole.
+     * If the target is an enemy ship, it will attack it.
+     * If the target is a friendly ship, it will form up with it.
+     * @param {THREE.Object3D} ship3d - the 3d object of the ship
+     * @param {THREE.Object3D} target - the 3d object of the target
+     * @param {string} mode - the mode of movement.  Choose: default, colonize, move, orbit, attack, formup
+     */
     moveShip(ship3d, target = null, mode = 'default') {
         // ship3d is the 3d object and shipEntity is the JS object
         const shipEntity = ship3d.parentEntity;
+        const shipId = shipEntity.name;
         const targetEntity = target ? target.parentEntity : null;
         // clear all movement
         shipEntity.resetMovement();
+
+        // We need to send the shipId, targetId and mode to the server so it can
+        // perform this logic also, updating it's system data and also sending the command
+        // to all clients so they can preform the logic as well.
+
 
         if (mode == 'colonize' &&
             target &&
@@ -253,6 +289,7 @@ export class SpaceViewDomManager {
 
     addMouseClick() {
         this.canvas.addEventListener('click', this.#clickHandler);
+        this.canvas.addEventListener('contextmenu', this.#rightClickHandler);
     }
 
     addMouseDoubleClick() {
@@ -262,6 +299,7 @@ export class SpaceViewDomManager {
     detachFromDom() {
         this.canvas.removeEventListener('mousemove', this.mouseMovementHandler);
         this.canvas.removeEventListener('click', this.#clickHandler);
+        this.canvas.removeEventListener('contextmenu', this.#rightClickHandler);
         this.canvas.remove();
     }
 
