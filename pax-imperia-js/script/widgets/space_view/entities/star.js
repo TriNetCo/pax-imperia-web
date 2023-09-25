@@ -1,7 +1,7 @@
 import { Entity } from './entity.js'
 
 export class Star extends Entity {
-    constructor (data, systemName, systemId) {
+    constructor(data, systemName, systemId) {
         super(data, systemName, systemId);
         this.type = 'star';
         this.name = systemName;
@@ -9,9 +9,10 @@ export class Star extends Entity {
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/sun_thumbnail.png";
     }
 
-    update (elapsedTime) {
-        this.object3d.rotation.y = 0.3 * elapsedTime;
-        this.object3d.rotation.x = 0.3 * elapsedTime;
+    update(elapsedTime) {
+        const rotation = 0.3 * this.spin_speed * elapsedTime;
+        this.object3d.rotation.y = rotation;
+        this.object3d.rotation.x = rotation;
     }
 
 }

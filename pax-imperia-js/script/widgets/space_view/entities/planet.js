@@ -18,11 +18,11 @@ export class Planet extends Entity {
     }
 
     update(elapsedTime) {
-        let speedMultiplier = 3;
+        // negative planets usually rotate counter-clockwise
+        this.object3d.rotation.y = - 0.3 * this.spin_speed * elapsedTime;
 
-        this.object3d.rotation.y = 0.3 * this.spin_speed * elapsedTime;
-
-        let d = this.distance_from_star;
+        const speedMultiplier = 3;
+        const d = this.distance_from_star;
         // square of the planet's orbital period is proportional to the cube of its semimajor axis
         // pow(d, 3) = pow(period, 2), velocity = pow(1/d, 0.5), Math.pow(1/d, 0.5)
         let angle = elapsedTime * Math.pow(speedMultiplier / d, 2) + this.starting_angle;

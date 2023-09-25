@@ -35,7 +35,7 @@ export class SystemGenerator {
             "atmosphere": "sun",
             "size": getRandomNum(c.minStarSize, c.maxStarSize, 2),
             "distance_from_star": 0,
-            "spin_speed": 1,
+            "spin_speed": getRandomNum(0.5, 1.5, 1),
             "starting_angle": 0,
         };
         return star;
