@@ -20,12 +20,12 @@ export class SystemGenerator {
 
     // this function serializes the data to an object without actually
     // serializing it to a string which a database and network connection would want
-    generateData(){
+    generateData() {
         let data = {};
         for (var key in this) {
             data[key] = this[key];
         };
-        return(data);
+        return (data);
     }
 
     generateStar(c) {
@@ -60,7 +60,7 @@ export class SystemGenerator {
                 "atmosphere": "earthlike000" + getRandomNum(1, 9, 0),
                 "size": planetSize,
                 "distance_from_star": planetDistance,
-                "spin_speed": 1,
+                "spin_speed": getRandomNum(0.5, 1.5, 1),
                 "starting_angle": startingAngle,
             };
             minDistance = planetDistance + planetSize;
@@ -80,7 +80,7 @@ export class SystemGenerator {
             let ship = {
                 "name": "ship_" + this.id + "_" + i,
                 "index": i,
-                "position": {x: shipX, y: shipY, z: shipZ}
+                "position": { x: shipX, y: shipY, z: shipZ }
             }
             ships.push(ship);
 
