@@ -1,4 +1,5 @@
 import { Entity } from './entity.js'
+import * as THREE from 'three';
 
 export class Planet extends Entity {
     constructor(data, systemName, systemId) {
@@ -15,21 +16,99 @@ export class Planet extends Entity {
             <div>Population: 7/8</div>
             <div>Habitability: :)</div>
             `;
+        this.object3ds = [];
     }
 
     update(elapsedTime) {
-        // update rotation
-        // negative for rotating counter-clockwise
-        this.object3d.rotation.y = -0.3 * this.spin_speed * elapsedTime;
 
-        // update revolution
-        // speed is determined by distance from star without randomness
-        // square of the planet's orbital period is proportional to the cube of its semimajor axis
-        // pow(d, 3) = pow(period, 2), velocity = pow(1/d, 0.5), Math.pow(1/d, 0.5)
-        const speedMultiplier = 3;
-        const d = this.distance_from_star;
-        let angle = elapsedTime * Math.pow(speedMultiplier / d, 2) + this.starting_angle;
-        this.object3d.position.x = d * Math.cos(angle);
-        this.object3d.position.z = d * Math.sin(angle);
+        this.object3ds.forEach(obj3d => {
+            // update rotation
+            // negative for rotating counter-clockwise
+            const spinImprover = obj3d.isContent ? 1 : 1.5;
+            obj3d.rotation.y = -0.3 * this.spin_speed * spinImprover * elapsedTime;
+
+            // update revolution
+            // speed is determined by distance from star without randomness
+            const speedMultiplier = 3;
+            const d = this.distance_from_star;
+            // square of the planet's orbital period is proportional to the cube of its semimajor axis
+            // pow(d, 3) = pow(period, 2), velocity = pow(1/d, 0.5), Math.pow(1/d, 0.5)
+
+            let angle = elapsedTime * Math.pow(speedMultiplier / d, 2) + this.starting_angle;
+            obj3d.position.x = d * Math.cos(angle);
+            obj3d.position.z = d * Math.sin(angle);
+        });
+
     }
+
+    async load(scene) {
+        this.scene = scene;
+        // console.log("loading " + this.type + ": " + this.name);
+
+        /////////////////////////
+        // Load the cloud mesh //
+        /////////////////////////
+
+        const cloudMeshPath = this.basePath + "/assets/orbitals/meshes/cloudlayer.glb";
+        const nTextures = 10;
+        const cloudIndex = "000" + Math.floor(Math.random() * nTextures);
+        const cloudTexturePath = this.basePath + "/assets/orbitals/textures/clouds/clouds" + cloudIndex + ".png";
+
+        const clouds = await this.loadMesh(scene, cloudMeshPath, cloudTexturePath, true);
+        this.object3ds.push(clouds);
+
+        /////////////////////////////
+        // Load the continent mesh //
+        /////////////////////////////
+
+        const object3d = await this.loadMesh(scene, this.assetPath, this.texturePath);
+        object3d.isContent = true;
+        this.object3d = object3d;
+        this.object3ds.push(object3d);
+    }
+
+    async loadMesh(scene, assetPath, texturePath, transparent = false) {
+        let object3d = await this.loadObject3d(
+            scene,
+            assetPath,
+        );
+
+        let texture = object3d.children[0].material.map;
+        object3d.children[0].material = new THREE.MeshStandardMaterial();
+        object3d.children[0].material.map = texture;
+        object3d.children[0].material.metalness = 0;
+        object3d.children[0].material.roughness = 0.6;
+
+        this.loadTexture(object3d, texturePath, transparent);
+        this.setLoadAttributes(object3d);
+
+        // make sure that object3d can link back to the entity
+        object3d.parentEntity = this;
+        return object3d;
+    }
+
+    loadTexture(object3d, texturePath, transparent) {
+        if (this.texturePath) {
+            const textureLoader = new THREE.TextureLoader();
+            textureLoader.load(texturePath, function(texture) {
+                texture.flipY = false;
+
+                object3d.traverse(function(child) {
+                    if (child.isMesh) {
+
+                        if (transparent) {
+                            child.material.alphaMap = texture;
+                            child.material.alphaTest = 0.1;
+                            child.material.transparent = true;
+                        } else {
+                            child.material.map = texture;
+                        }
+                        child.material.roughness = .9;
+                        child.material.needsUpdate = true;
+                    }
+                });
+            });
+        }
+    }
+
 }
