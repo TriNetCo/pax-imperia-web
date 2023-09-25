@@ -11,17 +11,18 @@ export class GalaxyWidget {
     canvas;
     systemClickHandler;
 
-    constructor(config, galaxy) {
+    constructor(config, galaxy, gameStateInterface) {
         this.c = config;
         this.mouse = { x: 0, y: 0 };
         this.galaxy = galaxy;
-        this.gameClock = new THREE.Clock();
+        this.gameClock = gameStateInterface.gameClock;
 
         if (typeof (window) !== 'undefined') {  // These globals break tests hard...
             // window.systemsData = this.galaxy.systems;
             window.gameClock = window.gameClock ? window.gameClock : this.gameClock;
         }
 
+        // TODO: move this to beginGame()...
         if (!this.gameClock.running) {
             this.gameClock.start();
         }

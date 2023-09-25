@@ -167,9 +167,15 @@ export class SpaceViewDomManager {
     moveShip(ship3d, target = null, mode = 'default') {
         // ship3d is the 3d object and shipEntity is the JS object
         const shipEntity = ship3d.parentEntity;
+        const shipId = shipEntity.name;
         const targetEntity = target ? target.parentEntity : null;
         // clear all movement
         shipEntity.resetMovement();
+
+        // We need to send the shipId, targetId and mode to the server so it can
+        // perform this logic also, updating it's system data and also sending the command
+        // to all clients so they can preform the logic as well.
+
 
         if (mode == 'colonize' &&
             target &&
