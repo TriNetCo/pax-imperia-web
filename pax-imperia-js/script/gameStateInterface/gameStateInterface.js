@@ -29,13 +29,19 @@ export class GameStateInterface {
     constructor(configs) {
         this.galaxy = configs.galaxy;
         this.websocket = configs.websocket;
-        this.gameClock = new THREE.Clock();
+        this.gameClock = new THREE.Clock(false);
         this.websocket.onmessage = this.onMessage;
 
         this.shipActor = new ShipActor(this.websocket);
         this.planetActor = new PlanetActor(this.websocket);
         this.stationActor = new StationActor(this.websocket);
         this.playerActor = new PlayerActor(this.websocket);
+    }
+
+    startClock() {
+        if (!this.gameClock.running) {
+            this.gameClock.start();
+        }
     }
 
     // this method is called when a message comes from the server

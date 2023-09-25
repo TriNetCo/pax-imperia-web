@@ -19,6 +19,8 @@ const initGameData = () => {
         spaceViewWidget:
       new SpaceViewWidget(GameSettings.spaceViewWidget, {}, galaxy)
     };
+
+    gameStateInterface.startClock();
     return data;
 };
 

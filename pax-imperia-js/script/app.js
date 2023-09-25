@@ -33,6 +33,7 @@ function generateGalaxy() {
     const galaxy = Galaxy.generateFromConfig(config);
 
     const gameStateInterface = new GameStateInterface({galaxy, websocket});
+    gameStateInterface.startClock();
     galaxyWidget = new GalaxyWidget(config, galaxy, gameStateInterface);
     galaxyWidget.beginGame(canvas, systemClickHandler);
 }

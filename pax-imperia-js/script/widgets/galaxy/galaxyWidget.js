@@ -2,7 +2,6 @@ import { GalaxyDrawer } from './galaxyDrawer.js';
 import { GalaxyDomManager } from './galaxyDomManager.js';
 import { packData } from '../../models/helpers.js';
 import { Galaxy } from '../../models/galaxy.js';
-import * as THREE from 'three';
 
 export class GalaxyWidget {
 
@@ -19,12 +18,8 @@ export class GalaxyWidget {
 
         if (typeof (window) !== 'undefined') {  // These globals break tests hard...
             // window.systemsData = this.galaxy.systems;
+            // TODO: clean this up, it's not needed anymore?
             window.gameClock = window.gameClock ? window.gameClock : this.gameClock;
-        }
-
-        // TODO: move this to beginGame()...
-        if (!this.gameClock.running) {
-            this.gameClock.start();
         }
     }
 
