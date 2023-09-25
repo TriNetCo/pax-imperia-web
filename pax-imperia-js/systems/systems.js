@@ -106,6 +106,6 @@ function draw() {
     window.requestAnimationFrame(draw);
 }
 
-await spaceViewWidget.beginGame(0);
+await spaceViewWidget.loadWidget(0);
 
 draw();

@@ -8,11 +8,11 @@ import { SpriteFlipbook } from '../../models/spriteFlipbook.js'
  * elements and supporting HTML.
  *
  * @constructor
- * @param {object} config        - The configurations defined in gameSettings.js.
- * @param {object} clientObjects - clientObjects, or rather dom elements that are used by
- *                                 the widget to render the game or controls.
- * @param {object} systemsData   - The system data which includes planets, stars,
- *                                 connections, ships, etc.
+ * @param {object} config             - The configurations defined in gameSettings.js.
+ * @param {object} clientObjects      - clientObjects, or rather dom elements that are used by
+ *                                      the widget to render the game or controls.
+ * @param {object} gameStateInterface - The gameStateInterface exposes system data and
+ *                                      the gameClock data to the widget.
  */
 export class SpaceViewWidget {
 
@@ -32,9 +32,9 @@ export class SpaceViewWidget {
         this.clientObjects.gameClock = gameStateInterface.gameClock;
     }
 
-    async beginGame(systemIndex, systemClickHandler) {
+    async loadWidget(systemIndex, systemClickHandler) {
         this.systemClickHandler = systemClickHandler
-        this.setCurrentSystem(systemIndex)
+        this.system = this.galaxy.systems[systemIndex];
 
         // TODO: fix this so the console is created by the widget
         // this.clientObjects.consoleDiv.innerHTML = "Resume";
@@ -76,11 +76,6 @@ export class SpaceViewWidget {
 
         this.spaceViewAnimator = new SpaceViewAnimator(this.c, this.clientObjects, this.system, this.galaxy);
         await this.spaceViewAnimator.populateScene();
-    }
-
-    async setCurrentSystem(systemIndex) {
-        this.system = this.galaxy.systems[systemIndex];
-        // window.system = this.system;
     }
 
     draw() {

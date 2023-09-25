@@ -26,7 +26,7 @@ const SpaceView = () => {
             }
 
             const systemIndex = parseInt(pathname.replace('/systems/', ''));
-            await spaceViewWidget.beginGame(systemIndex, systemClickHandler);
+            await spaceViewWidget.loadWidget(systemIndex, systemClickHandler);
             const render = () => {
                 spaceViewWidget.draw();
                 requestId = requestAnimationFrame(render);
