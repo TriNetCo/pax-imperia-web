@@ -122,22 +122,22 @@ resource "google_storage_bucket" "terraform_backend_bucket" {
 #   secret_data = "example"
 # }
 
-data "google_secret_manager_secret_version" "db_app_user_pass" {
-  provider = google-beta
-  secret   = google_secret_manager_secret.db_app_user_pass.id
-}
+# data "google_secret_manager_secret_version" "db_app_user_pass" {
+#   provider = google-beta
+#   secret   = google_secret_manager_secret.db_app_user_pass.id
+# }
 
-output "db_app_user_pass" {
-  value = data.google_secret_manager_secret_version.db_app_user_pass.secret_data
-  sensitive = true
-}
+# output "db_app_user_pass" {
+#   value = data.google_secret_manager_secret_version.db_app_user_pass.secret_data
+#   sensitive = true
+# }
 
-resource "google_sql_user" "users" {
-  name     = "app_rpm"
-  password = data.google_secret_manager_secret_version.db_app_user_pass.secret_data
-  instance = google_sql_database_instance.postgres.name
-}
+# resource "google_sql_user" "users" {
+#   name     = "app_rpm"
+#   password = data.google_secret_manager_secret_version.db_app_user_pass.secret_data
+#   instance = google_sql_database_instance.postgres.name
+# }
 
-output "db_connection_string" {
-  value = "jdbc:postgresql://${google_sql_database_instance.postgres.public_ip_address}:5432/dbmodels"
-}
+# output "db_connection_string" {
+#   value = "jdbc:postgresql://${google_sql_database_instance.postgres.public_ip_address}:5432/dbmodels"
+# }
