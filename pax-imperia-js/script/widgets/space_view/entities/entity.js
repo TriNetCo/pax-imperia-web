@@ -41,12 +41,6 @@ export class Entity {
             this.assetPath,
         );
 
-        if (this.type === 'star') {
-            let texture = object3d.children[0].material.map;
-            object3d.children[0].material = new THREE.MeshBasicMaterial();
-            object3d.children[0].material.map = texture;
-        }
-
         this.loadTexture(object3d);
         this.setLoadAttributes(object3d);
 

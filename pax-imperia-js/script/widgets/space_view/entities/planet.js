@@ -54,32 +54,33 @@ export class Planet extends Entity {
         const cloudIndex = "000" + Math.floor(Math.random() * nTextures);
         const cloudTexturePath = this.basePath + "/assets/orbitals/textures/clouds/clouds" + cloudIndex + ".png";
 
-        const clouds = await this.loadMesh(scene, cloudMeshPath, cloudTexturePath, true);
+        const clouds = await this.loadMesh(scene, cloudMeshPath);
+        this.loadTexture(clouds, cloudTexturePath, true);
+
         this.object3ds.push(clouds);
 
         /////////////////////////////
         // Load the continent mesh //
         /////////////////////////////
 
-        const object3d = await this.loadMesh(scene, this.assetPath, this.texturePath);
+        const object3d = await this.loadMesh(scene, this.assetPath);
+        this.loadTexture(object3d, this.texturePath);
         object3d.isContent = true;
         this.object3d = object3d;
         this.object3ds.push(object3d);
     }
 
-    async loadMesh(scene, assetPath, texturePath, transparent = false) {
-        let object3d = await this.loadObject3d(
-            scene,
-            assetPath,
-        );
+    async loadMesh(scene, assetPath) {
+        const object3d = await this.loadObject3d(scene, assetPath);
 
-        let texture = object3d.children[0].material.map;
-        object3d.children[0].material = new THREE.MeshStandardMaterial();
-        object3d.children[0].material.map = texture;
-        object3d.children[0].material.metalness = 0;
-        object3d.children[0].material.roughness = 0.6;
+        const material = new THREE.MeshStandardMaterial();
+        material.roughness = 0.9;
+        material.metalness = 0.1;
+        material.color = new THREE.Color(0x9999cc);
 
-        this.loadTexture(object3d, texturePath, transparent);
+        material.needsUpdate = true;
+        object3d.children[0].material = material;
+
         this.setLoadAttributes(object3d);
 
         // make sure that object3d can link back to the entity
@@ -87,28 +88,28 @@ export class Planet extends Entity {
         return object3d;
     }
 
-    loadTexture(object3d, texturePath, transparent) {
-        if (this.texturePath) {
-            const textureLoader = new THREE.TextureLoader();
-            textureLoader.load(texturePath, function(texture) {
-                texture.flipY = false;
+    loadTexture(object3d, texturePath, transparent = false) {
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.load(texturePath, function(texture) {
+            texture.flipY = false;
 
-                object3d.traverse(function(child) {
-                    if (child.isMesh) {
+            object3d.traverse(function(child) {
+                if (child.isMesh) {
 
-                        if (transparent) {
-                            child.material.alphaMap = texture;
-                            child.material.alphaTest = 0.1;
-                            child.material.transparent = true;
-                        } else {
-                            child.material.map = texture;
-                        }
-                        child.material.roughness = .9;
-                        child.material.needsUpdate = true;
+                    // cloud settings
+                    if (transparent) {
+                        child.material.alphaMap = texture;
+                        child.material.alphaTest = 0.1;
+                        child.material.transparent = true;
+                    } else {
+                        // planet settings I guess...
+                        child.material.map = texture;
                     }
-                });
+                    child.material.roughness = .9;
+                    child.material.needsUpdate = true;
+                }
             });
-        }
+        });
     }
 
 }
