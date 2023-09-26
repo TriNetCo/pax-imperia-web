@@ -48,7 +48,7 @@ export class SpaceViewWidget {
         // Setup Renderer //
         ////////////////////
 
-        let renderer = new THREE.WebGLRenderer();
+        let renderer = new THREE.WebGLRenderer({antialias: true});
         this.clientObjects.renderer = renderer
 
         renderer.setSize( this.c.canvasWidth, this.c.canvasHeight );

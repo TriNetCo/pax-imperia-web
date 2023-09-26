@@ -22,6 +22,7 @@ export class Star extends Entity {
         const modelPath = this.basePath + "/assets/orbitals/meshes/planetbasemodel.glb";
         const texturePath = this.basePath + "/assets/orbitals/textures/sun/yellow/YellowSun0001.png";
         const object3d = await this.loadMesh(scene, modelPath);
+        this.addBrightenerMaterial(object3d);
 
         this.loadTexture(object3d, texturePath);
         this.setLoadAttributes(object3d);
@@ -39,12 +40,16 @@ export class Star extends Entity {
         return object3d;
     }
 
-    loadTexture(object3d, texturePath, transparent = false) {
-        let texture = object3d.children[0].material.map;
-        object3d.children[0].material = new THREE.MeshBasicMaterial();
-        object3d.children[0].material.map = texture;
-        object3d.children[0].material.needsUpdate = true;
+    // This makes it so the star doesn't have a shadow and is always lit
+    addBrightenerMaterial(object3d) {
+        const firstChild = object3d.children[0];
+        let texture = firstChild.material.map;
+        firstChild.material = new THREE.MeshBasicMaterial();
+        firstChild.material.map = texture;
+        firstChild.material.needsUpdate = true;
+    }
 
+    loadTexture(object3d, texturePath, transparent = false) {
         const textureLoader = new THREE.TextureLoader();
         textureLoader.load(texturePath, function(texture) {
             texture.flipY = false;
