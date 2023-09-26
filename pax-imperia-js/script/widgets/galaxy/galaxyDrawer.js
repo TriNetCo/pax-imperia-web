@@ -5,7 +5,7 @@ export class GalaxyDrawer {
         this.galaxy = config.galaxy;
         this.systemNameLabel = config.systemNameLabel;
         this.mouse = config.mouse;
-        this.connections = this.collectConnections(this.galaxy.systems);
+        this.connections = this.collectConnections(this.galaxy);
     }
 
     drawLoop() {
@@ -28,38 +28,39 @@ export class GalaxyDrawer {
         cx.strokeStyle = "orange";
         cx.lineWidth = 1;
         for (let i = 0, len = connections.length; i < len; i++) {
-            let startSystem = this.galaxy.systems[connections[i][0]];
-            let endSystem = this.galaxy.systems[connections[i][1]];
-            cx.beginPath();
-            cx.moveTo(startSystem.position.x, startSystem.position.y);
-            cx.lineTo(endSystem.position.x, endSystem.position.y);
-            cx.stroke();
+            const startSystem = this.galaxy.returnSystemById(connections[i][0]);
+            const endSystem = this.galaxy.returnSystemById(connections[i][1]);
+            if (startSystem && endSystem) {
+                cx.beginPath();
+                cx.moveTo(startSystem.position.x, startSystem.position.y);
+                cx.lineTo(endSystem.position.x, endSystem.position.y);
+                cx.stroke();
+            }
         }
     }
 
-    collectConnections(systems) {
-        const connections = [];
-        for (let i = 0, len = systems.length; i < len; i++) {
-            let system = systems[i];
-            let sourceConnections = system.connections.sort();
-            for (let j = 0; j < sourceConnections.length; j++) {
-                // connection = {id: 1, name: 'Reticulum', position: {x,y,z}}
-                let connection = sourceConnections[j];
-                // We need to make sure we don't add the same connection twice
-                // (i.e. 0 -> 1 and 1 -> 0)
-                if (connection.id > i) {
-                    connections.push([i, connection.id]);
+    collectConnections(galaxy) {
+        const allConnections = [];
+        for (let i = 0, len = galaxy.systems.length; i < len; i++) {
+            const system = galaxy.systems[i];
+            for (let j = 0, len = system.connections.length; j < len; j++) {
+                if (system.connections[j].id > system.id &&
+                    galaxy.returnSystemById(system.connections[j].id)) {
+                    allConnections.push([system.id, system.connections[j].id]);
                 }
             }
         }
-        return connections.sort();
+        return allConnections.sort();
     }
 
     drawSystems() {
         let systemDrawColor = "rgb(150, 150, 150)";
         for (let i = 0; i < this.galaxy.systems.length; i++) {
-            let system = this.galaxy.systems[i];
-            this.drawDot(system.position.x, system.position.y, system.radius, systemDrawColor);
+            const system = this.galaxy.systems[i];
+            this.drawDot(system.position.x,
+                system.position.y,
+                system.radius,
+                systemDrawColor);
         }
     }
 
@@ -86,16 +87,16 @@ export class GalaxyDrawer {
     drawDot(x, y, radius, color) {
         let cx = this.cx;
         cx.fillStyle = color;
-        cx.fillRect(x-radius, y-radius, radius*2, radius*2);
+        cx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
         cx.fill();
     }
 
     isMouseHovering(system) {
         let hoverRadius = system.radius + 1
         return (this.mouse.x > system.position.x - hoverRadius
-             && this.mouse.x < system.position.x + hoverRadius + 1
-             && this.mouse.y > system.position.y - hoverRadius
-             && this.mouse.y < system.position.y + hoverRadius + 2);
+            && this.mouse.x < system.position.x + hoverRadius + 1
+            && this.mouse.y > system.position.y - hoverRadius
+            && this.mouse.y < system.position.y + hoverRadius + 2);
     }
 
 }

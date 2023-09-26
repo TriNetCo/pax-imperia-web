@@ -93,6 +93,8 @@ export class Ship extends Entity {
             this.destinationTarget.object3d.position);
         const wormholeId = this.destinationTarget.id;
         if (distanceFromDest <= this.speed) {
+            // discover wormhole
+            galaxy.discoverSystem(wormholeId);
             // copy ship data to wormhole system data
             this.resetMovement();
             this.removeObject3d();
@@ -106,7 +108,7 @@ export class Ship extends Entity {
 
     pushToSystem(systemId, galaxy) {
         // create entity in systemsData
-        const system = galaxy.systems[systemId];
+        const system = galaxy.returnSystemById(systemId);
         // update with new systemId
         this.previousSystemId = this.systemId;
         this.systemId = systemId;
@@ -114,7 +116,7 @@ export class Ship extends Entity {
     }
 
     setPositionNearWormhole(wormholeId, galaxy) {
-        const destSystem = galaxy.systems[wormholeId];
+        const destSystem = galaxy.returnSystemById(wormholeId);
         const wormhole = destSystem.wormholes.find(x => x.id === this.previousSystemId);
         this.position.x = wormhole.position.x + getRandomNum(-2, 2, 2);
         this.position.y = wormhole.position.y + getRandomNum(-2, 2, 2);

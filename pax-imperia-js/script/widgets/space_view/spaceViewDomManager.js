@@ -3,9 +3,10 @@ import { Queue } from '../../models/helpers.js';
 
 export class SpaceViewDomManager {
 
-    constructor(config, clientObjects, system, systemClickHandler) {
+    constructor(config, clientObjects, system, galaxy, systemClickHandler) {
         this.c = config;
         this.system = system;
+        this.galaxy = galaxy;
         this.systemClickHandler = systemClickHandler;
         this.canvas = clientObjects.cx.canvas;
         this.mouse = clientObjects.mouse;
@@ -59,8 +60,7 @@ export class SpaceViewDomManager {
             if (clickTarget &&
                 clickTarget.parentEntity.type === "wormhole") {
                 const wormholeId = clickTarget.parentEntity.id;
-                const path = "/systems/" + wormholeId;
-                this.systemClickHandler(path);
+                this.navigateThroughWormhole(wormholeId);
             }
         }
         this.populateHtml();
@@ -213,6 +213,15 @@ export class SpaceViewDomManager {
         const intersects = new THREE.Vector3();
         this.raycaster.ray.intersectPlane(shipPlane, intersects);
         shipEntity.destinationPoint = { x: intersects.x, y: intersects.y, z: intersects.z };
+    }
+
+    navigateThroughWormhole(wormholeId) {
+        if (this.galaxy.returnSystemById(wormholeId)) {
+            const path = "/systems/" + wormholeId;
+            this.systemClickHandler(path);
+        } else {
+            alert('unknown system')
+        }
     }
 
     ///////////////////////////////

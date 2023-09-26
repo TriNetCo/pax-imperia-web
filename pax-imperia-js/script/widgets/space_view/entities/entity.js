@@ -66,10 +66,10 @@ export class Entity {
     loadTexture(object3d) {
         if (this.texturePath) {
             const textureLoader = new THREE.TextureLoader();
-            textureLoader.load(this.texturePath, function(texture) {
+            textureLoader.load(this.texturePath, function (texture) {
                 texture.flipY = false;
 
-                object3d.traverse(function(child) {
+                object3d.traverse(function (child) {
                     if (child.isMesh) {
                         child.material.map = texture;
                         child.material.needsUpdate = true;
@@ -131,7 +131,7 @@ export class Entity {
     removeFromSystem(galaxy) {
         // delete entity from system object
         // find index of entity in list of entities in system
-        const systemEntities = galaxy.systems[this.systemId][this.type + 's']
+        const systemEntities = galaxy.returnSystemById(this.systemId)[this.type + 's']
         const i = systemEntities.findIndex(x => x.name === this.name);
         // remove from list of entities in system
         systemEntities.splice(i, 1);

@@ -28,6 +28,7 @@ export class Galaxy {
         const connections = galaxy.generateConnections(systemsData);
         galaxy.addConnectionsToSystems(systemsData, connections);
         galaxy.systems = galaxy.unpackSystemsData(systemsData);
+        galaxy.setStartKnownSystems(0);
         return galaxy;
     }
 
@@ -41,6 +42,18 @@ export class Galaxy {
         return galaxy;
     }
 
+    setStartKnownSystems(knownSystemId) {
+        const knownSystems = new Set([]);
+        const knownSystem = this.returnSystemById(knownSystemId);
+        knownSystems.add(knownSystem);
+        for (let i = 0; i < knownSystem.connections.length; i++) {
+            const connectedSystem = this.returnSystemById(knownSystem.connections[i]['id']);
+            knownSystems.add(connectedSystem);
+        }
+        this.allSystems = this.systems;
+        this.systems = Array.from(knownSystems);
+    }
+
     unpackSystemsData(systemsData) {
         const systems = [];
         for (const systemData of systemsData) {
@@ -48,6 +61,19 @@ export class Galaxy {
             systems.push(system);
         }
         return systems;
+    }
+
+    returnSystemById(id) {
+        const system = this.systems.find(x => x.id === id);
+        return system;
+    }
+
+    discoverSystem(id) {
+        if (!this.returnSystemById(id)) {
+            const system = this.allSystems.find(x => x.id === id);
+            this.systems.push(system);
+            alert("new system discovered! it's called " + system.name)
+        }
     }
 
     ///////////////////////////////
