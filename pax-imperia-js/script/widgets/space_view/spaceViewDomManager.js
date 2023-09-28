@@ -118,8 +118,7 @@ export class SpaceViewDomManager {
      * @returns {null} - if no object was clicked on
      */
     findSelectionTarget(event) {
-        // cannot click on these types of objects
-        const unselectableNames = ["selectionSprite", "wormholeText"];
+        //const unselectableNames = ["selectionSprite", "wormholeText"];
 
         this.raycaster.setFromCamera(this.mouse, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children);
@@ -128,7 +127,8 @@ export class SpaceViewDomManager {
         // Loops through intersected objects (sorted by distance)
         for (let i = 0; i < intersects.length; i++) {
             let obj = this.getParentObject(intersects[i].object);
-            if (unselectableNames.includes(obj.name)) {
+            // cannot click on wormhole text, selection sprite, clouds, etc.
+            if (obj.notClickable) {
                 continue;
             }
             // If current selectionTarget clicked again, remember it
@@ -137,7 +137,7 @@ export class SpaceViewDomManager {
                 selection = obj;
             } else {
                 // Returns a selection different from current selectionTarget
-                selection = obj
+                selection = obj;
                 return selection;
             }
         }

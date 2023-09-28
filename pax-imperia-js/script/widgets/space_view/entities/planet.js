@@ -9,6 +9,8 @@ export class Planet extends Entity {
         // this.assetPath = this.basePath + "/assets/planets/" + this.atmosphere + ".gltf";
         this.assetPath = this.basePath + "/assets/orbitals/meshes/planetbasemodel.glb";
         this.texturePath = this.basePath + "/assets/orbitals/textures/earthlike/" + this.atmosphere + ".png";
+        this.cloudMeshPath = this.basePath + "/assets/orbitals/meshes/cloudlayer.glb";
+        this.cloudTexturePath = this.basePath + "/assets/orbitals/textures/clouds/" + this.cloud_type + ".png";
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/oxygen_thumbnail.png";
         this.position = { x: 0, y: 0, z: 2 * this.distance_from_star };
         this.consoleBody = `
@@ -19,12 +21,24 @@ export class Planet extends Entity {
         this.object3ds = [];
     }
 
+    toJSON() {
+        return ({
+            index: this.index,
+            atmosphere: this.atmosphere,
+            cloud_type: this.cloud_type,
+            size: this.size,
+            distance_from_star: this.distance_from_star,
+            spin_speed: this.spin_speed,
+            starting_angle: this.starting_angle
+        });
+    }
+
     update(elapsedTime) {
 
         this.object3ds.forEach(obj3d => {
             // update rotation
             // negative for rotating counter-clockwise
-            const spinImprover = obj3d.isContent ? 1 : 1.5;
+            const spinImprover = obj3d.isClouds ? 2 : 1;
             obj3d.rotation.y = -0.3 * this.spin_speed * spinImprover * elapsedTime;
 
             // update revolution
@@ -43,31 +57,26 @@ export class Planet extends Entity {
 
     async load(scene) {
         this.scene = scene;
-        // console.log("loading " + this.type + ": " + this.name);
+
+        ///////////////////////////
+        // Load the surface mesh //
+        ///////////////////////////
+
+        const object3d = await this.loadMesh(scene, this.assetPath);
+        this.loadTexture(object3d, this.texturePath, false, 0.9);
+        this.object3d = object3d;
+        this.object3ds.push(object3d);
 
         /////////////////////////
         // Load the cloud mesh //
         /////////////////////////
 
-        const cloudMeshPath = this.basePath + "/assets/orbitals/meshes/cloudlayer.glb";
-        const nTextures = 10;
-        const cloudIndex = "000" + Math.floor(Math.random() * nTextures);
-        const cloudTexturePath = this.basePath + "/assets/orbitals/textures/clouds/clouds" + cloudIndex + ".png";
-
-        const clouds = await this.loadMesh(scene, cloudMeshPath);
-        this.loadTexture(clouds, cloudTexturePath, true);
-
+        const clouds = await this.loadMesh(scene, this.cloudMeshPath);
+        this.loadTexture(clouds, this.cloudTexturePath, true, 0.9);
+        clouds.isClouds = true;
+        clouds.notClickable = true;
         this.object3ds.push(clouds);
 
-        /////////////////////////////
-        // Load the continent mesh //
-        /////////////////////////////
-
-        const object3d = await this.loadMesh(scene, this.assetPath);
-        this.loadTexture(object3d, this.texturePath);
-        object3d.isContent = true;
-        this.object3d = object3d;
-        this.object3ds.push(object3d);
     }
 
     async loadMesh(scene, assetPath) {
@@ -86,30 +95,6 @@ export class Planet extends Entity {
         // make sure that object3d can link back to the entity
         object3d.parentEntity = this;
         return object3d;
-    }
-
-    loadTexture(object3d, texturePath, transparent = false) {
-        const textureLoader = new THREE.TextureLoader();
-        textureLoader.load(texturePath, function(texture) {
-            texture.flipY = false;
-
-            object3d.traverse(function(child) {
-                if (child.isMesh) {
-
-                    // cloud settings
-                    if (transparent) {
-                        child.material.alphaMap = texture;
-                        child.material.alphaTest = 0.1;
-                        child.material.transparent = true;
-                    } else {
-                        // planet settings I guess...
-                        child.material.map = texture;
-                    }
-                    child.material.roughness = .9;
-                    child.material.needsUpdate = true;
-                }
-            });
-        });
     }
 
 }

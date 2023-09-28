@@ -18,21 +18,22 @@ export class SpriteFlipbook {
         this.scene = scene;
         this.loopFrameDuration = loopFrameDuration;
 
-        const map = new THREE.TextureLoader().load( spriteTexture );
+        const map = new THREE.TextureLoader().load(spriteTexture);
         this.map = map;
         map.magFilter = THREE.NearestFilter;
-        map.repeat.set(1/tilesHoriz, 1/tilesVert);
+        map.repeat.set(1 / tilesHoriz, 1 / tilesVert);
         map.offset.x = 0;
         map.offset.y = (this.currentTile % tilesVert) / tilesVert;
 
-        const material = new THREE.SpriteMaterial( { map: map } );
+        const material = new THREE.SpriteMaterial({ map: map });
         this.material = material;
-        const sprite = new THREE.Sprite( material );
+        const sprite = new THREE.Sprite(material);
+        sprite.notClickable = true;
         this.sprite = sprite;
         let scale = 4;
-        sprite.scale.set(scale,scale);
+        sprite.scale.set(scale, scale);
         sprite.name = "selectionSprite";
-        scene.add( sprite );
+        scene.add(sprite);
     }
 
     update(deltaTime) {
@@ -43,7 +44,7 @@ export class SpriteFlipbook {
             const p = selectionTarget.position;
             this.setPosition(p.x, p.y, p.z);
             if (selectionTarget.parentEntity.type == "ship") {
-                this.setScale({ x: 1, y: 1, z: 1});
+                this.setScale({ x: 1, y: 1, z: 1 });
             } else {
                 this.setScale(selectionTarget.scale);
             }
@@ -53,11 +54,11 @@ export class SpriteFlipbook {
 
         // cycleSpriteFlipbook
         this.elapsedTime += deltaTime;
-        if (  this.loopFrameDuration > 0 &&
-              this.elapsedTime >= this.loopFrameDuration ) {
+        if (this.loopFrameDuration > 0 &&
+            this.elapsedTime >= this.loopFrameDuration) {
             this.elapsedTime = 0;
-            this.currentTile = (this.currentTile + 1 ) % this.tilesVert;
-            this.map.offset.y = (this.tilesVert - this.currentTile - 1 ) / this.tilesVert;
+            this.currentTile = (this.currentTile + 1) % this.tilesVert;
+            this.map.offset.y = (this.tilesVert - this.currentTile - 1) / this.tilesVert;
         }
 
     }
@@ -68,8 +69,8 @@ export class SpriteFlipbook {
         this.sprite.position.z = z;
     }
 
-    setScale(scale){
-        this.sprite.scale.set(scale.x*4, scale.y*4, scale.z*4);
+    setScale(scale) {
+        this.sprite.scale.set(scale.x * 4, scale.y * 4, scale.z * 4);
     }
 
     setPositionVector3(vector3) {

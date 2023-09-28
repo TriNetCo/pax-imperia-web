@@ -24,6 +24,7 @@ export class SpaceViewAnimator {
     }
 
     drawBackground() {
+        // disabled
         let cx = this.cx;
         cx.fillStyle = "Black";
         cx.fillRect(0, 0, cx.canvas.width, cx.canvas.height);
@@ -120,7 +121,15 @@ export class SpaceViewAnimator {
             wormhole.addWormholeText(scene);
         }
 
-
+        let basePath = '';
+        if (typeof (window) !== 'undefined' && window.location.hash.includes("#")) {
+            basePath = "/pax-imperia-clone";
+        }
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.load(basePath + "/assets/backgrounds/space_view_background_tmp.png", function (t) {
+            scene.background = t;
+            console.log('loading background')
+        });
     }
 
 }
