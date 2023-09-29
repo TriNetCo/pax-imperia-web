@@ -121,15 +121,24 @@ export class SpaceViewAnimator {
             wormhole.addWormholeText(scene);
         }
 
+        await this.loadBackground(scene)
+    }
+
+    async loadBackground(scene) {
+        console.log('loadBackground')
         let basePath = '';
         if (typeof (window) !== 'undefined' && window.location.hash.includes("#")) {
             basePath = "/pax-imperia-clone";
         }
-        const textureLoader = new THREE.TextureLoader();
-        textureLoader.load(basePath + "/assets/backgrounds/space_view_background_tmp.png", function (t) {
-            scene.background = t;
-            console.log('loading background')
+        const backgroundPath = basePath + "/assets/backgrounds/space_view_background_tmp.png"
+        const loader = new THREE.TextureLoader();
+        new Promise(function (resolve, reject) {
+            loader.load(backgroundPath, function (input) {
+                scene.background = input;
+            }, function (xhr) {
+            }, function (error) {
+                console.error(error);
+            });
         });
     }
-
 }
