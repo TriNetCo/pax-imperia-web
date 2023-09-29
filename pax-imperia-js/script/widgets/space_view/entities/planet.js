@@ -56,45 +56,30 @@ export class Planet extends Entity {
     }
 
     async load(scene) {
-        this.scene = scene;
+        // load the surface
+        const primary = await this.loadPrimary(scene)
+        this.addMeshStandardMaterial(primary)
+        this.loadTexture(primary, this.texturePath, false, 0.9);
+        this.object3ds.push(primary);
 
-        ///////////////////////////
-        // Load the surface mesh //
-        ///////////////////////////
-
-        const object3d = await this.loadMesh(scene, this.assetPath);
-        this.loadTexture(object3d, this.texturePath, false, 0.9);
-        this.object3d = object3d;
-        this.object3ds.push(object3d);
-
-        /////////////////////////
-        // Load the cloud mesh //
-        /////////////////////////
-
-        const clouds = await this.loadMesh(scene, this.cloudMeshPath);
+        // load the clouds
+        const clouds = await this.loadObject3d(scene, this.cloudMeshPath);
         this.loadTexture(clouds, this.cloudTexturePath, true, 0.9);
+        this.setLoadAttributes(clouds);
         clouds.isClouds = true;
         clouds.notClickable = true;
         this.object3ds.push(clouds);
 
+        return [primary, clouds];
     }
 
-    async loadMesh(scene, assetPath) {
-        const object3d = await this.loadObject3d(scene, assetPath);
-
+    addMeshStandardMaterial(object3d) {
         const material = new THREE.MeshStandardMaterial();
         material.roughness = 0.9;
         material.metalness = 0.1;
         material.color = new THREE.Color(0x9999cc);
-
         material.needsUpdate = true;
         object3d.children[0].material = material;
-
-        this.setLoadAttributes(object3d);
-
-        // make sure that object3d can link back to the entity
-        object3d.parentEntity = this;
-        return object3d;
     }
 
 }
