@@ -38,6 +38,11 @@ export class Entity {
     ///////////////////////////
 
     async load(scene) {
+        const primary = await this.loadPrimary(scene);
+        return primary;
+    }
+
+    async loadPrimary(scene) {
         this.scene = scene;
         const object3d = await this.loadObject3d(
             scene,
@@ -54,6 +59,7 @@ export class Entity {
         // and parent entity can call object3d
         object3d.parentEntity = this;
         this.object3d = object3d;
+        return object3d;
     }
 
     async loadObject3d(scene, assetPath) {
@@ -77,7 +83,7 @@ export class Entity {
         const object3d = new Promise(function (resolve, reject) {
             loader.load(assetPath, function (input) {
                 const obj = input.scene;
-                scene.add(obj);
+                //scene.add(obj);
                 resolve(obj);
             }, function (xhr) {
             }, function (error) {
@@ -92,7 +98,7 @@ export class Entity {
         const object3d = new Promise(function (resolve, reject) {
             loader.load(assetPath, function (input) {
                 const obj = input;
-                scene.add(obj);
+                //scene.add(obj);
                 resolve(obj);
             }, function (xhr) {
             }, function (error) {
@@ -108,7 +114,7 @@ export class Entity {
             loader.load(assetPath, function (input) {
                 const spriteMaterial = new THREE.SpriteMaterial({ map: input });
                 const obj = new THREE.Sprite(spriteMaterial);
-                scene.add(obj);
+                //scene.add(obj);
                 resolve(obj);
             }, function (xhr) {
             }, function (error) {

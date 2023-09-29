@@ -114,6 +114,7 @@ export class SpaceViewAnimator {
         scene.add(this.cameraPivot);
 
         // Load Models
+        await this.loadBackground(scene);
 
         await system.load(scene);
 
@@ -121,11 +122,9 @@ export class SpaceViewAnimator {
             wormhole.addWormholeText(scene);
         }
 
-        await this.loadBackground(scene)
     }
 
     async loadBackground(scene) {
-        console.log('loadBackground')
         let basePath = '';
         if (typeof (window) !== 'undefined' && window.location.hash.includes("#")) {
             basePath = "/pax-imperia-clone";
