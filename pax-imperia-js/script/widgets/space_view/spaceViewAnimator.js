@@ -116,12 +116,41 @@ export class SpaceViewAnimator {
         // Load Models
         await this.loadBackground(scene);
 
-        await system.load(scene);
+        await this.loadParallelModels(scene);
 
         for (const wormhole of this.system['wormholes']) {
             wormhole.addWormholeText(scene);
         }
 
+    }
+
+    async loadParallelModels(scene) {
+        const entities = this.system.stars.concat(this.system.planets).concat(this.system.wormholes).concat(this.system.ships);
+        // const entities = this.system.planets.concat(this.system.wormholes).concat(this.system.ships);
+        const promiseFunctions = [];
+        for (let i = 0; i < entities.length; i++) {
+            const entity = entities[i];
+            promiseFunctions.push(entity.load(scene));
+        }
+
+        Promise.all(promiseFunctions)
+            .then((results) => {
+                // All promises resolved successfully
+                // Handle the results
+                console.log('promise start');
+                results.forEach((result) => {
+                    if (Array.isArray(result)) {
+                        scene.add(...result);
+                    } else {
+                        scene.add(result);
+                    }
+                });
+                console.log('promise end')
+            })
+            .catch((error) => {
+                // Handle errors if any of the promises reject
+                console.log(error)
+            });
     }
 
     async loadBackground(scene) {

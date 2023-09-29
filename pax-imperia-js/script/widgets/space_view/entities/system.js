@@ -37,40 +37,4 @@ export class System {
         return representations;
     }
 
-    async load(scene) {
-        await this.loadParallel(scene);
-        // let entities = this.stars.concat(this.planets).concat(this.wormholes).concat(this.ships);
-        // for (let i = 0; i < entities.length; i++) {
-        //     const entity = entities[i];
-        //     await entity.load(scene);
-        // }
-    }
-
-    async loadParallel(scene) {
-        const entities = this.stars.concat(this.planets).concat(this.wormholes).concat(this.ships);
-        const promiseFunctions = [];
-        for (let i = 0; i < entities.length; i++) {
-            const entity = entities[i];
-            promiseFunctions.push(entity.load(scene));
-        }
-
-        Promise.all(promiseFunctions)
-            .then((results) => {
-                // All promises resolved successfully
-                // Handle the results
-                console.log('promise start');
-                results.forEach((result) => {
-                    if (Array.isArray(result)) {
-                        scene.add(...result);
-                    } else {
-                        scene.add(result);
-                    }
-                });
-                console.log('promise end')
-            })
-            .catch((error) => {
-                // Handle errors if any of the promises reject
-                console.log(error)
-            });
-    }
 }

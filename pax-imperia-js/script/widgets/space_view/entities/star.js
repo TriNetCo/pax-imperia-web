@@ -13,6 +13,10 @@ export class Star extends Entity {
     }
 
     update(elapsedTime) {
+        if (!this.object3d || !this.coronaObject3ds) {
+            console.log('early update')
+            return
+        }
         // rotate star surface
         const rotation = 0.3 * this.spin_speed * elapsedTime;
         this.object3d.rotation.y = rotation;
@@ -34,8 +38,8 @@ export class Star extends Entity {
     async load(scene) {
         // create star surface
         const primary = await this.loadPrimary(scene);
-        this.addBrightenerMaterial(this.object3d);
         this.loadTexture(this.object3d, this.texturePath, false, 1);
+        this.addBrightenerMaterial(this.object3d);
         this.setLoadAttributes(this.object3d);
 
         // create coronas
