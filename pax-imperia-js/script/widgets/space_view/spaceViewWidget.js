@@ -27,38 +27,38 @@ export class SpaceViewWidget {
         window.galaxy = this.galaxy;
         this.basePath = window.location.hash.includes("#") ? "/pax-imperia-clone" : "";
 
-        const mouse = new THREE.Vector2(0,0);
+        const mouse = new THREE.Vector2(0, 0);
         this.clientObjects.mouse = mouse;
         this.clientObjects.gameClock = gameStateInterface.gameClock;
     }
 
     async loadWidget(systemIndex, systemClickHandler) {
-        this.systemClickHandler = systemClickHandler
+        this.systemClickHandler = systemClickHandler;
         this.system = this.galaxy.systems[systemIndex];
 
         // TODO: fix this so the console is created by the widget
         // this.clientObjects.consoleDiv.innerHTML = "Resume";
 
-        this.clientObjects.distanceSlider = document.getElementById("distance-slider")
-        this.clientObjects.xSlider = document.getElementById("x-slider")
-        this.clientObjects.ySlider = document.getElementById("y-slider")
-        this.clientObjects.zSlider = document.getElementById("z-slider")
+        this.clientObjects.distanceSlider = document.getElementById("distance-slider");
+        this.clientObjects.xSlider = document.getElementById("x-slider");
+        this.clientObjects.ySlider = document.getElementById("y-slider");
+        this.clientObjects.zSlider = document.getElementById("z-slider");
 
         ////////////////////
         // Setup Renderer //
         ////////////////////
 
-        let renderer = new THREE.WebGLRenderer({antialias: true});
-        this.clientObjects.renderer = renderer
+        let renderer = new THREE.WebGLRenderer({ antialias: true });
+        this.clientObjects.renderer = renderer;
 
-        renderer.setSize( this.c.canvasWidth, this.c.canvasHeight );
-        renderer.setPixelRatio( renderer.domElement.devicePixelRatio );
-        document.getElementById("canvas-div").appendChild( renderer.domElement );
+        renderer.setSize(this.c.canvasWidth, this.c.canvasHeight);
+        renderer.setPixelRatio(renderer.domElement.devicePixelRatio);
+        document.getElementById("canvas-div").appendChild(renderer.domElement);
         this.clientObjects.cx = renderer.getContext();
 
         const scene = new THREE.Scene();
         this.clientObjects.scene = scene;
-        this.clientObjects.camera = new THREE.PerspectiveCamera( 15, this.c.canvasWidth / this.c.canvasHeight, 1, 10000 );
+        this.clientObjects.camera = new THREE.PerspectiveCamera(15, this.c.canvasWidth / this.c.canvasHeight, 1, 10000);
 
 
         this.clientObjects.selectionSprite = new SpriteFlipbook(
@@ -75,7 +75,7 @@ export class SpaceViewWidget {
         window.spaceViewDomManager = this.spaceViewDomManager;
 
         this.spaceViewAnimator = new SpaceViewAnimator(this.c, this.clientObjects, this.system, this.galaxy);
-        await this.spaceViewAnimator.populateScene();
+        return this.spaceViewAnimator.populateScene();
     }
 
     draw() {
