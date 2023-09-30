@@ -204,6 +204,11 @@ export class SpaceViewLoader {
         return object3d;
     }
 
+    /**
+     * Load a texture, this is a heavy function...
+     * @param {string} assetPath
+     * @returns {THREE.Texture}
+     */
     loadTexture(assetPath) {
         const loader = new THREE.TextureLoader();
         const texturePromise = new Promise(function (resolve, reject) {
@@ -222,8 +227,9 @@ export class SpaceViewLoader {
         const texture = await this.loadTexture(texturePath);
         // fixes Blender export bug
         texture.flipY = false;
+        // texture.generateMipmaps = false;
 
-        object3d.traverse(function (child) {
+        object3d.traverse(function (/**Three.Object3D*/child) {
             if (child.isMesh) {
                 // cloud settings
                 if (transparent) {
