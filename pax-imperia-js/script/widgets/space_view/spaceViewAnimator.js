@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
+import { SpaceViewLoader } from './spaceViewLoader.js';
 
 export class SpaceViewAnimator {
 
@@ -80,7 +83,7 @@ export class SpaceViewAnimator {
 
     async populateScene() {
         const scene = this.scene;
-        const system = await this.system;
+        const system = this.system;
 
         // Add Lights
 
@@ -114,43 +117,19 @@ export class SpaceViewAnimator {
         scene.add(this.cameraPivot);
 
         // Load Models
+
         await this.loadBackground(scene);
 
-        await this.loadParallelModels(scene);
+        // await this.loadParallelModels(scene);
 
-        for (const wormhole of this.system['wormholes']) {
-            wormhole.addWormholeText(scene);
-        }
+        const spaceViewLoader = new SpaceViewLoader(scene, system);
+        await spaceViewLoader.load();
 
-    }
+        // spaceViewLoader.loadStars();
+        // spaceViewLoader.loadPlanets();
+        // spaceViewLoader.loadWormholes();
+        // spaceViewLoader.loadShips();
 
-    async loadParallelModels(scene) {
-        const entities = this.system.stars.concat(this.system.planets).concat(this.system.wormholes).concat(this.system.ships);
-        // const entities = this.system.planets.concat(this.system.wormholes).concat(this.system.ships);
-        const promiseFunctions = [];
-        for (let i = 0; i < entities.length; i++) {
-            const entity = entities[i];
-            promiseFunctions.push(entity.load(scene));
-        }
-
-        Promise.all(promiseFunctions)
-            .then((results) => {
-                // All promises resolved successfully
-                // Handle the results
-                console.log('promise start');
-                results.forEach((result) => {
-                    if (Array.isArray(result)) {
-                        scene.add(...result);
-                    } else {
-                        scene.add(result);
-                    }
-                });
-                console.log('promise end')
-            })
-            .catch((error) => {
-                // Handle errors if any of the promises reject
-                console.log(error)
-            });
     }
 
     async loadBackground(scene) {
@@ -169,4 +148,5 @@ export class SpaceViewAnimator {
             });
         });
     }
+
 }

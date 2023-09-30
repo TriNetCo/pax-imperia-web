@@ -14,7 +14,7 @@ export class Star extends Entity {
 
     update(elapsedTime) {
         if (!this.object3d || !this.coronaObject3ds) {
-            console.log('early update')
+            console.log('early star update')
             return
         }
         // rotate star surface
@@ -33,41 +33,6 @@ export class Star extends Entity {
         const angle = elapsedTime * rotationSpeed;
         object3d.position.x = Math.sin(angle) * sinAmplitude;
         object3d.position.y = Math.cos(1.7 * angle) * cosAmplitude;
-    }
-
-    async load(scene) {
-        // create star surface
-        const primary = await this.loadPrimary(scene);
-        this.loadTexture(this.object3d, this.texturePath, false, 1);
-        this.addBrightenerMaterial(this.object3d);
-        this.setLoadAttributes(this.object3d);
-
-        // create coronas
-        const corona = await this.createCorona(scene);
-        this.coronaObject3ds = [corona, corona.clone(), corona.clone()];
-        return [primary, ...this.coronaObject3ds]
-        // scene.add(this.coronaObject3ds[0]);
-        // scene.add(this.coronaObject3ds[1]);
-        // scene.add(this.coronaObject3ds[2]);
-    }
-
-    async createCorona(scene) {
-        const coronaPath = this.basePath + "/assets/orbitals/textures/sun/corona/corona.png";
-        const corona = await this.loadBillboard(scene, coronaPath);
-        this.setLoadAttributes(corona);
-        const coronaScale = this.scale.x * 2.4;
-        corona.scale.set(coronaScale, coronaScale, coronaScale);
-        corona.notClickable = true;
-        return corona;
-    }
-
-    // This makes it so the star doesn't have a shadow and is always lit
-    addBrightenerMaterial(object3d) {
-        const firstChild = object3d.children[0];
-        let texture = firstChild.material.map;
-        firstChild.material = new THREE.MeshBasicMaterial();
-        firstChild.material.map = texture;
-        firstChild.material.needsUpdate = true;
     }
 
 }

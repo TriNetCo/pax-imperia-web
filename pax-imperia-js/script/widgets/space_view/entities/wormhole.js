@@ -64,46 +64,8 @@ export class Wormhole extends Entity {
         return output;
     }
 
-    addWormholeText(scene) {
-        let text = this.name || 'Sector' + this.id;
-        let opts = { fontface: 'Tahoma' };
-        let sprite = this.makeTextSprite(text, opts);
-        sprite.name = 'wormholeText';
-        sprite.notClickable = true;
-        scene.add(sprite);
-        sprite.position.set(this.position.x, this.position.y, this.position.z + 0.5);
-    }
-
     update(elapsedTime) {
         return;
-    }
-
-    makeTextSprite(text, opts) {
-        var parameters = opts || {};
-        var fontface = parameters.fontface || 'Helvetica';
-        var fontsize = parameters.fontsize || 20;
-        var canvas = document.createElement('canvas');
-        var context = canvas.getContext('2d');
-        context.font = fontsize + "px " + fontface;
-
-        // get size data (height depends only on font size)
-        var metrics = context.measureText(text);
-        var textWidth = metrics.width;
-
-        // text color
-        context.fillStyle = 'rgba(255, 255, 255, 1.0)';
-        context.fillText(text, 0, fontsize);
-
-        // canvas contents will be used for a texture
-        var texture = new THREE.Texture(canvas)
-        texture.minFilter = THREE.LinearFilter;
-        texture.needsUpdate = true;
-
-        var spriteMaterial = new THREE.SpriteMaterial({ map: texture });
-        var sprite = new THREE.Sprite(spriteMaterial);
-        sprite.scale.set(10, 5, 1.0);
-        sprite.center.set(textWidth / canvas.width / 2, 1);
-        return sprite;
     }
 
 }

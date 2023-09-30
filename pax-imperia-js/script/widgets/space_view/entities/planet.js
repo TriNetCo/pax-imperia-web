@@ -55,31 +55,4 @@ export class Planet extends Entity {
 
     }
 
-    async load(scene) {
-        // load the surface
-        const primary = await this.loadPrimary(scene)
-        this.addMeshStandardMaterial(primary)
-        this.loadTexture(primary, this.texturePath, false, 0.9);
-        this.object3ds.push(primary);
-
-        // load the clouds
-        const clouds = await this.loadObject3d(scene, this.cloudMeshPath);
-        this.loadTexture(clouds, this.cloudTexturePath, true, 0.9);
-        this.setLoadAttributes(clouds);
-        clouds.isClouds = true;
-        clouds.notClickable = true;
-        this.object3ds.push(clouds);
-
-        return [primary, clouds];
-    }
-
-    addMeshStandardMaterial(object3d) {
-        const material = new THREE.MeshStandardMaterial();
-        material.roughness = 0.9;
-        material.metalness = 0.1;
-        material.color = new THREE.Color(0x9999cc);
-        material.needsUpdate = true;
-        object3d.children[0].material = material;
-    }
-
 }
