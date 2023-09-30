@@ -10,92 +10,91 @@ export class SpaceViewLoader {
     }
 
     async load() {
+        const startTime = Date.now()
+        const promises = [];
+
         for (const star of this.system['stars']) {
-            const object3ds = await this.loadStar(star);
-            this.addObject3dsToScene(object3ds);
+            promises.push(...this.loadStar(star));
         }
 
         for (const planet of this.system['planets']) {
-            const object3ds = await this.loadPlanet(planet);
-            this.addObject3dsToScene(object3ds);
+            promises.push(...this.loadPlanet(planet));
         }
 
         for (const wormhole of this.system['wormholes']) {
-            const object3ds = await this.loadClickableObject3d(wormhole);
-            this.addObject3dsToScene(object3ds);
+            promises.push(this.loadClickableObject3d(wormhole));
             this.addWormholeText(wormhole);
         }
 
         for (const ship of this.system['ships']) {
-            const object3ds = await this.loadClickableObject3d(ship);
-            this.addObject3dsToScene(object3ds);
+            promises.push(this.loadClickableObject3d(ship));
         }
 
+        // Block here until all the parallel async functions are finished
+        const object3ds = await Promise.all(promises.flat(Infinity));
+        this.scene.add(...object3ds.flat(Infinity));
+
+        const deltaTime = Date.now() - startTime;
+        console.log("Load complete in " + deltaTime + " ms");
     }
 
-    addObject3dsToScene(object3ds) {
-        if (Array.isArray(object3ds)) {
-            this.scene.add(...object3ds);
-        } else {
-            this.scene.add(object3ds);
-        }
-    }
-
-    async loadStar(entity) {
-        // create star surface
-        const startTime = Date.now();
-
-        const clickableObj = await this.loadClickableObject3d(entity, (obj) => {
-            const deltaTime = (Date.now() - startTime);
-            console.log('clickable object loaded it took ' + deltaTime + 'ms');
-            console.log(obj);
-            this.loadStarPlanetTexture(obj, entity.texturePath, false, 1);
+    loadStar(entity) {
+        const clickableObjPromise = this.loadClickableObject3d(entity, async (obj) => {
             this.addBrightenerMaterial(obj);
+            await this.loadStarOrPlanetTexture(obj, entity.texturePath, false, 1);
         });
+        const coronasPromise = this.createCoronaObject3ds(entity);
 
-        // create coronas
-        const coronaObj = await this.createCoronaObject3d(entity);
-        entity.coronaObject3ds = [coronaObj, coronaObj.clone(), coronaObj.clone()];
-        return [clickableObj, ...entity.coronaObject3ds]
+        return [clickableObjPromise, coronasPromise];
+        // const awaitables = await Promise.all([clickableObjPromise, coronasPromise])
+        // return awaitables.flat();
     }
 
-    async createCoronaObject3d(entity) {
+    async createCoronaObject3ds(entity) {
         const coronaPath = entity.basePath + "/assets/orbitals/textures/sun/corona/corona.png";
         const coronaObj = await this.loadBillboard(coronaPath);
         this.setLoadAttributes(entity, coronaObj);
         const coronaScale = entity.scale.x * 2.4;
         coronaObj.scale.set(coronaScale, coronaScale, coronaScale);
         coronaObj.notClickable = true;
-        return coronaObj;
+        const coronaObjs = [coronaObj, coronaObj.clone(), coronaObj.clone()];
+        entity.coronaObject3ds = coronaObjs;
+        return coronaObjs;
     }
 
     // This makes it so the star doesn't have a shadow and is always lit
     addBrightenerMaterial(object3d) {
         const firstChild = object3d.children[0];
-        let texture = firstChild.material.map;
+        const texture = firstChild.material.map;
         firstChild.material = new THREE.MeshBasicMaterial();
         firstChild.material.map = texture;
         firstChild.material.needsUpdate = true;
     }
 
-    async loadPlanet(entity) {
+    loadPlanet(entity) {
         entity.object3ds = [];
 
         // load the surface
-        const primary = await this.loadClickableObject3d(entity)
-        this.addMeshStandardMaterial(primary)
-        this.loadStarPlanetTexture(primary, entity.texturePath, false, 0.9);
-        entity.object3ds.push(primary);
+        const primary = this.loadClickableObject3d(entity, async (obj) => {
+            this.addMeshStandardMaterial(obj)
+            await this.loadStarOrPlanetTexture(obj, entity.texturePath, false, 0.9);
+            entity.object3ds.push(obj);
+        });
 
         // load the clouds
+        const clouds = this.loadClouds(entity);
+
+        return [primary, clouds];
+    }
+
+    async loadClouds(entity) {
         const clouds = await this.loadObject3d(entity.cloudMeshPath);
-        this.loadStarPlanetTexture(clouds, entity.cloudTexturePath, true, 0.9);
+        await this.loadStarOrPlanetTexture(clouds, entity.cloudTexturePath, true, 0.9);
         this.setLoadAttributes(entity, clouds);
         clouds.isClouds = true;
         clouds.notClickable = true;
         entity.object3ds.push(clouds);
-
-        return [primary, clouds];
+        return clouds;
     }
 
     addMeshStandardMaterial(object3d) {
@@ -107,19 +106,42 @@ export class SpaceViewLoader {
         object3d.children[0].material = material;
     }
 
+    /**
+     * Loads the meshes and textures (via the callback) for the clickable
+     * element of the entity (usually the surface mesh of the object).
+     *
+     * @param {*} entity - This is the entity to which we're loading a clickable mesh
+     * @param {*} cb     - This callback is called after the loading of the initial
+     *                   mesh so texturing and other operations dependant may be
+     *                   performed.
+     * @returns
+     */
     async loadClickableObject3d(entity, cb) {
+        const startTime = Date.now();
         const object3d = await this.loadObject3d(entity.assetPath);
         this.setLoadAttributes(entity, object3d);
-
-        // object3d can call parent entity and vice versa
-        // entity.linkObject3d(object3d)
-        object3d.parentEntity = entity;  // TODO: rename parentEntity to just entity
-        entity.object3d = object3d;
+        entity.linkObject3d(object3d);
 
         if (cb) {
-            cb(object3d);
+            const startTimeCb = Date.now();
+            await cb(object3d);
+            this.reportPerformance(entity.name + ' [cb]', startTimeCb);
         }
+
+        this.reportPerformance(entity.name + ' [clickableObj]', startTime);
         return object3d;
+    }
+
+    /**
+     *
+     * @param {string} msg       - This message gets printed to the screen
+     * @param {number} startTime - Begin timing performance by creating a
+     *                             Date.now() timestamp before executing the
+     *                             code you would like timed.
+     */
+    reportPerformance(msg, startTime) {
+        const deltaTime = (Date.now() - startTime);
+        console.log(msg + ' loaded in ' + deltaTime + ' ms');
     }
 
     async loadObject3d(assetPath) {
@@ -132,6 +154,7 @@ export class SpaceViewLoader {
             case 'fbx':
                 return await this.loadFbx(assetPath);
             case 'png':
+                console.log('load billboard')
                 return await this.loadBillboard(assetPath);
             default:
                 console.log('unknown file type')
@@ -181,26 +204,38 @@ export class SpaceViewLoader {
         return object3d;
     }
 
-    loadStarPlanetTexture(object3d, texturePath, transparent = false, roughness = 0.9) {
-        const textureLoader = new THREE.TextureLoader();
-        textureLoader.load(texturePath, function (texture) {
-            // fixes Blender export bug
-            texture.flipY = false;
-
-            object3d.traverse(function (child) {
-                if (child.isMesh) {
-                    // cloud settings
-                    if (transparent) {
-                        child.material.alphaMap = texture;
-                        child.material.alphaTest = 0.1;
-                        child.material.transparent = true;
-                    } else {
-                        child.material.map = texture;
-                    }
-                    child.material.roughness = roughness;
-                    child.material.needsUpdate = true;
-                }
+    loadTexture(assetPath) {
+        const loader = new THREE.TextureLoader();
+        const texturePromise = new Promise(function (resolve, reject) {
+            loader.load(assetPath, function (texture) {
+                resolve(texture);
+            }, function (xhr) {
+            }, function (error) {
+                console.error(error);
+                reject({ reason: error })
             });
+        });
+        return texturePromise;
+    }
+
+    async loadStarOrPlanetTexture(object3d, texturePath, transparent = false, roughness = 0.9) {
+        const texture = await this.loadTexture(texturePath);
+        // fixes Blender export bug
+        texture.flipY = false;
+
+        object3d.traverse(function (child) {
+            if (child.isMesh) {
+                // cloud settings
+                if (transparent) {
+                    child.material.alphaMap = texture;
+                    child.material.alphaTest = 0.1;
+                    child.material.transparent = true;
+                } else {
+                    child.material.map = texture;
+                }
+                child.material.roughness = roughness;
+                child.material.needsUpdate = true;
+            }
         });
     }
 

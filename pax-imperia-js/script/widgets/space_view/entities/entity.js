@@ -33,6 +33,16 @@ export class Entity {
         });
     }
 
+    /**
+     * Links the object3d with the entity so each can refer to one another.
+     * @param {THREE.object3d} object3d - the clickable object3d associated
+     *                                    with this entity
+     */
+    linkObject3d(object3d) {
+        this.object3d = object3d;
+        object3d.parentEntity = this;
+    }
+
     /////////////////////////////////
     // Unselect and Remove Methods //
     /////////////////////////////////
