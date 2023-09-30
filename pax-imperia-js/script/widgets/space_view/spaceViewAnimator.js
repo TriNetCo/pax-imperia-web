@@ -18,6 +18,7 @@ export class SpaceViewAnimator {
         this.cx = clientObjects.cx;
         this.mouse = clientObjects.mouse;
         this.clock = clientObjects.gameClock;
+        THREE.Cache.enabled = true  // for development,  please set this to false :)
     }
 
     drawLoop() {
@@ -57,12 +58,23 @@ export class SpaceViewAnimator {
         this.camera.updateProjectionMatrix();
     }
 
+    /**
+     * Since reading and writing to the dom is really expensive, we try to do it only once per second when needed.
+     * @param {number} elapsedTime
+     */
+    updateHtmlClock(elapsedTime) {
+        if (Math.round(elapsedTime * 60) / 60 % 1 == 0) { // This check ensures we do something once every second
+            document.getElementById("time").innerHTML = elapsedTime.toFixed(0);
+        };
+    }
+
     updateObjects() {
         // seconds since clock reset
         let deltaTime = this.clock.getDelta();
         // seconds since clock started (avoiding getElapsedTime() which resets clock)
         let elapsedTime = this.clock.elapsedTime;
-        document.getElementById("time").innerHTML = elapsedTime.toFixed(0);
+
+        this.updateHtmlClock(elapsedTime);
 
         // TODO: use elapsedTime instead of deltaTime
         this.selectionSprite.update(deltaTime);
