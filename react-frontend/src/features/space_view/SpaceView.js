@@ -15,7 +15,7 @@ const SpaceView = () => {
     };
 
     useEffect(() => {
-        let canvas = ref.current;
+        // let canvas = ref.current;
 
         (async() => {
             let pathname = window.location.pathname;
@@ -26,13 +26,16 @@ const SpaceView = () => {
             }
 
             const systemIndex = parseInt(pathname.replace('/systems/', ''));
+            console.log('starting await of loadWidget');
+            const startTime = Date.now();
             await spaceViewWidget.loadWidget(systemIndex, systemClickHandler);
-            console.log('finished awaiting loadWidget');
-            const render = () => {
+            const deltaTime = Date.now() - startTime;
+            console.log('finished awaiting loadWidget: ' + deltaTime + ' ms');
+            const draw = () => {
                 spaceViewWidget.draw();
-                requestId = requestAnimationFrame(render);
+                requestId = requestAnimationFrame(draw);
             };
-            render();
+            draw();
         })();
 
         return () => {

@@ -18,6 +18,7 @@ export class SpaceViewWidget {
 
     spaceViewAnimator;
     spaceViewDomManager;
+    system;
 
     constructor(config, clientObjects, gameStateInterface) {
         this.c = config;
@@ -40,21 +41,8 @@ export class SpaceViewWidget {
         // this.clientObjects.consoleDiv.innerHTML = "Resume";
 
         this.clientObjects.distanceSlider = document.getElementById("distance-slider");
-        this.clientObjects.xSlider = document.getElementById("x-slider");
-        this.clientObjects.ySlider = document.getElementById("y-slider");
-        this.clientObjects.zSlider = document.getElementById("z-slider");
 
-        ////////////////////
-        // Setup Renderer //
-        ////////////////////
-
-        let renderer = new THREE.WebGLRenderer({ antialias: true });
-        this.clientObjects.renderer = renderer;
-
-        renderer.setSize(this.c.canvasWidth, this.c.canvasHeight);
-        renderer.setPixelRatio(renderer.domElement.devicePixelRatio);
-        document.getElementById("canvas-div").appendChild(renderer.domElement);
-        this.clientObjects.cx = renderer.getContext();
+        this.setupRenderer();
 
         const scene = new THREE.Scene();
         this.clientObjects.scene = scene;
@@ -76,6 +64,16 @@ export class SpaceViewWidget {
 
         this.spaceViewAnimator = new SpaceViewAnimator(this.c, this.clientObjects, this.system, this.galaxy);
         return this.spaceViewAnimator.populateScene();
+    }
+
+    setupRenderer() {
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        this.clientObjects.renderer = renderer;
+
+        renderer.setSize(this.c.canvasWidth, this.c.canvasHeight);
+        renderer.setPixelRatio(renderer.domElement.devicePixelRatio);
+        document.getElementById("canvas-div").appendChild(renderer.domElement);
+        this.clientObjects.cx = renderer.getContext();
     }
 
     draw() {

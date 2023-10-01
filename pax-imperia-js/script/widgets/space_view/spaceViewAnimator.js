@@ -35,9 +35,19 @@ export class SpaceViewAnimator {
     }
 
     async animate() {
+        // console.log("resetting camera")
         this.resetCamera()
+        // console.log("UpdatingObjects")
         this.updateObjects()
+        // console.log("Performing render")
+        const startTime = Date.now()
         this.renderer.render(this.scene, this.camera);
+        if (!this.firstRenderTime) {
+            this.firstRenderTime = Date.now() - startTime
+            console.log("The black took " + this.firstRenderTime + " ms to finish")
+        }
+        // console.log("finished animating")
+        // debugger;
     }
 
     resetCamera() {
@@ -94,6 +104,7 @@ export class SpaceViewAnimator {
     }
 
     async populateScene() {
+        const startTime = Date.now();
         const scene = this.scene;
         const system = this.system;
 
@@ -128,14 +139,23 @@ export class SpaceViewAnimator {
         this.cameraPivot.add(camera);
         scene.add(this.cameraPivot);
 
+        const deltaTime = (Date.now() - startTime);
+        console.log('populate scene loaded in ' + deltaTime + ' ms');
+
         // Load Models
 
+        // TODO, PERFORMANCE: why isn't the background loading immediately after navigating systems
         await this.loadBackground(scene);
+        console.log("finished loading background")
 
         // await this.loadParallelModels(scene);
 
         const spaceViewLoader = new SpaceViewLoader(scene, system);
-        await spaceViewLoader.load();
+        this.renderer.compile(this.scene, this.camera);
+        await spaceViewLoader.load(this.renderer, this.camera);
+        this.renderer.compile(this.scene, this.camera);
+
+        this.animate();
 
         // spaceViewLoader.loadStars();
         // spaceViewLoader.loadPlanets();
