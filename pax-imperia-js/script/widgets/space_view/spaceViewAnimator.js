@@ -23,15 +23,7 @@ export class SpaceViewAnimator {
 
     drawLoop() {
         // Redraw everything 60 times a second
-        // this.drawBackground();
         this.animate();
-    }
-
-    drawBackground() {
-        // disabled
-        let cx = this.cx;
-        cx.fillStyle = "Black";
-        cx.fillRect(0, 0, cx.canvas.width, cx.canvas.height);
     }
 
     async animate() {
@@ -44,7 +36,7 @@ export class SpaceViewAnimator {
         this.renderer.render(this.scene, this.camera);
         if (!this.firstRenderTime) {
             this.firstRenderTime = Date.now() - startTime
-            console.log("The black took " + this.firstRenderTime + " ms to finish")
+            console.log(this.firstRenderTime + " ms: theBlack (first render)")
         }
         // console.log("finished animating")
         // debugger;
@@ -139,29 +131,30 @@ export class SpaceViewAnimator {
         this.cameraPivot.add(camera);
         scene.add(this.cameraPivot);
 
-        const deltaTime = (Date.now() - startTime);
-        console.log('populate scene loaded in ' + deltaTime + ' ms');
+
 
         // Load Models
 
         // TODO, PERFORMANCE: why isn't the background loading immediately after navigating systems
         await this.loadBackground(scene);
-        console.log("finished loading background")
+        // console.log("finished loading background")
 
         // await this.loadParallelModels(scene);
 
-        const spaceViewLoader = new SpaceViewLoader(scene, system);
+        const spaceViewLoader = new SpaceViewLoader(scene, system, this.renderer, this.camera);
         this.renderer.compile(this.scene, this.camera);
-        await spaceViewLoader.load(this.renderer, this.camera);
+        await spaceViewLoader.load();
         this.renderer.compile(this.scene, this.camera);
 
-        this.animate();
+        // this.animate();
 
         // spaceViewLoader.loadStars();
         // spaceViewLoader.loadPlanets();
         // spaceViewLoader.loadWormholes();
         // spaceViewLoader.loadShips();
 
+        const deltaTime = (Date.now() - startTime);
+        console.log(deltaTime + ' ms: spaceViewAnimator#populateScene');
     }
 
     async loadBackground(scene) {

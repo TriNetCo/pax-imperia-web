@@ -1,21 +1,19 @@
 import React from 'react';
 import { useEffect, useRef, useContext } from 'react';
 import {GameDataContext} from '../../app/Context';
-import { useHistory } from 'react-router-dom';
 
 const SpaceView = () => {
-    const history = useHistory();
-    let ref = useRef();
     const data = useContext(GameDataContext);
     let spaceViewWidget = data.spaceViewWidget;
     let requestId;
 
     const systemClickHandler = (path) => {
-        history.push(path);
+        const systemIndex = path.replace('/systems/', '');
+        spaceViewWidget.changeSystem(systemIndex);
     };
 
     useEffect(() => {
-        // let canvas = ref.current;
+        // console.log('React: SpaceView useEffect');
 
         (async() => {
             let pathname = window.location.pathname;
@@ -47,7 +45,6 @@ const SpaceView = () => {
 
     return (
         <div
-            ref={ref}
             id="canvas-div"
             style={{ border: 'solid' }}
         />

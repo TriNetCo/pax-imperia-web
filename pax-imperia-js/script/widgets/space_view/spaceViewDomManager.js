@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 import { Queue } from '../../models/helpers.js';
 
+/**
+ * This class handles interactions with the dom
+ */
 export class SpaceViewDomManager {
 
     constructor(config, clientObjects, system, systemClickHandler) {
@@ -11,6 +14,7 @@ export class SpaceViewDomManager {
         this.mouse = clientObjects.mouse;
         this.camera = clientObjects.camera;
         this.scene = clientObjects.scene;
+        this.renderer = clientObjects.renderer;
         this.selectionSprite = clientObjects.selectionSprite;
         this.raycaster = new THREE.Raycaster();
         this.previousTarget = null;
@@ -299,8 +303,8 @@ export class SpaceViewDomManager {
     detachFromDom() {
         this.canvas.removeEventListener('mousemove', this.mouseMovementHandler);
         this.canvas.removeEventListener('click', this.#clickHandler);
+        this.canvas.removeEventListener('dblclick', this.#doubleClickHandler);
         this.canvas.removeEventListener('contextmenu', this.#rightClickHandler);
-        this.canvas.remove();
     }
 
     //////////////////////

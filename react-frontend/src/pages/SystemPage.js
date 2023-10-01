@@ -7,39 +7,6 @@ import {useHistory} from 'react-router-dom';
 const SystemPage = () => {
     const history = useHistory();
 
-
-    // const distanceSliderOnInput = () => {
-    //   var input = document.getElementById('distance-slider');
-    //   var currentVal = input.value;
-    //   this.setState({
-    //     value: currentVal
-    //   });
-    // };
-
-    const xSliderOnInput = () => {
-        var input = document.getElementById('x-slider');
-        var currentVal = input.value;
-        this.setState({
-            value: currentVal
-        });
-    };
-
-    const ySliderOnInput = () => {
-        var input = document.getElementById('y-slider');
-        var currentVal = input.value;
-        this.setState({
-            value: currentVal
-        });
-    };
-
-    const zSliderOnInput = () => {
-        var input = document.getElementById('z-slider');
-        var currentVal = input.value;
-        this.setState({
-            value: currentVal
-        });
-    };
-
     const handleCloseSystemView = () => {
         history.push('/systems');
     };
@@ -49,7 +16,7 @@ const SystemPage = () => {
             <div id="app-parent">
                 <div id="console-div" className="flex-container">
                     <div className="console-message" id="console-message">
-            Game Paused
+                        Game Paused
                     </div>
 
                     <div className="console-message" id="time"></div>
@@ -90,7 +57,7 @@ const SystemPage = () => {
 
                         <div id="galaxy-and-console" className="flex-container">
                             <div id="galaxy">
-                Galaxy
+                                Galaxy
                             </div>
 
                             <div id="lower-console">
