@@ -24,12 +24,11 @@ export class GalaxyDomManager {
 
     addMouseClick() {
         this.clickHandler = (event) => {
-            console.log("mouseClicked");
             this.mouse.x = event.offsetX;
             this.mouse.y = event.offsetY;
 
             // check if we're clicking a star system
-            this.galaxy.systems.forEach( system => {
+            this.galaxy.systems.forEach(system => {
                 if (this.galaxyDrawer.isMouseHovering(system)) {
                     const path = "/systems/" + system.id;
                     this.systemClickHandler(path);

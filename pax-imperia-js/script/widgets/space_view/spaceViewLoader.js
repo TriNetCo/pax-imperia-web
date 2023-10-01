@@ -4,12 +4,14 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 
 export class SpaceViewLoader {
 
-    constructor(scene, system) {
+    constructor(scene, system, renderer, camera) {
         this.scene = scene;
         this.system = system;
+        this.renderer = renderer;
+        this.camera = camera;
     }
 
-    async load(renderer, camera) {
+    async load() {
         const startTime = Date.now()
         const promises = [];
 
@@ -23,7 +25,7 @@ export class SpaceViewLoader {
 
         for (const wormhole of this.system['wormholes']) {
             promises.push(this.loadClickableObject3d(wormhole));
-            this.addWormholeText(wormhole);
+            promises.push(this.addWormholeText(wormhole));
         }
 
         for (const ship of this.system['ships']) {
@@ -32,12 +34,9 @@ export class SpaceViewLoader {
 
         // Block here until all the parallel async functions are finished
         const object3ds = await Promise.all(promises.flat(Infinity));
-        object3ds.flat(Infinity).forEach(object3d => {
-            this.scene.add(object3d);
-            renderer.compile(this.scene, camera);
-        })
-        // this.scene.add(...object3ds.flat(Infinity));
+        this.scene.add(...object3ds.flat(Infinity));
 
+        // TODO: refactor to use OO
         const deltaTime = Date.now() - startTime;
         console.log("Load complete in " + deltaTime + " ms");
     }
@@ -48,17 +47,14 @@ export class SpaceViewLoader {
     // texture = load texture
 
     loadStar(entity) {
-        // makeStar(mesh, texture)
 
-        const clickableObjPromise = this.loadClickableObject3d(entity, async (obj) => {
+        const clickableObj = this.loadClickableObject3d(entity, async (obj) => {
             this.addBrightenerMaterial(obj);
-            this.loadStarOrPlanetTexture(obj, entity.texturePath, false, 1);
+            await this.loadStarOrPlanetTexture(obj, entity.texturePath, false, 1);
         });
-        const coronasPromise = this.createCoronaObject3ds(entity);
+        const coronas = this.createCoronaObject3ds(entity);
 
-        return [clickableObjPromise, coronasPromise];
-        // const awaitables = await Promise.all([clickableObjPromise, coronasPromise])
-        // return awaitables.flat();
+        return [clickableObj, coronas];
     }
 
     async createCoronaObject3ds(entity) {
@@ -67,8 +63,8 @@ export class SpaceViewLoader {
         this.setLoadAttributes(entity, coronaObj);
         const coronaScale = entity.scale.x * 2.4;
         coronaObj.scale.set(coronaScale, coronaScale, coronaScale);
-        coronaObj.notClickable = true;
         const coronaObjs = [coronaObj, coronaObj.clone(), coronaObj.clone()];
+        coronaObjs.forEach(corona => { corona.notClickable = true; })
         entity.coronaObject3ds = coronaObjs;
         return coronaObjs;
     }
@@ -86,26 +82,26 @@ export class SpaceViewLoader {
         entity.object3ds = [];
 
         // load the surface
-        const primary = this.loadClickableObject3d(entity, async (obj) => {
+        const clickableObj = this.loadClickableObject3d(entity, async (obj) => {
             this.addMeshStandardMaterial(obj)
             this.loadStarOrPlanetTexture(obj, entity.texturePath, false, 0.9);
             entity.object3ds.push(obj);
         });
 
-        // load the clouds
-        const clouds = this.loadClouds(entity);
+        // load the cloud cover object
+        const cloudCover = this.loadCloudCover(entity);
 
-        return [primary, clouds];
+        return [clickableObj, cloudCover];
     }
 
-    async loadClouds(entity) {
-        const clouds = await this.loadObject3d(entity.cloudMeshPath);
-        await this.loadStarOrPlanetTexture(clouds, entity.cloudTexturePath, true, 0.9);
-        this.setLoadAttributes(entity, clouds);
-        clouds.isClouds = true;
-        clouds.notClickable = true;
-        entity.object3ds.push(clouds);
-        return clouds;
+    async loadCloudCover(entity) {
+        const cloudCover = await this.loadObject3d(entity.cloudMeshPath);
+        await this.loadStarOrPlanetTexture(cloudCover, entity.cloudTexturePath, true, 0.9);
+        this.setLoadAttributes(entity, cloudCover);
+        cloudCover.isClouds = true;
+        cloudCover.notClickable = true;
+        entity.object3ds.push(cloudCover);
+        return cloudCover;
     }
 
     addMeshStandardMaterial(object3d) {
@@ -136,10 +132,10 @@ export class SpaceViewLoader {
         if (cb) {
             const startTimeCb = Date.now();
             await cb(object3d);
-            this.reportPerformance(entity.name + ' [cb]', startTimeCb);
+            // this.reportPerformance(entity.name + ' [cb]', startTimeCb);
         }
 
-        this.reportPerformance(entity.name + ' [clickableObj]', startTime);
+        // this.reportPerformance(entity.name + ' [clickableObj]', startTime);
         return object3d;
     }
 
@@ -165,7 +161,6 @@ export class SpaceViewLoader {
             case 'fbx':
                 return await this.loadFbx(assetPath);
             case 'png':
-                console.log('load billboard')
                 return await this.loadBillboard(assetPath);
             default:
                 console.log('unknown file type')
@@ -181,6 +176,7 @@ export class SpaceViewLoader {
             }, function (xhr) {
             }, function (error) {
                 console.error(error);
+                reject({ reason: error })
             });
         });
         return object3d;
@@ -195,6 +191,7 @@ export class SpaceViewLoader {
             }, function (xhr) {
             }, function (error) {
                 console.error(error);
+                reject({ reason: error })
             });
         });
         return object3d;
@@ -210,6 +207,7 @@ export class SpaceViewLoader {
             }, function (xhr) {
             }, function (error) {
                 console.error(error);
+                reject({ reason: error })
             });
         });
         return object3d;
@@ -220,7 +218,7 @@ export class SpaceViewLoader {
      * @param {string} assetPath
      * @returns {THREE.Texture}
      */
-    loadTexture(assetPath) {
+    async loadTexture(assetPath) {
         const loader = new THREE.TextureLoader();
         const texturePromise = new Promise(function (resolve, reject) {
             loader.load(assetPath, function (texture) {
@@ -234,24 +232,33 @@ export class SpaceViewLoader {
         return texturePromise;
     }
 
+    /**
+     *
+     * @param {THREE.Object3D} object3d
+     * @param {string} texturePath
+     * @param {boolean} transparent
+     * @param {number} roughness
+     */
     async loadStarOrPlanetTexture(object3d, texturePath, transparent = false, roughness = 0.9) {
         const texture = await this.loadTexture(texturePath);
-        // fixes Blender export bug
-        texture.flipY = false;
+        texture.flipY = false; // fixes Blender export bug
         // texture.generateMipmaps = false;
 
-        object3d.traverse(function (/**Three.Object3D*/child) {
+        object3d.traverse(function (child) {
             if (child.isMesh) {
+                /** @type {THREE.MeshBasicMaterial} */
+                const material = child.material;
+
                 // cloud settings
                 if (transparent) {
-                    child.material.alphaMap = texture;
-                    child.material.alphaTest = 0.1;
-                    child.material.transparent = true;
+                    material.alphaMap = texture;
+                    material.alphaTest = 0.1;
+                    material.transparent = true;
                 } else {
-                    child.material.map = texture;
+                    material.map = texture;
                 }
-                child.material.roughness = roughness;
-                child.material.needsUpdate = true;
+                material.roughness = roughness;
+                material.needsUpdate = true;
             }
         });
     }
@@ -267,14 +274,14 @@ export class SpaceViewLoader {
         }
     }
 
-    addWormholeText(entity) {
+    async addWormholeText(entity) {
         let text = entity.name || 'Sector' + entity.id;
         let opts = { fontface: 'Tahoma' };
         let sprite = this.makeTextSprite(text, opts);
         sprite.name = 'wormholeText';
         sprite.notClickable = true;
-        this.scene.add(sprite);
         sprite.position.set(entity.position.x, entity.position.y, entity.position.z + 0.5);
+        return sprite;
     }
 
     makeTextSprite(text, opts) {
@@ -303,38 +310,6 @@ export class SpaceViewLoader {
         sprite.scale.set(10, 5, 1.0);
         sprite.center.set(textWidth / canvas.width / 2, 1);
         return sprite;
-    }
-
-    async loadParallelModels(scene) {
-        const entities = this.system.stars
-            .concat(this.system.planets)
-            .concat(this.system.wormholes)
-            .concat(this.system.ships);
-        // const entities = this.system.planets.concat(this.system.wormholes).concat(this.system.ships);
-        const promiseFunctions = [];
-        for (let i = 0; i < entities.length; i++) {
-            const entity = entities[i];
-            promiseFunctions.push(entity.load(scene));
-        }
-
-        Promise.all(promiseFunctions)
-            .then((results) => {
-                // All promises resolved successfully
-                // Handle the results
-                console.log('promise start');
-                results.forEach((result) => {
-                    if (Array.isArray(result)) {
-                        scene.add(...result);
-                    } else {
-                        scene.add(result);
-                    }
-                });
-                console.log('promise end')
-            })
-            .catch((error) => {
-                // Handle errors if any of the promises reject
-                console.log(error)
-            });
     }
 
 }

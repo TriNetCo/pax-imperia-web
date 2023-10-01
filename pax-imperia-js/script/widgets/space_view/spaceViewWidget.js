@@ -2,6 +2,7 @@ import { SpaceViewAnimator } from './spaceViewAnimator.js';
 import { SpaceViewDomManager } from './spaceViewDomManager.js';
 import * as THREE from 'three';
 import { SpriteFlipbook } from '../../models/spriteFlipbook.js'
+import { System } from './entities/system.js';
 
 /**
  * Encapsulates all of the logic related to rendering the SpaceView canvas
@@ -15,15 +16,21 @@ import { SpriteFlipbook } from '../../models/spriteFlipbook.js'
  *                                      the gameClock data to the widget.
  */
 export class SpaceViewWidget {
-
+    /** @type {SpaceViewAnimator} */
     spaceViewAnimator;
+
+    /** @type {SpaceViewDomManager} */
     spaceViewDomManager;
+
+    /** @type {System} */
     system;
 
     constructor(config, clientObjects, gameStateInterface) {
         this.c = config;
         this.clientObjects = clientObjects;
         this.galaxy = gameStateInterface.galaxy;
+        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+
         // debug
         window.galaxy = this.galaxy;
         this.basePath = window.location.hash.includes("#") ? "/pax-imperia-clone" : "";
@@ -33,7 +40,7 @@ export class SpaceViewWidget {
         this.clientObjects.gameClock = gameStateInterface.gameClock;
     }
 
-    async loadWidget(systemIndex, systemClickHandler) {
+    loadWidget(systemIndex, systemClickHandler) {
         this.systemClickHandler = systemClickHandler;
         this.system = this.galaxy.systems[systemIndex];
 
@@ -43,37 +50,53 @@ export class SpaceViewWidget {
         this.clientObjects.distanceSlider = document.getElementById("distance-slider");
 
         this.setupRenderer();
+        this.resetThreeObjects();
 
-        const scene = new THREE.Scene();
-        this.clientObjects.scene = scene;
+        return this.buildSystemClasses()
+    }
+
+    resetThreeObjects() {
+        this.clientObjects.scene = new THREE.Scene();
         this.clientObjects.camera = new THREE.PerspectiveCamera(15, this.c.canvasWidth / this.c.canvasHeight, 1, 10000);
 
-
         this.clientObjects.selectionSprite = new SpriteFlipbook(
-            scene,
+            this.clientObjects.scene,
             this.basePath + '/assets/sprite_sheets/selection_sprite_sheet.png',
             1,  // nCols in sprite sheet
             10, // nRows
             0.04); // loopFrameDuration
+    }
 
-        this.spaceViewDomManager = new SpaceViewDomManager(this.c, this.clientObjects, this.system, this.systemClickHandler)
+    changeSystem(systemIndex) {
+        console.log(">>> CHANGING SYSTEM <<<");
+        this.spaceViewDomManager.detachFromDom();
+        this.system = this.galaxy.systems[systemIndex];
+
+        this.resetThreeObjects();
+
+        return this.buildSystemClasses()
+    }
+
+    buildSystemClasses() {
+        this.spaceViewDomManager = new SpaceViewDomManager(this.c, this.clientObjects, this.system, this.systemClickHandler);
+        window.spaceViewDomManager = this.spaceViewDomManager; // currently necessary for ship movement which accesses global
         this.spaceViewDomManager.attachDomEventsToCode();
         this.spaceViewDomManager.populateHtml();
-        // make spaceViewDomManager global
-        window.spaceViewDomManager = this.spaceViewDomManager;
 
         this.spaceViewAnimator = new SpaceViewAnimator(this.c, this.clientObjects, this.system, this.galaxy);
         return this.spaceViewAnimator.populateScene();
     }
 
     setupRenderer() {
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const renderer = this.renderer;
+        renderer.resetState();
         this.clientObjects.renderer = renderer;
+        this.clientObjects.cx = renderer.getContext();
+        this.renderer = renderer;
 
         renderer.setSize(this.c.canvasWidth, this.c.canvasHeight);
         renderer.setPixelRatio(renderer.domElement.devicePixelRatio);
         document.getElementById("canvas-div").appendChild(renderer.domElement);
-        this.clientObjects.cx = renderer.getContext();
     }
 
     draw() {
