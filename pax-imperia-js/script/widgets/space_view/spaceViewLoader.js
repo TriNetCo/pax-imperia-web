@@ -9,7 +9,7 @@ export class SpaceViewLoader {
         this.system = system;
     }
 
-    async load() {
+    async load(renderer, camera) {
         const startTime = Date.now()
         const promises = [];
 
@@ -32,16 +32,27 @@ export class SpaceViewLoader {
 
         // Block here until all the parallel async functions are finished
         const object3ds = await Promise.all(promises.flat(Infinity));
-        this.scene.add(...object3ds.flat(Infinity));
+        object3ds.flat(Infinity).forEach(object3d => {
+            this.scene.add(object3d);
+            renderer.compile(this.scene, camera);
+        })
+        // this.scene.add(...object3ds.flat(Infinity));
 
         const deltaTime = Date.now() - startTime;
         console.log("Load complete in " + deltaTime + " ms");
     }
 
+
+    // TODO: Reuse Three meshes/ textures
+    // mesh = load star mesh
+    // texture = load texture
+
     loadStar(entity) {
+        // makeStar(mesh, texture)
+
         const clickableObjPromise = this.loadClickableObject3d(entity, async (obj) => {
             this.addBrightenerMaterial(obj);
-            await this.loadStarOrPlanetTexture(obj, entity.texturePath, false, 1);
+            this.loadStarOrPlanetTexture(obj, entity.texturePath, false, 1);
         });
         const coronasPromise = this.createCoronaObject3ds(entity);
 
@@ -77,7 +88,7 @@ export class SpaceViewLoader {
         // load the surface
         const primary = this.loadClickableObject3d(entity, async (obj) => {
             this.addMeshStandardMaterial(obj)
-            await this.loadStarOrPlanetTexture(obj, entity.texturePath, false, 0.9);
+            this.loadStarOrPlanetTexture(obj, entity.texturePath, false, 0.9);
             entity.object3ds.push(obj);
         });
 
@@ -112,7 +123,7 @@ export class SpaceViewLoader {
      *
      * @param {*} entity - This is the entity to which we're loading a clickable mesh
      * @param {*} cb     - This callback is called after the loading of the initial
-     *                   mesh so texturing and other operations dependant may be
+     *                   mesh so texturing and other operations dedatpendant may be
      *                   performed.
      * @returns
      */
