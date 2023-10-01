@@ -28,11 +28,12 @@ export class SpriteFlipbook {
         const material = new THREE.SpriteMaterial({ map: map });
         this.material = material;
         const sprite = new THREE.Sprite(material);
-        sprite.notClickable = true;
         this.sprite = sprite;
-        let scale = 4;
+        sprite.notClickable = true;
+        const scale = 4;
         sprite.scale.set(scale, scale);
         sprite.name = "selectionSprite";
+        sprite.visible = false;
         scene.add(sprite);
     }
 

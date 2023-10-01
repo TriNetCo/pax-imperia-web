@@ -1,14 +1,12 @@
-
-
 #console-div {
     position: relative;
     width: 100%;
     height: 20px;
     background-color: black;
 
-    background-image:  url("../assets/backgrounds/system_view_top_f.png");
+    background-image: url("../assets/backgrounds/system_view_top_f.png");
     background-repeat: no-repeat;
-    background-size:   contain;
+    background-size: contain;
 }
 
 #console-message {
@@ -74,7 +72,7 @@
 
 #canvas-div {
     /* width: 100%; */
-    height: 520px;
+    height: 500px;
     background: black;
 }
 
@@ -85,7 +83,7 @@
 
 #galaxy-and-console {
     position: relative;
-    height: 184px;
+    /* height: 184px; */
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -94,7 +92,7 @@
 
 #hud {
     position: absolute;
-    top: 490px;
+    top: 468px;
     background-color: rgba(255, 255, 255, 0.1);
     right: 0px;
     color: white;
@@ -104,7 +102,7 @@
 }
 
 #lower-console {
-    background:red;
+    background: red;
     width: 40%;
 }
 
@@ -115,7 +113,7 @@
     height: 666px;
     overflow-y: scroll;
     overflow-x: hidden;
-    margin-top:9px;
+    margin-top: 9px;
 }
 
 .left-menu-div::-webkit-scrollbar {
@@ -161,8 +159,8 @@ ul.sidebar-list {
     position: relative;
     height: 45px;
     width: 174px;
-    padding-top:5px;
-    padding-bottom:5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .left-menu-thumbnail img {
@@ -180,7 +178,7 @@ ul.sidebar-list {
     /* background: green; */
     align-self: flex-start;
     height: 100%;
-    display:flex;
+    display: flex;
     margin-left: 16px;
 }
 

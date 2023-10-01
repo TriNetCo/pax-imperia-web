@@ -1,17 +1,25 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
+import { getBasePath } from '../../models/helpers.js';
 
 export class SpaceViewLoader {
 
-    constructor(scene, system, renderer, camera) {
+    constructor(scene, system, renderer, camera, threeCache) {
         this.scene = scene;
         this.system = system;
         this.renderer = renderer;
         this.camera = camera;
+        this.threeCache = threeCache;
     }
 
     async load() {
+        const startTimeCache = Date.now();
+        // TODO: cache before or during
+        await this.cacheReusedObject3ds();
+        const deltaTimeCache = Date.now() - startTimeCache;
+        console.log(deltaTimeCache + " ms: cacheReusedObject3ds");
+
         const startTime = Date.now()
         const promises = [];
 
@@ -38,20 +46,51 @@ export class SpaceViewLoader {
 
         // TODO: refactor to use OO
         const deltaTime = Date.now() - startTime;
-        console.log("Load complete in " + deltaTime + " ms");
+        console.log(deltaTime + " ms: SpaceViewLoader entity loading");
     }
 
+    async cacheReusedObject3ds() {
+        const cachedAssetPathSuffixes = [
+            '/assets/orbitals/meshes/planetbasemodel.glb',
+            '/assets/orbitals/textures/sun/corona/corona.png'
+        ];
+        const promises = [];
+        cachedAssetPathSuffixes.forEach(assetPathSuffix => {
+            promises.push(this.cacheObject3d(assetPathSuffix));
+        })
+        await Promise.all(promises);
+    }
+
+    async cacheObject3d(assetPathSuffix) {
+        if (this.threeCache[assetPathSuffix]) {
+            return // already cached
+        }
+        console.log('caching ', assetPathSuffix)
+        const assetPath = getBasePath() + assetPathSuffix;
+        const obj = await this.loadObject3d(assetPath);
+        this.threeCache[assetPathSuffix] = obj;
+        console.log("threeCache", this.threeCache)
+        return obj;
+    }
 
     // TODO: Reuse Three meshes/ textures
     // mesh = load star mesh
     // texture = load texture
 
     loadStar(entity) {
+        let clickableObj;
+        if (this.threeCache['star']) {
+            clickableObj = this.threeCache['star'].clone()
+            this.setLoadAttributes(entity, clickableObj);
+            entity.linkObject3d(clickableObj);
+        } else {
+            clickableObj = this.loadClickableObject3d(entity, async (obj) => {
+                this.addBrightenerMaterial(obj);
+                await this.loadStarOrPlanetTexture(obj, entity.texturePath, false, 1);
+                this.threeCache['star'] = obj.clone();
+            });
+        }
 
-        const clickableObj = this.loadClickableObject3d(entity, async (obj) => {
-            this.addBrightenerMaterial(obj);
-            await this.loadStarOrPlanetTexture(obj, entity.texturePath, false, 1);
-        });
         const coronas = this.createCoronaObject3ds(entity);
 
         return [clickableObj, coronas];
@@ -152,6 +191,13 @@ export class SpaceViewLoader {
     }
 
     async loadObject3d(assetPath) {
+        // check if already loaded in cache
+        const assetPathSuffix = assetPath.replace(getBasePath(), '');
+        console.log(assetPathSuffix)
+        if (this.threeCache[assetPathSuffix]) {
+            console.log('using cache')
+            return this.threeCache[assetPathSuffix].clone();
+        }
         const assetPathSplit = assetPath.split(".");
         const fileExt = assetPathSplit[assetPathSplit.length - 1];
         switch (fileExt) {

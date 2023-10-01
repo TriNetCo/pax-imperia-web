@@ -21,25 +21,25 @@ export const roundToDecimal = (num, decimals = null) => {
 }
 
 export const unpackData = (data, context) => {
-    for (var key in data){
+    for (var key in data) {
         context[key] = data[key];
     }
 }
 
 export const packData = (context) => {
     let data = {}
-    for (var key in context){
+    for (var key in context) {
         data[key] = context[key];
     }
-    return(data);
+    return data;
 }
 
 export class Queue extends Array {
-    constructor (n, startingArray = null) {
+    constructor(n, startingArray = null) {
         if (!startingArray) {
             startingArray = new Array(n).fill(null);
         } else {
-            startingArray = startingArray.slice(0,n);
+            startingArray = startingArray.slice(0, n);
             const fillArray = new Array(n - startingArray.length).fill(null);
             startingArray = startingArray.concat(fillArray);
         }
@@ -64,4 +64,12 @@ export class Queue extends Array {
             this[i] = null;
         }
     }
+}
+
+export const getBasePath = () => {
+    let path = '';
+    if (typeof (window) !== 'undefined' && window.location.hash.includes("#")) {
+        path = "/pax-imperia-clone";
+    };
+    return path;
 }

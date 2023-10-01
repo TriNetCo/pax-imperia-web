@@ -1,16 +1,17 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { SpaceViewLoader } from './spaceViewLoader.js';
+import { getBasePath } from '../../models/helpers.js';
 
 export class SpaceViewAnimator {
 
-    constructor(config, clientObjects, system) {
+    constructor(config, clientObjects, system, galaxy, threeCache) {
         this.c = config;
         this.clientObjects = clientObjects;
         this.system = system;
         this.galaxy = galaxy;
+        this.threeCache = threeCache;
 
+        // unpack clientObjects
         this.scene = clientObjects.scene;
         this.selectionSprite = clientObjects.selectionSprite;
         this.renderer = clientObjects.renderer;
@@ -18,16 +19,43 @@ export class SpaceViewAnimator {
         this.cx = clientObjects.cx;
         this.mouse = clientObjects.mouse;
         this.clock = clientObjects.gameClock;
+        this.count = 0;
+
         THREE.Cache.enabled = true  // for development,  please set this to false :)
     }
 
+    stopDrawLoop() {
+        this.isDrawLoopEnabled = undefined;
+
+        if (this.requestId) {
+            cancelAnimationFrame(this.requestId);
+            this.requestId = undefined;
+        }
+    }
+
+    startDrawLoop() {
+        this.isDrawLoopEnabled = true;
+        this.drawLoop();
+    }
+
+    //
+    /**
+     * Redraw everything 60 times a second.  If `this.isDrawLoopEnabled` is set
+     * to false, this function will simply return, otherwise the function will
+     * call `this.animate()` before recurisvely calling itself via
+     * the browser's requestAnimationFrame API.
+     */
     drawLoop() {
-        // Redraw everything 60 times a second
+        if (!this.isDrawLoopEnabled) return;
         this.animate();
+        this.requestId = requestAnimationFrame(() => {
+            this.drawLoop();
+        });
     }
 
     async animate() {
         // console.log("resetting camera")
+        // TODO: should camera reset every frame??
         this.resetCamera()
         // console.log("UpdatingObjects")
         this.updateObjects()
@@ -39,7 +67,6 @@ export class SpaceViewAnimator {
             console.log(this.firstRenderTime + " ms: theBlack (first render)")
         }
         // console.log("finished animating")
-        // debugger;
     }
 
     resetCamera() {
@@ -131,47 +158,45 @@ export class SpaceViewAnimator {
         this.cameraPivot.add(camera);
         scene.add(this.cameraPivot);
 
-
-
         // Load Models
 
         // TODO, PERFORMANCE: why isn't the background loading immediately after navigating systems
         await this.loadBackground(scene);
-        // console.log("finished loading background")
+        console.log('background loads')
+        this.resetCamera();
+        this.renderer.render(this.scene, this.camera);
 
-        // await this.loadParallelModels(scene);
-
-        const spaceViewLoader = new SpaceViewLoader(scene, system, this.renderer, this.camera);
+        const spaceViewLoader = new SpaceViewLoader(
+            scene,
+            system,
+            this.renderer,
+            this.camera,
+            this.threeCache
+        );
         this.renderer.compile(this.scene, this.camera);
         await spaceViewLoader.load();
         this.renderer.compile(this.scene, this.camera);
-
         // this.animate();
-
-        // spaceViewLoader.loadStars();
-        // spaceViewLoader.loadPlanets();
-        // spaceViewLoader.loadWormholes();
-        // spaceViewLoader.loadShips();
 
         const deltaTime = (Date.now() - startTime);
         console.log(deltaTime + ' ms: spaceViewAnimator#populateScene');
     }
 
-    async loadBackground(scene) {
-        let basePath = '';
-        if (typeof (window) !== 'undefined' && window.location.hash.includes("#")) {
-            basePath = "/pax-imperia-clone";
-        }
+    loadBackground(scene) {
+        const basePath = getBasePath();
         const backgroundPath = basePath + "/assets/backgrounds/space_view_background_tmp.png"
         const loader = new THREE.TextureLoader();
-        new Promise(function (resolve, reject) {
+        const backgroundPromise = new Promise(function (resolve, reject) {
             loader.load(backgroundPath, function (input) {
                 scene.background = input;
+                resolve()
             }, function (xhr) {
             }, function (error) {
                 console.error(error);
+                reject(error);
             });
         });
+        return backgroundPromise;
     }
 
 }

@@ -24,7 +24,8 @@ export class Wormhole extends Entity {
         let wormholeZ = -10;
         // up-down position (y) in system detail view system view
         // is equivalent to z in galazy view
-        let wormholeY = wormholePosition.z - systemPosition.z;
+        // rescale to make sure wormholes stay in view
+        let wormholeY = (wormholePosition.z - systemPosition.z) * 0.90;
 
         // Map 360 deg circle around current star to plane behind current star
         // Can see wormholes set to X -20 to 20

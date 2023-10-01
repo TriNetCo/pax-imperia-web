@@ -13,8 +13,6 @@ const SpaceView = () => {
     };
 
     useEffect(() => {
-        // console.log('React: SpaceView useEffect');
-
         (async() => {
             let pathname = window.location.pathname;
             const hashString = window.location.hash;
@@ -24,20 +22,13 @@ const SpaceView = () => {
             }
 
             const systemIndex = parseInt(pathname.replace('/systems/', ''));
-            console.log('starting await of loadWidget');
             const startTime = Date.now();
             await spaceViewWidget.loadWidget(systemIndex, systemClickHandler);
             const deltaTime = Date.now() - startTime;
-            console.log('finished awaiting loadWidget: ' + deltaTime + ' ms');
-            const draw = () => {
-                spaceViewWidget.draw();
-                requestId = requestAnimationFrame(draw);
-            };
-            draw();
+            console.log(deltaTime + ' ms: spaceViewWidget#loadWidget');
         })();
 
         return () => {
-            cancelAnimationFrame(requestId);
             spaceViewWidget.detachFromDom();
         };
     });

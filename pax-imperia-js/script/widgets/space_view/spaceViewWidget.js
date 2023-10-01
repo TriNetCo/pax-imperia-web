@@ -1,8 +1,9 @@
+import * as THREE from 'three';
 import { SpaceViewAnimator } from './spaceViewAnimator.js';
 import { SpaceViewDomManager } from './spaceViewDomManager.js';
-import * as THREE from 'three';
 import { SpriteFlipbook } from '../../models/spriteFlipbook.js'
 import { System } from './entities/system.js';
+import { getBasePath } from '../../models/helpers.js';
 
 /**
  * Encapsulates all of the logic related to rendering the SpaceView canvas
@@ -25,19 +26,18 @@ export class SpaceViewWidget {
     /** @type {System} */
     system;
 
+    /** @type {object} */
+    threeCache = {};
+
     constructor(config, clientObjects, gameStateInterface) {
         this.c = config;
         this.clientObjects = clientObjects;
         this.galaxy = gameStateInterface.galaxy;
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
-
-        // debug
-        window.galaxy = this.galaxy;
-        this.basePath = window.location.hash.includes("#") ? "/pax-imperia-clone" : "";
-
-        const mouse = new THREE.Vector2(0, 0);
-        this.clientObjects.mouse = mouse;
+        this.basePath = getBasePath();
+        this.clientObjects.mouse = new THREE.Vector2(0, 0);
         this.clientObjects.gameClock = gameStateInterface.gameClock;
+        window.galaxy = this.galaxy; // for debugging
     }
 
     loadWidget(systemIndex, systemClickHandler) {
@@ -70,6 +70,7 @@ export class SpaceViewWidget {
     changeSystem(systemIndex) {
         console.log(">>> CHANGING SYSTEM <<<");
         this.spaceViewDomManager.detachFromDom();
+        this.spaceViewAnimator.stopDrawLoop();
         this.system = this.galaxy.systems[systemIndex];
 
         this.resetThreeObjects();
@@ -77,14 +78,21 @@ export class SpaceViewWidget {
         return this.buildSystemClasses()
     }
 
-    buildSystemClasses() {
+    async buildSystemClasses() {
         this.spaceViewDomManager = new SpaceViewDomManager(this.c, this.clientObjects, this.system, this.systemClickHandler);
         window.spaceViewDomManager = this.spaceViewDomManager; // currently necessary for ship movement which accesses global
         this.spaceViewDomManager.attachDomEventsToCode();
         this.spaceViewDomManager.populateHtml();
 
-        this.spaceViewAnimator = new SpaceViewAnimator(this.c, this.clientObjects, this.system, this.galaxy);
-        return this.spaceViewAnimator.populateScene();
+        this.spaceViewAnimator = new SpaceViewAnimator(
+            this.c,
+            this.clientObjects,
+            this.system,
+            this.galaxy,
+            this.threeCache
+        );
+        await this.spaceViewAnimator.populateScene();
+        this.spaceViewAnimator.startDrawLoop();
     }
 
     setupRenderer() {
@@ -99,12 +107,9 @@ export class SpaceViewWidget {
         document.getElementById("canvas-div").appendChild(renderer.domElement);
     }
 
-    draw() {
-        this.spaceViewAnimator.drawLoop();
-    }
-
     detachFromDom() {
         this.spaceViewDomManager.detachFromDom();
+        this.spaceViewAnimator.stopDrawLoop();
     }
 
 }

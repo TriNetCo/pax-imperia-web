@@ -1,9 +1,5 @@
 import * as THREE from 'three';
-
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
-
-import { packData, unpackData } from '../../../models/helpers.js'
+import { getBasePath, unpackData } from '../../../models/helpers.js'
 
 export class Entity {
     constructor(data, systemName = "", systemId) {
@@ -16,10 +12,7 @@ export class Entity {
         this.consoleBody = '';
         unpackData(data, this);
         this.scale = { x: this.size, y: this.size, z: this.size };
-        this.basePath = '';
-        if (typeof (window) !== 'undefined' && window.location.hash.includes("#")) {
-            this.basePath = "/pax-imperia-clone";
-        }
+        this.basePath = getBasePath();
     }
 
     toJSON() {

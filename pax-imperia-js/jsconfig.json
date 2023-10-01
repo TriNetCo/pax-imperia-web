@@ -1,10 +1,9 @@
 {
-    "compilerOptions": {
-        "baseUrl": "./",
-        "paths": {
-            "*": ["script/*"]
-        }
-    },
-    "include": ["script"],
-    "exclude": ["node_modules"]
+    "compilerOptions": {},
+    "include": [
+        "script"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
 }
