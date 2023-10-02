@@ -9,11 +9,9 @@ export class SpaceViewLoader {
     /** @type {ThreeCache} */
     threeCache;
 
-    constructor(scene, system, renderer, camera, threeCache) {
+    constructor(threeCache, scene, system) {
         this.scene = scene;
         this.system = system;
-        // this.renderer = renderer;
-        // this.camera = camera;
         this.threeCache = threeCache;
         window.threeCache = threeCache;
     }
@@ -105,7 +103,10 @@ export class SpaceViewLoader {
 
     loadShip(entity) {
         let clickableObj = this.threeCache.retrieve('GalacticLeopard');
-        if (!clickableObj) {
+        if (clickableObj) {
+            this.setLoadAttributes(entity, clickableObj);
+            entity.linkObject3d(clickableObj);
+        } else {
             clickableObj = this.loadClickableObject3d(entity, async (obj) => {
                 // this.addMetallicSmoothnessMaterial(obj, entity.metallicSmoothnessMapPath);
                 // this.addMeshStandardMaterial(obj)

@@ -161,11 +161,9 @@ export class SpaceViewAnimator {
         // this.resetCamera();
 
         const spaceViewLoader = new SpaceViewLoader(
+            this.threeCache,
             scene,
-            system,
-            this.renderer,
-            this.camera,
-            this.threeCache
+            system
         );
         await spaceViewLoader.loadBackground();
         this.renderer.render(this.scene, this.camera);

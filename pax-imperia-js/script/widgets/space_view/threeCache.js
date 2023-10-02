@@ -1,4 +1,5 @@
 import { SpaceViewLoader } from "./spaceViewLoader.js";
+import { Ship } from "../space_view/entities/ship.js";
 
 export class ThreeCache {
 
@@ -11,13 +12,15 @@ export class ThreeCache {
         ];
     }
 
-    // async preCache() {
-    //     const promises = [];
-    //     this.preCachePaths.forEach(path => {
-    //         promises.push(path);
-    //     })
-    //     await Promise.all(promises);
-    // }
+    async preCache() {
+        const spaceViewLoader = new SpaceViewLoader(this);
+        const promises = [];
+        this.preCachePaths.forEach(path => {
+            obj = spaceViewLoader.loadObject3d(path);
+            promises.push(obj);
+        })
+        await Promise.all(promises);
+    }
 
     retrieve(name) {
         if (this.cache[name]) {
