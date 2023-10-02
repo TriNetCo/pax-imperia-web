@@ -4,6 +4,9 @@ import { getBasePath } from '../../models/helpers.js';
 
 export class SpaceViewAnimator {
 
+    /** @type {THREE.WebGLRenderer} */
+    renderer;
+
     constructor(config, clientObjects, system, galaxy, threeCache) {
         this.c = config;
         this.clientObjects = clientObjects;
@@ -21,7 +24,7 @@ export class SpaceViewAnimator {
         this.clock = clientObjects.gameClock;
         this.count = 0;
 
-        THREE.Cache.enabled = true  // for development,  please set this to false :)
+        THREE.Cache.enabled = true;  // for development,  please set this to false :)
     }
 
     stopDrawLoop() {
@@ -160,11 +163,7 @@ export class SpaceViewAnimator {
 
         // Load Models
 
-        // TODO, PERFORMANCE: why isn't the background loading immediately after navigating systems
-        await this.loadBackground(scene);
-        console.log('background loads')
-        this.resetCamera();
-        this.renderer.render(this.scene, this.camera);
+        // this.resetCamera();
 
         const spaceViewLoader = new SpaceViewLoader(
             scene,
@@ -173,7 +172,10 @@ export class SpaceViewAnimator {
             this.camera,
             this.threeCache
         );
-        this.renderer.compile(this.scene, this.camera);
+        await spaceViewLoader.loadBackground();
+        this.renderer.render(this.scene, this.camera);
+        console.log('background loads')
+
         await spaceViewLoader.load();
         this.renderer.compile(this.scene, this.camera);
         // this.animate();
@@ -182,21 +184,5 @@ export class SpaceViewAnimator {
         console.log(deltaTime + ' ms: spaceViewAnimator#populateScene');
     }
 
-    loadBackground(scene) {
-        const basePath = getBasePath();
-        const backgroundPath = basePath + "/assets/backgrounds/space_view_background_tmp.png"
-        const loader = new THREE.TextureLoader();
-        const backgroundPromise = new Promise(function (resolve, reject) {
-            loader.load(backgroundPath, function (input) {
-                scene.background = input;
-                resolve()
-            }, function (xhr) {
-            }, function (error) {
-                console.error(error);
-                reject(error);
-            });
-        });
-        return backgroundPromise;
-    }
 
 }

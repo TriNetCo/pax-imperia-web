@@ -26,6 +26,9 @@ export class SpaceViewWidget {
     /** @type {System} */
     system;
 
+    /** @type {THREE.WebGLRenderer} */
+    renderer;
+
     /** @type {object} */
     threeCache = {};
 
@@ -68,7 +71,9 @@ export class SpaceViewWidget {
     }
 
     changeSystem(systemIndex) {
-        console.log(">>> CHANGING SYSTEM <<<");
+        console.log(">>> CHANGING SYSTEM <<<",
+            this.system.id, this.system.name,
+            "to", systemIndex, this.galaxy.systems[systemIndex].name);
         this.spaceViewDomManager.detachFromDom();
         this.spaceViewAnimator.stopDrawLoop();
         this.system = this.galaxy.systems[systemIndex];
@@ -83,6 +88,7 @@ export class SpaceViewWidget {
         window.spaceViewDomManager = this.spaceViewDomManager; // currently necessary for ship movement which accesses global
         this.spaceViewDomManager.attachDomEventsToCode();
         this.spaceViewDomManager.populateHtml();
+        console.log('buildSystemClasses populateHtml')
 
         this.spaceViewAnimator = new SpaceViewAnimator(
             this.c,

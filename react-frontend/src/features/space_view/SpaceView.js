@@ -10,6 +10,7 @@ const SpaceView = () => {
     const systemClickHandler = (path) => {
         const systemIndex = path.replace('/systems/', '');
         spaceViewWidget.changeSystem(systemIndex);
+        history.pushState(null, null, '#' + path);
     };
 
     useEffect(() => {

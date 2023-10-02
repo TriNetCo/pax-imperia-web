@@ -54,18 +54,14 @@ export class SpaceViewDomManager {
         // so it is safest to use previousTargets[1] as double-click target
         const clickTarget = this.previousTargets[1]
         // check if the target before double click was a ship
-        if (this.previousTargets[2] &&
-            this.previousTargets[2].parentEntity &&
-            this.previousTargets[2].parentEntity.type == "ship") {
+        if (this.previousTargets[2]?.parentEntity?.type == "ship") {
             this.moveShip(this.previousTargets[2], clickTarget, 'default');
-        } else {
+        } else if (clickTarget?.parentEntity.type === "wormhole") {
             // navigate through wormhole (unless ship was just moved through wormhole)
-            if (clickTarget &&
-                clickTarget.parentEntity.type === "wormhole") {
-                const wormholeId = clickTarget.parentEntity.id;
-                const path = "/systems/" + wormholeId;
-                this.systemClickHandler(path);
-            }
+            const wormholeId = clickTarget.parentEntity.id;
+            const path = "/systems/" + wormholeId;
+            this.systemClickHandler(path);
+            return;
         }
         this.populateHtml();
     }
