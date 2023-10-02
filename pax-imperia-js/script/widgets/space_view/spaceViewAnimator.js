@@ -22,7 +22,6 @@ export class SpaceViewAnimator {
         this.cx = clientObjects.cx;
         this.mouse = clientObjects.mouse;
         this.clock = clientObjects.gameClock;
-        this.count = 0;
 
         THREE.Cache.enabled = true;  // for development,  please set this to false :)
     }
@@ -57,19 +56,15 @@ export class SpaceViewAnimator {
     }
 
     async animate() {
-        // console.log("resetting camera")
         // TODO: should camera reset every frame??
         this.resetCamera()
-        // console.log("UpdatingObjects")
         this.updateObjects()
-        // console.log("Performing render")
         const startTime = Date.now()
         this.renderer.render(this.scene, this.camera);
         if (!this.firstRenderTime) {
             this.firstRenderTime = Date.now() - startTime
             console.log(this.firstRenderTime + " ms: theBlack (first render)")
         }
-        // console.log("finished animating")
     }
 
     resetCamera() {

@@ -69,11 +69,25 @@ export class SpaceViewLoader {
         if (this.threeCache[assetPathSuffix]) {
             return // already cached
         }
-        console.log('caching ', assetPathSuffix)
         const assetPath = getBasePath() + assetPathSuffix;
         const obj = await this.loadObject3d(assetPath);
-        this.threeCache[assetPathSuffix] = { 'obj': obj, 'count': 0 };
+        this.addObject3dToCache(obj);
         return obj;
+    }
+
+    retrieveCachedObject3d(name) {
+        if (this.threeCache[name]) {
+            this.threeCache[name]['count'] += 1;
+            return this.threeCache[name]['obj'].clone();
+        }
+        return;
+    }
+
+    addObject3dToCache(name, obj) {
+        if (!this.threeCache[name]) {
+            this.threeCache[name] = { 'obj': obj.clone(), 'count': 0 };
+            console.log('caching', name);
+        }
     }
 
     // TODO: Reuse Three meshes/ textures
@@ -81,16 +95,15 @@ export class SpaceViewLoader {
     // texture = load texture
 
     loadStar(entity) {
-        let clickableObj;
-        if (this.threeCache['star']) {
-            clickableObj = this.threeCache['star']['obj'].clone()
+        let clickableObj = this.retrieveCachedObject3d('star');
+        if (clickableObj) {
             this.setLoadAttributes(entity, clickableObj);
             entity.linkObject3d(clickableObj);
         } else {
             clickableObj = this.loadClickableObject3d(entity, async (obj) => {
                 this.addBrightenerMaterial(obj);
                 await this.loadStarOrPlanetTexture(obj, entity.texturePath, false, 1);
-                this.threeCache['star'] = { 'obj': obj.clone(), 'count': 0 };
+                this.addObject3dToCache('star', obj);
             });
         }
 
@@ -196,13 +209,12 @@ export class SpaceViewLoader {
     async loadObject3d(assetPath) {
         // check if already loaded in cache
         const assetPathSuffix = assetPath.replace(getBasePath(), '');
-        if (this.threeCache[assetPathSuffix]) {
-            this.threeCache[assetPathSuffix]['count'] += 1;
-            return this.threeCache[assetPathSuffix]['obj'].clone();
+        let obj = this.retrieveCachedObject3d(assetPathSuffix)
+        if (obj) {
+            return obj;
         }
         const assetPathSplit = assetPath.split(".");
         const fileExt = assetPathSplit[assetPathSplit.length - 1];
-        let obj;
         switch (fileExt) {
             case 'gltf':
             case 'glb':
@@ -219,10 +231,7 @@ export class SpaceViewLoader {
                 break;
         }
         // if (this.cachedAssetPathSuffixes.includes(assetPathSuffix)) {
-        if (!this.threeCache[assetPathSuffix]) {
-            console.log('caching', assetPathSuffix)
-            this.threeCache[assetPathSuffix] = { 'obj': obj.clone(), 'count': 0 };
-        }
+        this.addObject3dToCache(assetPathSuffix, obj);
         return obj;
     }
 
