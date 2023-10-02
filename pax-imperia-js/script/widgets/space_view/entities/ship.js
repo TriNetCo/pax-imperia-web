@@ -14,7 +14,8 @@ export class Ship extends Entity {
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/ship_thumbnail.png";
         this.size = 0.00015;
         this.scale = { x: this.size, y: this.size, z: this.size };
-        this.rotation = { x: 0.7, y: -1.6, z: 0.4 };
+        this.defaultRotation = { x: Math.PI / 4, y: -Math.PI / 2, z: Math.PI / 8 };
+        this.rotation = this.defaultRotation;
         this.speed = 0.2;
         this.previousSystemId = typeof this.previousSystemId === 'undefined' ? null : this.previousSystemId;
         this.buttonState = null;
@@ -138,12 +139,14 @@ export class Ship extends Entity {
             this.destinationPoint = null;
             this.destinationTarget = null;
         } else {
+            this.object3d.lookAt(destinationVector);
             const displacementVector = destinationVector
                 .sub(positionVector)
                 .normalize()
                 .multiplyScalar(speedMultiplier, speedMultiplier, speedMultiplier);
             const finalVector = positionVector.add(displacementVector);
             this.object3d.position.copy(finalVector);
+            this.synchronizeEntityWithObj3d();
         }
     }
 
@@ -159,6 +162,9 @@ export class Ship extends Entity {
     }
 
     updateColonize() {
+        // rotate to land on planet
+        // 0, 0, 0, points to planet
+        this.object3d.rotation.set(0, 0, 0);
         // update animation progress
         this.colonizeAnimationProgress += this.speed / 20;
         // delete ship once landing animation finished
@@ -187,6 +193,9 @@ export class Ship extends Entity {
 
         if (!this.orbitStartTime) {
             this.orbitStartTime = elapsedTime;
+            this.object3d.rotation.x = Math.PI / 4;
+            this.object3d.rotation.y = -Math.PI / 2;
+            this.object3d.rotation.z = Math.PI / 8;
         }
 
         const startAngle = Math.PI / 2;
@@ -197,6 +206,27 @@ export class Ship extends Entity {
         this.object3d.position.x = centerX + orbitDist * Math.cos(orbitAngle);
         this.object3d.position.z = centerZ + orbitDist * Math.sin(orbitAngle);
         this.object3d.position.y = centerY;
+    }
+
+    synchronizeEntityWithObj3d() {
+        this.position = {
+            x: this.object3d.position.x,
+            y: this.object3d.position.y,
+            z: this.object3d.position.z
+        };
+        this.rotation = {
+            x: this.object3d.rotation.x,
+            y: this.object3d.rotation.y,
+            z: this.object3d.rotation.z
+        };
+    }
+
+    resetObj3dRotation() {
+        this.object3d.position = {
+            x: this.defaultRotation.x,
+            y: this.defaultRotation.y,
+            z: this.defaultRotation.z
+        };
     }
 
     returnConsoleHtml() {

@@ -63,6 +63,7 @@ export class SpaceViewWidget {
     resetThreeObjects() {
         this.clientObjects.scene = new THREE.Scene();
         this.clientObjects.camera = new THREE.PerspectiveCamera(15, this.c.canvasWidth / this.c.canvasHeight, 1, 10000);
+        this.renderer.compile(this.clientObjects.scene, this.clientObjects.camera);
 
         this.clientObjects.selectionSprite = new SpriteFlipbook(
             this.clientObjects.scene,
@@ -90,7 +91,6 @@ export class SpaceViewWidget {
         window.spaceViewDomManager = this.spaceViewDomManager; // currently necessary for ship movement which accesses global
         this.spaceViewDomManager.attachDomEventsToCode();
         this.spaceViewDomManager.populateHtml();
-        console.log('buildSystemClasses populateHtml')
 
         this.spaceViewAnimator = new SpaceViewAnimator(
             this.c,

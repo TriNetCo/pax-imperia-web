@@ -9,10 +9,12 @@ export class SpaceViewLoader {
     /** @type {ThreeCache} */
     threeCache;
 
-    constructor(threeCache, scene, system) {
+    constructor(threeCache, scene, system, renderer, camera) {
         this.scene = scene;
         this.system = system;
         this.threeCache = threeCache;
+        this.renderer = renderer;
+        this.camera = camera;
         window.threeCache = threeCache;
     }
 
@@ -102,16 +104,17 @@ export class SpaceViewLoader {
     }
 
     loadShip(entity) {
-        let clickableObj = this.threeCache.retrieve('GalacticLeopard');
+        let clickableObj = this.threeCache.retrieve('GalacticLeopard6');
         if (clickableObj) {
             this.setLoadAttributes(entity, clickableObj);
             entity.linkObject3d(clickableObj);
         } else {
+            console.log('creating new ship')
             clickableObj = this.loadClickableObject3d(entity, async (obj) => {
                 // this.addMetallicSmoothnessMaterial(obj, entity.metallicSmoothnessMapPath);
                 // this.addMeshStandardMaterial(obj)
                 await this.loadAndApplyTexturesToShip(obj, entity);
-                this.threeCache.push('GalacticLeopard', obj);
+                this.threeCache.push('GalacticLeopard6', obj);
             });
         }
         return clickableObj;
@@ -187,7 +190,7 @@ export class SpaceViewLoader {
         console.log(msg + ' loaded in ' + deltaTime + ' ms');
     }
 
-    async loadObject3d(assetPath) {
+    async loadObject3d(assetPath, isBillboard = true) {
         // check if already loaded in cache
         const assetPathSuffix = assetPath.replace(getBasePath(), '');
         let obj = this.threeCache.retrieve(assetPathSuffix);
@@ -205,7 +208,11 @@ export class SpaceViewLoader {
                 obj = await this.loadFbx(assetPath);
                 break;
             case 'png':
-                obj = await this.loadBillboard(assetPath);
+                if (isBillboard) {
+                    obj = await this.loadBillboard(assetPath);
+                } else {
+                    obj = await this.loadTexture(assetPath);
+                }
                 break;
             default:
                 console.log('unknown file type')
@@ -255,7 +262,7 @@ export class SpaceViewLoader {
             }, function (xhr) {
             }, function (error) {
                 console.error(error);
-                reject({ reason: error })
+                reject({ reason: error });
             });
         });
         return object3d;
@@ -264,7 +271,7 @@ export class SpaceViewLoader {
     /**
      * Load a texture, this is a heavy function...
      * @param {string} assetPath
-     * @returns {THREE.Texture}
+     * @returns {Promise<THREE.Texture>}
      */
     async loadTexture(assetPath) {
         let texture;
@@ -345,29 +352,30 @@ export class SpaceViewLoader {
         }
     }
 
-    loadBackground() {
-        const path = getBasePath() + "/assets/backgrounds/space_view_background_tmp.png"
-        const loader = new THREE.TextureLoader();
-        const backgroundPromise = new Promise((resolve, reject) => {
-            loader.load(path, (input) => {
-                this.scene.background = input;
-                resolve();
-            }, function (xhr) {
-            }, function (error) {
-                console.error(error);
-                reject(error);
-            });
-        });
-        return backgroundPromise;
+    async loadBackground() {
+        const path = getBasePath() + '/assets/backgrounds/space_view_background_tmp.png'
+        const texture = await this.loadObject3d(path, false);
+        this.scene.background = texture;
+    }
+
+    addAndCompile(obj) {
+        if (this.scene && this.renderer) {
+            this.scene.add(obj);
+            this.renderer.compile(this.scene, this.camera);
+        }
     }
 
     async addWormholeText(entity) {
         let text = entity.name || 'Sector' + entity.id;
-        let opts = { fontface: 'Tahoma' };
+        let opts = { fontface: 'Tahoma', fontsize: 26 };
         let sprite = this.makeTextSprite(text, opts);
         sprite.name = 'wormholeText';
         sprite.notClickable = true;
-        sprite.position.set(entity.position.x, entity.position.y, entity.position.z + 0.5);
+        // offset below (y) and slightly behind (z) wormhole graphic
+        sprite.position.set(
+            entity.position.x,
+            entity.position.y - 1,
+            entity.position.z - 0.1);
         return sprite;
     }
 

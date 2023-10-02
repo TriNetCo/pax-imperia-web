@@ -73,3 +73,9 @@ export const getBasePath = () => {
     };
     return path;
 }
+
+export const getScaledNumber = (input, minInput, maxInput, minOutput, maxOutput) => {
+    const inputPercent = (input - minInput) / (maxInput - minInput);
+    const output = inputPercent * (maxOutput - minOutput) + minOutput;
+    return output;
+}
