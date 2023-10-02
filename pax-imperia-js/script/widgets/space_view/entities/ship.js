@@ -7,6 +7,10 @@ export class Ship extends Entity {
         super(data, systemName, systemId);
         this.type = 'ship';
         this.assetPath = this.basePath + '/assets/ships/GalacticLeopard6.fbx';
+        this.texturePath = this.basePath + '/assets/ships/GalacticLeopard_White.png';
+        this.normalMapPath = this.basePath + '/assets/ships/GalacticLeopard_Normal.png';
+        this.metallicSmoothnessMapPath = this.basePath + '/assets/ships/GalacticLeopard_MetallicSmoothness.png';
+        this.emissionMapPath = this.basePath + '/assets/ships/GalacticLeopard_Emission2.png';
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/ship_thumbnail.png";
         this.size = 0.00015;
         this.scale = { x: this.size, y: this.size, z: this.size };

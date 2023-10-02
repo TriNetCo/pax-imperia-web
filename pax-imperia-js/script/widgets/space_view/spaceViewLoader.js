@@ -42,7 +42,7 @@ export class SpaceViewLoader {
         }
 
         for (const ship of this.system['ships']) {
-            promises.push(this.loadClickableObject3d(ship));
+            promises.push(this.loadShip(ship));
         }
 
         // Block here until all the parallel async functions are finished
@@ -147,6 +147,28 @@ export class SpaceViewLoader {
         const cloudCover = this.loadCloudCover(entity);
 
         return [clickableObj, cloudCover];
+    }
+
+    loadShip(entity) {
+        const clickableObj = this.loadClickableObject3d(entity, async (obj) => {
+            // this.addMetallicSmoothnessMaterial(obj, entity.metallicSmoothnessMapPath);
+            // this.addMeshStandardMaterial(obj)
+            await this.loadAndApplyTexturesToShip(obj, entity);
+        });
+        return clickableObj;
+    }
+
+    addMetallicSmoothnessMaterial(object3d, metallicSmoothnessMapPath) {
+        const firstChild = object3d.children[0];
+        const texture = firstChild.material.map;
+        const normalMap = firstChild.material.normalMap;
+        const metallicSmoothnessMap = firstChild.material.metallicSmoothnessMap;
+
+        firstChild.material = new THREE.MeshStandardMaterial();
+        firstChild.material.map = texture;
+        firstChild.material.normalMap = normalMap;
+        firstChild.material.metallicSmoothnessMap = metallicSmoothnessMap;
+        firstChild.material.needsUpdate = true;
     }
 
     async loadCloudCover(entity) {
@@ -328,6 +350,28 @@ export class SpaceViewLoader {
                 material.roughness = roughness;
                 material.needsUpdate = true;
             }
+        });
+    }
+
+    loadAndApplyTexturesToShip(object3d, entity) {
+        const texture = this.loadTexture(entity.texturePath);
+        const normalMap = this.loadTexture(entity.normalMapPath);
+        const metallicSmoothnessMap = this.loadTexture(entity.metallicSmoothnessMapPath);
+        const emissionMap = this.loadTexture(entity.emissionMapPath);
+
+        return Promise.all([texture, normalMap, metallicSmoothnessMap, emissionMap])
+                .then(([texture, normalMap, metallicSmoothnessMap, emissionMap]) => {
+            texture.flipY = false; // fixes Blender export bug
+
+            const material = new THREE.MeshStandardMaterial();
+            material.metalnessMap = texture;
+            material.map = texture;
+            material.normalMap = normalMap;
+            material.emissiveMap = emissionMap;
+            material.metallicSmoothnessMap = metallicSmoothnessMap;
+            material.needsUpdate = true;
+
+            object3d.children[0].material = material;
         });
     }
 
