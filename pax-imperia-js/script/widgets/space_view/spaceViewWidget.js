@@ -4,6 +4,7 @@ import { SpaceViewDomManager } from './spaceViewDomManager.js';
 import { SpriteFlipbook } from '../../models/spriteFlipbook.js'
 import { System } from './entities/system.js';
 import { getBasePath } from '../../models/helpers.js';
+import { ThreeCache } from './threeCache.js';
 
 /**
  * Encapsulates all of the logic related to rendering the SpaceView canvas
@@ -29,8 +30,8 @@ export class SpaceViewWidget {
     /** @type {THREE.WebGLRenderer} */
     renderer;
 
-    /** @type {object} */
-    threeCache = {};
+    /** @type {ThreeCache} */
+    threeCache;
 
     constructor(config, clientObjects, gameStateInterface) {
         this.c = config;
@@ -40,6 +41,7 @@ export class SpaceViewWidget {
         this.basePath = getBasePath();
         this.clientObjects.mouse = new THREE.Vector2(0, 0);
         this.clientObjects.gameClock = gameStateInterface.gameClock;
+        this.threeCache = new ThreeCache();
         window.galaxy = this.galaxy; // for debugging
     }
 

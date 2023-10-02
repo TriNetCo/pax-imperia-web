@@ -2,8 +2,12 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { getBasePath } from '../../models/helpers.js';
+import { ThreeCache } from './threeCache.js';
 
 export class SpaceViewLoader {
+
+    /** @type {ThreeCache} */
+    threeCache;
 
     constructor(scene, system, renderer, camera, threeCache) {
         this.scene = scene;
@@ -11,20 +15,10 @@ export class SpaceViewLoader {
         // this.renderer = renderer;
         // this.camera = camera;
         this.threeCache = threeCache;
-        this.cachedAssetPathSuffixes = [
-            '/assets/orbitals/meshes/planetbasemodel.glb',
-            '/assets/orbitals/textures/sun/corona/corona.png',
-            '/assets/wormholes/wormhole.png'
-        ];
+        window.threeCache = threeCache;
     }
 
     async load() {
-        const startTimeCache = Date.now();
-        // TODO: cache before or during
-        // await this.cacheReusedObject3ds();
-        const deltaTimeCache = Date.now() - startTimeCache;
-        console.log(deltaTimeCache + " ms: cacheReusedObject3ds");
-
         const startTime = Date.now()
         const promises = [];
 
@@ -54,48 +48,8 @@ export class SpaceViewLoader {
         console.log(deltaTime + " ms: SpaceViewLoader entity loading");
     }
 
-    async cacheReusedObject3ds() {
-        const cachedAssetPathSuffixes = [
-            '/assets/orbitals/meshes/planetbasemodel.glb',
-        ];
-        const promises = [];
-        cachedAssetPathSuffixes.forEach(assetPathSuffix => {
-            promises.push(this.cacheObject3d(assetPathSuffix));
-        })
-        await Promise.all(promises);
-    }
-
-    async cacheObject3d(assetPathSuffix) {
-        if (this.threeCache[assetPathSuffix]) {
-            return // already cached
-        }
-        const assetPath = getBasePath() + assetPathSuffix;
-        const obj = await this.loadObject3d(assetPath);
-        this.addObject3dToCache(obj);
-        return obj;
-    }
-
-    retrieveCachedObject3d(name) {
-        if (this.threeCache[name]) {
-            this.threeCache[name]['count'] += 1;
-            return this.threeCache[name]['obj'].clone();
-        }
-        return;
-    }
-
-    addObject3dToCache(name, obj) {
-        if (!this.threeCache[name]) {
-            this.threeCache[name] = { 'obj': obj.clone(), 'count': 0 };
-            console.log('caching', name);
-        }
-    }
-
-    // TODO: Reuse Three meshes/ textures
-    // mesh = load star mesh
-    // texture = load texture
-
     loadStar(entity) {
-        let clickableObj = this.retrieveCachedObject3d('star');
+        let clickableObj = this.threeCache.retrieve('star');
         if (clickableObj) {
             this.setLoadAttributes(entity, clickableObj);
             entity.linkObject3d(clickableObj);
@@ -103,7 +57,7 @@ export class SpaceViewLoader {
             clickableObj = this.loadClickableObject3d(entity, async (obj) => {
                 this.addBrightenerMaterial(obj);
                 await this.loadStarOrPlanetTexture(obj, entity.texturePath, false, 1);
-                this.addObject3dToCache('star', obj);
+                this.threeCache.push('star', obj);
             });
         }
 
@@ -150,11 +104,15 @@ export class SpaceViewLoader {
     }
 
     loadShip(entity) {
-        const clickableObj = this.loadClickableObject3d(entity, async (obj) => {
-            // this.addMetallicSmoothnessMaterial(obj, entity.metallicSmoothnessMapPath);
-            // this.addMeshStandardMaterial(obj)
-            await this.loadAndApplyTexturesToShip(obj, entity);
-        });
+        let clickableObj = this.threeCache.retrieve('GalacticLeopard');
+        if (!clickableObj) {
+            clickableObj = this.loadClickableObject3d(entity, async (obj) => {
+                // this.addMetallicSmoothnessMaterial(obj, entity.metallicSmoothnessMapPath);
+                // this.addMeshStandardMaterial(obj)
+                await this.loadAndApplyTexturesToShip(obj, entity);
+                this.threeCache.push('GalacticLeopard', obj);
+            });
+        }
         return clickableObj;
     }
 
@@ -231,7 +189,7 @@ export class SpaceViewLoader {
     async loadObject3d(assetPath) {
         // check if already loaded in cache
         const assetPathSuffix = assetPath.replace(getBasePath(), '');
-        let obj = this.retrieveCachedObject3d(assetPathSuffix)
+        let obj = this.threeCache.retrieve(assetPathSuffix);
         if (obj) {
             return obj;
         }
@@ -252,8 +210,7 @@ export class SpaceViewLoader {
                 console.log('unknown file type')
                 break;
         }
-        // if (this.cachedAssetPathSuffixes.includes(assetPathSuffix)) {
-        this.addObject3dToCache(assetPathSuffix, obj);
+        this.threeCache.push(assetPathSuffix, obj);
         return obj;
     }
 
@@ -309,9 +266,10 @@ export class SpaceViewLoader {
      * @returns {THREE.Texture}
      */
     async loadTexture(assetPath) {
+        let texture;
         const loader = new THREE.TextureLoader();
-        const texturePromise = new Promise(function (resolve, reject) {
-            loader.load(assetPath, function (texture) {
+        texture = new Promise((resolve, reject) => {
+            loader.load(assetPath, (texture) => {
                 resolve(texture);
             }, function (xhr) {
             }, function (error) {
@@ -319,7 +277,7 @@ export class SpaceViewLoader {
                 reject({ reason: error })
             });
         });
-        return texturePromise;
+        return texture;
     }
 
     /**
@@ -360,19 +318,19 @@ export class SpaceViewLoader {
         const emissionMap = this.loadTexture(entity.emissionMapPath);
 
         return Promise.all([texture, normalMap, metallicSmoothnessMap, emissionMap])
-                .then(([texture, normalMap, metallicSmoothnessMap, emissionMap]) => {
-            texture.flipY = false; // fixes Blender export bug
+            .then(([texture, normalMap, metallicSmoothnessMap, emissionMap]) => {
+                texture.flipY = false; // fixes Blender export bug
 
-            const material = new THREE.MeshStandardMaterial();
-            material.metalnessMap = texture;
-            material.map = texture;
-            material.normalMap = normalMap;
-            material.emissiveMap = emissionMap;
-            material.metallicSmoothnessMap = metallicSmoothnessMap;
-            material.needsUpdate = true;
+                const material = new THREE.MeshStandardMaterial();
+                material.metalnessMap = texture;
+                material.map = texture;
+                material.normalMap = normalMap;
+                material.emissiveMap = emissionMap;
+                material.metallicSmoothnessMap = metallicSmoothnessMap;
+                material.needsUpdate = true;
 
-            object3d.children[0].material = material;
-        });
+                object3d.children[0].material = material;
+            });
     }
 
     setLoadAttributes(entity, object3d) {
