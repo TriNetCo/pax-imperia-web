@@ -18,7 +18,7 @@ export class Planet extends Entity {
             <div>Population: 7/8</div>
             <div>Habitability: :)</div>
             `;
-        this.object3ds = [];
+        this.object3ds = {};
     }
 
     toJSON() {
@@ -34,8 +34,9 @@ export class Planet extends Entity {
     }
 
     update(elapsedTime) {
+        for (var key in this.object3ds) {
+            const obj3d = this.object3ds[key];
 
-        this.object3ds.forEach(obj3d => {
             // update rotation
             // negative for rotating counter-clockwise
             const spinImprover = obj3d.isClouds ? 2 : 1;
@@ -51,7 +52,7 @@ export class Planet extends Entity {
             let angle = elapsedTime * Math.pow(speedMultiplier / d, 2) + this.starting_angle;
             obj3d.position.x = d * Math.cos(angle);
             obj3d.position.z = d * Math.sin(angle);
-        });
+        };
 
     }
 

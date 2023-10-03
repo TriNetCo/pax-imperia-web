@@ -2,16 +2,12 @@ import { SpaceViewLoader } from "./spaceViewLoader.js";
 import { getBasePath } from "../../models/helpers.js";
 import { Ship } from "../space_view/entities/ship.js";
 import { Star } from "./entities/star.js";
+import { Wormhole } from "./entities/wormhole.js";
 
 export class ThreeCache {
 
     constructor() {
         this.cache = {};
-        this.preCachePaths = [
-            '/assets/orbitals/meshes/planetbasemodel.glb',
-            '/assets/orbitals/textures/sun/corona/corona.png',
-            '/assets/wormholes/wormhole.png',
-        ];
         this.preCache();
     }
 
@@ -20,19 +16,15 @@ export class ThreeCache {
 
         const spaceViewLoader = new SpaceViewLoader(this);
         const promises = [];
-        this.preCachePaths.forEach(path => {
-            const obj = spaceViewLoader.loadObject3d(getBasePath() + path);
-            promises.push(obj);
-        })
-        const backgroundPath = '/assets/backgrounds/space_view_background_tmp.png'
-        const backgroundTexture = spaceViewLoader.loadObject3d(getBasePath() + backgroundPath, false);
+
+        // background
+        const backgroundPath = getBasePath() + '/assets/backgrounds/space_view_background_tmp.png';
+        const backgroundTexture = spaceViewLoader.loadObject3d(backgroundPath, false);
         promises.push(backgroundTexture);
 
-        const starObj = spaceViewLoader.loadStar(new Star);
-        promises.push(starObj);
-
-        const shipObj = spaceViewLoader.loadShip(new Ship);
-        promises.push(shipObj);
+        promises.push(spaceViewLoader.loadStarClickableObj3d(new Star));
+        promises.push(spaceViewLoader.loadShipObj3d(new Ship));
+        // promises.push(spaceViewLoader.loadWormholeObj3d(new Wormhole));
 
         const resolution = await Promise.all(promises);
         console.log('finished preCache')
@@ -48,7 +40,7 @@ export class ThreeCache {
     }
 
     push(name, obj) {
-        if (!this.cache[name]) {
+        if (name && !this.cache[name]) {
             this.cache[name] = { 'obj': obj.clone(), 'count': 0 };
             console.log('caching', name);
         }
