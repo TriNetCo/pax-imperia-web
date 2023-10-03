@@ -236,6 +236,7 @@ export class Ship extends Entity {
             <button id="move" onclick="handleTargetButton('move')">Move</button>
             <button id="orbit" onclick="handleTargetButton('orbit')">Orbit</button>
             <button id="colonize" onclick="handleTargetButton('colonize')">Colonize</button>
+            <button id="lovie" onclick="handleTargetButton('lovie')">Lovie</button>
             </div>`;
         html += this.consoleBody;
         return html;

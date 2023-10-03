@@ -2,20 +2,26 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { getBasePath } from '../../models/helpers.js';
-import { ThreeCache } from './threeCache.js';
+import CacheMonster from '../../models/cacheMonster.js';
+import { Entity } from './entities/entity.js';
 
 export class SpaceViewLoader {
 
-    /** @type {ThreeCache} */
-    threeCache;
-
-    constructor(threeCache, scene, system, renderer, camera) {
+    /**
+     *
+     * @param {CacheMonster} cacheMonster
+     * @param {*} scene
+     * @param {*} system
+     * @param {*} renderer
+     * @param {*} camera
+     */
+    constructor(cacheMonster, scene, system, renderer, camera) {
         this.scene = scene;
         this.system = system;
-        this.threeCache = threeCache;
+        this.cacheMonster = cacheMonster;
         this.renderer = renderer;
         this.camera = camera;
-        window.threeCache = threeCache;
+        window.cacheMonster = cacheMonster;
     }
 
     async load() {
@@ -23,22 +29,23 @@ export class SpaceViewLoader {
         const promises = [];
 
         for (const star of this.system['stars']) {
-            promises.push(this.loadStarClickableObj3d(star));
-            promises.push(this.loadStarCoronaObj3ds(star));
+            promises.push(this.loadStarStuff(star));
         }
 
         for (const planet of this.system['planets']) {
+            // load planet
             promises.push(this.loadPlanetClickableObj3d(planet));
             promises.push(this.loadPlanetCloudObj3d(planet));
         }
 
         for (const wormhole of this.system['wormholes']) {
+            // load wormhole
             promises.push(this.loadWormholeObj3d(wormhole));
             promises.push(this.addWormholeText(wormhole));
         }
 
         for (const ship of this.system['ships']) {
-            promises.push(this.loadShipObj3d(ship));
+            promises.push(this.loadShip(ship));
         }
 
         // Block here until all the parallel async functions are finished
@@ -65,6 +72,17 @@ export class SpaceViewLoader {
     //   5. push complete obj3d to cache
     // return obj3d promise
 
+    async loadStarStuff(entity) {
+        const primary = await this.loadStarClickableObj3d(entity);
+        const stuff = await this.loadStarCoronaObj3ds(entity)
+        return [primary, stuff];
+    }
+
+    /**
+     *
+     * @param {Entity} entity
+     * @returns {Promise<THREE.Object3D>}
+     */
     loadStarClickableObj3d(entity) {
         const starAssetPaths = {
             'mesh': getBasePath() + '/assets/orbitals/meshes/planetbasemodel.glb',
@@ -83,16 +101,14 @@ export class SpaceViewLoader {
         return starObj;
     }
 
+    /**
+     *
+     * @param {Entity} entity
+     * @returns {Promise<THREE.Object3D[]>}
+     */
     async loadStarCoronaObj3ds(entity) {
-        const coronaAssetPaths = {
-            'mesh': getBasePath() + '/assets/orbitals/textures/sun/corona/corona.png',
-        }
-        const coronaObj = await this.loadTexturedObj3d(
-            coronaAssetPaths,
-            'corona',
-            entity,
-            false,
-        )
+        const coronaObj = await this.loadBillboard('/assets/orbitals/textures/sun/corona/corona.png');
+        this.setLoadAttributes(entity, coronaObj)
         const coronaScale = entity.scale.x * 2.4;
         coronaObj.scale.set(coronaScale, coronaScale, coronaScale);
         // create 3 coronas
@@ -142,43 +158,53 @@ export class SpaceViewLoader {
         return cloudObj;
     }
 
-    loadShipObj3d(entity) {
-        const shipAssetPaths = {
-            'mesh': getBasePath() + '/assets/ships/GalacticLeopard6.fbx',
-            'texture': getBasePath() + '/assets/ships/GalacticLeopard_White.png',
-            'normalMap': getBasePath() + '/assets/ships/GalacticLeopard_Normal.png',
-            'metallicSmoothnessMap': getBasePath() + '/assets/ships/GalacticLeopard_MetallicSmoothness.png',
-            'emissionMap': getBasePath() + '/assets/ships/GalacticLeopard_Emission2.png'
-        };
-
-        const shipObj = this.loadTexturedObj3d(
-            shipAssetPaths,
-            'GalacticLeopard6',
-            entity,
-            true,
-            async (obj, assetPaths) => {
-                await this.loadAndApplyTexturesToShip(obj, entity);
-            }
-        )
-        return shipObj;
+    loadShip(entity) {
+        const clickableObj = this.loadClickableObject3d(entity, (obj) => {
+            // this.addMetallicSmoothnessMaterial(obj, entity.metallicSmoothnessMapPath);
+            // this.addMeshStandardMaterial(obj)
+            // await this.loadAndApplyTexturesToShip(obj, entity);
+        });
+        // entity.linkObject3d(clickableObj);
+        return clickableObj;
     }
 
-    loadWormholeObj3d(entity) {
-        const wormholeAssetPaths = {
-            'mesh': getBasePath() + '/assets/wormholes/wormhole.png',
+    /**
+     * Loads the meshes and textures (via the callback) for the clickable
+     * element of the entity (usually the surface mesh of the object).
+     *
+     * @param {*} entity - This is the entity to which we're loading a clickable mesh
+     * @param {*} cb     - This callback is called after the loading of the initial
+     *                   mesh so texturing and other operations dedatpendant may be
+     *                   performed.
+     * @returns
+     */
+    async loadClickableObject3d(entity, cb) {
+        const startTime = Date.now();
+        const object3d = await this.cacheMonster.retrieve(entity.assetPath);
+
+        this.setLoadAttributes(entity, object3d);
+        entity.linkObject3d(object3d);
+
+        if (cb) {
+            const startTimeCb = Date.now();
+            await cb(object3d);
+            // this.reportPerformance(entity.name + ' [cb]', startTimeCb);
         }
-        const wormholeObj = this.loadTexturedObj3d(
-            wormholeAssetPaths,
-            'Wormhole',
-            entity,
-            true
-        )
-        return wormholeObj;
+
+        // this.reportPerformance(entity.name + ' [clickableObj]', startTime);
+        return object3d;
+    }
+
+    async loadWormholeObj3d(entity) {
+        const object3d = await this.loadBillboard('/assets/wormholes/wormhole.png');
+        entity.linkObject3d(object3d);
+        this.setLoadAttributes(entity, object3d);
+        return object3d;
     }
 
     async loadBackground() {
-        const path = getBasePath() + '/assets/backgrounds/space_view_background_tmp.png'
-        const texture = await this.loadObject3d(path, false);
+        const path = '/assets/backgrounds/space_view_background_tmp.png'
+        const texture = await this.cacheMonster.retrieve(path);
         this.scene.background = texture;
     }
 
@@ -198,16 +224,9 @@ export class SpaceViewLoader {
      * @returns <Promise>
      */
     async loadTexturedObj3d(assetPaths, cacheName = null, entity = null, clickable = true, cb = null) {
-        let clickableObj;
-        if (cacheName) {
-            clickableObj = this.threeCache.retrieve(cacheName);
-        }
-        if (!clickableObj) {
-            clickableObj = await this.loadObject3d(assetPaths.mesh);
-            if (cb) {
-                await cb(clickableObj, assetPaths);
-            }
-            this.threeCache.push(cacheName, clickableObj);
+        const clickableObj = await this.cacheMonster.retrieve(assetPaths.mesh);
+        if (cb) {
+            await cb(clickableObj, assetPaths);
         }
 
         this.setLoadAttributes(entity, clickableObj);
@@ -235,102 +254,10 @@ export class SpaceViewLoader {
         object3d.children[0].material = material;
     }
 
-    async loadObject3d(assetPath, isBillboard = true) {
-        // check if already loaded in cache
-        const assetPathSuffix = assetPath.replace(getBasePath(), '');
-        let obj = this.threeCache.retrieve(assetPathSuffix);
-        if (obj) {
-            return obj;
-        }
-        const assetPathSplit = assetPath.split(".");
-        const fileExt = assetPathSplit[assetPathSplit.length - 1];
-        switch (fileExt) {
-            case 'gltf':
-            case 'glb':
-                obj = await this.loadGltf(assetPath);
-                break;
-            case 'fbx':
-                obj = await this.loadFbx(assetPath);
-                break;
-            case 'png':
-                if (isBillboard) {
-                    obj = await this.loadBillboard(assetPath);
-                } else {
-                    obj = await this.loadTexture(assetPath);
-                }
-                break;
-            default:
-                console.log('unknown file type')
-                break;
-        }
-        this.threeCache.push(assetPathSuffix, obj);
-        return obj;
-    }
-
-    async loadGltf(assetPath) {
-        const loader = new GLTFLoader();
-        const object3d = new Promise(function (resolve, reject) {
-            loader.load(assetPath, function (input) {
-                const obj = input.scene;
-                resolve(obj);
-            }, function (xhr) {
-            }, function (error) {
-                console.error(error);
-                reject({ reason: error })
-            });
-        });
-        return object3d;
-    }
-
-    async loadFbx(assetPath) {
-        const loader = new FBXLoader();
-        const object3d = new Promise(function (resolve, reject) {
-            loader.load(assetPath, function (input) {
-                const obj = input;
-                resolve(obj);
-            }, function (xhr) {
-            }, function (error) {
-                console.error(error);
-                reject({ reason: error })
-            });
-        });
-        return object3d;
-    }
-
     async loadBillboard(assetPath) {
-        const loader = new THREE.TextureLoader();
-        const object3d = new Promise(function (resolve, reject) {
-            loader.load(assetPath, function (input) {
-                const spriteMaterial = new THREE.SpriteMaterial({ map: input });
-                const obj = new THREE.Sprite(spriteMaterial);
-                resolve(obj);
-            }, function (xhr) {
-            }, function (error) {
-                console.error(error);
-                reject({ reason: error });
-            });
-        });
-        return object3d;
-    }
-
-    /**
-     * Load a texture, this is a heavy function...
-     * @param {string} assetPath
-     * @returns {Promise<THREE.Texture>}
-     */
-    async loadTexture(assetPath) {
-        let texture;
-        const loader = new THREE.TextureLoader();
-        texture = new Promise((resolve, reject) => {
-            loader.load(assetPath, (texture) => {
-                resolve(texture);
-            }, function (xhr) {
-            }, function (error) {
-                console.error(error);
-                reject({ reason: error })
-            });
-        });
-        return texture;
+        const texture = await this.cacheMonster.retrieve(assetPath);
+        const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+        return new THREE.Sprite(spriteMaterial);
     }
 
     /**
@@ -341,7 +268,7 @@ export class SpaceViewLoader {
      * @param {number} roughness
      */
     async loadStarOrPlanetTexture(object3d, texturePath, transparent = false, roughness = 0.9) {
-        const texture = await this.loadTexture(texturePath);
+        const texture = await this.cacheMonster.retrieve(texturePath);
         texture.flipY = false; // fixes Blender export bug
         // texture.generateMipmaps = false;
 
@@ -364,13 +291,13 @@ export class SpaceViewLoader {
         });
     }
 
-    loadAndApplyTexturesToShip(object3d, entity) {
-        const texture = this.loadTexture(entity.texturePath);
-        const normalMap = this.loadTexture(entity.normalMapPath);
-        const metallicSmoothnessMap = this.loadTexture(entity.metallicSmoothnessMapPath);
-        const emissionMap = this.loadTexture(entity.emissionMapPath);
+    async loadAndApplyTexturesToShip(object3d, entity) {
+        const texture = this.cacheMonster.retrieve(entity.texturePath);
+        const normalMap = this.cacheMonster.retrieve(entity.normalMapPath);
+        const metallicSmoothnessMap = this.cacheMonster.retrieve(entity.metallicSmoothnessMapPath);
+        const emissionMap = this.cacheMonster.retrieve(entity.emissionMapPath);
 
-        return Promise.all([texture, normalMap, metallicSmoothnessMap, emissionMap])
+        await Promise.all([texture, normalMap, metallicSmoothnessMap, emissionMap])
             .then(([texture, normalMap, metallicSmoothnessMap, emissionMap]) => {
                 texture.flipY = false; // fixes Blender export bug
 

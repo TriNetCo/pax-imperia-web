@@ -7,12 +7,12 @@ export class SpaceViewAnimator {
     /** @type {THREE.WebGLRenderer} */
     renderer;
 
-    constructor(config, clientObjects, system, galaxy, threeCache) {
+    constructor(config, clientObjects, system, galaxy, cacheMonster) {
         this.c = config;
         this.clientObjects = clientObjects;
         this.system = system;
         this.galaxy = galaxy;
-        this.threeCache = threeCache;
+        this.cacheMonster = cacheMonster;
 
         // unpack clientObjects
         this.scene = clientObjects.scene;
@@ -161,7 +161,7 @@ export class SpaceViewAnimator {
         // this.resetCamera();
 
         const spaceViewLoader = new SpaceViewLoader(
-            this.threeCache,
+            this.cacheMonster,
             scene,
             system,
             this.renderer,
