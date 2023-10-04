@@ -159,10 +159,10 @@ export class SpaceViewLoader {
     }
 
     loadShip(entity) {
-        const clickableObj = this.loadClickableObject3d(entity, (obj) => {
+        const clickableObj = this.loadClickableObject3d(entity, async (obj) => {
             // this.addMetallicSmoothnessMaterial(obj, entity.metallicSmoothnessMapPath);
             // this.addMeshStandardMaterial(obj)
-            // await this.loadAndApplyTexturesToShip(obj, entity);
+            await this.loadAndApplyTexturesToShip(obj, entity);
         });
         // entity.linkObject3d(clickableObj);
         return clickableObj;

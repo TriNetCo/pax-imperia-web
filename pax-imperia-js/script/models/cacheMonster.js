@@ -7,27 +7,44 @@ export default class CacheMonster {
 
     cache = {};
     hitCounter = {};
+    camera;
 
-    constructor() {
+    constructor(renderer, scene) {
+        this.renderer = renderer;
+        this.scene = scene;
     }
 
     async retrieve(assetPath) {
         const assetPathSuffix = assetPath.replace(getBasePath(), '');
         const fullAssetPath = getBasePath() + assetPathSuffix;
+        let wasHit = true;
 
-        // This class checks the cache for the texture being requested,
-        // if it's been requested before, this class returns the promise for it
-        if (this.cache[assetPathSuffix]) {
-            this.hitCounter[assetPathSuffix] += 1;
-            const obj = this.cache[assetPathSuffix];
-            return obj.clone();
+        if (!this.cache[assetPathSuffix]) {
+            wasHit = false;
+            this.hitCounter[assetPathSuffix] = 0;
+            console.log('Cache Miss: ' + assetPathSuffix)
+
+            this.cache[assetPathSuffix] = this.promiseMeThis(fullAssetPath);
         }
 
-        this.hitCounter[assetPathSuffix] = 0;
-        this.cache[assetPathSuffix] = await this.loadAsset(fullAssetPath);
+        const cachedObj = await this.cache[assetPathSuffix];
+        this.hitCounter[assetPathSuffix] += 1;
+        console.log('retrieve was called for ' + assetPathSuffix, this.hitCounter[assetPathSuffix]);
 
-        const obj = this.cache[assetPathSuffix];
-        return obj.clone();
+        return cachedObj.clone();
+    }
+
+    async promiseMeThis(fullAssetPath) {
+        const obj = await this.loadAsset(fullAssetPath);
+        this.addAndCompile(obj);
+        return obj;
+    }
+
+    addAndCompile(obj) {
+        if (this.scene && this.renderer && obj.isObject3D) {
+            this.scene.add(obj);
+            this.renderer.compile(this.scene, this.camera);
+        }
     }
 
     async loadAsset(assetPath) {

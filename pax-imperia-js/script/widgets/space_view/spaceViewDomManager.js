@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { Queue } from '../../models/helpers.js';
-import CacheMonster from '../../models/cacheMonster.js';
 
 /**
  * This class handles interactions with the dom
@@ -21,7 +20,6 @@ export class SpaceViewDomManager {
         this.previousTarget = null;
         this.previousPreviousTarget = null;
         this.previousTargets = new Queue(3);
-        this.cacheMonster = new CacheMonster();
 
         window.clickThumbnail = (targetType, targetName) => {
             const entity = this.system[targetType + 's'].find(x => x.name === targetName);
@@ -201,7 +199,6 @@ export class SpaceViewDomManager {
         if (mode == 'lovie') {
             shipEntity.buttonState = null;
             // shipEntity.colonizeTarget = targetEntity;
-            this.testAsyncThing();
         }
         if (['default', 'move'].includes(mode) && !target) {
             this.setShipDestinationPoint(ship3d, shipEntity);
@@ -211,13 +208,6 @@ export class SpaceViewDomManager {
         this.selectTarget(ship3d);
         // clear ship button state
         shipEntity.buttonState = null;
-    }
-
-    async testAsyncThing() {
-        const startTime = Date.now();
-        const texture = await this.cacheMonster.retrieve('lovie');
-        const deltaTime = Date.now() - startTime;
-        console.log('The texture was recieved in ' + deltaTime + 'ms' + texture);
     }
 
     setShipDestinationPoint(ship3d, shipEntity) {

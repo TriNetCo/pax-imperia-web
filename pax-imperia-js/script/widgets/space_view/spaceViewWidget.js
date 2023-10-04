@@ -41,7 +41,8 @@ export class SpaceViewWidget {
         this.basePath = getBasePath();
         this.clientObjects.mouse = new THREE.Vector2(0, 0);
         this.clientObjects.gameClock = gameStateInterface.gameClock;
-        this.cacheMonster = new CacheMonster();
+        this.cacheMonster = new CacheMonster(this.renderer);
+        window.cacheMonster = this.cacheMonster;
         window.galaxy = this.galaxy; // for debugging
     }
 
@@ -63,6 +64,8 @@ export class SpaceViewWidget {
     resetThreeObjects() {
         this.clientObjects.scene = new THREE.Scene();
         this.clientObjects.camera = new THREE.PerspectiveCamera(15, this.c.canvasWidth / this.c.canvasHeight, 1, 10000);
+        this.cacheMonster.scene = this.clientObjects.scene;
+        this.cacheMonster.camera = this.clientObjects.camera;
         this.renderer.compile(this.clientObjects.scene, this.clientObjects.camera);
 
         this.clientObjects.selectionSprite = new SpriteFlipbook(
