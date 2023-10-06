@@ -8,7 +8,7 @@ export class Star extends Entity {
         this.name = systemName;
         this.assetPath = "/assets/orbitals/meshes/planetbasemodel.glb";
         this.texturePath = "/assets/orbitals/textures/sun/yellow/YellowSun0001.png";
-        this.assetThumbnailPath = "/assets/thumbnails/sun_thumbnail.png";
+        this.assetThumbnailPath = this.basePath + "/assets/thumbnails/sun_thumbnail.png";
     }
 
     update(elapsedTime) {

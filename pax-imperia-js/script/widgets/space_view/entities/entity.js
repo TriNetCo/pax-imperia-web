@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { unpackData } from '../../../models/helpers.js'
+import { getBasePath, unpackData } from '../../../models/helpers.js'
 
 export class Entity {
 
@@ -14,6 +14,7 @@ export class Entity {
         this.systemId = systemId;
         this.data = data;
         this.consoleBody = '';
+        this.basePath = getBasePath();
         unpackData(data, this);
         this.scale = { x: this.size, y: this.size, z: this.size };
     }

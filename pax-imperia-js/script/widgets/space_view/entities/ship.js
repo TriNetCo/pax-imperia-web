@@ -11,7 +11,7 @@ export class Ship extends Entity {
         this.normalMapPath = '/assets/ships/GalacticLeopard_Normal.png';
         this.metallicSmoothnessMapPath = '/assets/ships/GalacticLeopard_MetallicSmoothness.png';
         this.emissionMapPath = '/assets/ships/GalacticLeopard_Emission2.png';
-        this.assetThumbnailPath = "/assets/thumbnails/ship_thumbnail.png";
+        this.assetThumbnailPath = this.basePath + "/assets/thumbnails/ship_thumbnail.png";
         this.size = 0.00015;
         this.scale = { x: this.size, y: this.size, z: this.size };
         this.defaultRotation = { x: Math.PI / 4, y: -Math.PI / 2, z: Math.PI / 8 };

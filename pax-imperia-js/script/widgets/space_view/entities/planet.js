@@ -9,7 +9,7 @@ export class Planet extends Entity {
         this.texturePath = "/assets/orbitals/textures/earthlike/" + this.atmosphere + ".png";
         this.cloudMeshPath = "/assets/orbitals/meshes/cloudlayer.glb";
         this.cloudTexturePath = "/assets/orbitals/textures/clouds/" + this.cloud_type + ".png";
-        this.assetThumbnailPath = "/assets/thumbnails/oxygen_thumbnail.png";
+        this.assetThumbnailPath = this.basePath + "/assets/thumbnails/oxygen_thumbnail.png";
         this.position = { x: 0, y: 0, z: 2 * this.distance_from_star };
         this.consoleBody = `
             <div>Mediocre (x2)</div>
