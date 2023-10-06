@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { getBasePath } from './helpers.js';
-import { TimeLord } from './timeLord.js';
+import TimeLord from './timeLord.js';
 
 export default class CacheMonster {
 

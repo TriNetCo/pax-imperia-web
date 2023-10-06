@@ -80,7 +80,9 @@ export class SystemGenerator {
             let ship = {
                 "name": "ship_" + this.id + "_" + i,
                 "index": i,
-                "position": { x: shipX, y: shipY, z: shipZ }
+                "position": { x: shipX, y: shipY, z: shipZ },
+                "shipMake": "GalacticLeopard",
+                "shipModel": "6",
             }
             ships.push(ship);
 

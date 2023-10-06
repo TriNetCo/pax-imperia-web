@@ -11,7 +11,7 @@ export class System {
         this.stars = this.createRepresentations(systemData.stars, Star, this.name, this.id);
         this.planets = this.createRepresentations(systemData.planets, Planet, this.name, this.id);
         this.wormholes = this.createRepresentations(systemData.connections, Wormhole, this.name, this.id, systemData.position);
-        this.ships = this.createRepresentations(systemData.ships, Ship, this.name, this.id);
+        this.ships = systemData.ships.map(ship => new Ship(ship, this.name, this.id)); // this pattern is leaner
     }
 
     toJSON() {

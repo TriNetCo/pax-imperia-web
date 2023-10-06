@@ -1,4 +1,4 @@
-import { Entity } from './entity.js';
+import Entity from './entity.js';
 import { roundToDecimal, getRandomNum } from '../../../models/helpers.js';
 import * as THREE from 'three';
 
@@ -6,11 +6,12 @@ export class Ship extends Entity {
     constructor(data, systemName, systemId) {
         super(data, systemName, systemId);
         this.type = 'ship';
-        this.assetPath = '/assets/ships/GalacticLeopard6.fbx';
-        this.texturePath = '/assets/ships/GalacticLeopard_White.png';
-        this.normalMapPath = '/assets/ships/GalacticLeopard_Normal.png';
-        this.metallicSmoothnessMapPath = '/assets/ships/GalacticLeopard_MetallicSmoothness.png';
-        this.emissionMapPath = '/assets/ships/GalacticLeopard_Emission2.png';
+        this.assetFolder = '/assets/ships/';
+        this.assetPath = `${this.assetFolder}${this.shipMake}${this.shipModel}.fbx`;
+        this.texturePath = `${this.assetFolder}${this.shipMake}_White.png`;
+        this.normalMapPath = `${this.assetFolder}${this.shipMake}_Normal.png`;
+        this.metallicSmoothnessMapPath = `${this.assetFolder}${this.shipMake}_MetallicSmoothness.png`;
+        this.emissionMapPath = `${this.assetFolder}${this.shipMake}_Emission2.png`;
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/ship_thumbnail.png";
         this.size = 0.00015;
         this.scale = { x: this.size, y: this.size, z: this.size };
@@ -33,6 +34,8 @@ export class Ship extends Entity {
             name: this.name,
             index: this.index,
             position: this.position,
+            shipMake: this.shipMake,
+            shipModel: this.shipModel,
         });
     }
 

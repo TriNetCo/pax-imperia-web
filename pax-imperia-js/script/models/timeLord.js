@@ -1,5 +1,5 @@
 
-export class TimeLord {
+export default class TimeLord {
 
     constructor() {
         this.reset();

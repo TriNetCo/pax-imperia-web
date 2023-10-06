@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import CacheMonster from '../../models/cacheMonster.js';
-import { Entity } from './entities/entity.js';
-import { TimeLord } from '../../models/timeLord.js';
+import Entity from './entities/entity.js';
+import TimeLord from '../../models/timeLord.js';
 
 export class SpaceViewLoader {
 
@@ -81,7 +81,7 @@ export class SpaceViewLoader {
             }
         )
 
-        this.setLoadAttributes(entity, starObj);
+        entity.setLoadAttributes(starObj);
         entity.linkObject3d(starObj);
         return starObj;
     }
@@ -98,7 +98,7 @@ export class SpaceViewLoader {
             }
         );
         // set position, scale, etc. attributes
-        this.setLoadAttributes(entity, coronaObj)
+        entity.setLoadAttributes(coronaObj)
         const coronaScale = entity.scale.x * 2.4;
         coronaObj.scale.set(coronaScale, coronaScale, coronaScale);
         // create 3 coronas
@@ -128,7 +128,7 @@ export class SpaceViewLoader {
             }
         );
 
-        this.setLoadAttributes(entity, planetObj);
+        entity.setLoadAttributes(planetObj);
         entity.linkObject3d(planetObj);
         entity.object3ds.clickable = planetObj;
         return planetObj;
@@ -157,7 +157,7 @@ export class SpaceViewLoader {
         cloudObj.isClouds = true;
         cloudObj.notClickable = true;
 
-        this.setLoadAttributes(entity, cloudObj);
+        entity.setLoadAttributes(cloudObj);
         entity.object3ds.cloud = cloudObj;
         return cloudObj;
     }
@@ -170,29 +170,21 @@ export class SpaceViewLoader {
             }
         );
         entity.linkObject3d(wormholeObj);
-        this.setLoadAttributes(entity, wormholeObj);
+        entity.setLoadAttributes(wormholeObj);
         return wormholeObj;
     }
 
-
-
-
-    // TODO: convert to retrieveObject3d pattern
-    loadShip(entity) {
-        // const assetPaths = [
-        //     entity.assetPath, entity.texturePath,
-        //     entity.normalMapPath, entity.metallicSmoothnessMapPath,
-        //     entity.emissionMapPath
-        // ];
-        // assetPaths.forEach(assetPath => { this.cacheMonster.addToCache(assetPath) });
-
-        const clickableObj = this.loadClickableObject3d(entity, async (obj) => {
-            // this.addMetallicSmoothnessMaterial(obj, entity.metallicSmoothnessMapPath);
-            // this.addMeshStandardMaterial(obj)
-            await this.loadAndApplyTexturesToShip(obj, entity);
-        });
-        // entity.linkObject3d(clickableObj);
-        return clickableObj;
+    async loadShip(entity) {
+        const cacheName = entity.shipMake + entity.shipModel;
+        const shipObj = await this.cacheMonster.retrieveObject3d(cacheName, async () => {
+            const shipMesh = await this.cacheMonster.retrieveAsset(entity.assetPath);
+            this.addMeshStandardMaterial(shipMesh)
+            await this.loadAndApplyTexturesToShip(shipMesh, entity);
+            return shipMesh;
+        })
+        entity.setLoadAttributes(shipObj)
+        entity.linkObject3d(shipObj);
+        return shipObj;
     }
 
     /**
@@ -206,20 +198,16 @@ export class SpaceViewLoader {
      * @returns
      */
     async loadClickableObject3d(entity, cb) {
-        const timeLord = new TimeLord();
-        const object3d = await this.cacheMonster.retrieveAsset(entity.assetPath);
+        const shipMesh = await this.cacheMonster.retrieveAsset(entity.assetPath);
 
-        this.setLoadAttributes(entity, object3d);
-        entity.linkObject3d(object3d);
+        entity.setLoadAttributes(shipMesh);
+        entity.linkObject3d(shipMesh);
 
         if (cb) {
-            await cb(object3d);
-            timeLord.endAndReset('load ' + entity.name + " " + entity.type)
-            // await this.addAndCompile(object3d);
-            timeLord.end('compile ' + entity.name + " " + entity.type);
+            await cb(shipMesh);
         }
 
-        return object3d;
+        return shipMesh;
     }
 
     async loadBackground() {
@@ -313,17 +301,6 @@ export class SpaceViewLoader {
 
                 object3d.children[0].material = material;
             });
-    }
-
-    setLoadAttributes(entity, object3d) {
-        object3d.position.set(entity.position.x, entity.position.y, entity.position.z);
-        // rotation is in radians
-        object3d.rotation.set(entity.rotation.x, entity.rotation.y, entity.rotation.z);
-        object3d.scale.set(entity.scale.x, entity.scale.y, entity.scale.z);
-        object3d.name = entity.name;
-        if (object3d.children[0]) {
-            object3d.children[0].name = entity.name;
-        }
     }
 
     async addAndCompile(obj) {

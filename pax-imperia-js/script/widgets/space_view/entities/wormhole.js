@@ -1,4 +1,4 @@
-import { Entity } from './entity.js'
+import Entity from './entity.js'
 import * as THREE from 'three';
 
 export class Wormhole extends Entity {

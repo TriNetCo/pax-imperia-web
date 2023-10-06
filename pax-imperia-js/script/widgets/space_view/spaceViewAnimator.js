@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { SpaceViewLoader } from './spaceViewLoader.js';
-import { getBasePath } from '../../models/helpers.js';
 
 export class SpaceViewAnimator {
 

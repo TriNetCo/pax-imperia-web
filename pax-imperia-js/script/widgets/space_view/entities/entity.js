@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { getBasePath, unpackData } from '../../../models/helpers.js'
 
-export class Entity {
+export default class Entity {
 
     /** @type {THREE.Object3D} */
     object3d;
@@ -38,6 +38,22 @@ export class Entity {
     linkObject3d(object3d) {
         this.object3d = object3d;
         object3d.parentEntity = this;
+    }
+
+    /**
+     * Sets the coordinates to draw the object3d for this entity.  This should be
+     * called after first loading the Object3d so it isn't drawn at (0,0,0).
+     * @param {THREE.Object3D} object3d
+     */
+    setLoadAttributes(object3d) {
+        object3d.position.set(this.position.x, this.position.y, this.position.z);
+        // rotation is in radians
+        object3d.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+        object3d.scale.set(this.scale.x, this.scale.y, this.scale.z);
+        object3d.name = this.name;
+        if (object3d.children[0]) {
+            object3d.children[0].name = this.name;
+        }
     }
 
     /////////////////////////////////
