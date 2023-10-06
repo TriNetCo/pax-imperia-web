@@ -2,10 +2,12 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { getBasePath } from './helpers.js';
+import { TimeLord } from './timeLord.js';
 
 export default class CacheMonster {
 
-    cache = {};
+    assetCache = {};
+    objCache = {};
     hitCounter = {};
     camera;
 
@@ -14,36 +16,67 @@ export default class CacheMonster {
         this.scene = scene;
     }
 
-    async retrieve(assetPath) {
+    /**
+     * This function will either return an asset from the cache, or load it using
+     * a THREE.js loader and add it to the cache as a promise.  The cached promise
+     * is returned.
+     *
+     * @param {string} assetPath
+     * @returns {Promise<THREE.Texture> | Promise<THREE.Object3D>}
+     */
+    async retrieveAsset(assetPath) {
         const assetPathSuffix = assetPath.replace(getBasePath(), '');
-        const fullAssetPath = getBasePath() + assetPathSuffix;
-        let wasHit = true;
+        this.addAssetToCache(assetPathSuffix);
 
-        if (!this.cache[assetPathSuffix]) {
-            wasHit = false;
-            this.hitCounter[assetPathSuffix] = 0;
-            console.log('Cache Miss: ' + assetPathSuffix)
-
-            this.cache[assetPathSuffix] = this.promiseMeThis(fullAssetPath);
-        }
-
-        const cachedObj = await this.cache[assetPathSuffix];
+        const timeLord = new TimeLord();
+        const cachedObj = await this.assetCache[assetPathSuffix];
         this.hitCounter[assetPathSuffix] += 1;
-        console.log('retrieve was called for ' + assetPathSuffix, this.hitCounter[assetPathSuffix]);
+        timeLord.end('retrieve ' + assetPathSuffix +
+            ' counter: ' + this.hitCounter[assetPathSuffix]);
 
         return cachedObj.clone();
     }
 
-    async promiseMeThis(fullAssetPath) {
-        const obj = await this.loadAsset(fullAssetPath);
-        this.addAndCompile(obj);
-        return obj;
+
+    async retrieveObject3d(name, cb, params) {
+        if (!this.objCache[name]) {
+            this.addObject3dToCache(name, cb, params)
+        }
+
+        const timeLord = new TimeLord();
+        const obj = await this.objCache[name];
+        this.hitCounter[name] += 1;
+        timeLord.end('retrieve ' + name +
+            ' counter: ' + this.hitCounter[name]);
+        return obj.clone();
     }
 
-    addAndCompile(obj) {
-        if (this.scene && this.renderer && obj.isObject3D) {
-            this.scene.add(obj);
-            this.renderer.compile(this.scene, this.camera);
+    /////////////////////
+    // Private Methods //
+    /////////////////////
+
+    addAssetToCache(assetPath) {
+        const assetPathSuffix = assetPath.replace(getBasePath(), '');
+        const fullAssetPath = getBasePath() + assetPathSuffix;
+
+        if (!this.assetCache[assetPathSuffix]) {
+            // console.log('Caching: ' + assetPathSuffix)
+            this.createCounter(assetPathSuffix);
+            this.assetCache[assetPathSuffix] = this.loadAsset(fullAssetPath);
+        }
+    }
+
+    addObject3dToCache(name, cb, params) {
+        if (!this.objCache[name]) {
+            console.log('Caching: ' + name);
+            this.createCounter(name);
+            this.objCache[name] = cb(params);
+        }
+    }
+
+    createCounter(assetPath) {
+        if (!this.hitCounter[assetPath]) {
+            this.hitCounter[assetPath] = 0;
         }
     }
 
