@@ -1,17 +1,15 @@
 import { Entity } from './entity.js'
-import * as THREE from 'three';
 
 export class Planet extends Entity {
     constructor(data, systemName, systemId) {
         super(data, systemName, systemId);
         this.type = 'planet';
         this.name = systemName + " " + (this.index + 1);
-        // this.assetPath = this.basePath + "/assets/planets/" + this.atmosphere + ".gltf";
-        this.assetPath = this.basePath + "/assets/orbitals/meshes/planetbasemodel.glb";
-        this.texturePath = this.basePath + "/assets/orbitals/textures/earthlike/" + this.atmosphere + ".png";
-        this.cloudMeshPath = this.basePath + "/assets/orbitals/meshes/cloudlayer.glb";
-        this.cloudTexturePath = this.basePath + "/assets/orbitals/textures/clouds/" + this.cloud_type + ".png";
-        this.assetThumbnailPath = this.basePath + "/assets/thumbnails/oxygen_thumbnail.png";
+        this.assetPath = "/assets/orbitals/meshes/planetbasemodel.glb";
+        this.texturePath = "/assets/orbitals/textures/earthlike/" + this.atmosphere + ".png";
+        this.cloudMeshPath = "/assets/orbitals/meshes/cloudlayer.glb";
+        this.cloudTexturePath = "/assets/orbitals/textures/clouds/" + this.cloud_type + ".png";
+        this.assetThumbnailPath = "/assets/thumbnails/oxygen_thumbnail.png";
         this.position = { x: 0, y: 0, z: 2 * this.distance_from_star };
         this.consoleBody = `
             <div>Mediocre (x2)</div>

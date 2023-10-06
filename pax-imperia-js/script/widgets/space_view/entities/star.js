@@ -6,10 +6,9 @@ export class Star extends Entity {
         super(data, systemName, systemId);
         this.type = 'star';
         this.name = systemName;
-        // this.assetPath = this.basePath + "/assets/planets/sun.gltf";
-        this.assetPath = this.basePath + "/assets/orbitals/meshes/planetbasemodel.glb";
-        this.texturePath = this.basePath + "/assets/orbitals/textures/sun/yellow/YellowSun0001.png";
-        this.assetThumbnailPath = this.basePath + "/assets/thumbnails/sun_thumbnail.png";
+        this.assetPath = "/assets/orbitals/meshes/planetbasemodel.glb";
+        this.texturePath = "/assets/orbitals/textures/sun/yellow/YellowSun0001.png";
+        this.assetThumbnailPath = "/assets/thumbnails/sun_thumbnail.png";
     }
 
     update(elapsedTime) {

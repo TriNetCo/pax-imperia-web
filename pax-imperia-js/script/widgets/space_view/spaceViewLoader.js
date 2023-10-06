@@ -1,7 +1,4 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
-import { getBasePath } from '../../models/helpers.js';
 import CacheMonster from '../../models/cacheMonster.js';
 import { Entity } from './entities/entity.js';
 import { TimeLord } from '../../models/timeLord.js';
@@ -70,19 +67,18 @@ export class SpaceViewLoader {
      * @returns {Promise<THREE.Object3D>}
      */
     async loadStarSurface(entity) {
-        const starAssetPaths = {
-            'mesh': getBasePath() + '/assets/orbitals/meshes/planetbasemodel.glb',
-            'texture': getBasePath() + '/assets/orbitals/textures/sun/yellow/YellowSun0001.png'
+        const assetPaths = {
+            'mesh': '/assets/orbitals/meshes/planetbasemodel.glb',
+            'texture': '/assets/orbitals/textures/sun/yellow/YellowSun0001.png'
         }
         const starObj = await this.cacheMonster.retrieveObject3d(
             'YellowSun0001',
-            async (assetPaths) => {
-                const obj = await this.cacheMonster.retrieveAsset(assetPaths.mesh);
-                this.addBrightenerMaterial(obj);
-                await this.loadStarOrPlanetTexture(obj, assetPaths.texture, false, 1);
-                return obj;
-            },
-            starAssetPaths
+            async () => {
+                const starMesh = await this.cacheMonster.retrieveAsset(assetPaths.mesh);
+                this.replaceMaterialWithBrightener(starMesh);
+                await this.applyTextureToSurface(starMesh, assetPaths.texture);
+                return starMesh;
+            }
         )
 
         this.setLoadAttributes(entity, starObj);
@@ -114,23 +110,22 @@ export class SpaceViewLoader {
 
     /**
      * @param {Entity} entity
-     * @returns {Promise<THREE.Object3D[]>}
+     * @returns {Promise<THREE.Object3D>}
      */
     async loadPlanetSurface(entity) {
         const planetAssetPaths = {
-            'mesh': getBasePath() + '/assets/orbitals/meshes/planetbasemodel.glb',
-            'texture': getBasePath() + '/assets/orbitals/textures/earthlike/' + entity.atmosphere + '.png'
+            'mesh': '/assets/orbitals/meshes/planetbasemodel.glb',
+            'texture': '/assets/orbitals/textures/earthlike/' + entity.atmosphere + '.png'
         }
 
         const planetObj = await this.cacheMonster.retrieveObject3d(
             entity.atmosphere,
-            async (assetPaths) => {
-                const obj = await this.cacheMonster.retrieveAsset(assetPaths.mesh);
+            async () => {
+                const obj = await this.cacheMonster.retrieveAsset(planetAssetPaths.mesh);
                 this.addMeshStandardMaterial(obj)
-                await this.loadStarOrPlanetTexture(obj, assetPaths.texture, false, 0.9);
+                await this.applyTextureToSurface(obj, planetAssetPaths.texture);
                 return obj;
-            },
-            planetAssetPaths
+            }
         );
 
         this.setLoadAttributes(entity, planetObj);
@@ -141,23 +136,22 @@ export class SpaceViewLoader {
 
     /**
      * @param {Entity} entity
-     * @returns {Promise<THREE.Object3D[]>}
+     * @returns {Promise<THREE.Object3D>}
      */
     async loadPlanetCloud(entity) {
         const cloudAssetPaths = {
-            'mesh': getBasePath() + '/assets/orbitals/meshes/cloudlayer.glb',
-            'texture': getBasePath() + '/assets/orbitals/textures/clouds/' + entity.cloud_type + '.png'
+            'mesh': '/assets/orbitals/meshes/cloudlayer.glb',
+            'texture': '/assets/orbitals/textures/clouds/' + entity.cloud_type + '.png'
         }
 
         const cloudObj = await this.cacheMonster.retrieveObject3d(
             entity.cloud_type,
-            async (assetPaths) => {
-                const obj = await this.cacheMonster.retrieveAsset(assetPaths.mesh);
+            async () => {
+                const obj = await this.cacheMonster.retrieveAsset(cloudAssetPaths.mesh);
                 this.addMeshStandardMaterial(obj)
-                await this.loadStarOrPlanetTexture(obj, assetPaths.texture, true, 0.9);
+                await this.applyTextureToCloud(obj, cloudAssetPaths.texture);
                 return obj;
-            },
-            cloudAssetPaths
+            }
         );
 
         cloudObj.isClouds = true;
@@ -171,7 +165,7 @@ export class SpaceViewLoader {
     async loadWormhole(entity) {
         const wormholeObj = await this.cacheMonster.retrieveObject3d(
             'wormhole',
-            async (assetPaths) => {
+            async () => {
                 return await this.loadBillboard('/assets/wormholes/wormhole.png');
             }
         );
@@ -235,7 +229,7 @@ export class SpaceViewLoader {
     }
 
     // This makes it so the star doesn't have a shadow and is always lit
-    addBrightenerMaterial(object3d) {
+    replaceMaterialWithBrightener(object3d) {
         const firstChild = object3d.children[0];
         const texture = firstChild.material.map;
         firstChild.material = new THREE.MeshBasicMaterial();
@@ -265,7 +259,7 @@ export class SpaceViewLoader {
      * @param {boolean} transparent
      * @param {number} roughness
      */
-    async loadStarOrPlanetTexture(object3d, texturePath, transparent = false, roughness = 0.9) {
+    async applyTextureToSurface(object3d, texturePath) {
         const texture = await this.cacheMonster.retrieveAsset(texturePath);
         texture.flipY = false; // fixes Blender export bug
         // texture.generateMipmaps = false;
@@ -274,16 +268,26 @@ export class SpaceViewLoader {
             if (child.isMesh) {
                 /** @type {THREE.MeshBasicMaterial} */
                 const material = child.material;
+                material.map = texture;
+                material.roughness = 0.9;
+                material.needsUpdate = true;
+            }
+        });
+    }
 
-                // cloud settings
-                if (transparent) {
-                    material.alphaMap = texture;
-                    material.alphaTest = 0.1;
-                    material.transparent = true;
-                } else {
-                    material.map = texture;
-                }
-                material.roughness = roughness;
+    async applyTextureToCloud(object3d, texturePath) {
+        const texture = await this.cacheMonster.retrieveAsset(texturePath);
+        texture.flipY = false; // fixes Blender export bug
+        // texture.generateMipmaps = false;
+
+        object3d.traverse(function (child) {
+            if (child.isMesh) {
+                /** @type {THREE.MeshBasicMaterial} */
+                const material = child.material;
+                material.alphaMap = texture;
+                material.alphaTest = 0.1;
+                material.transparent = true;
+                material.roughness = 0.9;
                 material.needsUpdate = true;
             }
         });

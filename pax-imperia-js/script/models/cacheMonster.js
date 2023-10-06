@@ -38,9 +38,17 @@ export default class CacheMonster {
     }
 
 
-    async retrieveObject3d(name, cb, params) {
+    /**
+     * Returns an entire Object3D from the cache or creates one if a cache hit of that
+     * name could not occur.
+     *
+     * @param {string} name - The name for the cached object3D
+     * @param {CallableFunction} cb - This is the callback for texturing a mesh.
+     * @returns
+     */
+    async retrieveObject3d(name, cb) {
         if (!this.objCache[name]) {
-            this.addObject3dToCache(name, cb, params)
+            this.addObject3dToCache(name, cb)
         }
 
         const timeLord = new TimeLord();
@@ -66,11 +74,11 @@ export default class CacheMonster {
         }
     }
 
-    addObject3dToCache(name, cb, params) {
+    addObject3dToCache(name, cb) {
         if (!this.objCache[name]) {
             console.log('Caching: ' + name);
             this.createCounter(name);
-            this.objCache[name] = cb(params);
+            this.objCache[name] = cb();
         }
     }
 

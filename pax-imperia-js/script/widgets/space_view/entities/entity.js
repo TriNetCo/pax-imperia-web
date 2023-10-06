@@ -1,7 +1,11 @@
 import * as THREE from 'three';
-import { getBasePath, unpackData } from '../../../models/helpers.js'
+import { unpackData } from '../../../models/helpers.js'
 
 export class Entity {
+
+    /** @type {THREE.Object3D} */
+    object3d;
+
     constructor(data, systemName = "", systemId) {
         this.type = "";
         this.size = 1;
@@ -12,7 +16,6 @@ export class Entity {
         this.consoleBody = '';
         unpackData(data, this);
         this.scale = { x: this.size, y: this.size, z: this.size };
-        this.basePath = getBasePath();
     }
 
     toJSON() {
