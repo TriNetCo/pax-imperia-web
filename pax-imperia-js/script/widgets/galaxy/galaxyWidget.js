@@ -17,27 +17,25 @@ export class GalaxyWidget {
         this.gameClock = gameStateInterface.gameClock;
 
         if (typeof (window) !== 'undefined') {  // These globals break tests hard...
-            // window.systemsData = this.galaxy.systems;
             // TODO: clean this up, it's not needed anymore?
             window.gameClock = window.gameClock ? window.gameClock : this.gameClock;
         }
     }
 
-    beginGame(canvas, systemClickHandler) {
+    loadWidget(canvas, systemClickHandler, overrideConfig) {
         this.canvas = canvas;
         this.systemClickHandler = systemClickHandler;
         let c = this.c;
 
-        canvas.width = c.canvasWidth;
-        canvas.height = c.canvasHeight;
+        canvas.width = overrideConfig.canvasWidth || c.canvasWidth;
+        canvas.height = overrideConfig.canvasHeight || c.canvasHeight;
         let cx = canvas.getContext("2d");
 
-        let systemNameLabel = document.getElementById("system-name");
         this.galaxyDrawer = new GalaxyDrawer({
             cx: cx,
             galaxy: this.galaxy,
-            systemNameLabel: systemNameLabel,
-            mouse: this.mouse
+            mouse: this.mouse,
+            currentSystemId: overrideConfig.currentSystemId
         });
         this.galaxyDomManager = new GalaxyDomManager(
             cx,
@@ -64,11 +62,9 @@ export class GalaxyWidget {
         let cx = canvas.getContext("2d");
         this.detachFromDom();
 
-        let systemNameLabel = document.getElementById("system-name");
         this.galaxyDrawer = new GalaxyDrawer({
             cx: cx,
             galaxy: this.galaxy,
-            systemNameLabel: systemNameLabel,
             mouse: this.mouse
         });
         this.galaxyDomManager = new GalaxyDomManager(

@@ -18,7 +18,6 @@ const GameDashboardPage = () => {
                     <div>
                         <h1>Galactic View</h1>
 
-                        <div>System: <span id="system-name"></span></div>
                         <div id="lower-console"></div>
                         <Galaxy/>
                     </div>

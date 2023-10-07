@@ -99,7 +99,6 @@ clientObjects.consoleDiv = document.getElementById("console-message");
 clientObjects.lowerConsoleDiv = document.getElementById("lower-console");
 
 let spaceViewWidget = new SpaceViewWidget(config, clientObjects, gameStateInterface);
-window.spaceViewWidget = spaceViewWidget; // debugging
 
 function draw() {
     spaceViewWidget.draw();

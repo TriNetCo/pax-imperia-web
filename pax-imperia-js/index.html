@@ -1,42 +1,42 @@
 <html>
-    <h1>Galactic View</h1>
-    <h4>Vanilla JS</h4>
-    <div>System: <span id="system-name"></span></div>
-    <div id="galaxy-container">
-        <canvas id="galaxy-canvas-large" width="800px" height="400px"></canvas>
+<h1>Galactic View</h1>
+<h4>Vanilla JS</h4>
+<div id="galaxy-container">
+    <canvas id="galaxy-canvas-large" width="800px" height="400px"></canvas>
+</div>
+
+<div id="galaxy-settings">
+    <div id="lower-console"></div>
+    <button id="galaxy-regenerate-button">Regenerate Galaxy</button>
+    <div valign="middle">
+        <label>System Count</label>
+        <input type="range" id="system-count-slider" min="1" max="200"></input>
     </div>
-
-    <div id="galaxy-settings">
-        <div id="lower-console"></div>
-        <button id="galaxy-regenerate-button">Regenerate Galaxy</button>
-        <div valign="middle">
-            <label>System Count</label>
-            <input type="range" id="system-count-slider" min="1" max="200"></input>
-        </div>
-        <div valign="middle">
-            <label>System Buffer</label>
-            <input type="range" id="system-buffer-slider" min="0" max="50"></input>
-        </div>
+    <div valign="middle">
+        <label>System Buffer</label>
+        <input type="range" id="system-buffer-slider" min="0" max="50"></input>
     </div>
+</div>
 
-    <div class="links">
-        <h6>Management</h6>
-        <ul>
-            <li><a href="fleet.html">Fleet</a></li>
-            <li><a href="research.html">Research</a></li>
-            <li><a href="swords.html">Foriegn Policy</a></li>
-            <li><a href="domestic.html">Domestic Policy</a></li>
-        </ul>
+<div class="links">
+    <h6>Management</h6>
+    <ul>
+        <li><a href="fleet.html">Fleet</a></li>
+        <li><a href="research.html">Research</a></li>
+        <li><a href="swords.html">Foriegn Policy</a></li>
+        <li><a href="domestic.html">Domestic Policy</a></li>
+    </ul>
 
-        <h6>Misc Views</h6>
-        <ul>
-            <li><a href="config.html">Config</a></li>
-            <li><a href="ship.html">Ship Design</a></li>
-            <li><a href="surface.html">Surface View</a></li>
-            <li><a href="new_game.html">New Game Parameters</a></li>
-            <li><a href="species.html">Species Design</a></li>
-        </ul>
-    </div>
+    <h6>Misc Views</h6>
+    <ul>
+        <li><a href="config.html">Config</a></li>
+        <li><a href="ship.html">Ship Design</a></li>
+        <li><a href="surface.html">Surface View</a></li>
+        <li><a href="new_game.html">New Game Parameters</a></li>
+        <li><a href="species.html">Species Design</a></li>
+    </ul>
+</div>
 
-    <script type="module" src="script/app.js"></script>
+<script type="module" src="script/app.js"></script>
+
 </html>

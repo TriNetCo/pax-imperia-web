@@ -19,14 +19,12 @@ const mockCx = {
     fillRect(a, b, c, d) { }
 };
 
-const mockSystemNameLabel = {}; // document.getElementById("system-name");
 const mockMouse = {}; // new THREE.Vector2(0,0);
 
 test('galaxyDrawer can call drawBackground', () => {
     const galaxyDrawer = new GalaxyDrawer({
         cx: mockCx,
         galaxy: galaxy,
-        systemNameLabel: mockSystemNameLabel,
         mouse: mockMouse
     });
 
@@ -37,7 +35,6 @@ test('collectConnections works correctly', () => {
     const galaxyDrawer = new GalaxyDrawer({
         cx: mockCx,
         galaxy: galaxy,
-        systemNameLabel: mockSystemNameLabel,
         mouse: mockMouse
     });
 

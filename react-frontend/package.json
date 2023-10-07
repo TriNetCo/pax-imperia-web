@@ -69,6 +69,7 @@
     "jest-fetch-mock": "^3.0.3",
     "jest": "^27.5.1",
     "jest-environment-jsdom": "^27.5.1",
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "jsdoc": "^4.0.2"
   }
 }

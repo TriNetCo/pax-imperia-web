@@ -1,23 +1,30 @@
 import React from 'react';
 import { useEffect, useRef, useContext } from 'react';
+import PropTypes from 'prop-types';
 import { GameDataContext } from '../../app/Context';
 import { useHistory } from 'react-router-dom';
+import { GalaxyWidget } from 'pax-imperia-js/script/widgets/galaxy/galaxyWidget';
 
-const Galaxy = () => {
+const Galaxy = ({canvasWidth, canvasHeight}) => {
     const history = useHistory();
-    let ref = useRef();
+    const ref = useRef();
     const data = useContext(GameDataContext);
 
     useEffect(() => {
         if (data === null) return; // for testing...
-        let galaxyWidget = data.galaxyWidget;
-        let canvas = ref.current;
+        /** @type {GalaxyWidget} */
+        const galaxyWidget = data.galaxyWidget;
+        const canvas = ref.current;
 
         const systemClickHandler = (path) => {
             history.push(path);
         };
 
-        galaxyWidget.beginGame(canvas, systemClickHandler);
+        const overrideConfig = {
+            'canvasWidth': canvasWidth,
+            'canvasHeight': canvasHeight,
+            'currentSystemId': data.spaceViewWidget?.system?.id};
+        galaxyWidget.loadWidget(canvas, systemClickHandler, overrideConfig);
 
         let requestId;
         const render = () => {
@@ -37,10 +44,14 @@ const Galaxy = () => {
     return (
         <canvas
             ref={ref}
-            id="galaxy-canvas-large"
             style={{ border: 'solid' }}
         />
     );
+};
+
+Galaxy.propTypes = {
+    canvasWidth: PropTypes.number,
+    canvasHeight: PropTypes.number
 };
 
 export default Galaxy;

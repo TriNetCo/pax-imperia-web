@@ -196,10 +196,6 @@ export class SpaceViewDomManager {
         if (mode == 'colonize' && target) {
             shipEntity.colonizeTarget = targetEntity;
         }
-        if (mode == 'lovie') {
-            shipEntity.buttonState = null;
-            // shipEntity.colonizeTarget = targetEntity;
-        }
         if (['default', 'move'].includes(mode) && !target) {
             this.setShipDestinationPoint(ship3d, shipEntity);
         }

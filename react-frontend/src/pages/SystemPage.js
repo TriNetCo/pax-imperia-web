@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import SpaceView from '../features/space_view/SpaceView';
 import { Button, IconButton } from '@mui/material';
 import {useHistory} from 'react-router-dom';
+import Galaxy from 'src/features/galaxy/Galaxy';
 
 const SystemPage = () => {
     const history = useHistory();
@@ -51,13 +52,13 @@ const SystemPage = () => {
                         <div id="hud">
                             <div>
                                 <span>Zoom</span>
-                                <input id="distance-slider" type="range" min="15" max="300" step="1" defaultValue="50"/>
+                                <input id="distance-slider" type="range" min="-20" max="300" step="1" defaultValue="50"/>
                             </div>
                         </div>
 
                         <div id="galaxy-and-console" className="flex-container">
                             <div id="galaxy">
-                                Galaxy
+                                <Galaxy canvasWidth='477' canvasHeight='201' />
                             </div>
 
                             <div id="lower-console">

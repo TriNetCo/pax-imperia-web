@@ -1,7 +1,7 @@
 import { GalaxyWidget } from './widgets/galaxy/galaxyWidget.js';
 import { GameSettings } from './gameSettings.js';
 import { Galaxy } from './models/galaxy.js';
-import {GameStateInterface} from './gameStateInterface/gameStateInterface';
+import { GameStateInterface } from './gameStateInterface/gameStateInterface';
 
 const canvas = document.getElementById("galaxy-canvas-large");
 const regenButton = document.getElementById("galaxy-regenerate-button");
@@ -32,10 +32,10 @@ function generateGalaxy() {
 
     const galaxy = Galaxy.generateFromConfig(config);
 
-    const gameStateInterface = new GameStateInterface({galaxy, websocket});
+    const gameStateInterface = new GameStateInterface({ galaxy, websocket });
     gameStateInterface.startClock();
     galaxyWidget = new GalaxyWidget(config, galaxy, gameStateInterface);
-    galaxyWidget.beginGame(canvas, systemClickHandler);
+    galaxyWidget.loadWidget(canvas, systemClickHandler);
 }
 
 generateGalaxy();

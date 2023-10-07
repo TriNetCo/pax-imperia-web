@@ -7,7 +7,6 @@ const GalaxyConfigPage = () => {
             <h1>GalaxyConfig Page</h1>
 
             <div>
-                <div>System: <span id="system-name"></span></div>
                 <div id="lower-console"></div>
 
                 <Galaxy />
