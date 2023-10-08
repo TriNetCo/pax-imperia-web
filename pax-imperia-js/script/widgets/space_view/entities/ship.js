@@ -7,13 +7,33 @@ export class Ship extends Entity {
         super(data, systemName, systemId);
         this.type = 'ship';
         this.assetFolder = '/assets/ships/';
-        this.assetPath = `${this.assetFolder}${this.shipMake}${this.shipModel}.fbx`;
-        this.texturePath = `${this.assetFolder}${this.shipMake}_White.png`;
-        this.normalMapPath = `${this.assetFolder}${this.shipMake}_Normal.png`;
-        this.metallicSmoothnessMapPath = `${this.assetFolder}${this.shipMake}_MetallicSmoothness.png`;
-        this.emissionMapPath = `${this.assetFolder}${this.shipMake}_Emission2.png`;
+
+        // this.assetPath = `${this.assetFolder}Meshes/${this.shipMake}/${this.shipMake}${this.shipModel}.fbx`;
+        // this.texturePath = `${this.assetFolder}Textures/${this.shipMake}/Standard/${this.shipMake}_White.png`;
+        // this.normalMapPath = `${this.assetFolder}Textures/${this.shipMake}/Standard/${this.shipMake}_Normal.png`;
+        // this.metallicSmoothnessMapPath = `${this.assetFolder}Textures/${this.shipMake}/Standard/${this.shipMake}_MetallicSmoothness.png`;
+        // this.emissionMapPath = `${this.assetFolder}Textures/${this.shipMake}/Standard/${this.shipMake}_Emission2.png`;
+
+        this.assetPath = `${this.assetFolder}Meshes/${this.shipMake}/${this.shipMake}${this.shipModel}.fbx`;
+        this.texturePath = `${this.assetFolder}Textures/${this.shipMake}/${this.shipMake}_White.png`;
+        this.normalMapPath = `${this.assetFolder}Textures/${this.shipMake}/${this.shipMake}_Normal.png`;
+        this.metallicSmoothnessMapPath = `${this.assetFolder}Textures/${this.shipMake}/${this.shipMake}_MetallicSmoothness.png`;
+        this.emissionMapPath = `${this.assetFolder}Textures/${this.shipMake}/${this.shipMake}_Emission2.png`;
+
+
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/ship_thumbnail.png";
-        this.size = 0.00015;
+        this.size = 0.002;
+        if (['VoidWhale'].includes(this.shipMake)) {
+            this.size = 0.00015;
+        } else if (['GalacticLeopard', 'CraizanStar', 'GalacticOkamoto'].includes(this.shipMake)) {
+            this.size = 0.0003;
+        } else if (['SpaceSphinx'].includes(this.shipMake)) {
+            this.size = 0.0005;
+        } else if (['StriderOx', 'SpaceExcalibur'].includes(this.shipMake)) {
+            this.size = 0.0015;
+        }
+        this.size = this.size * 1.5;
+
         this.scale = { x: this.size, y: this.size, z: this.size };
         this.defaultRotation = { x: Math.PI / 4, y: -Math.PI / 2, z: Math.PI / 8 };
         this.rotation = this.defaultRotation;
@@ -239,7 +259,6 @@ export class Ship extends Entity {
             <button id="move" onclick="handleTargetButton('move')">Move</button>
             <button id="orbit" onclick="handleTargetButton('orbit')">Orbit</button>
             <button id="colonize" onclick="handleTargetButton('colonize')">Colonize</button>
-            <button id="lovie" onclick="handleTargetButton('lovie')">Lovie</button>
             </div>`;
         html += this.consoleBody;
         return html;

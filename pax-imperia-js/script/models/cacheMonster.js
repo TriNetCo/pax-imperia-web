@@ -48,6 +48,7 @@ export default class CacheMonster {
      */
     async retrieveObject3d(name, cb) {
         if (!this.objCache[name]) {
+            console.log("RETRIEVE: " + name);
             this.addObject3dToCache(name, cb)
         }
 
@@ -74,6 +75,12 @@ export default class CacheMonster {
         }
     }
 
+    /**
+     *
+     * @param {*} name - This is the cacheKey name.
+     * @param {*} cb - This callback must return an object3D that's been finished
+     *                 having textures applied.
+     */
     addObject3dToCache(name, cb) {
         if (!this.objCache[name]) {
             console.log('Caching: ' + name);
@@ -117,8 +124,9 @@ export default class CacheMonster {
                 const obj = input.scene;
                 resolve(obj);
             }, function (xhr) {
-            }, function (error) {
+            }, (error) => {
                 console.error(error);
+                this.reportLoadError('loadGltf failed to load... ', assetPath);
                 reject({ reason: error })
             });
         });
@@ -132,12 +140,16 @@ export default class CacheMonster {
                 const obj = input;
                 resolve(obj);
             }, function (xhr) {
-            }, function (error) {
-                console.error(error);
+            }, (error) => {
+                this.reportLoadError('loadFbx failed to load... ', assetPath);
                 reject({ reason: error })
             });
         });
         return object3d;
+    }
+
+    reportLoadError(msg, path) {
+        console.error(`${msg} ${path.replace('/pax-imperia-clone/', '')}`);
     }
 
     /**
@@ -152,12 +164,11 @@ export default class CacheMonster {
             loader.load(assetPath, (texture) => {
                 resolve(texture);
             }, function (xhr) {
-            }, function (error) {
-                console.error(error);
+            }, (error) => {
+                this.reportLoadError('loadTexture failed to load... ', assetPath);
                 reject({ reason: error })
             });
         });
         return texture;
     }
-
 }

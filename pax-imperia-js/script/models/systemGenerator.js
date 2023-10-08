@@ -1,4 +1,5 @@
 import { getRandomNum, roundToDecimal } from './helpers.js'
+import { shipConfigs } from '../widgets/space_view/entities/shipConfigs.js';
 
 export class SystemGenerator {
     constructor(id, position, name, radius, c) {
@@ -72,17 +73,54 @@ export class SystemGenerator {
     generateShips(c) {
         let ships = [];
         let shipCount = getRandomNum(1, 3, 0);
+        const shipOptions = [
+            'CraizanStar',
+            'ForceBadger',
+            'LightFox',
+            'SpaceExcalibur',
+            'StarForce',
+            'StriderOx',
+            'CosmicShark',
+            'GalacticLeopard',
+            'HyperFalcon',
+            'MeteorMantis',
+            'ProtonLegacy',
+            'SpaceSphinx',
+            'StarSparrow',
+            'VoidWhale',
+            'GalacticOkamoto'
+        ]
+
+        const badListForMeshes = [
+            'FlyingInsects', 'GenericSpaceships', 'GalaxyRaptor'
+        ]
+
+        const badListForTextures = [
+            'AstroEagle', 'NightAye',
+        ]
+
         for (let i = 0; i < shipCount; i++) {
             let shipX = getRandomNum(-10, 10, 2);
             let shipY = getRandomNum(-10, 10, 2);
             let shipZ = getRandomNum(this.stars[0].size, 12, 2);
-            // give ships unique names
+            // let shipMake = shipOptions[i]; // one of each make
+            // let shipMake = shipOptions[Math.floor(Math.random() * shipOptions.length)]; // random make
+            // let shipMake = 'StarSparrow';
+            // let shipModel = i + 1; // getRandomNum(1, 20, 0); // "1"
+            // const maxModel = shipConfigs.hasOwnProperty(shipMake) ? shipConfigs[shipMake]['maxModel'] : 20;
+            // if (shipModel > maxModel) {
+            //     shipModel = getRandomNum(1, maxModel, 0);
+            // }
+            let shipMake = shipOptions[Math.floor(Math.random() * shipOptions.length)]; // random make
+            const maxModel = shipConfigs.hasOwnProperty(shipMake) ? shipConfigs[shipMake]['maxModel'] : 20;
+            const shipModel = getRandomNum(1, maxModel, 0);
             let ship = {
-                "name": "ship_" + this.id + "_" + i,
+                // give ships unique names
+                "name": "ship_" + shipMake + shipModel + "_" + this.id + "_" + i,
                 "index": i,
                 "position": { x: shipX, y: shipY, z: shipZ },
-                "shipMake": "GalacticLeopard",
-                "shipModel": "6",
+                "shipMake": shipMake,
+                "shipModel": shipModel,
             }
             ships.push(ship);
 
