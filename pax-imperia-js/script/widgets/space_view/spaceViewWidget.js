@@ -37,6 +37,7 @@ export class SpaceViewWidget {
         this.c = config;
         this.clientObjects = clientObjects;
         this.galaxy = gameStateInterface.galaxy;
+        gameStateInterface.spaceViewWidget = this;
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.basePath = getBasePath();
         this.clientObjects.mouse = new THREE.Vector2(0, 0);
@@ -48,7 +49,7 @@ export class SpaceViewWidget {
 
     loadWidget(systemIndex, systemClickHandler) {
         this.systemClickHandler = systemClickHandler;
-        this.system = this.galaxy.systems[systemIndex];
+        this.system = this.galaxy.getSystem(systemIndex);
 
         // TODO: fix this so the console is created by the widget
         // this.clientObjects.consoleDiv.innerHTML = "Resume";
@@ -77,12 +78,13 @@ export class SpaceViewWidget {
     }
 
     changeSystem(systemIndex) {
+        const newSystem = this.galaxy.getSystem(systemIndex);
         console.log(">>> CHANGING SYSTEM <<<",
             this.system.id, this.system.name,
-            "to", systemIndex, this.galaxy.systems[systemIndex].name);
+            "to", systemIndex, newSystem.name);
         this.spaceViewDomManager.detachFromDom();
         this.spaceViewAnimator.stopDrawLoop();
-        this.system = this.galaxy.systems[systemIndex];
+        this.system = newSystem;
 
         this.resetThreeObjects();
 

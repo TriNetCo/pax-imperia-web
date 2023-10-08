@@ -312,6 +312,7 @@ export class SpaceViewLoader {
 
     async addWormholeText(entity) {
         let text = entity.name || 'Sector' + entity.id;
+        if (!entity.known) { text = '???'; }
         let opts = { fontface: 'Tahoma', fontsize: 26 };
         let sprite = this.makeTextSprite(text, opts);
         sprite.name = 'wormholeText';
@@ -321,6 +322,7 @@ export class SpaceViewLoader {
             entity.position.x,
             entity.position.y - 1,
             entity.position.z - 0.1);
+        entity.textSprite = sprite;
         return sprite;
     }
 

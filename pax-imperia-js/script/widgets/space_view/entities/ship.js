@@ -22,18 +22,6 @@ export class Ship extends Entity {
 
 
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/ship_thumbnail.png";
-        this.size = 0.002;
-        if (['VoidWhale'].includes(this.shipMake)) {
-            this.size = 0.00015;
-        } else if (['GalacticLeopard', 'CraizanStar', 'GalacticOkamoto'].includes(this.shipMake)) {
-            this.size = 0.0003;
-        } else if (['SpaceSphinx'].includes(this.shipMake)) {
-            this.size = 0.0005;
-        } else if (['StriderOx', 'SpaceExcalibur'].includes(this.shipMake)) {
-            this.size = 0.0015;
-        }
-        this.size = this.size * 1.5;
-
         this.scale = { x: this.size, y: this.size, z: this.size };
         this.defaultRotation = { x: Math.PI / 4, y: -Math.PI / 2, z: Math.PI / 8 };
         this.rotation = this.defaultRotation;
@@ -56,6 +44,7 @@ export class Ship extends Entity {
             position: this.position,
             shipMake: this.shipMake,
             shipModel: this.shipModel,
+            size: this.size,
         });
     }
 
@@ -115,35 +104,48 @@ export class Ship extends Entity {
         this.colonizeAnimationProgress = null;
     }
 
-    checkAndSendThroughWormhole(galaxy) {
+    async checkAndSendThroughWormhole(galaxy) {
         // if ship is close enough to wormhole, move it to the next system
         const distanceFromDest = this.object3d.position.distanceTo(
             this.destinationTarget.object3d.position);
-        const wormholeId = this.destinationTarget.id;
+        const toSystemId = this.destinationTarget.toId;
         if (distanceFromDest <= this.speed) {
+            this.revealSystem(this.object3d.parent);
             // copy ship data to wormhole system data
             this.resetMovement();
             this.removeObject3d();
             // delete ship from current system
             this.removeFromSystem(galaxy);
             // move to new system
-            this.pushToSystem(wormholeId, galaxy);
-            this.setPositionNearWormhole(wormholeId, galaxy);
+            this.pushToSystem(toSystemId, galaxy);
+            this.setPositionNearWormhole(toSystemId, galaxy);
+        }
+    }
+
+    async revealSystem(scene) {
+        if (!this.destinationTarget.known) {
+            // reveal wormhole name
+            this.destinationTarget.known = true;
+            // remove wormhole text from scene
+            const oldTextSprite = this.destinationTarget.textSprite;
+            oldTextSprite.parent.remove(oldTextSprite);
+            // redraw wormhole text in scene
+            const newTextSprite = await window.spaceViewAnimator.spaceViewLoader.addWormholeText(this.destinationTarget);
+            scene.add(newTextSprite);
+            // window.spaceViewDomManager.populateHtml();
         }
     }
 
     pushToSystem(systemId, galaxy) {
-        // create entity in systemsData
-        const system = galaxy.systems[systemId];
-        // update with new systemId
+        const system = galaxy.getSystem(systemId);
         this.previousSystemId = this.systemId;
         this.systemId = systemId;
-        system[this.type + 's'].push(this);
+        system.addEntity(this);
     }
 
-    setPositionNearWormhole(wormholeId, galaxy) {
-        const destSystem = galaxy.systems[wormholeId];
-        const wormhole = destSystem.wormholes.find(x => x.id === this.previousSystemId);
+    setPositionNearWormhole(systemId, galaxy) {
+        const destSystem = galaxy.getSystem(systemId);
+        const wormhole = destSystem.getWormhole(this.previousSystemId);
         this.position.x = wormhole.position.x + getRandomNum(-2, 2, 2);
         this.position.y = wormhole.position.y + getRandomNum(-2, 2, 2);
         this.position.z = wormhole.position.z + 1;

@@ -50,6 +50,11 @@ export class Galaxy {
         return systems;
     }
 
+    getSystem(id) {
+        const system = this.systems.find(x => x.id === Number(id));
+        return system;
+    }
+
     ///////////////////////////////
     // Generate New Systems Data //
     ///////////////////////////////
@@ -64,22 +69,23 @@ export class Galaxy {
         let starName = new StarName();
 
         // Define systems with coordinates
-        for (let systemIndex = 0; systemIndex < c.systemCount; systemIndex++) {
+        for (let i = 0; i < c.systemCount; i++) {
             let position = this.generateSystemPosition(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
-            let i = 0;
+            let attempt = 0;
             // Try maxPlacementAttempts times to find a system far enough away
             // from existing systems
             while (!this.isValidDistance(systemsData, position, c.systemBuffer)) {
                 position = this.generateSystemPosition(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
-                i = i + 1;
-                if (i == c.maxPlacementAttempts) {
+                attempt += 1;
+                if (attempt == c.maxPlacementAttempts) {
                     let errorMsg = 'Generating stars without buffer';
                     console.log(errorMsg);
                     break;
                 }
             }
-            let systemGenerator = new SystemGenerator(systemIndex, position, starName.pick(), c.systemRadius, c);
-            let systemData = systemGenerator.generateData();
+            const systemIndex = i; // TODO: randomize systemIndex
+            const systemGenerator = new SystemGenerator(systemIndex, position, starName.pick(), c.systemRadius, c);
+            const systemData = systemGenerator.generateData();
             systemsData.push(systemData);
         }
         return systemsData;
@@ -132,8 +138,8 @@ export class Galaxy {
                             (systemsData[i].position.y - systemsData[j].position.y) ** 2;
                         if (dist < minDist) {
                             minDist = dist;
-                            minI = i;
-                            minJ = j;
+                            minI = systemsData[i].id;
+                            minJ = systemsData[j].id;
                         };
                     };
                 };
@@ -162,6 +168,8 @@ export class Galaxy {
         const connectedSystemData = systemsData[connectedSystemId];
         const connection = {
             id: connectedSystemData.id,
+            fromId: systemId,
+            toId: connectedSystemData.id,
             name: connectedSystemData.name,
             position: connectedSystemData.position
         };

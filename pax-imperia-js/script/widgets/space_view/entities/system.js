@@ -28,6 +28,75 @@ export class System {
         return systemJson;
     }
 
+    getEntity(type, id) {
+        let entity = null;
+        switch (type) {
+            case 'star':
+                entity = this.stars.find(x => x.id === id);
+                break;
+            case 'planet':
+                entity = this.planets.find(x => x.id === id);
+                break;
+            case 'ship':
+                entity = this.ships.find(x => x.id === id);
+                break;
+            case 'wormhole':
+                entity = this.wormholes.find(x => x.id === id);
+                break;
+            default:
+                throw new Error(`Invalid entity type: ${type}`);
+        }
+        return entity;
+    }
+
+    getWormhole(toId) {
+        return this.wormholes.find(x => x.toId === toId);
+    }
+
+    removeEntity(type, id) {
+        let entity = null;
+        switch (type) {
+            case 'star':
+                entity = this.stars.find(x => x.id === id);
+                this.stars = this.stars.filter(x => x.id !== id);
+                break;
+            case 'planet':
+                entity = this.planets.find(x => x.id === id);
+                this.planets = this.planets.filter(x => x.id !== id);
+                break;
+            case 'ship':
+                entity = this.ships.find(x => x.id === id);
+                this.ships = this.ships.filter(x => x.id !== id);
+                break;
+            case 'wormhole':
+                entity = this.wormholes.find(x => x.id === id);
+                this.wormholes = this.wormholes.filter(x => x.id !== id);
+                break;
+            default:
+                throw new Error(`Invalid entity type: ${type}`);
+        }
+        return entity;
+    }
+
+    addEntity(entity) {
+        switch (entity.type) {
+            case 'star':
+                this.stars.push(entity);
+                break;
+            case 'planet':
+                this.planets.push(entity);
+                break;
+            case 'ship':
+                this.ships.push(entity);
+                break;
+            case 'wormhole':
+                this.wormholes.push(entity);
+                break;
+            default:
+                throw new Error(`Invalid entity type: ${entity.type}`);
+        }
+    }
+
     createRepresentations(entitiesData, cls, systemName, systemId, systemPosition = null) {
         let representations = [];
         for (const entityData of entitiesData) {

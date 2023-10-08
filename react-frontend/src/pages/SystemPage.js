@@ -58,7 +58,7 @@ const SystemPage = () => {
 
                         <div id="galaxy-and-console" className="flex-container">
                             <div id="galaxy">
-                                <Galaxy canvasWidth='477' canvasHeight='201' />
+                                <Galaxy canvasWidth={400} canvasHeight={200} />
                             </div>
 
                             <div id="lower-console">

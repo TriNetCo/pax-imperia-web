@@ -27,12 +27,12 @@ export class GalaxyDrawer {
         const cx = this.cx;
         const connections = this.connections;
         cx.strokeStyle = "orange";
-        cx.lineWidth = 1;
+        cx.lineWidth = this.scaleRadius(1, 0);
         for (let i = 0, len = connections.length; i < len; i++) {
-            let startSystem = this.galaxy.systems[connections[i][0]];
+            const startSystem = this.galaxy.getSystem(connections[i][0]);
             const startX = this.scaleX(startSystem.position.x);
             const startY = this.scaleY(startSystem.position.y);
-            let endSystem = this.galaxy.systems[connections[i][1]];
+            const endSystem = this.galaxy.getSystem(connections[i][1]);
             const endX = this.scaleX(endSystem.position.x);
             const endY = this.scaleY(endSystem.position.y);
             cx.beginPath();
@@ -45,15 +45,15 @@ export class GalaxyDrawer {
     collectConnections(systems) {
         const connections = [];
         for (let i = 0, len = systems.length; i < len; i++) {
-            let system = systems[i];
-            let sourceConnections = system.connections.sort();
+            const system = systems[i];
+            const systemId = system.id;
+            const sourceConnections = system.connections.sort();
             for (let j = 0; j < sourceConnections.length; j++) {
-                // connection = {id: 1, name: 'Reticulum', position: {x,y,z}}
-                let connection = sourceConnections[j];
+                const connectedSystemId = sourceConnections[j].toId;
                 // We need to make sure we don't add the same connection twice
                 // (i.e. 0 -> 1 and 1 -> 0)
-                if (connection.id > i) {
-                    connections.push([i, connection.id]);
+                if (connectedSystemId > systemId) {
+                    connections.push([systemId, connectedSystemId]);
                 }
             }
         }
@@ -62,13 +62,12 @@ export class GalaxyDrawer {
 
     drawSystems() {
         let color = "rgb(150, 150, 150)";
-        for (let i = 0; i < this.galaxy.systems.length; i++) {
-            let system = this.galaxy.systems[i];
+        this.galaxy.systems.forEach(system => {
             const x = this.scaleX(system.position.x);
             const y = this.scaleY(system.position.y);
             const radius = this.scaleRadius(system.radius);
             this.drawDot(x, y, radius, color);
-        }
+        });
     }
 
     drawHoveredSystem() {
@@ -88,8 +87,7 @@ export class GalaxyDrawer {
 
     drawCurrentSystem() {
         if (this.currentSystemId) {
-            console.log('currentSystemId', this.currentSystemId)
-            const system = this.galaxy.systems[this.currentSystemId];
+            const system = this.galaxy.getSystem(this.currentSystemId);
             const color = "yellow";
             const radius = this.scaleRadius(system.radius) + 2;
             const x = this.scaleX(system.position.x);
@@ -181,7 +179,7 @@ export class GalaxyDrawer {
         return y * (canvasHeight / defaultCanvasHeight);
     }
 
-    scaleRadius(radius) {
+    scaleRadius(radius, floor = 0) {
         const canvasWidth = this.cx.canvas.width;
         const defaultCanvasWidth = 800;
         const canvasHeight = this.cx.canvas.height;
@@ -189,7 +187,7 @@ export class GalaxyDrawer {
         const multiplier = Math.min(
             canvasWidth / defaultCanvasWidth,
             canvasHeight / defaultCanvasHeight);
-        const scaledRadius = Math.max(1, radius * multiplier)
+        const scaledRadius = Math.max(floor, radius * multiplier)
         return scaledRadius;
     }
 

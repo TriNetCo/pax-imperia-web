@@ -23,6 +23,8 @@ export class SpaceViewAnimator {
         this.clock = clientObjects.gameClock;
 
         THREE.Cache.enabled = true;  // for development,  please set this to false :)
+
+        window.spaceViewAnimator = this;
     }
 
     stopDrawLoop() {
@@ -166,6 +168,8 @@ export class SpaceViewAnimator {
             this.renderer,
             this.camera
         );
+        this.spaceViewLoader = spaceViewLoader;
+
         await spaceViewLoader.loadBackground();
         this.renderer.render(this.scene, this.camera);
         console.log('background loads')
