@@ -19,7 +19,6 @@ export class SpaceViewLoader {
         this.cacheMonster = cacheMonster;
         this.renderer = renderer;
         this.camera = camera;
-        window.cacheMonster = cacheMonster;
     }
 
     async load() {
@@ -285,17 +284,18 @@ export class SpaceViewLoader {
         const texture = this.cacheMonster.retrieveAsset(entity.texturePath);
         const normalMap = this.cacheMonster.retrieveAsset(entity.normalMapPath);
         const metallicSmoothnessMap = this.cacheMonster.retrieveAsset(entity.metallicSmoothnessMapPath);
-        const emissionMap = this.cacheMonster.retrieveAsset(entity.emissionMapPath);
+        // const emissiveMap = this.cacheMonster.retrieveAsset(entity.emissionMapPath);
+        const emissiveMap = Promise.resolve();
 
-        await Promise.all([texture, normalMap, metallicSmoothnessMap, emissionMap])
-            .then(([texture, normalMap, metallicSmoothnessMap, emissionMap]) => {
+        await Promise.all([texture, normalMap, metallicSmoothnessMap, emissiveMap])
+            .then(([texture, normalMap, metallicSmoothnessMap, emissiveMap]) => {
                 texture.flipY = false; // fixes Blender export bug
 
                 const material = new THREE.MeshStandardMaterial();
                 material.metalnessMap = texture;
                 material.map = texture;
                 material.normalMap = normalMap;
-                material.emissiveMap = emissionMap;
+                // material.emissiveMap = emissiveMap;
                 material.metallicSmoothnessMap = metallicSmoothnessMap;
                 material.needsUpdate = true;
 
@@ -312,6 +312,7 @@ export class SpaceViewLoader {
 
     async addWormholeText(entity) {
         let text = entity.name || 'Sector' + entity.id;
+        if (!entity.known) { text = '???'; }
         let opts = { fontface: 'Tahoma', fontsize: 26 };
         let sprite = this.makeTextSprite(text, opts);
         sprite.name = 'wormholeText';
@@ -321,6 +322,7 @@ export class SpaceViewLoader {
             entity.position.x,
             entity.position.y - 1,
             entity.position.z - 0.1);
+        entity.textSprite = sprite;
         return sprite;
     }
 

@@ -2,6 +2,10 @@ import Entity from './entity.js'
 import * as THREE from 'three';
 
 export class Wormhole extends Entity {
+
+    /** @type {THREE.Sprite} */
+    textSprite;
+
     constructor(data, systemName, systemId, systemPosition) {
         super(data, systemName, systemId);
         // id: 20
@@ -16,6 +20,16 @@ export class Wormhole extends Entity {
         // this.position is in Galactic View coordinates
         // this.position = {x: -20, y: relativeZ, z: -10};
         this.position = this.calculateWormholeProjection(this.position, systemPosition);
+        this.known = false;
+    }
+
+    toJSON() {
+        return ({
+            index: this.index,
+            fromId: this.fromId,
+            toId: this.toId,
+            size: this.size,
+        });
     }
 
     calculateWormholeProjection(wormholePosition, systemPosition) {

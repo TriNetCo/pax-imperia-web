@@ -1,4 +1,5 @@
 import { getRandomNum, roundToDecimal } from './helpers.js'
+import { shipConfigs, shipOptions } from '../widgets/space_view/entities/shipConfigs.js';
 
 export class SystemGenerator {
     constructor(id, position, name, radius, c) {
@@ -51,8 +52,6 @@ export class SystemGenerator {
             let additionalDistance = getRandomNum(0.6, 1.5, 2);
             let planetDistance = roundToDecimal(minDistance + planetSize + additionalDistance, 2);
             let startingAngle = getRandomNum(0, Math.PI, 2);
-            // Start all planets in the same spot to debug random settings
-            // startingAngle = 0;
 
             let planet = {
                 "index": i,
@@ -72,23 +71,82 @@ export class SystemGenerator {
     generateShips(c) {
         let ships = [];
         let shipCount = getRandomNum(1, 3, 0);
+        let systemShipMake = null; //this.getShipMake(null, null);
+
         for (let i = 0; i < shipCount; i++) {
-            let shipX = getRandomNum(-10, 10, 2);
-            let shipY = getRandomNum(-10, 10, 2);
+            let shipX = getRandomNum(-16, 16, 2);
+            let shipY = getRandomNum(-8, 12, 2);
             let shipZ = getRandomNum(this.stars[0].size, 12, 2);
-            // give ships unique names
+            // let shipMake = systemShipMake || this.getShipMake('override');
+            let shipMake = 'GalacticLeopard'
+            // let shipModel = this.getShipModel('random', shipMake, i);
+            let shipModel = 6;
             let ship = {
-                "name": "ship_" + this.id + "_" + i,
+                // give ships unique names
+                "name": "ship_" + shipMake + shipModel + "_" + this.id + "_" + i,
                 "index": i,
                 "position": { x: shipX, y: shipY, z: shipZ },
-                "shipMake": "GalacticLeopard",
-                "shipModel": "6",
+                "shipMake": shipMake,
+                "shipModel": shipModel,
+                "size": this.getShipSize(shipMake, shipModel),
             }
             ships.push(ship);
 
 
         }
         return ships;
+    }
+
+    getShipMake(strategy, override = null) {
+        const defaultMake = 'GalacticLeopard';
+        if (override) {
+            return override;
+        }
+        if (strategy === 'random') {
+            return shipOptions[Math.floor(Math.random() * shipOptions.length)];
+        }
+        if (strategy === 'sequential') {
+            if (i <= shipOptions.length) {
+                return shipOptions[i];
+            }
+            return shipOptions[Math.floor(Math.random() * shipOptions.length)];
+        }
+        return defaultMake;
+    }
+
+    getShipModel(strategy, make, i, override = null) {
+        const defaultModel = '6';
+        // get max model # for ship make
+        const maxModel = shipConfigs.hasOwnProperty(make) ? shipConfigs[make]['maxModel'] : 20;
+        if (override) {
+            return override;
+        }
+        if (strategy === 'random') {
+            return getRandomNum(1, maxModel, 0);
+        }
+        if (strategy === 'sequential') {
+            if (i <= maxModel) {
+                return i;
+            } else {
+                return getRandomNum(1, maxModel, 0);
+            }
+        }
+        return defaultModel;
+    }
+
+    getShipSize(make, model) {
+        let size = 0.002;
+        if (['GalacticLeopard', 'VoidWhale'].includes(make)) {
+            size = 0.00015;
+        } else if (['CraizanStar', 'GalacticOkamoto'].includes(make)) {
+            size = 0.0003;
+        } else if (['SpaceSphinx'].includes(make)) {
+            size = 0.0005;
+        } else if (['StriderOx', 'SpaceExcalibur'].includes(make)) {
+            size = 0.0015;
+        }
+        // size = size * 1.5;
+        return size;
     }
 
     toJson() {

@@ -79,10 +79,8 @@ export default class Entity {
     removeFromSystem(galaxy) {
         // delete entity from system object
         // find index of entity in list of entities in system
-        const systemEntities = galaxy.systems[this.systemId][this.type + 's']
-        const i = systemEntities.findIndex(x => x.name === this.name);
-        // remove from list of entities in system
-        systemEntities.splice(i, 1);
+        const system = galaxy.getSystem(this.systemId);
+        system.removeEntity(this.type, this.id);
         // update sidebar
         window.spaceViewDomManager.populateHtml();
     }

@@ -78,7 +78,8 @@
 
 #galaxy {
     background: blue;
-    width: 60%;
+    width: 402px;
+    border: solid 2px grey;
 }
 
 #galaxy-and-console {
@@ -88,7 +89,6 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    border: solid 1px grey;
 
 }
 
@@ -104,8 +104,9 @@
 }
 
 #lower-console {
-    background: red;
-    width: 40%;
+    background: gray;
+    width: 100%;
+    padding: 5px;
 }
 
 .left-menu-div {
