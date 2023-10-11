@@ -4,7 +4,8 @@ export class GalaxyDrawer {
         this.cx = config.cx;
         this.galaxy = config.galaxy;
         this.mouse = config.mouse;
-        this.connections = this.collectConnections(this.galaxy.systems);
+        this.connections = config.knownConnections;
+        // this.connections = this.collectConnections(this.galaxy.systems);
         this.currentSystemId = config.currentSystemId;
     }
 

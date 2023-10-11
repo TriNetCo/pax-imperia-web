@@ -15,6 +15,9 @@ export class GalaxyWidget {
         this.mouse = { x: 0, y: 0 };
         this.galaxy = galaxy;
         this.gameClock = gameStateInterface.gameClock;
+        this.gameStateInterface = gameStateInterface;
+        gameStateInterface.galaxyWidget = this;
+        window.galaxyWidget = this;
 
         if (typeof (window) !== 'undefined') {  // These globals break tests hard...
             // TODO: clean this up, it's not needed anymore?
@@ -35,7 +38,8 @@ export class GalaxyWidget {
             cx: cx,
             galaxy: this.galaxy,
             mouse: this.mouse,
-            currentSystemId: overrideConfig.currentSystemId
+            currentSystemId: overrideConfig.currentSystemId,
+            knownConnections: this.gameStateInterface.knownConnections
         });
         this.galaxyDomManager = new GalaxyDomManager(
             cx,

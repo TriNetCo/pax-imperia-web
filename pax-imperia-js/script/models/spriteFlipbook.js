@@ -10,6 +10,7 @@ export class SpriteFlipbook {
     map;
     material;
     sprite;
+    /** @type {THREE.Object3D}  */
     selectionTarget = null;
 
     constructor(scene, spriteTexture, tilesHoriz, tilesVert, loopFrameDuration) {

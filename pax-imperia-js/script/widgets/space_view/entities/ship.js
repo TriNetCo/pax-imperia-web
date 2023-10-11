@@ -35,12 +35,13 @@ export class Ship extends Entity {
         this.orbitStartTime = null; // radians
         this.colonizeTarget = null; // entity object
         this.colonizeAnimationProgress = null; // 0 to 1
+        this.actions = [];
     }
 
     toJSON() {
         return ({
             name: this.name,
-            index: this.index,
+            id: this.id,
             position: this.position,
             shipMake: this.shipMake,
             shipModel: this.shipModel,
@@ -68,6 +69,10 @@ export class Ship extends Entity {
             this.updateOrbit(elapsedTime);
         }
         this.updateConsoleBody();
+
+        const actions = this.actions;
+        this.actions = [];
+        return actions;
     };
 
     updateConsoleBody() {
@@ -110,7 +115,7 @@ export class Ship extends Entity {
             this.destinationTarget.object3d.position);
         const toSystemId = this.destinationTarget.toId;
         if (distanceFromDest <= this.speed) {
-            this.revealSystem(this.object3d.parent);
+            this.discoverSystem(this.destinationTarget.id);
             // copy ship data to wormhole system data
             this.resetMovement();
             this.removeObject3d();
@@ -122,18 +127,22 @@ export class Ship extends Entity {
         }
     }
 
-    async revealSystem(scene) {
-        if (!this.destinationTarget.known) {
-            // reveal wormhole name
-            this.destinationTarget.known = true;
-            // remove wormhole text from scene
-            const oldTextSprite = this.destinationTarget.textSprite;
-            oldTextSprite.parent.remove(oldTextSprite);
-            // redraw wormhole text in scene
-            const newTextSprite = await window.spaceViewAnimator.spaceViewLoader.addWormholeText(this.destinationTarget);
-            scene.add(newTextSprite);
-            // window.spaceViewDomManager.populateHtml();
-        }
+    /**
+    * action.subject.type = "ship"
+    * action.subject.id = shipId
+    * action.subject.player = "player1"
+    * action.verb = "discover"
+    * action.object.type = "wormhole"
+    * action.object.id = wormholeId
+    */
+
+    async discoverSystem(wormholeId) {
+        const action = {
+            subject: { type: 'ship', id: this.id, player: 'player1' },
+            verb: 'discover',
+            object: { type: 'wormhole', id: wormholeId }
+        };
+        this.actions.push(action);
     }
 
     pushToSystem(systemId, galaxy) {
@@ -145,7 +154,7 @@ export class Ship extends Entity {
 
     setPositionNearWormhole(systemId, galaxy) {
         const destSystem = galaxy.getSystem(systemId);
-        const wormhole = destSystem.getWormhole(this.previousSystemId);
+        const wormhole = destSystem.getWormholeTo(this.previousSystemId);
         this.position.x = wormhole.position.x + getRandomNum(-2, 2, 2);
         this.position.y = wormhole.position.y + getRandomNum(-2, 2, 2);
         this.position.z = wormhole.position.z + 1;
@@ -194,8 +203,14 @@ export class Ship extends Entity {
         this.colonizeAnimationProgress += this.speed / 20;
         // delete ship once landing animation finished
         if (this.colonizeAnimationProgress >= 1) {
+            const action = {
+                subject: { type: 'ship', id: this.id, player: 'player1' },
+                verb: 'colonize',
+                object: { type: 'planet', id: this.colonizeTarget.id }
+            };
+            this.actions.push(action);
             this.removeObject3d();
-            this.removeFromSystem(galaxy)
+            this.removeFromSystem(galaxy);
             return
         }
         // get planet's current coordinates
@@ -254,7 +269,7 @@ export class Ship extends Entity {
         };
     }
 
-    returnConsoleHtml() {
+    getConsoleHtml() {
         let html = '';
         html += this.returnConsoleTitle();
         html += `<div>

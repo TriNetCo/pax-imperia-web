@@ -93,7 +93,7 @@ export default class Entity {
         return '<div>' + this.type.toUpperCase() + ': ' + this.name + '</div>';
     }
 
-    returnConsoleHtml() {
+    getConsoleHtml() {
         let html = '';
         html += this.returnConsoleTitle();
         html += this.consoleBody;

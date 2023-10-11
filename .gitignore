@@ -7,3 +7,5 @@ secrets/
 **/terraform.tfstate
 **/terraform.tfstate.backup
 cloud_infrastructure/tf/.terraform/
+pax-imperia-js/assets/ships/Textures/
+pax-imperia-js/assets/ships/Meshes/

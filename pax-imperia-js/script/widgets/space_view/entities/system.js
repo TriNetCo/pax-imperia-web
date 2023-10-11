@@ -32,16 +32,16 @@ export class System {
         let entity = null;
         switch (type) {
             case 'star':
-                entity = this.stars.find(x => x.id === id);
+                entity = this.stars.find(x => x.id.toString() === id.toString());
                 break;
             case 'planet':
-                entity = this.planets.find(x => x.id === id);
+                entity = this.planets.find(x => x.id.toString() === id.toString());
                 break;
             case 'ship':
-                entity = this.ships.find(x => x.id === id);
+                entity = this.ships.find(x => x.id.toString() === id.toString());
                 break;
             case 'wormhole':
-                entity = this.wormholes.find(x => x.id === id);
+                entity = this.wormholes.find(x => x.id.toString() === id.toString());
                 break;
             default:
                 throw new Error(`Invalid entity type: ${type}`);
@@ -49,33 +49,28 @@ export class System {
         return entity;
     }
 
-    getWormhole(toId) {
-        return this.wormholes.find(x => x.toId === toId);
+    getWormholeTo(toId) {
+        return this.wormholes.find(x => x.toId.toString() === toId.toString());
     }
 
     removeEntity(type, id) {
-        let entity = null;
         switch (type) {
             case 'star':
-                entity = this.stars.find(x => x.id === id);
-                this.stars = this.stars.filter(x => x.id !== id);
+                this.stars = this.stars.filter(x => x.id.toString() !== id.toString());
                 break;
             case 'planet':
-                entity = this.planets.find(x => x.id === id);
-                this.planets = this.planets.filter(x => x.id !== id);
+                this.planets = this.planets.filter(x => x.id.toString() !== id.toString());
                 break;
             case 'ship':
-                entity = this.ships.find(x => x.id === id);
-                this.ships = this.ships.filter(x => x.id !== id);
+                this.ships = this.ships.filter(x => x.id.toString() !== id.toString());
                 break;
             case 'wormhole':
-                entity = this.wormholes.find(x => x.id === id);
-                this.wormholes = this.wormholes.filter(x => x.id !== id);
+                this.wormholes = this.wormholes.filter(x => x.id.toString() !== id.toString());
                 break;
             default:
                 throw new Error(`Invalid entity type: ${type}`);
         }
-        return entity;
+
     }
 
     addEntity(entity) {

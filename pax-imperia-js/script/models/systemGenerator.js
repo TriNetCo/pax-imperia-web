@@ -9,7 +9,7 @@ export class SystemGenerator {
         this.radius = radius;
         this.connections = [];
         this.stars = [this.generateStar(c)];
-        this.planets = this.generatePlanets(c);
+        this.planets = this.generatePlanets(c, id);
         // Place a ship in every system
         this.ships = this.generateShips(c);
         // Use manual system for debugging
@@ -42,7 +42,7 @@ export class SystemGenerator {
         return star;
     }
 
-    generatePlanets(c) {
+    generatePlanets(c, systemId) {
         let planets = [];
         let planetCount = getRandomNum(c.minPlanetCount, c.maxPlanetCount, 0);
         let minDistance = this.stars[0].size;
@@ -54,7 +54,8 @@ export class SystemGenerator {
             let startingAngle = getRandomNum(0, Math.PI, 2);
 
             let planet = {
-                "index": i,
+                "id": systemId + "_" + i,
+                "number": i,
                 "atmosphere": "earthlike000" + getRandomNum(1, 9, 0),
                 "cloud_type": "clouds000" + getRandomNum(1, 9, 0),
                 "size": planetSize,
@@ -84,7 +85,7 @@ export class SystemGenerator {
             let ship = {
                 // give ships unique names
                 "name": "ship_" + shipMake + shipModel + "_" + this.id + "_" + i,
-                "index": i,
+                "id": this.id + "_" + i,
                 "position": { x: shipX, y: shipY, z: shipZ },
                 "shipMake": shipMake,
                 "shipModel": shipModel,

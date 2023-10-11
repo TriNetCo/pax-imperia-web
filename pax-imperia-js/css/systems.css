@@ -34,7 +34,7 @@
     display: flex;
     width: 100%;
     height: 708px;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 #canvas-and-buttons {
@@ -80,6 +80,7 @@
     background: blue;
     width: 402px;
     border: solid 2px grey;
+    height: 200px;
 }
 
 #galaxy-and-console {
@@ -89,7 +90,6 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-
 }
 
 #hud {
@@ -103,9 +103,30 @@
     user-select: none;
 }
 
-#lower-console {
-    background: gray;
+#lower-console-and-button {
+    position: relative;
+    background: #2b252f;
+    border-bottom: black solid 2px;
     width: 100%;
+    padding: 5px;
+    height: 194px;
+    opacity: 85%;
+    overflow-y: scroll;
+}
+
+#lower-console-and-button.expanded {
+    border-left: black solid 2px;
+    top: -500px;
+    height: 694px;
+}
+
+#expand-button {
+    display: none;
+}
+
+#lower-console {
+    color: white;
+    width: 95%;
     padding: 5px;
 }
 

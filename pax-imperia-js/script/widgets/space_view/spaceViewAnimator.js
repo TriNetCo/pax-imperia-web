@@ -6,12 +6,13 @@ export class SpaceViewAnimator {
     /** @type {THREE.WebGLRenderer} */
     renderer;
 
-    constructor(config, clientObjects, system, galaxy, cacheMonster) {
+    constructor(config, clientObjects, system, galaxy, cacheMonster, gameStateInterface) {
         this.c = config;
         this.clientObjects = clientObjects;
         this.system = system;
         this.galaxy = galaxy;
         this.cacheMonster = cacheMonster;
+        this.gameStateInterface = gameStateInterface;
 
         // unpack clientObjects
         this.scene = clientObjects.scene;
@@ -98,11 +99,13 @@ export class SpaceViewAnimator {
 
     updateObjects() {
         // seconds since clock reset
-        let deltaTime = this.clock.getDelta();
+        const deltaTime = this.clock.getDelta();
         // seconds since clock started (avoiding getElapsedTime() which resets clock)
-        let elapsedTime = this.clock.elapsedTime;
+        const elapsedTime = this.clock.elapsedTime;
 
         this.updateHtmlClock(elapsedTime);
+
+        const actions = [];
 
         // TODO: use elapsedTime instead of deltaTime
         this.selectionSprite.update(deltaTime);
@@ -116,7 +119,12 @@ export class SpaceViewAnimator {
         }
 
         for (const ship of this.system['ships']) {
-            ship.update(elapsedTime, deltaTime, this.system, this.galaxy);
+            const shipActions = ship.update(elapsedTime, deltaTime, this.system, this.galaxy);
+            actions.push(...shipActions);
+        }
+
+        for (const action of actions) {
+            this.gameStateInterface.performAction(action);
         }
 
     }
@@ -182,5 +190,21 @@ export class SpaceViewAnimator {
         console.log(deltaTime + ' ms: spaceViewAnimator#populateScene');
     }
 
+    async redrawWormholeText(wormhole) {
+        // remove old wormhole text from scene
+        const oldTextSprite = wormhole.textSprite;
+        this.scene.remove(oldTextSprite);
+
+        // redraw wormhole text in scene
+        const newTextSprite = await this.spaceViewLoader.addWormholeText(wormhole);
+        this.scene.add(newTextSprite);
+    }
+
+    async addOutline(entity) {
+        // redraw wormhole text in scene
+        console.log('addOutline');
+        const outline = await this.spaceViewLoader.loadOutline(entity);
+        this.scene.add(outline);
+    }
 
 }

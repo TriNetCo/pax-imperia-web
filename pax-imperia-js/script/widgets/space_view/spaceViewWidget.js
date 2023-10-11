@@ -36,6 +36,7 @@ export class SpaceViewWidget {
     constructor(config, clientObjects, gameStateInterface) {
         this.c = config;
         this.clientObjects = clientObjects;
+        this.gameStateInterface = gameStateInterface;
         this.galaxy = gameStateInterface.galaxy;
         gameStateInterface.spaceViewWidget = this;
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -102,7 +103,8 @@ export class SpaceViewWidget {
             this.clientObjects,
             this.system,
             this.galaxy,
-            this.cacheMonster
+            this.cacheMonster,
+            this.gameStateInterface,
         );
         await this.spaceViewAnimator.populateScene();
         this.spaceViewAnimator.startDrawLoop();

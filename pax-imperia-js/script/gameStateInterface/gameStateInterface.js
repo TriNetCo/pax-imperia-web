@@ -4,6 +4,8 @@ import { ShipActor } from "./actors/shipActor.js";
 import { PlanetActor } from "./actors/planetActor.js";
 import { StationActor } from "./actors/stationActor.js";
 import { PlayerActor } from "./actors/playerActor.js";
+import { SpaceViewWidget } from '../widgets/space_view/spaceViewWidget.js';
+import { Galaxy } from '../models/galaxy.js';
 
 /**
  * Anything that mutates the game state is done through this singleton.
@@ -26,16 +28,25 @@ import { PlayerActor } from "./actors/playerActor.js";
  */
 export class GameStateInterface {
 
+    /** @type {SpaceViewWidget} - the player's current spaceViewWidget */
+    spaceViewWidget;
+    /** @type {Galaxy} */
+    galaxy;
+
     constructor(configs) {
         this.galaxy = configs.galaxy;
         this.websocket = configs.websocket;
         this.gameClock = new THREE.Clock(false);
         this.websocket.onmessage = this.onMessage;
 
-        this.shipActor = new ShipActor(this.websocket);
-        this.planetActor = new PlanetActor(this.websocket);
-        this.stationActor = new StationActor(this.websocket);
-        this.playerActor = new PlayerActor(this.websocket);
+        this.shipActor = new ShipActor(this.websocket, this);
+        this.planetActor = new PlanetActor(this.websocket, this);
+        this.stationActor = new StationActor(this.websocket, this);
+        this.playerActor = new PlayerActor(this.websocket, this);
+
+        this.knownConnections = [];
+        this.eventLog = [];
+
     }
 
     startClock() {
@@ -67,25 +78,35 @@ export class GameStateInterface {
      *
      * @param {object} action - A JSON object representing the action to perform.
      *   The action must have the following properties:
-     * @param {string} action.subject: the type of object that is performing the action
+     * @param {string} action.subject.type: the type of object that is performing the action
+     * @param {string} action.subject.id: the id of the object that is performing the action
      * @param {string} action.verb: the action to perform
      * @param {string} [action.object]: the object that is being acted upon
      * @param {object} [action.params]: the parameters to the action
      */
     performAction(action) {
-        switch(action.subject) {
+        switch (action.subject.type) {
             case "ship":
-                shipActor.handle(action);
+                this.shipActor.handle(action);
                 break;
             case "planet":
-                planetActor.handle(action);
+                this.planetActor.handle(action);
                 break;
             case "station":
-                stationActor.handle(action);
+                this.stationActor.handle(action);
                 break;
             case "player":
-                playerActor.handle(action);
+                this.playerActor.handle(action);
                 break;
+        }
+    }
+
+    addEventLogEntry(entry) {
+        this.eventLog.push({ time: this.gameClock.elapsedTime, entry: entry });
+        const spaceViewDomManager = this.spaceViewWidget.spaceViewDomManager;
+        if (spaceViewDomManager) {
+            this.spaceViewWidget.spaceViewDomManager.updateEventLogHtml(this.eventLog);
+            this.spaceViewWidget.spaceViewDomManager.populateConsoleBody();
         }
     }
 

@@ -6,6 +6,9 @@ import { System } from '../../script/widgets/space_view/entities/system.js';
 
 export class Galaxy {
 
+    /** @type {System[]} */
+    systems;
+
     /**
      * @param {Object} galaxyWidgetSettings Configurations passed to galaxy from the galaxyWidget.  If this parameter is omitted, systemsJson must be provided.
      * @param {number} galaxyWidgetSettings.canvasWidth Determines the area where stars can be placed
@@ -51,8 +54,19 @@ export class Galaxy {
     }
 
     getSystem(id) {
-        const system = this.systems.find(x => x.id === Number(id));
+        const system = this.systems.find(x => x.id.toString() === id.toString());
         return system;
+    }
+
+    getEntity(type, id) {
+        let entity = null;
+        for (const system of this.systems) {
+            entity = system.getEntity(type, id);
+            if (entity) {
+                break;
+            }
+        }
+        return entity;
     }
 
     ///////////////////////////////
@@ -167,11 +181,11 @@ export class Galaxy {
     addConnectionToSystem(systemsData, systemId, connectedSystemId) {
         const connectedSystemData = systemsData[connectedSystemId];
         const connection = {
-            id: connectedSystemData.id,
+            id: systemId + '_' + connectedSystemData.id,
             fromId: systemId,
             toId: connectedSystemData.id,
             name: connectedSystemData.name,
-            position: connectedSystemData.position
+            toPosition: connectedSystemData.position
         };
         systemsData[systemId].connections.push(connection);
     }

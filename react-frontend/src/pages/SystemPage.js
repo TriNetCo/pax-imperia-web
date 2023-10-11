@@ -12,6 +12,18 @@ const SystemPage = () => {
         history.push('/systems');
     };
 
+    const handleExpandButton = () => {
+        var expandableDiv = document.getElementById('lower-console-and-button');
+        expandableDiv.classList.toggle('expanded');
+        var button = document.getElementById('expand');
+        if (button.textContent == 'v') {
+            button.textContent = '^';
+        } else {
+            button.textContent = 'v';
+        }
+    };
+
+
     return (
         <div className="page-wrap">
             <div id="app-parent">
@@ -55,14 +67,19 @@ const SystemPage = () => {
                                 <input id="distance-slider" type="range" min="-20" max="300" step="1" defaultValue="50"/>
                             </div>
                         </div>
-
                         <div id="galaxy-and-console" className="flex-container">
                             <div id="galaxy">
                                 <Galaxy canvasWidth={400} canvasHeight={200} />
                             </div>
 
-                            <div id="lower-console">
+                            <div id="lower-console-and-button">
+                                <div id="expand-button">
+                                    <button id="expand" onClick={handleExpandButton}>^</button>
+                                </div>
+                                <div id="lower-console">
+                                </div>
                             </div>
+
                         </div>
 
                     </div>

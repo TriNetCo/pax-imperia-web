@@ -33,6 +33,7 @@ export class SpaceViewLoader {
             // load planet
             promises.push(this.loadPlanetSurface(planet));
             promises.push(this.loadPlanetCloud(planet));
+            promises.push(this.loadOutline(planet));
         }
 
         for (const wormhole of this.system['wormholes']) {
@@ -47,7 +48,8 @@ export class SpaceViewLoader {
 
         // Block here until all the parallel async functions are finished
         const object3ds = await Promise.all(promises.flat(Infinity));
-        this.scene.add(...object3ds.flat(Infinity));
+        // add to scene after flattening and filtering out nulls
+        this.scene.add(...object3ds.flat(Infinity).filter(x => x));
 
         // TODO: refactor to use OO
         const deltaTime = Date.now() - startTime;
@@ -83,6 +85,31 @@ export class SpaceViewLoader {
         entity.setLoadAttributes(starObj);
         entity.linkObject3d(starObj);
         return starObj;
+    }
+
+    /**
+     * @param {Entity} entity
+     * @returns {Promise<THREE.Object3D[]>}
+     */
+    async loadOutline(entity) {
+        if (!entity.colonizedBy) {
+            return;
+        }
+        const color = 'teal';
+        const outlineObj = await this.cacheMonster.retrieveObject3d(
+            color + 'Circle',
+            async () => {
+                return await this.loadBillboard('/assets/planets/' + color + '_circle.png');
+            }
+        );
+        // set position, scale, etc. attributes
+        entity.setLoadAttributes(outlineObj);
+        const scale = entity.scale.x * 2.8;
+        outlineObj.notClickable = true;
+        outlineObj.scale.set(scale, scale, scale);
+        entity.outlineObject3d = outlineObj;
+        entity.object3ds.outline = outlineObj;
+        return outlineObj;
     }
 
     /**
@@ -312,7 +339,6 @@ export class SpaceViewLoader {
 
     async addWormholeText(entity) {
         let text = entity.name || 'Sector' + entity.id;
-        if (!entity.known) { text = '???'; }
         let opts = { fontface: 'Tahoma', fontsize: 26 };
         let sprite = this.makeTextSprite(text, opts);
         sprite.name = 'wormholeText';

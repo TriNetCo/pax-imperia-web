@@ -1,11 +1,21 @@
 import * as THREE from 'three';
 import { Queue } from '../../models/helpers.js';
+import { SpriteFlipbook } from '../../models/spriteFlipbook.js';
+import Entity from './entities/entity.js';
 
 /**
  * This class handles interactions with the dom
  */
 export class SpaceViewDomManager {
 
+    /**
+     *
+     * @param {*} config
+     * @param {Object} clientObjects
+     * @param {SpriteFlipbook} clientObjects.selectionSprite - This is just a sprite that is used to show the selection
+     * @param {*} system
+     * @param {*} systemClickHandler
+     */
     constructor(config, clientObjects, system, systemClickHandler) {
         this.c = config;
         this.system = system;
@@ -20,6 +30,8 @@ export class SpaceViewDomManager {
         this.previousTarget = null;
         this.previousPreviousTarget = null;
         this.previousTargets = new Queue(3);
+        this.eventLogHtml = '';
+        window.SpaceViewDomManager = this;
 
         window.clickThumbnail = (targetType, targetName) => {
             const entity = this.system[targetType + 's'].find(x => x.name === targetName);
@@ -28,9 +40,31 @@ export class SpaceViewDomManager {
         };
 
         window.handleTargetButton = (buttonState) => {
-            this.selectionSprite.selectionTarget.parentEntity.buttonState = buttonState;
+            /** @type {Entity} */
+            const parentEntity = this.selectionSprite.selectionTarget.parentEntity;
+            parentEntity.buttonState = buttonState;
             // let user know which button is selected
             document.getElementById(buttonState).style.background = '#A9A9A9'; // default color ButtonFace
+        };
+
+        window.handleAssignButton = () => {
+            const defaultWork = 'farm';
+            const workAllocation = this.selectionSprite.selectionTarget.parentEntity.colony.workAllocation;
+            let totalAllocation = 0;
+            for (var work in workAllocation) {
+                const input = document.getElementById("assign" + work);
+                workAllocation[work].allocation = input.value / 100;
+                totalAllocation += Number(workAllocation[work].allocation);
+            }
+            if (totalAllocation == 0) {
+                workAllocation[defaultWork].allocation = 1;
+            } else {
+                for (var work in workAllocation) {
+                    workAllocation[work].allocation = workAllocation[work].allocation /
+                        totalAllocation;
+                }
+            }
+            this.populateConsoleBody();
         };
 
     }
@@ -58,8 +92,8 @@ export class SpaceViewDomManager {
             this.moveShip(this.previousTargets[2], clickTarget, 'default');
         } else if (clickTarget?.parentEntity.type === "wormhole") {
             // navigate through wormhole (unless ship was just moved through wormhole)
-            const wormholeId = clickTarget.parentEntity.id;
-            const path = "/systems/" + wormholeId;
+            const systemId = clickTarget.parentEntity.toId;
+            const path = "/systems/" + systemId;
             this.systemClickHandler(path);
             return;
         }
@@ -100,6 +134,7 @@ export class SpaceViewDomManager {
             const buttonState = this.previousTargets[1].parentEntity.buttonState
             this.moveShip(this.previousTargets[1], this.previousTargets[0], buttonState);
         }
+        this.populateHtml();
         window.selectionTarget = this.selectionSprite.selectionTarget;
     }
 
@@ -193,7 +228,7 @@ export class SpaceViewDomManager {
         if (['default', 'orbit'].includes(mode) && target) {
             shipEntity.orbitTarget = targetEntity;
         }
-        if (mode == 'colonize' && target) {
+        if (mode == 'colonize' && target && !targetEntity.colonizedBy) {
             shipEntity.colonizeTarget = targetEntity;
         }
         if (['default', 'move'].includes(mode) && !target) {
@@ -258,10 +293,30 @@ export class SpaceViewDomManager {
 
     populateConsoleBody() {
         let html = "";
-        if (this.selectionSprite.selectionTarget) {
-            html = this.selectionSprite.selectionTarget.parentEntity.returnConsoleHtml();
+        const selectionTarget = this.selectionSprite.selectionTarget;
+        const expandButtonDiv = document.getElementById('expand-button');
+        if (selectionTarget) {
+            html = selectionTarget.parentEntity.getConsoleHtml();
+            if (selectionTarget.parentEntity.type == "planet" && selectionTarget.parentEntity.colony) {
+                expandButtonDiv.style.display = 'inherit';
+            } else {
+                expandButtonDiv.style.display = 'none';
+            }
+        } else {
+            html = this.eventLogHtml;
+            expandButtonDiv.style.display = 'none';
         }
         document.getElementById("lower-console").innerHTML = html;
+    }
+
+    updateEventLogHtml(eventLog) {
+        let html = "Event Log<br>";
+        const maxDisplayCount = 5;
+        for (let i = eventLog.length - 1; i >= Math.max(0, eventLog.length - maxDisplayCount); i--) {
+            const event = eventLog[i];
+            html += Math.round(event.time) + ": " + event.entry + "<br>";
+        }
+        this.eventLogHtml = html;
     }
 
     ///////////////////////
