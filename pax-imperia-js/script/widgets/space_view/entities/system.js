@@ -2,6 +2,7 @@ import { Star } from './star.js';
 import { Planet } from './planet.js';
 import { Ship } from './ship.js';
 import { Wormhole } from './wormhole.js';
+import { Colony } from './colony.js';
 import { unpackData } from '../../../models/helpers.js'
 
 export class System {
@@ -12,6 +13,14 @@ export class System {
         this.planets = this.createRepresentations(systemData.planets, Planet, this.name, this.id);
         this.wormholes = this.createRepresentations(systemData.connections, Wormhole, this.name, this.id, systemData.position);
         this.ships = systemData.ships.map(ship => new Ship(ship, this.name, this.id)); // this pattern is leaner
+        this.planets[0].colony = new Colony(1, this.planets[0], 1);
+        if (this.planets[1]) {
+            this.planets[1].colony = new Colony(2, this.planets[1], 1);
+        }
+        if (this.ships[1]) {
+            this.ships[1].playerId = 2;
+        }
+
     }
 
     toJSON() {

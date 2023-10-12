@@ -88,7 +88,7 @@ export class ShipActor extends Actor {
     */
     colonize(action) {
         const planet = this.gameStateInterface.galaxy.getEntity('planet', action.object.id);
-        if (planet.colonizedBy) {
+        if (planet.colony) {
             console.log('already colonized');
             return;
         }
@@ -97,7 +97,6 @@ export class ShipActor extends Actor {
             planet,
             this.gameStateInterface.gameClock.elapsedTime
         );
-        planet.colonizedBy = action.subject.player;
         // if player is currently in the system with the colonized planet
         if (this.gameStateInterface.spaceViewWidget.system.id === planet.systemId) {
             this.gameStateInterface.spaceViewWidget.spaceViewAnimator.addOutline(planet);
@@ -107,7 +106,6 @@ export class ShipActor extends Actor {
                 spaceViewDomManager.selectTarget(planet.object3d);
             }
         }
-        planet.population = 1000;
         this.gameStateInterface.addEventLogEntry(`New colony established on ${planet.name}`);
     }
 

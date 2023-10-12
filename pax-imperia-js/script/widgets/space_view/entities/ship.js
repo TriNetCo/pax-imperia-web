@@ -9,6 +9,7 @@ export class Ship extends Entity {
         this.type = 'ship';
         this.playerId = 1;
         this.assetFolder = '/assets/ships/';
+        this.object3ds = {};
 
         // this.assetPath = `${this.assetFolder}Meshes/${this.shipMake}/${this.shipMake}${this.shipModel}.fbx`;
         // this.texturePath = `${this.assetFolder}Textures/${this.shipMake}/Standard/${this.shipMake}_White.png`;
@@ -60,6 +61,11 @@ export class Ship extends Entity {
 
         // update HTML but don't send to DOM unless it has changed
         this.updateConsoleBody();
+
+        if (this.object3ds['outline']) {
+            const { x, y, z } = this.object3d.position;
+            this.object3ds['outline'].position.set(x, y, z);
+        }
 
         // return actions for GameStateInterface to handle
         const actions = this.actions;

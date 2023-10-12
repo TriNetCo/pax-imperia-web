@@ -228,7 +228,7 @@ export class SpaceViewDomManager {
         if (['default', 'orbit'].includes(mode) && target) {
             shipEntity.orbitTarget = targetEntity;
         }
-        if (mode == 'colonize' && target && !targetEntity.colonizedBy) {
+        if (mode == 'colonize' && target && !targetEntity.colony) {
             shipEntity.colonizeTarget = targetEntity;
         }
         if (['default', 'move'].includes(mode) && !target) {

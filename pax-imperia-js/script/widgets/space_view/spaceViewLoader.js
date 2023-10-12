@@ -44,6 +44,7 @@ export class SpaceViewLoader {
 
         for (const ship of this.system['ships']) {
             promises.push(this.loadShip(ship));
+            promises.push(this.loadOutline(ship));
         }
 
         // Block here until all the parallel async functions are finished
@@ -92,13 +93,13 @@ export class SpaceViewLoader {
      * @returns {Promise<THREE.Object3D[]>}
      */
     async loadOutline(entity) {
-        if (!entity.colony) {
+        if (!(entity.colony || (entity?.playerId != 1 && entity.type === 'ship'))) {
             return;
         }
 
         let colorName = 'red';
         let color = 0xff0000;
-        if (entity.colony.playerId == 1) {
+        if (entity?.colony?.playerId == 1 || entity?.playerId == 1) {
             color = null;
             colorName = 'teal';
         }
@@ -114,7 +115,10 @@ export class SpaceViewLoader {
 
         // set position, scale, etc. attributes
         entity.setLoadAttributes(outlineObj);
-        const scale = entity.scale.x * 2.8;
+        let scale = entity.scale.x * 2.8;
+        if (entity.type == 'ship') {
+            scale = entity.scale.x * 18000;
+        }
         outlineObj.notClickable = true;
         outlineObj.scale.set(scale, scale, scale);
         entity.outlineObject3d = outlineObj;
