@@ -92,16 +92,26 @@ export class SpaceViewLoader {
      * @returns {Promise<THREE.Object3D[]>}
      */
     async loadOutline(entity) {
-        if (!entity.colonizedBy) {
+        if (!entity.colony) {
             return;
         }
-        const color = 'teal';
+
+        let colorName = 'red';
+        let color = 0xff0000;
+        if (entity.colony.playerId == 1) {
+            color = null;
+            colorName = 'teal';
+        }
+        console.log('color', color)
+
+        const circlePath = '/assets/planets/teal_circle.png';
         const outlineObj = await this.cacheMonster.retrieveObject3d(
-            color + 'Circle',
+            colorName + 'Circle',
             async () => {
-                return await this.loadBillboard('/assets/planets/' + color + '_circle.png');
+                return await this.loadBillboard(circlePath, color);
             }
         );
+
         // set position, scale, etc. attributes
         entity.setLoadAttributes(outlineObj);
         const scale = entity.scale.x * 2.8;
@@ -260,9 +270,12 @@ export class SpaceViewLoader {
         object3d.children[0].material = material;
     }
 
-    async loadBillboard(assetPath) {
+    async loadBillboard(assetPath, color = null) {
         const texture = await this.cacheMonster.retrieveAsset(assetPath);
-        const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+        const spriteMaterial = new THREE.SpriteMaterial({
+            map: texture,
+            color: color,
+        });
         return new THREE.Sprite(spriteMaterial);
     }
 

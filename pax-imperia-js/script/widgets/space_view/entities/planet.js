@@ -61,14 +61,14 @@ export class Planet extends Entity {
     }
 
     getConsoleHtml() {
-        const colonizedBy = this.colony?.player || 'Uninhabited';
+        const colonizedBy = this.colony?.playerId || 'Uninhabited';
         const population = Math.floor(this.colony?.population || 0);
         let html = '';
         html += this.returnConsoleTitle();
         html += `
             <div>
                 <div><br/>Player: ${colonizedBy}</div>`;
-        if (this.colony && colonizedBy == 'player1') {
+        if (this.colony && this.colony?.playerId == 1) {
             html += this.getColonyStatsHtml();
             html += this.getWorkAssignmentHtml();
         } else {

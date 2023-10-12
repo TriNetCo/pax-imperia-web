@@ -1,7 +1,7 @@
 export class Colony {
 
-    constructor(player, planet, startTime, colonyConfig) {
-        this.player = player;
+    constructor(playerId, planet, startTime, colonyConfig) {
+        this.playerId = playerId;
         this.planet = planet;
         this.startTime = startTime;
         this.lastUpdated = startTime;

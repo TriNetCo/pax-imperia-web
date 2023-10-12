@@ -1,11 +1,13 @@
 import Entity from './entity.js';
 import { roundToDecimal, getRandomNum } from '../../../models/helpers.js';
 import * as THREE from 'three';
+import { Galaxy } from '../../../models/galaxy.js';
 
 export class Ship extends Entity {
     constructor(data, systemName, systemId) {
         super(data, systemName, systemId);
         this.type = 'ship';
+        this.playerId = 1;
         this.assetFolder = '/assets/ships/';
 
         // this.assetPath = `${this.assetFolder}Meshes/${this.shipMake}/${this.shipMake}${this.shipModel}.fbx`;
@@ -20,7 +22,6 @@ export class Ship extends Entity {
         this.metallicSmoothnessMapPath = `${this.assetFolder}Textures/${this.shipMake}/${this.shipMake}_MetallicSmoothness.png`;
         this.emissionMapPath = `${this.assetFolder}Textures/${this.shipMake}/${this.shipMake}_Emission2.png`;
 
-
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/ship_thumbnail.png";
         this.scale = { x: this.size, y: this.size, z: this.size };
         this.defaultRotation = { x: Math.PI / 4, y: -Math.PI / 2, z: Math.PI / 8 };
@@ -30,7 +31,7 @@ export class Ship extends Entity {
         this.buttonState = null;
         // movement animation attributes
         this.destinationPoint = null; // x, y, z coordinates
-        this.destinationTarget = null; // entity object
+        this.destinationEntity = null; // entity object
         this.orbitTarget = null; // entity object
         this.orbitStartTime = null; // radians
         this.colonizeTarget = null; // entity object
@@ -42,6 +43,7 @@ export class Ship extends Entity {
         return ({
             name: this.name,
             id: this.id,
+            playerId: this.playerId,
             position: this.position,
             shipMake: this.shipMake,
             shipModel: this.shipModel,
@@ -50,38 +52,28 @@ export class Ship extends Entity {
     }
 
     update(elapsedTime, deltaTime, system, galaxy) {
-        // first, check if ship should be sent through wormhole
-        if (this.destinationTarget &&
-            this.destinationTarget.type == 'wormhole') {
-            this.checkAndSendThroughWormhole(galaxy);
-        }
-        // then, update destination point if moving to a target or colonizing
-        if (this.destinationTarget) {
-            // set destination point to current coordinates
-            this.updateTargetDestinationPoint();
-        } else if (this.colonizeTarget) {
-            this.updateColonize(system);
-        }
-        // finally, move to destination point or update orbit
-        if (this.destinationPoint) {
-            this.updateToDestinationPoint(deltaTime);
-        } else if (this.orbitTarget) {
-            this.updateOrbit(elapsedTime);
-        }
+        this.handleWormholeJumping(galaxy);
+        this.recalculateDestinationPoint(this.destinationEntity);
+        this.handleColonizing(system);
+        this.moveToDestinationPoint(deltaTime);
+        this.handleOrbiting(elapsedTime);
+
+        // update HTML but don't send to DOM unless it has changed
         this.updateConsoleBody();
 
+        // return actions for GameStateInterface to handle
         const actions = this.actions;
-        this.actions = [];
+        this.actions = []; // clear actions
         return actions;
     };
 
     updateConsoleBody() {
         const previousConsoleBody = this.consoleBody;
         this.consoleBody = '<div>';
-        if (this.destinationTarget) {
+        if (this.destinationEntity) {
             this.consoleBody += 'Destination: ' +
-                this.destinationTarget.name + ' ' +
-                this.destinationTarget.type;
+                this.destinationEntity.name + ' ' +
+                this.destinationEntity.type;
         } else if (this.destinationPoint) {
             this.consoleBody += 'Destination: ' +
                 roundToDecimal(this.destinationPoint.x, 2) +
@@ -102,20 +94,23 @@ export class Ship extends Entity {
 
     resetMovement() {
         this.destinationPoint = null;
-        this.destinationTarget = null;
+        this.destinationEntity = null;
         this.orbitTarget = null;
         this.orbitStartTime = null;
         this.colonizeTarget = null;
         this.colonizeAnimationProgress = null;
     }
 
-    async checkAndSendThroughWormhole(galaxy) {
+    async handleWormholeJumping(galaxy) {
+        if (!this.destinationEntity || this.destinationEntity?.type != 'wormhole') {
+            return;
+        }
         // if ship is close enough to wormhole, move it to the next system
         const distanceFromDest = this.object3d.position.distanceTo(
-            this.destinationTarget.object3d.position);
-        const toSystemId = this.destinationTarget.toId;
+            this.destinationEntity.object3d.position);
+        const toSystemId = this.destinationEntity.toId;
         if (distanceFromDest <= this.speed) {
-            this.discoverSystem(this.destinationTarget.id);
+            this.discoverSystem(this.destinationEntity.id);
             // copy ship data to wormhole system data
             this.resetMovement();
             this.removeObject3d();
@@ -130,21 +125,26 @@ export class Ship extends Entity {
     /**
     * action.subject.type = "ship"
     * action.subject.id = shipId
-    * action.subject.player = "player1"
+    * action.subject.playerId = 1
     * action.verb = "discover"
     * action.object.type = "wormhole"
     * action.object.id = wormholeId
     */
 
     async discoverSystem(wormholeId) {
-        const action = {
-            subject: { type: 'ship', id: this.id, player: 'player1' },
+        const discoverAction = {
+            subject: { type: 'ship', id: this.id, playerId: 1 },
             verb: 'discover',
             object: { type: 'wormhole', id: wormholeId }
         };
-        this.actions.push(action);
+        this.actions.push(discoverAction);
     }
 
+    /**
+     *
+     * @param {*} systemId
+     * @param {Galaxy} galaxy
+     */
     pushToSystem(systemId, galaxy) {
         const system = galaxy.getSystem(systemId);
         this.previousSystemId = this.systemId;
@@ -152,6 +152,11 @@ export class Ship extends Entity {
         system.addEntity(this);
     }
 
+    /**
+     *
+     * @param {*} systemId
+     * @param {Galaxy} galaxy
+     */
     setPositionNearWormhole(systemId, galaxy) {
         const destSystem = galaxy.getSystem(systemId);
         const wormhole = destSystem.getWormholeTo(this.previousSystemId);
@@ -160,7 +165,9 @@ export class Ship extends Entity {
         this.position.z = wormhole.position.z + 1;
     }
 
-    updateToDestinationPoint(deltaTime) {
+    moveToDestinationPoint(deltaTime) {
+        if (!this.destinationPoint) { return; }
+
         const positionVector = new THREE.Vector3().copy(this.object3d.position);
         const destinationVector = new THREE.Vector3().copy(this.destinationPoint);
         const distanceFromDest = positionVector.distanceTo(destinationVector);
@@ -171,7 +178,7 @@ export class Ship extends Entity {
         if (distanceFromDest <= this.speed) {
             this.object3d.position.copy(destinationVector);
             this.destinationPoint = null;
-            this.destinationTarget = null;
+            this.destinationEntity = null;
         } else {
             this.object3d.lookAt(destinationVector);
             const displacementVector = destinationVector
@@ -184,18 +191,29 @@ export class Ship extends Entity {
         }
     }
 
-    updateTargetDestinationPoint() {
-        const destX = this.destinationTarget.object3d.position.x;
-        const destY = this.destinationTarget.object3d.position.y;
-        let destZ = this.destinationTarget.object3d.position.z;
+    /**
+     * Updates the point that the ship is moving towards because the
+     * destination entity may have moved.
+     */
+    recalculateDestinationPoint(destinationEntity) {
+        if (!destinationEntity) return;
+
+        const destX = destinationEntity.object3d.position.x;
+        const destY = destinationEntity.object3d.position.y;
+        let destZ = destinationEntity.object3d.position.z;
+
         // put ship in front of stars and planets so they can be seen
-        if (['star', 'planet'].includes(this.destinationTarget.type)) {
-            destZ += this.destinationTarget.object3d.scale.z * 2;
+        if (['star', 'planet'].includes(destinationEntity.type)) {
+            destZ += destinationEntity.object3d.scale.z * 2;
         }
+
         this.destinationPoint = { "x": destX, "y": destY, "z": destZ };
     }
 
-    updateColonize() {
+    handleColonizing() {
+        // don't start colonization animation until ship is close enough to planet
+        if (this.destinationEntity || !this.colonizeTarget) return;
+
         // rotate to land on planet
         // 0, 0, 0, points to planet
         this.object3d.rotation.set(0, 0, 0);
@@ -203,29 +221,31 @@ export class Ship extends Entity {
         this.colonizeAnimationProgress += this.speed / 20;
         // delete ship once landing animation finished
         if (this.colonizeAnimationProgress >= 1) {
-            const action = {
-                subject: { type: 'ship', id: this.id, player: 'player1' },
+            const colonizeAction = {
+                subject: { type: 'ship', id: this.id, playerId: 1 },
                 verb: 'colonize',
                 object: { type: 'planet', id: this.colonizeTarget.id }
             };
-            this.actions.push(action);
+            this.actions.push(colonizeAction);
             this.removeObject3d();
             this.removeFromSystem(galaxy);
-            return
+        } else {
+            // get planet's current coordinates
+            const destX = this.colonizeTarget.object3d.position.x;
+            const destY = this.colonizeTarget.object3d.position.y;
+            // slowly descend in z direction
+            let destZ = this.colonizeTarget.object3d.position.z +
+                this.colonizeTarget.object3d.scale.z * (2 - this.colonizeAnimationProgress);
+            this.destinationPoint = { "x": destX, "y": destY, "z": destZ };
+            // shrink ship
+            const size = this.size * (1 - this.colonizeAnimationProgress);
+            this.object3d.scale.set(size, size, size);
         }
-        // get planet's current coordinates
-        const destX = this.colonizeTarget.object3d.position.x;
-        const destY = this.colonizeTarget.object3d.position.y;
-        // slowly descend in z direction
-        let destZ = this.colonizeTarget.object3d.position.z +
-            this.colonizeTarget.object3d.scale.z * (2 - this.colonizeAnimationProgress);
-        this.destinationPoint = { "x": destX, "y": destY, "z": destZ };
-        // shrink ship
-        const size = this.size * (1 - this.colonizeAnimationProgress);
-        this.object3d.scale.set(size, size, size);
     }
 
-    updateOrbit(elapsedTime) {
+    handleOrbiting(elapsedTime) {
+        if (!this.orbitTarget || this.destinationPoint) { return; }
+
         const centerX = this.orbitTarget.object3d.position.x;
         const centerZ = this.orbitTarget.object3d.position.z;
         const centerY = this.orbitTarget.object3d.position.y;

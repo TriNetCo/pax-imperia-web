@@ -47,6 +47,11 @@ export class GameStateInterface {
         this.knownConnections = [];
         this.eventLog = [];
 
+        this.players = {
+            0: { id: 0, name: "player1 (you)", color: null },
+            1: { id: 1, name: "dr potato", color: 0xff0000 },
+        };
+
     }
 
     startClock() {

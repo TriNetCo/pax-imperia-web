@@ -1,14 +1,16 @@
 import Entity from './entity.js'
 import * as THREE from 'three';
+import { getBasePath } from '../../../models/helpers.js';
 
 export class Star extends Entity {
+
     constructor(data, systemName, systemId) {
         super(data, systemName, systemId);
         this.type = 'star';
         this.name = systemName;
         this.assetPath = "/assets/orbitals/meshes/planetbasemodel.glb";
         this.texturePath = "/assets/orbitals/textures/sun/yellow/YellowSun0001.png";
-        this.assetThumbnailPath = this.basePath + "/assets/thumbnails/sun_thumbnail.png";
+        this.assetThumbnailPath = getBasePath() + "/assets/thumbnails/sun_thumbnail.png";
     }
 
     update(elapsedTime) {

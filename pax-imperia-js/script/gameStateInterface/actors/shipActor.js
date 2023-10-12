@@ -43,7 +43,7 @@ export class ShipActor extends Actor {
     /**
     * action.subject.type = "ship"
     * action.subject.id = shipId
-    * action.subject.player = "player1"
+    * action.subject.playerId = 1
     * action.verb = "discover"
     * action.object.type = "wormhole"
     * action.object.id = wormholeId
@@ -93,7 +93,7 @@ export class ShipActor extends Actor {
             return;
         }
         planet.colony = new Colony(
-            action.subject.player,
+            action.subject.playerId,
             planet,
             this.gameStateInterface.gameClock.elapsedTime
         );

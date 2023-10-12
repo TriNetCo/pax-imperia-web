@@ -223,7 +223,7 @@ export class SpaceViewDomManager {
         // set targets based on movement mode
         // default behavior moves to target and orbits
         if (['default', 'move', 'orbit', 'colonize'].includes(mode) && target) {
-            shipEntity.destinationTarget = targetEntity;
+            shipEntity.destinationEntity = targetEntity;
         }
         if (['default', 'orbit'].includes(mode) && target) {
             shipEntity.orbitTarget = targetEntity;
