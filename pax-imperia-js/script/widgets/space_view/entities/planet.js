@@ -34,6 +34,8 @@ export class Planet extends Entity {
     }
 
     update(elapsedTime) {
+        const logs = [];
+
         for (var key in this.object3ds) {
             const obj3d = this.object3ds[key];
 
@@ -55,9 +57,11 @@ export class Planet extends Entity {
         };
 
         if (this.colony) {
-            this.colony.update(elapsedTime);
+            const colonyLogs = this.colony.update(elapsedTime);
+            logs.push(...colonyLogs);
         }
 
+        return logs;
     }
 
     getConsoleHtml() {
@@ -67,10 +71,9 @@ export class Planet extends Entity {
         html += this.returnConsoleTitle();
         html += `
             <div>
-                <div><br/>Player: ${colonizedBy}</div>`;
+                <div>Player: ${colonizedBy}</div><br/>`;
         if (this.colony && this.colony?.playerId == 1) {
-            html += this.getColonyStatsHtml();
-            html += this.getWorkAssignmentHtml();
+            html += this.colony.getColonyStatsHtml();
         } else {
             html += `<div>Population: ${population}</div>`;
         }
@@ -79,44 +82,12 @@ export class Planet extends Entity {
         return html;
     }
 
-    getColonyStatsHtml() {
-        let html = `<div>Population: ${Math.floor(this.colony.population)} / ${this.colony.populationCapacity}</div>
-            <div>Food: ${Math.floor(this.colony.food)} / ${this.colony.foodStorageCapacity}</div>
-            <div>Wood: ${Math.floor(this.colony.wood)} / ${this.colony.woodStorageCapacity}</div>`
-        return html;
-    }
-
-    getWorkAssignmentHtml() {
-        const orderOfWork = ['farm', 'gather', 'build', 'research'];
-        const workAllocation = this.colony.workAllocation;
-        let html = `
-            <div><br/><br/>
-                Allocate work:
-                <button id="assign" onclick="handleAssignButton()">Assign</button>
-            </div>
-            <table>`;
-        for (let i = 0; i < orderOfWork.length; i++) {
-            const work = orderOfWork[i];
-            if (workAllocation[work]) {
-                const label = workAllocation[work].label;
-                const allocation = Math.round(workAllocation[work].allocation * 100);
-                html += `
-                    <tr>
-                        <td style="text-align:left;">
-                            ${label}
-                        </td>
-                        <td>
-                            <input id="assign${work}" name="assign${work}" type="range" min="0" max="100" step="1" value="${allocation}" oninput="${work}value.value = this.value"/>
-                        </td>
-                        <td width="45px" style="text-align:right;">
-                            <output id="${work}value" name="${work}value" for="assign${work}">${allocation}</output>%
-                        </td>
-                    </tr>`
-            }
+    getPlayerButtonsHtml() {
+        let html = '';
+        if (this.colony && this.colony.playerId == 1) {
+            html += this.colony.getBuildingStatsHtml();
+            html += this.colony.getWorkAllocationHtml();
         }
-        html += `</table></div>`;
         return html;
     }
-
-
 }

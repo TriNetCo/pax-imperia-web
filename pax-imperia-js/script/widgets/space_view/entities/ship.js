@@ -60,7 +60,7 @@ export class Ship extends Entity {
         this.handleOrbiting(elapsedTime);
 
         // update HTML but don't send to DOM unless it has changed
-        this.updateConsoleBody();
+        this.updateConsoleBodyHtml();
 
         if (this.object3ds['outline']) {
             const { x, y, z } = this.object3d.position;
@@ -73,7 +73,13 @@ export class Ship extends Entity {
         return actions;
     };
 
-    updateConsoleBody() {
+    updateConsoleBodyHtml() {
+        // leave blank if not player 1
+        if (this.playerId != 1) {
+            this.consoleBody = ''
+            return;
+        }
+
         const previousConsoleBody = this.consoleBody;
         this.consoleBody = '<div>';
         if (this.destinationEntity) {
@@ -298,11 +304,14 @@ export class Ship extends Entity {
     getConsoleHtml() {
         let html = '';
         html += this.returnConsoleTitle();
-        html += `<div>
-            <button id="move" onclick="handleTargetButton('move')">Move</button>
-            <button id="orbit" onclick="handleTargetButton('orbit')">Orbit</button>
-            <button id="colonize" onclick="handleTargetButton('colonize')">Colonize</button>
-            </div>`;
+        // control buttons
+        if (this.playerId == 1) {
+            html += `<div>
+                <button id="move" onclick="handleTargetButton('move')">Move</button>
+                <button id="orbit" onclick="handleTargetButton('orbit')">Orbit</button>
+                <button id="colonize" onclick="handleTargetButton('colonize')">Colonize</button>
+                </div>`;
+        }
         html += this.consoleBody;
         return html;
     }

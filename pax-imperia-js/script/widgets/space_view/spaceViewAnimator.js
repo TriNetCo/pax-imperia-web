@@ -1,11 +1,25 @@
 import * as THREE from 'three';
 import { SpaceViewLoader } from './spaceViewLoader.js';
+import { GameStateInterface } from '../../gameStateInterface/gameStateInterface.js';
+import CacheMonster from '../../models/cacheMonster.js';
+import { Galaxy } from '../../models/galaxy.js';
+import { System } from './entities/system.js';
+import TimeLord from '../../models/timeLord.js';
 
 export class SpaceViewAnimator {
 
     /** @type {THREE.WebGLRenderer} */
     renderer;
 
+    /**
+     *
+     * @param {*} config
+     * @param {*} clientObjects
+     * @param {System} system
+     * @param {Galaxy} galaxy
+     * @param {CacheMonster} cacheMonster
+     * @param {GameStateInterface} gameStateInterface
+     */
     constructor(config, clientObjects, system, galaxy, cacheMonster, gameStateInterface) {
         this.c = config;
         this.clientObjects = clientObjects;
@@ -70,7 +84,8 @@ export class SpaceViewAnimator {
     }
 
     resetCamera() {
-        // Reset camera in real time
+        //////////////////////////////
+        // Reset camera in real time//
         //////////////////////////////
 
         let distance = parseFloat(this.clientObjects.distanceSlider.value);
@@ -97,15 +112,29 @@ export class SpaceViewAnimator {
         };
     }
 
+    updateConsoleBody(elapsedTime) {
+        if (Math.round(elapsedTime * 60) / 60 % 1 == 0 && // This check ensures we do something once every second
+            this.gameStateInterface.spaceViewWidget.spaceViewDomManager) {
+            const spaceViewDomManager = this.gameStateInterface.spaceViewWidget.spaceViewDomManager;
+            if (spaceViewDomManager.selectionSprite.selectionTarget) {
+                spaceViewDomManager.populateConsoleBody();
+            }
+        }
+    }
+
+
     updateObjects() {
         // seconds since clock reset
         const deltaTime = this.clock.getDelta();
         // seconds since clock started (avoiding getElapsedTime() which resets clock)
         const elapsedTime = this.clock.elapsedTime;
 
+        // these happen once per second
         this.updateHtmlClock(elapsedTime);
+        this.updateConsoleBody(elapsedTime);
 
         const actions = [];
+        const logs = [];
 
         // TODO: use elapsedTime instead of deltaTime
         this.selectionSprite.update(deltaTime);
@@ -115,7 +144,8 @@ export class SpaceViewAnimator {
         }
 
         for (const planet of this.system['planets']) {
-            planet.update(elapsedTime);
+            const planetLogs = planet.update(elapsedTime);
+            logs.push(...planetLogs);
         }
 
         for (const ship of this.system['ships']) {
@@ -127,10 +157,11 @@ export class SpaceViewAnimator {
             this.gameStateInterface.performAction(action);
         }
 
+        this.gameStateInterface.addEventLogEntries(logs);
     }
 
     async populateScene() {
-        const startTime = Date.now();
+        const timeLord = new TimeLord();
         const scene = this.scene;
         const system = this.system;
 
@@ -180,14 +211,14 @@ export class SpaceViewAnimator {
 
         await spaceViewLoader.loadBackground();
         this.renderer.render(this.scene, this.camera);
-        console.log('background loads')
+        timeLord.endAndReset('background')
 
         await spaceViewLoader.load();
         this.renderer.compile(this.scene, this.camera);
-        // this.animate();
+        timeLord.endAndReset('compile')
 
-        const deltaTime = (Date.now() - startTime);
-        console.log(deltaTime + ' ms: spaceViewAnimator#populateScene');
+        await this.animate();
+        timeLord.end('first animation')
     }
 
     async redrawWormholeText(wormhole) {

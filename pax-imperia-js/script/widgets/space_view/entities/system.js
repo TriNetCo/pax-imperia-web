@@ -7,15 +7,24 @@ import { unpackData } from '../../../models/helpers.js'
 
 export class System {
 
+    /** @type {Star[]} */
+    stars;
+    /** @type {Planet[]} */
+    planets;
+    /** @type {Wormhole[]} */
+    wormholes;
+    /** @type {Ship[]} */
+    ships;
+
     constructor(systemData) {
         unpackData(systemData, this);
         this.stars = this.createRepresentations(systemData.stars, Star, this.name, this.id);
         this.planets = this.createRepresentations(systemData.planets, Planet, this.name, this.id);
         this.wormholes = this.createRepresentations(systemData.connections, Wormhole, this.name, this.id, systemData.position);
         this.ships = systemData.ships.map(ship => new Ship(ship, this.name, this.id)); // this pattern is leaner
-        this.planets[0].colony = new Colony(1, this.planets[0], 1);
+        this.planets[0].colony = new Colony(1, this.planets[0], 0);
         if (this.planets[1]) {
-            this.planets[1].colony = new Colony(2, this.planets[1], 1);
+            this.planets[1].colony = new Colony(2, this.planets[1], 0);
         }
         if (this.ships[1]) {
             this.ships[1].playerId = 2;

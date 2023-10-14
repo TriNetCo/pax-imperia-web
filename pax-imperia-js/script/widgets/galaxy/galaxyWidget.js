@@ -5,7 +5,9 @@ import { Galaxy } from '../../models/galaxy.js';
 
 export class GalaxyWidget {
 
+    /** @type {GalaxyDrawer} */
     galaxyDrawer;
+    /** @type {GalaxyDomManager} */
     galaxyDomManager;
     canvas;
     systemClickHandler;

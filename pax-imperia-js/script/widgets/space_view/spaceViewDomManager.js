@@ -31,6 +31,7 @@ export class SpaceViewDomManager {
         this.previousPreviousTarget = null;
         this.previousTargets = new Queue(3);
         this.eventLogHtml = '';
+        this.previousConsoleBodyHtml = '';
         window.SpaceViewDomManager = this;
 
         window.clickThumbnail = (targetType, targetName) => {
@@ -48,23 +49,55 @@ export class SpaceViewDomManager {
         };
 
         window.handleAssignButton = () => {
-            const defaultWork = 'farm';
-            const workAllocation = this.selectionSprite.selectionTarget.parentEntity.colony.workAllocation;
-            let totalAllocation = 0;
-            for (var work in workAllocation) {
+            const colony = this.selectionSprite.selectionTarget.parentEntity.colony;
+            const workAllocation = window.getDomWorkAllocations(colony)
+            colony.setNewWorkAllocation(workAllocation);
+
+            this.populateConsoleBody();
+            this.populatePlayerButtons();
+        };
+
+        window.getDomWorkAllocations = (colony) => {
+            const newWorkAllocation = structuredClone(colony.workAllocation);
+
+            // update each work allocation in copy
+            for (var work in newWorkAllocation) {
                 const input = document.getElementById("assign" + work);
-                workAllocation[work].allocation = input.value / 100;
-                totalAllocation += Number(workAllocation[work].allocation);
-            }
-            if (totalAllocation == 0) {
-                workAllocation[defaultWork].allocation = 1;
-            } else {
-                for (var work in workAllocation) {
-                    workAllocation[work].allocation = workAllocation[work].allocation /
-                        totalAllocation;
+                newWorkAllocation[work] = Math.floor(input?.value) || 0;
+                const workValueElement = document.getElementById(work + 'value');
+                if (workValueElement) {
+                    workValueElement.textContent = newWorkAllocation[work];
                 }
             }
-            this.populateConsoleBody();
+            return newWorkAllocation;
+        }
+
+        window.handleWorkSlider = () => {
+            const colony = this.selectionSprite.selectionTarget.parentEntity.colony;
+            const newWorkAllocation = window.getDomWorkAllocations(colony)
+
+            // update total workers count
+            const totalWorkAllocation = colony.getTotalWorkAllocation(newWorkAllocation);
+            const totalWorkAllocationElement = document.getElementById("total-workers");
+            totalWorkAllocationElement.textContent = totalWorkAllocation;
+            if (totalWorkAllocation > colony.population) {
+                totalWorkAllocationElement.style.color = "red";
+            } else {
+                totalWorkAllocationElement.style.color = "white";
+            }
+        };
+
+        window.handleAutoAssign = (checked) => {
+            const colony = this.selectionSprite.selectionTarget.parentEntity.colony;
+            colony.useAutoAssign = checked;
+
+            if (checked) {
+                colony.balanceWorkAllocation();
+                colony.autoAllocateWork();
+
+                this.populateConsoleBody();
+                this.populatePlayerButtons();
+            }
         };
 
     }
@@ -263,6 +296,7 @@ export class SpaceViewDomManager {
 
         // lower console
         this.populateConsoleBody();
+        this.populatePlayerButtons();
     }
 
     populateList(entity_type) {
@@ -292,21 +326,39 @@ export class SpaceViewDomManager {
     }
 
     populateConsoleBody() {
-        let html = "";
+        // default is the event log unless a target is selected
+        let html = this.eventLogHtml;
         const selectionTarget = this.selectionSprite.selectionTarget;
-        const expandButtonDiv = document.getElementById('expand-button');
         if (selectionTarget) {
             html = selectionTarget.parentEntity.getConsoleHtml();
-            if (selectionTarget.parentEntity.type == "planet" && selectionTarget.parentEntity.colony) {
-                expandButtonDiv.style.display = 'inherit';
-            } else {
-                expandButtonDiv.style.display = 'none';
-            }
+        }
+
+        // don't interact with DOM if nothing has changed
+        if (html == this.previousConsoleBodyHtml) {
+            return;
+        }
+
+        // show expand button when planet with colony selected
+        const expandButtonDiv = document.getElementById('expand-button');
+        if (selectionTarget?.parentEntity?.type == "planet" &&
+            selectionTarget?.parentEntity?.colony) {
+            expandButtonDiv.style.display = 'inherit';
         } else {
-            html = this.eventLogHtml;
             expandButtonDiv.style.display = 'none';
         }
+
+        console.log("Updating lower console")
         document.getElementById("lower-console").innerHTML = html;
+        this.previousConsoleBodyHtml = html;
+    }
+
+    populatePlayerButtons() {
+        let html = '';
+        const selectionTarget = this.selectionSprite.selectionTarget;
+        if (selectionTarget) {
+            html = selectionTarget.parentEntity.getPlayerButtonsHtml();
+        }
+        document.getElementById("player-buttons").innerHTML = html;
     }
 
     updateEventLogHtml(eventLog) {

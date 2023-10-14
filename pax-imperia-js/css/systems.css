@@ -128,6 +128,14 @@
     color: white;
     width: 95%;
     padding: 5px;
+    /* height: 100%; */
+}
+
+#player-buttons {
+    color: white;
+    width: 95%;
+    padding: 5px;
+    /* height: 100%; */
 }
 
 .left-menu-div {

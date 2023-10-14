@@ -79,3 +79,8 @@ export const getScaledNumber = (input, minInput, maxInput, minOutput, maxOutput)
     const output = inputPercent * (maxOutput - minOutput) + minOutput;
     return output;
 }
+
+export const capitalizeFirstLetter = (string) => {
+    if (!string) return string;
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}

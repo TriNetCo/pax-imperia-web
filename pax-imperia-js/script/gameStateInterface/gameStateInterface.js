@@ -111,8 +111,17 @@ export class GameStateInterface {
         const spaceViewDomManager = this.spaceViewWidget.spaceViewDomManager;
         if (spaceViewDomManager) {
             this.spaceViewWidget.spaceViewDomManager.updateEventLogHtml(this.eventLog);
-            this.spaceViewWidget.spaceViewDomManager.populateConsoleBody();
+            // don't update the console body if the user is currently
+            // selecting a target since it may be disruptive
+            // TODO: move event log to a different element?
+            if (!spaceViewDomManager.selectionSprite.selectionTarget) {
+                this.spaceViewWidget.spaceViewDomManager.populateConsoleBody();
+            }
         }
+    }
+
+    addEventLogEntries(entries) {
+        entries.forEach(entry => this.addEventLogEntry(entry));
     }
 
 }

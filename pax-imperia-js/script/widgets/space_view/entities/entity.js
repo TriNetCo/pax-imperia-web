@@ -90,7 +90,11 @@ export default class Entity {
     /////////////////////
 
     returnConsoleTitle() {
-        return '<div>' + this.type.toUpperCase() + ': ' + this.name + '</div>';
+        let html = '<div>' + this.type.toUpperCase() + ': ' + this.name + '</div>';
+        if (this.playerId) {
+            html += '<div>Player: ' + this.playerId + '</div>';
+        }
+        return html;
     }
 
     getConsoleHtml() {
@@ -98,5 +102,9 @@ export default class Entity {
         html += this.returnConsoleTitle();
         html += this.consoleBody;
         return html;
+    }
+
+    getPlayerButtonsHtml() {
+        return '';
     }
 }
