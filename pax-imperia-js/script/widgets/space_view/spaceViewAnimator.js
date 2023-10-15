@@ -37,9 +37,12 @@ export class SpaceViewAnimator {
         this.mouse = clientObjects.mouse;
         this.clock = clientObjects.gameClock;
 
+        this.cameraDistance = 50;
+
         THREE.Cache.enabled = true;  // for development,  please set this to false :)
 
         window.spaceViewAnimator = this;
+
     }
 
     stopDrawLoop() {
@@ -73,7 +76,7 @@ export class SpaceViewAnimator {
 
     async animate() {
         // TODO: should camera reset every frame??
-        this.resetCamera()
+        // this.resetCamera()
         this.updateObjects()
         const startTime = Date.now()
         this.renderer.render(this.scene, this.camera);
@@ -83,12 +86,7 @@ export class SpaceViewAnimator {
         }
     }
 
-    resetCamera() {
-        //////////////////////////////
-        // Reset camera in real time//
-        //////////////////////////////
-
-        let distance = parseFloat(this.clientObjects.distanceSlider.value);
+    resetCamera(distance) {
 
         // cameraPivot.rotation.set(xRotation, yRotation, 0.0);
         this.cameraPivot.rotation.set(-0.6, 0.05, -3);
@@ -96,7 +94,7 @@ export class SpaceViewAnimator {
         this.cameraPivot.position.set(0, 0, distance);
         this.camera.lookAt(this.scene.position);
 
-        this.headLamp.position.set(0, 0, distance);
+        // this.headLamp.position.set(0, 0, distance);
         // headLamp.lookAt(this.scene.position);
 
         this.camera.updateProjectionMatrix();
@@ -165,41 +163,20 @@ export class SpaceViewAnimator {
         const scene = this.scene;
         const system = this.system;
 
-        // Add Lights
-
-        var sunLight = new THREE.PointLight(new THREE.Color(), .7, 1000);
-        scene.add(sunLight);
-
-        var ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
-        scene.add(ambientLight);
-
-        var keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
-        keyLight.position.set(35, 38, 15);
-        scene.add(keyLight);
-
-        this.headLamp = new THREE.DirectionalLight(0xffffff, 0);
-        this.headLamp.position.set(22, 22, 25);
-        scene.add(this.headLamp);
-
         // Add Camera
 
-        let camera = this.camera;
-        scene.add(camera);
+        this.addCameraToScene();
 
-        var cameraLight = new THREE.PointLight(new THREE.Color(), 0, 10000);
-        scene.add(cameraLight);
-        camera.add(cameraLight);
+        // Add Lights
+        this.addLightsToScene();
 
-        this.cameraPivot = new THREE.Group();
-        camera.position.set(0, 0, 50);
-        camera.lookAt(scene.position);
-        this.cameraPivot.add(camera);
-        scene.add(this.cameraPivot);
+        // this.headLamp.position.set(0, 0, distance);
+        // headLamp.lookAt(this.scene.position);
+
+        //this.camera.updateProjectionMatrix();
+
 
         // Load Models
-
-        // this.resetCamera();
-
         const spaceViewLoader = new SpaceViewLoader(
             this.cacheMonster,
             scene,
@@ -219,6 +196,48 @@ export class SpaceViewAnimator {
 
         await this.animate();
         timeLord.end('first animation')
+    }
+
+    addCameraToScene() {
+        const distance = 50;
+
+        this.scene.add(this.camera);
+
+        var cameraLight = new THREE.PointLight(new THREE.Color(), 0, 10000);
+        this.scene.add(cameraLight);
+        this.camera.add(cameraLight);
+
+        this.cameraPivot = new THREE.Group();
+        this.camera.position.set(0, 0, distance);
+        this.camera.lookAt(this.scene.position);
+        this.cameraPivot.add(this.camera);
+        this.scene.add(this.cameraPivot);
+
+        // this.resetCamera();
+        this.cameraPivot.rotation.set(-0.6, 0.05, -3);
+
+        this.cameraPivot.position.set(0, 0, distance);
+        this.camera.lookAt(this.scene.position);
+    }
+
+    addLightsToScene() {
+        var sunLight = new THREE.PointLight(new THREE.Color(), .7, 1000);
+        this.scene.add(sunLight);
+
+        var ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+        this.scene.add(ambientLight);
+
+        var keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        keyLight.position.set(35, 38, 15);
+        this.scene.add(keyLight);
+
+        this.headLamp = new THREE.DirectionalLight(0xffffff, 0);
+        this.headLamp.position.set(0, 0, this.cameraDistance);
+        this.scene.add(this.headLamp);
+
+        var cameraLight = new THREE.PointLight(new THREE.Color(), 0, 10000);
+        this.scene.add(cameraLight);
+        this.camera.add(cameraLight);
     }
 
     async redrawWormholeText(wormhole) {

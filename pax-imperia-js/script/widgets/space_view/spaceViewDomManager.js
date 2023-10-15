@@ -16,16 +16,19 @@ export class SpaceViewDomManager {
      * @param {*} system
      * @param {*} systemClickHandler
      */
-    constructor(config, clientObjects, system, systemClickHandler) {
+    constructor(config, clientObjects, system, systemClickHandler, gameStateInterface) {
         this.c = config;
         this.system = system;
         this.systemClickHandler = systemClickHandler;
+        this.gameStateInterface = gameStateInterface;
+
         this.canvas = clientObjects.cx.canvas;
         this.mouse = clientObjects.mouse;
         this.camera = clientObjects.camera;
         this.scene = clientObjects.scene;
         this.renderer = clientObjects.renderer;
         this.selectionSprite = clientObjects.selectionSprite;
+
         this.raycaster = new THREE.Raycaster();
         this.previousTarget = null;
         this.previousPreviousTarget = null;
@@ -100,6 +103,16 @@ export class SpaceViewDomManager {
             }
         };
 
+    }
+
+    ////////////////////////
+    // Handle Dom Changes //
+    ////////////////////////
+
+    handleDistanceSlider = (event) => {
+        const distance = event.target.value;
+        const spaceViewAnimator = this.gameStateInterface.spaceViewWidget.spaceViewAnimator;
+        spaceViewAnimator.resetCamera(distance);
     }
 
     ////////////////////
@@ -347,7 +360,6 @@ export class SpaceViewDomManager {
             expandButtonDiv.style.display = 'none';
         }
 
-        console.log("Updating lower console")
         document.getElementById("lower-console").innerHTML = html;
         this.previousConsoleBodyHtml = html;
     }
@@ -376,6 +388,7 @@ export class SpaceViewDomManager {
     ///////////////////////
 
     attachDomEventsToCode() {
+        this.addHud();
         this.addMouseMovement();
         this.addMouseClick();
         this.addMouseDoubleClick();
@@ -403,11 +416,37 @@ export class SpaceViewDomManager {
         this.canvas.addEventListener('dblclick', this.#doubleClickHandler);
     }
 
+    addHud() {
+        // create HUD div
+        const el = document.createElement('div');
+        el.id = 'hud';
+
+        // add text "Zoom"
+        const zoomSpan = document.createElement('span');
+        zoomSpan.textContent = 'Zoom';
+        el.appendChild(zoomSpan);
+
+        // create slider
+        const slider = document.createElement('input');
+        slider.id = 'distance-slider';
+        slider.type = 'range';
+        slider.min = '-20';
+        slider.max = '300';
+        slider.step = '1';
+        slider.defaultValue = '50';
+        slider.oninput = this.handleDistanceSlider;
+        el.appendChild(slider);
+
+        const canvasAndButtons = document.getElementById('canvas-and-buttons');
+        canvasAndButtons.appendChild(el);
+    }
+
     detachFromDom() {
         this.canvas.removeEventListener('mousemove', this.mouseMovementHandler);
         this.canvas.removeEventListener('click', this.#clickHandler);
         this.canvas.removeEventListener('dblclick', this.#doubleClickHandler);
         this.canvas.removeEventListener('contextmenu', this.#rightClickHandler);
+        document.getElementById('hud').remove();
     }
 
     //////////////////////

@@ -61,12 +61,6 @@ const SystemPage = () => {
                     <div id="canvas-and-buttons">
                         <SpaceView />
 
-                        <div id="hud">
-                            <div>
-                                <span>Zoom</span>
-                                <input id="distance-slider" type="range" min="-20" max="300" step="1" defaultValue="50"/>
-                            </div>
-                        </div>
                         <div id="galaxy-and-console" className="flex-container">
                             <div id="galaxy">
                                 <Galaxy canvasWidth={400} canvasHeight={200} />

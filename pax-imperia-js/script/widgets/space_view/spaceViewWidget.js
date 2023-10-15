@@ -18,18 +18,15 @@ import CacheMonster from '../../models/cacheMonster.js';
  *                                      the gameClock data to the widget.
  */
 export class SpaceViewWidget {
+
     /** @type {SpaceViewAnimator} */
     spaceViewAnimator;
-
     /** @type {SpaceViewDomManager} */
     spaceViewDomManager;
-
     /** @type {System} */
     system;
-
     /** @type {THREE.WebGLRenderer} */
     renderer;
-
     /** @type {CacheMonster} */
     cacheMonster;
 
@@ -39,6 +36,7 @@ export class SpaceViewWidget {
         this.gameStateInterface = gameStateInterface;
         this.galaxy = gameStateInterface.galaxy;
         gameStateInterface.spaceViewWidget = this;
+
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.basePath = getBasePath();
         this.clientObjects.mouse = new THREE.Vector2(0, 0);
@@ -54,8 +52,6 @@ export class SpaceViewWidget {
 
         // TODO: fix this so the console is created by the widget
         // this.clientObjects.consoleDiv.innerHTML = "Resume";
-
-        this.clientObjects.distanceSlider = document.getElementById("distance-slider");
 
         this.setupRenderer();
         this.resetThreeObjects();
@@ -93,7 +89,13 @@ export class SpaceViewWidget {
     }
 
     async buildSystemClasses() {
-        this.spaceViewDomManager = new SpaceViewDomManager(this.c, this.clientObjects, this.system, this.systemClickHandler);
+        this.spaceViewDomManager = new SpaceViewDomManager(
+            this.c,
+            this.clientObjects,
+            this.system,
+            this.systemClickHandler,
+            this.gameStateInterface,
+        );
         window.spaceViewDomManager = this.spaceViewDomManager; // currently necessary for ship movement which accesses global
         this.spaceViewDomManager.attachDomEventsToCode();
         this.spaceViewDomManager.populateHtml();
