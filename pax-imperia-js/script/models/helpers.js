@@ -1,5 +1,11 @@
 // Generic helper functions
 
+import seedrandom from 'seedrandom';
+
+export const seedRandomness = (seed) => {
+    seedrandom(seed, { global: true });
+}
+
 export const getRandomNum = (min, max, decimals = null) => {
     // Returns a random number between min and max, rounded to the specified
     // decimal place. If decimals is left null, does not round.

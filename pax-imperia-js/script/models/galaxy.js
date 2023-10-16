@@ -1,6 +1,6 @@
 import { StarName } from './starName.js';
 import { SystemGenerator } from './systemGenerator.js';
-import { getRandomNum } from './helpers.js';
+import { getRandomNum, seedRandomness } from './helpers.js';
 import { System } from '../../script/widgets/space_view/entities/system.js';
 
 
@@ -32,6 +32,10 @@ export class Galaxy {
         galaxy.addConnectionsToSystems(systemsData, connections);
         galaxy.systems = galaxy.unpackSystemsData(systemsData);
         return galaxy;
+    }
+
+    static seedRandomness(seed) {
+        seedRandomness(seed);
     }
 
     /**

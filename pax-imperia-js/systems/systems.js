@@ -18,7 +18,7 @@ let systemDataOld = {
             "size": 2,
             "distance_from_star": 0,
             "spin_speed": 1,
-            "starting_angle": 5,  /* This is a random number where the planet's orbit begins so they aren't all rotating in sync with each other. */
+            "starting_angle": 5,  /* This is an random number where the planet's orbit begins so they aren't all rotating in sync with each other. */
         }
     ],
     "planets": [

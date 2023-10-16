@@ -11,6 +11,7 @@
     "assets": "assets"
   },
   "dependencies": {
+    "seedrandom": "^3.0.5",
     "three": "^0.147.0"
   },
   "scripts": {

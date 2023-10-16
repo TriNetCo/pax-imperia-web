@@ -103,7 +103,7 @@ export class SystemGenerator {
         if (override) {
             return override;
         }
-        if (strategy === 'random') {
+        if (strategy === 'random') {  // Choose a random ship make from the list
             return shipOptions[Math.floor(Math.random() * shipOptions.length)];
         }
         if (strategy === 'sequential') {
