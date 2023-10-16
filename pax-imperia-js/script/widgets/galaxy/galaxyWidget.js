@@ -56,8 +56,7 @@ export class GalaxyWidget {
     }
 
     exportGalaxyDataToJson() {
-        const systemsJson = JSON.stringify(this.galaxy.systems);
-        return systemsJson;
+        return this.galaxy.toJson();
     }
 
     importGalaxyData(systemsJson) {

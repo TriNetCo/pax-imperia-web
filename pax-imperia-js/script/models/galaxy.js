@@ -48,6 +48,10 @@ export class Galaxy {
         return galaxy;
     }
 
+    toJson() {
+        return JSON.stringify(this.systems);
+    }
+
     unpackSystemsData(systemsData) {
         const systems = [];
         for (const systemData of systemsData) {
