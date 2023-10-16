@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pax-imperia-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pax-imperia-backend
+  template:
+    metadata:
+      labels:
+        app: pax-imperia-backend
+    spec:
+      containers:
+      - name: pax-imperia-backend
+        image: pax-imperia-clone/backend:latest
+        ports:
+        - containerPort: 8080

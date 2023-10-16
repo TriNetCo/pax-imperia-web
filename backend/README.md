@@ -33,7 +33,34 @@ The main file to edit is of course `./public/index.html` for getting at the fron
 
 ### Run the Tests
 
-```
+```bash
 go test ./...
 ```
 
+### Docker build
+
+```bash
+docker build . -t pax-imperia-clone/backend
+```
+
+### Deploying to k8s
+
+Instead of helm I figured I'd try kustomize since that's invented now.  Don't forget to push the container image.
+
+```bash
+# Skim the outputs
+kubectl kustomize k8s/prod/
+
+# Deploy it
+kubectl apply -k k8s/prod
+
+# Check deployment
+kubectl get -k k8s/prod
+
+# Tare down
+kubectl destroy -k k8s/prod
+```
+
+### Deploying to GCP
+
+I tore down GCP, might bring it up again if my local k8s isn't performing well.

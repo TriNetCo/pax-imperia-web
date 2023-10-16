@@ -1,0 +1,7 @@
+namePrefix: prod-
+commonLabels:
+  app: pax-imperia
+commonAnnotations:
+  note: prod deployment for pax-imperia-clone/backend
+bases:
+- ../api-template

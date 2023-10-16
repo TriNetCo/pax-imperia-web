@@ -27,7 +27,6 @@ export class SpriteFlipbook {
         map.offset.y = (this.currentTile % tilesVert) / tilesVert;
 
         const material = new THREE.SpriteMaterial({ map: map });
-        this.material = material;
         const sprite = new THREE.Sprite(material);
         this.sprite = sprite;
         sprite.notClickable = true;

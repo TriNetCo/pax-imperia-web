@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pax-imperia-backend-configmap
+data:
+  application.properties: |
+    FOO=Bar
+
