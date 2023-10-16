@@ -1,12 +1,24 @@
+import { Galaxy } from "../../models/galaxy.js";
+
 export class GalaxyDrawer {
 
+    /**
+     *
+     * @param {Object} config
+     * @param {Galaxy} config.galaxy
+     */
     constructor(config) {
         this.cx = config.cx;
         this.galaxy = config.galaxy;
         this.mouse = config.mouse;
         this.connections = config.knownConnections;
         // this.connections = this.collectConnections(this.galaxy.systems);
-        this.currentSystemId = config.currentSystemId;
+        this.setCurrentSystem(config.currentSystemId);
+        console.log("GalaxyDrawer initialized with currentSystemId: " + this.currentSystemId);
+    }
+
+    setCurrentSystem(systemId) {
+        this.currentSystemId = systemId;
     }
 
     drawLoop() {
@@ -98,6 +110,7 @@ export class GalaxyDrawer {
 
     drawCurrentSystem() {
         if (this.currentSystemId) {
+            console.log("drawing current system: " + this.currentSystemId);
             const system = this.galaxy.getSystem(this.currentSystemId);
             const color = "yellow";
             const radius = this.scaleRadius(system.radius) + 2;

@@ -51,6 +51,10 @@ export class GalaxyWidget {
         this.galaxyDomManager.attachDomEventsToCode();
     }
 
+    changeSystem(systemIndex) {
+        this.galaxyDrawer.setCurrentSystem(systemIndex);
+    }
+
     exportGalaxyDataToJson() {
         const systemsJson = JSON.stringify(this.galaxy.systems);
         return systemsJson;

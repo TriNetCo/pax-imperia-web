@@ -5,11 +5,13 @@ import {GameDataContext} from '../../app/Context';
 const SpaceView = () => {
     const data = useContext(GameDataContext);
     let spaceViewWidget = data.spaceViewWidget;
+    let galaxyWidget = data.galaxyWidget;
     let requestId;
 
     const systemClickHandler = (path) => {
         const systemIndex = path.replace('/systems/', '');
         spaceViewWidget.changeSystem(systemIndex);
+        galaxyWidget.changeSystem(systemIndex);
         history.pushState(null, null, '#' + path);
     };
 
