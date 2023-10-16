@@ -45,6 +45,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
+      - run: cd ../pax-imperia-js && npm ci && cd ../react-frontend
       - run: npm ci
       - run: npm test
       - run: npm run build
