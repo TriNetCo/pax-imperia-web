@@ -15,7 +15,6 @@ export class GalaxyWidget {
         this.c = config;
         this.mouse = { x: 0, y: 0 };
         this.galaxy = galaxy;
-        this.gameClock = gameStateInterface.gameClock;
         this.gameStateInterface = gameStateInterface;
     }
 
