@@ -282,6 +282,34 @@ export class Colony {
         }
     }
 
+    /*
+        availableBuildings: {
+        'housing': {
+            label: 'Housing',
+            buildingType: 'housing',
+            cost: { 'wood': 100 },
+            capacity: 1000,
+            unit: 'people'
+        },
+     */
+
+    getBuildHtml() {
+        let html = 'AVAILABLE BUILDINGS:';
+        Object.entries(this.availableBuildings).forEach(([type, value]) => {
+            const label = value.label;
+            const cost = value.cost;
+            const costHtml = this.getCostHtml(cost);
+            const disabled = this.isBuildDisabled(type);
+            html += `
+                <div>
+                    <button id="build-${type}" onclick="handleBuildButton('${type}')" ${disabled}>Build ${label}</button>
+                    ${costHtml}
+                </div>`
+        });
+        return html;
+
+    }
+
     pushLog(message) {
         const existingLog = this.logs.find(log => log.message == message);
         const existingNewLog = this.newLogs.find(log => log == message);
