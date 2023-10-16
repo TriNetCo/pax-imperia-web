@@ -49,10 +49,7 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: ./react-frontend/build
+
 
   deploy:
     needs: build
@@ -65,7 +62,10 @@ jobs:
       name: github-pages    # This environment is protected in settings, it's a hack for only allowing the kickoff to happen via main
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - run: echo TAG was ${{ github.ref }}
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./react-frontend/build
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
