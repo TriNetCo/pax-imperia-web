@@ -21,7 +21,12 @@ module.exports = {
         indent: [
             'error',
             4,
-            { SwitchCase: 1 }
+            {
+              SwitchCase: 1,
+              FunctionDeclaration: {"parameters": "first"},
+              FunctionExpression: {"parameters": "first"},
+              CallExpression: {"arguments": "first"}
+        }
         ],
         quotes: [
             'error',
