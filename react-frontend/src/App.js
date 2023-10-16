@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { Route, HashRouter, Switch } from 'react-router-dom';
+import { Route, HashRouter } from 'react-router-dom';
 import GameDashboardPage from './pages/GameDashboardPage';
 import DebugPage from './pages/DebugPage/DebugPage';
 import SystemPage from './pages/SystemPage';
@@ -8,11 +8,7 @@ import LoginPage from './pages/LoginPage/LoginPage';
 import ChatPage from './pages/ChatPage/ChatPage';
 import UsersPage from './features/users/UsersPage';
 import LandingPage from './pages/LandingPage/LandingPage';
-import ColonizerConfigPage from './pages/NewGame/ColonizerConfigPage';
-import GalaxyConfigPage from './pages/NewGame/GalaxyConfigPage';
-import MultiplayerLobbyPage from './pages/NewGame/MultiplayerLobbyPage';
 import NewGameLayout from './pages/NewGame/NewGamePage';
-import SpeciesDesignPage from './pages/NewGame/SpeciesDesignPage';
 import AboutPage from './pages/AboutPage';
 import usePageTracking from './app/usePageTracking';
 
