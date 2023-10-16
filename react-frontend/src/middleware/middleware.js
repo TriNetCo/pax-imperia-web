@@ -49,7 +49,7 @@ const socketMiddleware = () => {
                 break;
             case 'GET_GAME_CONFIGURATION_RESPONSE':
                 console.debug('GET_GAME_CONFIGURATION_RESPONSE', message.payload);
-                window.newGameData = message.payload;
+                window.newGameData = message.payload; // TODO: remove.  This is for debugging the last message since I don't have testing setup for this
                 store.dispatch(actions.getGameConfigurationResponse(message.payload));
                 break;
             case 'update_game_players':

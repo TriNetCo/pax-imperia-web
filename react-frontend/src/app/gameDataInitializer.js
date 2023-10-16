@@ -22,6 +22,14 @@ const initGameData = () => {
       new SpaceViewWidget(GameSettings.spaceViewWidget, {}, gameStateInterface)
     };
 
+    // Globalize classes for debugging
+    window.gameStateInterface = gameStateInterface;
+    window.galaxyWidget = data.galaxyWidget;
+    window.spaceViewWidget = data.spaceViewWidget;
+    window.galaxy = galaxy;
+    window.spaceViewAnimator = data.spaceViewWidget.spaceViewAnimator;
+    window.cacheMonster = data.spaceViewWidget.cacheMonster;
+
     gameStateInterface.startClock();
     return data;
 };

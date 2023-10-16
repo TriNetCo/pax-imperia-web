@@ -35,7 +35,8 @@ export class SpaceViewDomManager {
         this.previousTargets = new Queue(3);
         this.eventLogHtml = '';
         this.previousConsoleBodyHtml = '';
-        window.SpaceViewDomManager = this;
+
+        window.SpaceViewDomManager = this; // TODO: remove the dependency that Entity has on this global
 
         window.clickThumbnail = (targetType, targetName) => {
             const entity = this.system[targetType + 's'].find(x => x.name === targetName);

@@ -42,8 +42,6 @@ export class SpaceViewWidget {
         this.clientObjects.mouse = new THREE.Vector2(0, 0);
         this.clientObjects.gameClock = gameStateInterface.gameClock;
         this.cacheMonster = new CacheMonster(this.renderer);
-        window.cacheMonster = this.cacheMonster;
-        window.galaxy = this.galaxy; // for debugging
     }
 
     loadWidget(systemIndex, systemClickHandler) {

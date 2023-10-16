@@ -40,9 +40,6 @@ export class SpaceViewAnimator {
         this.cameraDistance = 50;
 
         THREE.Cache.enabled = true;  // for development,  please set this to false :)
-
-        window.spaceViewAnimator = this;
-
     }
 
     stopDrawLoop() {

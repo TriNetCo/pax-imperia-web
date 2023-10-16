@@ -27,12 +27,6 @@ const NewGameLayout = () => {
 
 
     const createNewMultiplayerGame = () => {
-    // TODO: This is a hack to get the lobby token to show up in the URL
-    // We should probably use a different method
-    // setTimeout(() => {
-    //   window.location.href = `/new_game/lobby/${data.lobbyToken}`;
-    // }, 1000);
-
         createNewLobby();
     };
 

@@ -17,13 +17,6 @@ export class GalaxyWidget {
         this.galaxy = galaxy;
         this.gameClock = gameStateInterface.gameClock;
         this.gameStateInterface = gameStateInterface;
-        gameStateInterface.galaxyWidget = this;
-        window.galaxyWidget = this;
-
-        if (typeof (window) !== 'undefined') {  // These globals break tests hard...
-            // TODO: clean this up, it's not needed anymore?
-            window.gameClock = window.gameClock ? window.gameClock : this.gameClock;
-        }
     }
 
     loadWidget(canvas, systemClickHandler, overrideConfig) {
