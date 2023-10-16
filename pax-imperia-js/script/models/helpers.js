@@ -74,9 +74,12 @@ export class Queue extends Array {
 
 export const getBasePath = () => {
     let path = '';
+
+    // correct path if we're using hash routing
     if (typeof (window) !== 'undefined' && window.location.hash.includes("#")) {
         path = "/pax-imperia-clone";
     };
+
     return path;
 }
 

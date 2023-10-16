@@ -12,16 +12,22 @@ const SpaceView = () => {
         const systemIndex = path.replace('/systems/', '');
         spaceViewWidget.changeSystem(systemIndex);
         galaxyWidget.changeSystem(systemIndex);
-        history.pushState(null, null, '#' + path);
+
+        // correct path if we're using hash routing
+        if (window.location.hash.startsWith('#/systems')) {
+            path = '#' + path;
+        }
+
+        history.pushState(null, null, path);
     };
 
     useEffect(() => {
         (async() => {
             let pathname = window.location.pathname;
-            const hashString = window.location.hash;
 
-            if (hashString.includes('#/systems')) {
-                pathname = hashString.replace('#/', '/');
+            // correct path if we're using hash routing
+            if (window.location.hash.startsWith('#/systems')) {
+                pathname = window.location.hash.replace('#/', '/');
             }
 
             const systemIndex = parseInt(pathname.replace('/systems/', ''));
