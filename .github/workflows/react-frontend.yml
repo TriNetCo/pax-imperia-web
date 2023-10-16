@@ -36,6 +36,8 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
     defaults:
       run:
         working-directory: ./react-frontend
@@ -50,14 +52,14 @@ jobs:
       - run: npm test
       - name: Build the React app
         run: npm run build
-        with:
-          env:
-            REACT_APP_BUILD_VERSION: ${{ github.sha }}
-            REACT_APP_PAX_SOCKET_URL: ${{ secrets.REACT_APP_PAX_SOCKET_URL }}
-            REACT_APP_PAX_BACKEND_URL: ${{ secrets.REACT_APP_PAX_BACKEND_URL }}
-            REACT_APP_AUTH_DOMAIN: ${{ secrets.REACT_APP_AUTH_DOMAIN }}
-            REACT_APP_PAX_GOOGLE_PROJECT_ID: ${{ secrets.REACT_APP_PAX_GOOGLE_PROJECT_ID }}
-            REACT_APP_PAX_FIREBASE_API_KEY: ${{ secrets.REACT_APP_PAX_FIREBASE_API_KEY }}
+        env:
+          REACT_APP_PAX_APP_ENV: prod
+          REACT_APP_PAX_BUILD_VERSION: ${{ github.sha }}
+          REACT_APP_PAX_SOCKET_URL: ${{ secrets.REACT_APP_PAX_SOCKET_URL }}
+          REACT_APP_PAX_BACKEND_URL: ${{ secrets.REACT_APP_PAX_BACKEND_URL }}
+          REACT_APP_AUTH_DOMAIN: ${{ secrets.REACT_APP_AUTH_DOMAIN }}
+          REACT_APP_PAX_GOOGLE_PROJECT_ID: ${{ secrets.REACT_APP_PAX_GOOGLE_PROJECT_ID }}
+          REACT_APP_PAX_FIREBASE_API_KEY: ${{ secrets.REACT_APP_PAX_FIREBASE_API_KEY }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}

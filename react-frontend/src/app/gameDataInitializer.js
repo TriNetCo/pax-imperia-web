@@ -3,6 +3,7 @@ import { SpaceViewWidget } from 'pax-imperia-js/script/widgets/space_view/spaceV
 import { GameSettings } from 'pax-imperia-js/script/gameSettings';
 import { Galaxy } from 'pax-imperia-js/script/models/galaxy';
 import { GameStateInterface } from 'pax-imperia-js/script/gameStateInterface/gameStateInterface';
+import AppConfig from 'src/AppConfig';
 
 const initGameData = () => {
     //////////
@@ -29,6 +30,8 @@ const initGameData = () => {
     window.galaxy = galaxy;
     window.spaceViewAnimator = data.spaceViewWidget.spaceViewAnimator;
     window.cacheMonster = data.spaceViewWidget.cacheMonster;
+
+    window.appConfig = AppConfig;
 
     gameStateInterface.startClock();
     return data;

@@ -7,7 +7,7 @@ const getAppConfig = () => {
         case 'stage':
         case 'prod':
             return {
-                APP_ENV:           appEnv,
+                APP_ENV:           process.env.REACT_APP_PAX_APP_ENV,
                 BUILD_VERSION:     process.env.REACT_APP_PAX_BUILD_VERSION,
                 SOCKET_URL:        process.env.REACT_APP_PAX_SOCKET_URL,
                 BACKEND_URL:       process.env.REACT_APP_PAX_BACKEND_URL,
