@@ -35,10 +35,10 @@ export class Wormhole extends Entity {
         // fix wormhole depths to -50 behind system
         const wormholeZ = -50;
         // cap from -30 to 0
-        const minY = -30;
-        const maxY = 0;
+        const minY = -50;
+        const maxY = -10;
         const wormholeY = Math.max(minY,
-            Math.min(maxY, (systemPosition.y - wormholePosition.y - 30) * 0.5));
+            Math.min(maxY, (systemPosition.y - wormholePosition.y - 60) * 0.5));
         const minX = -30;
         const maxX = 30;
         const wormholeX = Math.max(minX,

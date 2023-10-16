@@ -446,7 +446,10 @@ export class SpaceViewDomManager {
         this.canvas.removeEventListener('click', this.#clickHandler);
         this.canvas.removeEventListener('dblclick', this.#doubleClickHandler);
         this.canvas.removeEventListener('contextmenu', this.#rightClickHandler);
-        document.getElementById('hud').remove();
+        const hudElement = document.getElementById('hud');
+        if (hudElement) {
+            hudElement.remove();
+        }
     }
 
     //////////////////////

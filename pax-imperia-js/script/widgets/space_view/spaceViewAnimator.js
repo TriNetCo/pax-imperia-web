@@ -87,16 +87,9 @@ export class SpaceViewAnimator {
     }
 
     resetCamera(distance) {
-
-        // cameraPivot.rotation.set(xRotation, yRotation, 0.0);
-        this.cameraPivot.rotation.set(-0.6, 0.05, -3);
-
-        this.cameraPivot.position.set(0, 0, distance);
+        distance = distance * 2;
+        this.camera.position.set(0, distance, 0);
         this.camera.lookAt(this.scene.position);
-
-        // this.headLamp.position.set(0, 0, distance);
-        // headLamp.lookAt(this.scene.position);
-
         this.camera.updateProjectionMatrix();
     }
 
@@ -199,25 +192,17 @@ export class SpaceViewAnimator {
     }
 
     addCameraToScene() {
-        const distance = 50;
+        const distance = 50 * 2;
 
+        this.camera.position.set(0, distance, 0);
+        this.camera.lookAt(this.scene.position);
         this.scene.add(this.camera);
 
-        var cameraLight = new THREE.PointLight(new THREE.Color(), 0, 10000);
-        this.scene.add(cameraLight);
-        this.camera.add(cameraLight);
-
         this.cameraPivot = new THREE.Group();
-        this.camera.position.set(0, 0, distance);
-        this.camera.lookAt(this.scene.position);
+        this.cameraPivot.position.set(0, 0, 0);
+        this.cameraPivot.rotation.x = Math.PI * 1 / 3;
         this.cameraPivot.add(this.camera);
         this.scene.add(this.cameraPivot);
-
-        // this.resetCamera();
-        this.cameraPivot.rotation.set(-0.6, 0.05, -3);
-
-        this.cameraPivot.position.set(0, 0, distance);
-        this.camera.lookAt(this.scene.position);
     }
 
     addLightsToScene() {
@@ -231,13 +216,13 @@ export class SpaceViewAnimator {
         keyLight.position.set(35, 38, 15);
         this.scene.add(keyLight);
 
-        this.headLamp = new THREE.DirectionalLight(0xffffff, 0);
-        this.headLamp.position.set(0, 0, this.cameraDistance);
-        this.scene.add(this.headLamp);
+        // this.headLamp = new THREE.DirectionalLight(0xffffff, 0);
+        // this.headLamp.position.set(0, 0, this.cameraDistance);
+        // this.scene.add(this.headLamp);
 
-        var cameraLight = new THREE.PointLight(new THREE.Color(), 0, 10000);
-        this.scene.add(cameraLight);
-        this.camera.add(cameraLight);
+        // var cameraLight = new THREE.PointLight(new THREE.Color(), 0, 10000);
+        // this.scene.add(cameraLight);
+        // this.camera.add(cameraLight);
     }
 
     async redrawWormholeText(wormhole) {
