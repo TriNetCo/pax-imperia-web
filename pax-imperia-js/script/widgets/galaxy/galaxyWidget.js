@@ -1,6 +1,5 @@
 import { GalaxyDrawer } from './galaxyDrawer.js';
 import { GalaxyDomManager } from './galaxyDomManager.js';
-import { packData } from '../../models/helpers.js';
 import { Galaxy } from '../../models/galaxy.js';
 
 export class GalaxyWidget {
