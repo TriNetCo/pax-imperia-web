@@ -1,3 +1,5 @@
 An override was created at config-overrides.js that makes it so this folder isn't 'really' the public folder, rather the ../pax-imperia-js folder is.
 The assets in this folder are actually only usable because they're imported via react javascript and therefore are included per the webpack pipeline (check app.css to see an example).
 For production builds and deployments, `package.json` includes a `postbuild` script to put the files in the correct places.
+For files only needed on prod builds, they can actually just live here, like the 404.html which is a hack to make GH's load balancer eventually redirect all pages back to the root SPA... But does it really work good...
+

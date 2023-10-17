@@ -28,7 +28,7 @@
     "clean": "rm -rf node_modules/.cache/ node_modules/pax-imperia-js && npm install",
     "start": "react-app-rewired start",
     "build": "react-scripts build",
-    "postbuild": "bash -c 'cp -r ../pax-imperia-js/{assets,webtrash} ./build && cp ../pax-imperia-js/{manifest.json,favicon.ico} ./build'",
+    "postbuild": "bash -c 'cp -r ../pax-imperia-js/{assets,webtrash} ./build && cp ../pax-imperia-js/{manifest.json,favicon.ico} ./build && cp ./build/index.html ./build/404.html'",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "deploy-app": "bash -c 'source ../versioner.sh && react-scripts build && gsutil -m -o 'GSUtil:parallel_process_count=1' cp -r build/* gs://pax-njax-org/'",
