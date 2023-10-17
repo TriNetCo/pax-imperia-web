@@ -57,8 +57,11 @@ export class SpaceViewDomManager {
             const workAllocation = window.getDomWorkAllocations(colony)
             colony.setNewWorkAllocation(workAllocation);
 
+            if (colony.useAutoAssign) {
+                colony.autoAllocateWork();
+            }
             this.populateConsoleBody();
-            this.populatePlayerButtons();
+            this.populateStaticConsole();
         };
 
         window.getDomWorkAllocations = (colony) => {
@@ -100,9 +103,17 @@ export class SpaceViewDomManager {
                 colony.autoAllocateWork();
 
                 this.populateConsoleBody();
-                this.populatePlayerButtons();
+                this.populateStaticConsole();
             }
         };
+
+        window.handleBuildButton = (buildingType) => {
+            const colony = this.selectionSprite.selectionTarget.parentEntity.colony;
+            colony.startBuilding(buildingType);
+
+            this.populateConsoleBody();
+            this.populateStaticConsole();
+        }
 
     }
 
@@ -310,7 +321,7 @@ export class SpaceViewDomManager {
 
         // lower console
         this.populateConsoleBody();
-        this.populatePlayerButtons();
+        this.populateStaticConsole();
     }
 
     populateList(entity_type) {
@@ -365,13 +376,13 @@ export class SpaceViewDomManager {
         this.previousConsoleBodyHtml = html;
     }
 
-    populatePlayerButtons() {
+    populateStaticConsole() {
         let html = '';
         const selectionTarget = this.selectionSprite.selectionTarget;
         if (selectionTarget) {
-            html = selectionTarget.parentEntity.getPlayerButtonsHtml();
+            html = selectionTarget.parentEntity.getStaticConsoleHtml();
         }
-        document.getElementById("player-buttons").innerHTML = html;
+        document.getElementById("static-console").innerHTML = html;
     }
 
     updateEventLogHtml(eventLog) {

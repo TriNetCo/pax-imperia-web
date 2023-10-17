@@ -74,6 +74,7 @@ export class Planet extends Entity {
                 <div>Player: ${colonizedBy}</div><br/>`;
         if (this.colony && this.colony?.playerId == 1) {
             html += this.colony.getColonyStatsHtml();
+            html += this.colony.getBuildingStatsHtml()
         } else {
             html += `<div>Population: ${population}</div>`;
         }
@@ -82,11 +83,11 @@ export class Planet extends Entity {
         return html;
     }
 
-    getPlayerButtonsHtml() {
+    getStaticConsoleHtml() {
         let html = '';
         if (this.colony && this.colony.playerId == 1) {
-            html += this.colony.getBuildingStatsHtml();
             html += this.colony.getWorkAllocationHtml();
+            html += this.colony.getBuildHtml();
         }
         return html;
     }

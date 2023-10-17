@@ -112,6 +112,7 @@
     height: 194px;
     opacity: 85%;
     overflow-y: scroll;
+    z-index: 1;
 }
 
 #lower-console-and-button.expanded {
@@ -131,11 +132,32 @@
     /* height: 100%; */
 }
 
-#player-buttons {
+#lower-console-building-stats table,
+#lower-console-building-stats th,
+#lower-console-building-stats tr,
+#lower-console-building-stats td {
+    vertical-align: top;
+    text-align: left;
+    padding-right: 6px;
+    padding-left: 6px;
+}
+
+#static-console {
     color: white;
     width: 95%;
     padding: 5px;
     /* height: 100%; */
+}
+
+#lower-console-colony-build table,
+#lower-console-colony-build th,
+#lower-console-colony-build tr,
+#lower-console-colony-build td {
+    /* border: 1px solid black; */
+    border-collapse: collapse;
+    padding-right: 6px;
+    padding-left: 6px;
+    text-align: center;
 }
 
 .left-menu-div {

@@ -8,9 +8,7 @@ export class Colony {
         this.startTime = startTime;
         this.lastUpdated = startTime;
         this.population = colonyConfig?.startingPopulation || defaulColonyConfig.startingPopulation;
-        this.food = colonyConfig?.startingFood || defaulColonyConfig.startingFood;
-        this.wood = colonyConfig?.startingWood || defaulColonyConfig.startingWood;
-        this.metal = colonyConfig?.startingMetal || defaulColonyConfig.startingMetal;
+        this.resources = colonyConfig?.startingResources || defaulColonyConfig.startingResources;
         this.populationCapacity = colonyConfig?.populationCapacity || defaulColonyConfig.populationCapacity;
         this.foodStorageCapacity = colonyConfig?.foodStorageCapacity || defaulColonyConfig.foodStorageCapacity;
         this.woodStorageCapacity = colonyConfig?.woodStorageCapacity || defaulColonyConfig.woodStorageCapacity;
@@ -27,9 +25,10 @@ export class Colony {
         this.workplaceCapacities = {};
         this.resourceCapacities = {};
         this.workAllocation = {};
-        this.useAutoAssign = false;
         this.logs = [];
         this.newLogs = [];
+        this.buildingQueue = [];
+        this.useAutoAssign = false;
         this.setCapacities();
         this.autoAllocateWork();
     }
@@ -55,6 +54,13 @@ export class Colony {
 
         // no building required to gather wood so set to population
         this.workplaceCapacities.gather = Math.floor(this.population);
+
+        // add available spots for building from building queue
+        this.buildingQueue.forEach(item => {
+            this.workplaceCapacities.build = this.workplaceCapacities.build +
+                item.workers ||
+                item.workers;
+        });
 
         // filter out work types from prioritization order that have no capacity
         this.orderOfWork = this.defaultOrderOfWork.filter(
@@ -82,14 +88,16 @@ export class Colony {
         return [];
     }
 
-    handleServerTick(tick, time) {
+    handleServerTick(tick) {
         this.setCapacities();
-        this.wood = this.getWood(tick);
+        this.balanceWorkAllocation();
+        this.resources.wood = this.getWood(tick);
         let population = this.getPopulation(tick);
         let food = this.getFood(tick, population);
         ({ food, population } = this.eatFood(food, population, tick));
-        this.food = food;
+        this.resources.food = food;
         this.population = population;
+        this.updateBuildingQueue(tick);
         this.balanceWorkAllocation();
         if (this.autoAllocateWork) {
             this.autoAllocateWork();
@@ -106,7 +114,7 @@ export class Colony {
     }
 
     getFood(deltaTimeSeconds) {
-        let food = this.food +
+        let food = this.resources.food +
             this.workAllocation.farm *
             this.foodProductionRate *
             deltaTimeSeconds;
@@ -133,7 +141,7 @@ export class Colony {
     }
 
     getWood(deltaTimeSeconds) {
-        let wood = this.wood +
+        let wood = this.resources.wood +
             this.workAllocation.gather *
             this.woodGatherRate *
             deltaTimeSeconds;
@@ -144,18 +152,42 @@ export class Colony {
         return wood;
     }
 
-    getColonyStatsHtml() {
-        const html = `<div>Population: ${Math.floor(this.population)} / ${this.housingCapacities.people}</div>
-            <div>Food: ${Math.floor(this.food)} / ${this.resourceCapacities.food}</div>
-            <div>Wood: ${Math.floor(this.wood)} / ${this.resourceCapacities.wood}</div>`
-        return html;
+    startBuilding(buildingType) {
+        const building = this.availableBuildings[buildingType];
+        for (const resource in building.cost) {
+            this.resources[resource] -= building.cost[resource];
+        }
+        const queueItem = {
+            'buildingType': buildingType,
+            'workers': building.construction.workers,
+            'timeCost': building.construction.timeCost,
+            'progress': 0,
+        };
+        this.buildingQueue.push(queueItem);
+        this.setCapacities();
     }
 
-    getBuildingStatsHtml() {
-        let html = 'BUILDINGS';
-        Object.entries(this.buildings).forEach(([type, count]) => {
-            html += `<div>${this.availableBuildings[type].label}: ${count}</div>`;
+    updateBuildingQueue(tick) {
+        const totalBuildWorkers = this.workAllocation.build || 0;
+        this.buildingQueue.forEach(item => {
+            const buildWorkers = Math.min(item.workers, totalBuildWorkers);
+            item.progress += tick * buildWorkers /
+                (item.timeCost * item.workers);
+            console.log(item.buildingType, item.progress)
+            if (item.progress >= 1) {
+                this.buildings[item.buildingType] = this.buildings[item.buildingType] + 1 || 1;
+                this.buildingQueue.splice(this.buildingQueue.indexOf(item), 1);
+                this.setCapacities();
+            }
         });
+    }
+
+    getColonyStatsHtml() {
+        const html = `
+            <div>Population: ${Math.floor(this.population)} / ${this.housingCapacities.people}</div>
+            <div>Food: ${Math.floor(this.resources.food)} / ${this.resourceCapacities.food}</div>
+            <div>Wood: ${Math.floor(this.resources.wood)} / ${this.resourceCapacities.wood}</div>
+            <br/>`;
         return html;
     }
 
@@ -166,7 +198,7 @@ export class Colony {
         const autoAssignCheck = this.useAutoAssign ? 'checked' : '';
         let html = `
             <div><br/>
-                WORK
+                <b>WORK</b>
                 <button id="assign" onclick="handleAssignButton()">Assign</button>
                 <input type="checkbox" id="auto-assign" name="auto-assign" onclick="handleAutoAssign(this.checked)" ${autoAssignCheck}>
                 <label for="auto-assign-check">Auto-assign new workers</label>
@@ -288,26 +320,99 @@ export class Colony {
             label: 'Housing',
             buildingType: 'housing',
             cost: { 'wood': 100 },
+            construction: { 'workers': 50 , 'timeCost': 30},
             capacity: 1000,
             unit: 'people'
         },
      */
 
     getBuildHtml() {
-        let html = 'AVAILABLE BUILDINGS:';
+        let html = `<div id="lower-console-colony-build">
+            <br/><div><b>AVAILABLE BUILDINGS</b></div>
+            <table>
+                <tr>
+                    <th style="text-align:center;">
+                    </th>
+                    <th style="text-align:center;">
+                        Building
+                    </th>
+                    <th style="text-align:center;">
+                        Cost
+                    </th>
+                    <th style="text-align:center;">
+                        Workers
+                    </th>
+                    <th style="text-align:center;">
+                        Time
+                    </th>
+                </tr>`;
         Object.entries(this.availableBuildings).forEach(([type, value]) => {
             const label = value.label;
-            const cost = value.cost;
-            const costHtml = this.getCostHtml(cost);
+            const costHtml = Object.entries(value.cost).map(([resource, amount]) => {
+                return `<span>${resource}: ${amount}</span>`
+            }).join('');
             const disabled = this.isBuildDisabled(type);
-            html += `
-                <div>
-                    <button id="build-${type}" onclick="handleBuildButton('${type}')" ${disabled}>Build ${label}</button>
+            html += `<tr>
+                <td>
+                    <button id="build-${type}" onclick="handleBuildButton('${type}')" ${disabled}>+</button>
+                </td>
+                <td style="text-align:center;">
+                    ${label}
+                </td>
+                <td>
                     ${costHtml}
-                </div>`
+                </td>
+                <td>
+                    ${value.construction.workers}
+                </td>
+                <td>
+                    ${value.construction.timeCost}
+                </td>
+                </tr>`
         });
+        html += '</table></div>';
         return html;
+    }
 
+    isBuildDisabled(type) {
+        const cost = this.availableBuildings[type].cost;
+        for (const resource in cost) {
+            if (this.resources[resource] < cost[resource]) {
+                return 'disabled';
+            }
+        }
+    }
+
+    getBuildingStatsHtml() {
+        const colonyBuildings = Object.entries(this.buildings).map(([type, count]) => {
+            return `<span>${this.availableBuildings[type].label}: ${count}</span>`;
+        }).join('<br/>');
+        const queuedBuildings = this.buildingQueue.map(item => {
+            const building = this.availableBuildings[item.buildingType];
+            const label = building.label;
+            const progress = Math.floor(item.progress * 100);
+            return `<span>${label} ${progress}%</span>`;
+        }).join('<br/>');
+
+        const html = `<div id="lower-console-building-stats"><table>
+            <tr>
+                <th>
+                    BUILDINGS
+                </th>
+                <th>
+                    QUEUED BUILDINGS
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    ${colonyBuildings}
+                </td>
+                <td>
+                    ${queuedBuildings}
+                </td>
+            </tr>
+            </table></div>`;
+        return html;
     }
 
     pushLog(message) {
@@ -330,9 +435,7 @@ export class Colony {
 
 const defaulColonyConfig = {
     startingPopulation: 1000,
-    startingFood: 1000,
-    startingWood: 0,
-    startingMetal: 0,
+    startingResources: { food: 1000, wood: 1000, metal: 0 },
     growthRate: 0.001, // per second
     foodConsumptionRate: 0.016, // per population per second
     foodProductionRate: 0.032, // per second
@@ -349,6 +452,7 @@ const defaulColonyConfig = {
             label: 'Housing',
             buildingType: 'housing',
             cost: { 'wood': 100 },
+            construction: { 'workers': 50, 'timeCost': 30 },
             capacity: 1000,
             unit: 'people'
         },
@@ -356,6 +460,7 @@ const defaulColonyConfig = {
             label: 'Farm',
             buildingType: 'workplace',
             cost: { 'wood': 100 },
+            construction: { 'workers': 50, 'timeCost': 30 },
             capacity: 500,
             unit: 'farm'
         },
@@ -363,6 +468,7 @@ const defaulColonyConfig = {
             label: 'Mine',
             buildingType: 'workplace',
             cost: { 'wood': 100 },
+            construction: { 'workers': 100, 'timeCost': 60 },
             capacity: 500,
             unit: 'mine'
         },
@@ -370,6 +476,7 @@ const defaulColonyConfig = {
             label: 'College',
             buildingType: 'workplace',
             cost: { 'wood': 100 },
+            construction: { 'workers': 200, 'timeCost': 120 },
             capacity: 50,
             unit: 'research'
         },
@@ -377,6 +484,7 @@ const defaulColonyConfig = {
             label: 'Food Storage',
             buildingType: 'storage',
             cost: { 'wood': 100 },
+            construction: { 'workers': 50, 'timeCost': 30 },
             capacity: 1000,
             unit: 'food'
         },
@@ -384,6 +492,7 @@ const defaulColonyConfig = {
             label: 'Wood Storage',
             buildingType: 'storage',
             cost: { 'wood': 100 },
+            construction: { 'workers': 50, 'timeCost': 30 },
             capacity: 1000,
             unit: 'wood'
         },
@@ -391,6 +500,7 @@ const defaulColonyConfig = {
             label: 'Metal Storage',
             buildingType: 'storage',
             cost: { 'wood': 100 },
+            construction: { 'workers': 50, 'timeCost': 30 },
             capacity: 1000,
             unit: 'metal'
         },

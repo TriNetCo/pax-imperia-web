@@ -72,7 +72,7 @@ const SystemPage = () => {
                                 </div>
                                 <div id="lower-console">
                                 </div>
-                                <div id="player-buttons"></div>
+                                <div id="static-console"></div>
                             </div>
 
                         </div>
