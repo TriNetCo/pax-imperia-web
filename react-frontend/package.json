@@ -30,13 +30,15 @@
     "build": "react-scripts build",
     "postbuild": "bash -c 'cp -r ../pax-imperia-js/{assets,webtrash} ./build && cp ../pax-imperia-js/{manifest.json,favicon.ico} ./build && cp ./build/index.html ./build/404.html'",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "deploy-app": "bash -c 'source ../versioner.sh && react-scripts build && gsutil -m -o 'GSUtil:parallel_process_count=1' cp -r build/* gs://pax-njax-org/'",
-    "deploy-assets": "bash -c 'gsutil -m -o 'GSUtil:parallel_process_count=1' cp -r ../pax-imperia-js/assets/* gs://pax-njax-org/assets'",
+
+    "hackish-deploy": "git tag -d v0.0.2 && git tag -a v0.0.2 -m v0.0.2 && git push origin --tags -f",
+
+    "deploy": "#gh-pages -d build",
+    "deploy-app": "#bash -c 'source ../versioner.sh && react-scripts build && gsutil -m -o 'GSUtil:parallel_process_count=1' cp -r build/* gs://pax-njax-org/'",
+    "deploy-assets": "#bash -c 'gsutil -m -o 'GSUtil:parallel_process_count=1' cp -r ../pax-imperia-js/assets/* gs://pax-njax-org/assets'",
     "test": "REACT_APP_PAX_APP_ENV=local-test CI=true react-scripts test --color",
     "test-debug": "REACT_APP_PAX_APP_ENV=local-test react-scripts --inspect-brk test --runInBand --no-cache",
-    "verify": "eslint --max-warnings=0 --fix src",
-    "eject": "react-scripts eject"
+    "verify": "eslint --max-warnings=0 --fix src"
   },
   "babel": {
     "presets": [
