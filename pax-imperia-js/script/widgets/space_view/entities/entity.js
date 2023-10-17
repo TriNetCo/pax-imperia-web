@@ -56,6 +56,10 @@ export default class Entity {
         }
     }
 
+    select() {
+        window.spaceViewDomManager.selectTarget(this.object3d);
+    }
+
     /////////////////////////////////
     // Unselect and Remove Methods //
     /////////////////////////////////

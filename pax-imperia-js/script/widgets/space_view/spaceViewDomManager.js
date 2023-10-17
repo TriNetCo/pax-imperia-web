@@ -290,7 +290,7 @@ export class SpaceViewDomManager {
             shipEntity.colonizeTarget = targetEntity;
         }
         if (['default', 'move'].includes(mode) && !target) {
-            this.setShipDestinationPoint(ship3d, shipEntity);
+            shipEntity.setShipDestinationPointFromMouse(this.mouse, this.camera);
         }
 
         // re-set ship as target after moving
@@ -299,14 +299,6 @@ export class SpaceViewDomManager {
         shipEntity.buttonState = null;
     }
 
-    setShipDestinationPoint(ship3d, shipEntity) {
-        // find intersection between mouse click and plane of ship
-        this.raycaster.setFromCamera(this.mouse, this.camera);
-        const shipPlane = new THREE.Plane(new THREE.Vector3(0, 0, ship3d.position.z), -ship3d.position.z);
-        const intersects = new THREE.Vector3();
-        this.raycaster.ray.intersectPlane(shipPlane, intersects);
-        shipEntity.destinationPoint = { x: intersects.x, y: intersects.y, z: intersects.z };
-    }
 
     ///////////////////////////////
     // Populate Sidebar Commands //
@@ -379,9 +371,9 @@ export class SpaceViewDomManager {
     populateStaticConsole() {
         let html = '';
         const selectionTarget = this.selectionSprite.selectionTarget;
-        if (selectionTarget) {
-            html = selectionTarget.parentEntity.getStaticConsoleHtml();
-        }
+        if (!selectionTarget || !selectionTarget.parentEntity.getStaticConsoleHtml) return
+
+        html = selectionTarget.parentEntity.getStaticConsoleHtml();
         document.getElementById("static-console").innerHTML = html;
     }
 

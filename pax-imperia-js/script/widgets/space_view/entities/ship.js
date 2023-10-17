@@ -38,6 +38,9 @@ export class Ship extends Entity {
         this.colonizeTarget = null; // entity object
         this.colonizeAnimationProgress = null; // 0 to 1
         this.actions = [];
+
+        this.raycaster = new THREE.Raycaster();
+        this.controllered = false; // When this is true, mouse movement will not work
     }
 
     toJSON() {
@@ -111,6 +114,28 @@ export class Ship extends Entity {
         this.orbitStartTime = null;
         this.colonizeTarget = null;
         this.colonizeAnimationProgress = null;
+        this.controllered = false;
+    }
+
+    setShipDestinationPointFromMouse(mouse, camera) {
+        const shipEntity = this;
+        const ship3d = this.object3d;
+
+        // find intersection between mouse click and plane of ship
+        this.raycaster.setFromCamera(mouse, camera);
+        const shipPlane = new THREE.Plane(new THREE.Vector3(0, 0, ship3d.position.z), -ship3d.position.z);
+        const intersects = new THREE.Vector3();
+        this.raycaster.ray.intersectPlane(shipPlane, intersects);
+        shipEntity.destinationPoint = { x: intersects.x, y: intersects.y, z: intersects.z };
+    }
+
+    setShipDestinationPointRelatively(x, y, z) {
+        const posX = this.position.x + x;
+        const posY = this.position.y + y;
+        const posZ = this.position.z + z;
+
+        this.destinationPoint = { x: posX, y: posY, z: posZ };
+        this.controllered = true;
     }
 
     async handleWormholeJumping(galaxy) {
@@ -142,7 +167,6 @@ export class Ship extends Entity {
     * action.object.type = "wormhole"
     * action.object.id = wormholeId
     */
-
     async discoverSystem(wormholeId) {
         const discoverAction = {
             subject: { type: 'ship', id: this.id, playerId: 1 },

@@ -110,7 +110,6 @@ export class GalaxyDrawer {
 
     drawCurrentSystem() {
         if (this.currentSystemId) {
-            console.log("drawing current system: " + this.currentSystemId);
             const system = this.galaxy.getSystem(this.currentSystemId);
             const color = "yellow";
             const radius = this.scaleRadius(system.radius) + 2;

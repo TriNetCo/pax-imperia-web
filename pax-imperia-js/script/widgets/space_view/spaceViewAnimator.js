@@ -74,13 +74,61 @@ export class SpaceViewAnimator {
     async animate() {
         // TODO: should camera reset every frame??
         // this.resetCamera()
-        this.updateObjects()
-        const startTime = Date.now()
+        this.handleInputs();
+        console.log('done hanlding inputs')
+        this.updateObjects();
+        const startTime = Date.now();
         this.renderer.render(this.scene, this.camera);
         if (!this.firstRenderTime) {
-            this.firstRenderTime = Date.now() - startTime
-            console.log(this.firstRenderTime + " ms: theBlack (first render)")
+            this.firstRenderTime = Date.now() - startTime;
+            console.log(this.firstRenderTime + " ms: theBlack (first render)");
         }
+    }
+
+    // TODO: This wants to live in it's own file
+    handleInputs() {
+        if (!navigator) return;
+        const gamepad = navigator.getGamepads()[0];
+        if (!gamepad) return;
+
+        const xAxis = gamepad.axes[0];
+        const yAxis = gamepad.axes[1];
+
+        // left stick, left/right/up/down moves the selected ship
+        if (xAxis > 0.4 || xAxis < -0.4 || yAxis > 0.4 || yAxis < -0.4) {
+            if (this.selectionSprite.selectionTarget) {
+                const selectedEntity = this.selectionSprite.selectionTarget.parentEntity;
+
+                selectedEntity.setShipDestinationPointRelatively(
+                    Math.floor(xAxis*5), Math.floor(-yAxis*5), 0);
+
+            }
+        } else {
+            if (this.selectionSprite.selectionTarget) {
+                const selectedEntity = this.selectionSprite.selectionTarget.parentEntity;
+                selectedEntity.resetMovement();
+            }
+
+        }
+
+        // right stick up/down moves zoom slider
+        const r_yAxis = gamepad.axes[3];
+        if (r_yAxis > 0.3 || r_yAxis < -0.3) {
+            // Update zoom slider
+            const distanceSlider = document.getElementById('distance-slider');
+            const originalZoomValue = parseInt(distanceSlider.value);
+            const newZoomValue = originalZoomValue + r_yAxis;
+            distanceSlider.value = newZoomValue;
+            this.resetCamera(newZoomValue);
+            console.log('zoom: ', newZoomValue);
+        }
+
+        // when we press down on the directional pad, we select the first ship in the system
+        if (gamepad.buttons[13].pressed) {
+            const firstShip = this.system.ships[0];
+            firstShip.select();
+        }
+
     }
 
     resetCamera(distance) {

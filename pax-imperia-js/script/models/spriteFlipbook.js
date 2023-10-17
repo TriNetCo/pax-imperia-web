@@ -83,6 +83,7 @@ export class SpriteFlipbook {
     }
 
     select(selectionTarget) {
+        window.target = selectionTarget.parentEntity;
         this.selectionTarget = selectionTarget;
     }
 
