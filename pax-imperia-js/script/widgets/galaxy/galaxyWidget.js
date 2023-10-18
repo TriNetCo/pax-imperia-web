@@ -1,6 +1,7 @@
 import { GalaxyDrawer } from './galaxyDrawer.js';
 import { GalaxyDomManager } from './galaxyDomManager.js';
 import { Galaxy } from '../../models/galaxy.js';
+import { GameStateInterface } from '../../gameStateInterface/gameStateInterface.js';
 
 export class GalaxyWidget {
 
@@ -11,6 +12,12 @@ export class GalaxyWidget {
     canvas;
     systemClickHandler;
 
+    /**
+     *
+     * @param {*} config
+     * @param {Galaxy} galaxy
+     * @param {GameStateInterface} gameStateInterface
+     */
     constructor(config, galaxy, gameStateInterface) {
         this.c = config;
         this.mouse = { x: 0, y: 0 };
@@ -31,9 +38,9 @@ export class GalaxyWidget {
             cx: cx,
             galaxy: this.galaxy,
             mouse: this.mouse,
-            currentSystemId: overrideConfig.currentSystemId,
             knownConnections: this.gameStateInterface.knownConnections,
             systemRadius: this.c.systemRadius,
+            currentSystemId: overrideConfig.currentSystemId,
         });
         this.galaxyDomManager = new GalaxyDomManager(
             cx,
@@ -66,7 +73,10 @@ export class GalaxyWidget {
         this.galaxyDrawer = new GalaxyDrawer({
             cx: cx,
             galaxy: this.galaxy,
-            mouse: this.mouse
+            mouse: this.mouse,
+            knownConnections: this.gameStateInterface.knownConnections,
+            systemRadius: this.c.systemRadius,
+            currentSystemId: undefined,
         });
         this.galaxyDomManager = new GalaxyDomManager(
             cx,

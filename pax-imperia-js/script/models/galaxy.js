@@ -37,10 +37,12 @@ export class Galaxy {
     static generateFromConfig(galaxyWidgetSettings) {
         const galaxy = new Galaxy();
         const systemsData = galaxy.generateSystems(galaxyWidgetSettings);
-        galaxy.systems = galaxy.unpackSystemsData(systemsData);
 
+        // Do Wormholes
         const connections = galaxy.generateConnections(systemsData);
         galaxy.addConnectionsToSystems(systemsData, connections);
+
+        galaxy.systems = galaxy.unpackSystemsData(systemsData);
 
         return galaxy;
     }
@@ -55,6 +57,12 @@ export class Galaxy {
     static initializeFromJson(systemsJson) {
         const galaxy = new Galaxy();
         const systemsData = JSON.parse(systemsJson);
+
+        // Below is commented out because the JSON is serialized with this data
+        // // Do Wormholes
+        // const connections = galaxy.generateConnections(systemsData);
+        // galaxy.addConnectionsToSystems(systemsData, connections);
+
         galaxy.systems = galaxy.unpackSystemsData(systemsData);
         return galaxy;
     }
@@ -67,6 +75,7 @@ export class Galaxy {
             for (const planet of system.planets) {
                 this.planetIds.push(planet.id);
             }
+
             for (const colony of system.colonies) {
                 this.colonyIds.push(colony.id);
             }
@@ -235,6 +244,7 @@ export class Galaxy {
                 connectedSystems.push(minJ)
             }
         };
+
         return connections;
     }
 

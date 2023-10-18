@@ -298,6 +298,7 @@ func tryExtractFromPayload(payload map[string]interface{}, key string) (string, 
 	value, ok := payload[key].(string)
 	if !ok {
 		fmt.Printf("%s not found or not a string\n", key)
+		fmt.Printf("Payload: %+v\n", payload)
 	}
 	return value, ok
 }

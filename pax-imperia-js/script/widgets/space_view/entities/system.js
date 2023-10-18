@@ -25,11 +25,10 @@ export class System {
         this.wormholes = this.createRepresentations(systemData.connections, Wormhole, this.name, this.id, systemData.position);
 
         this.ships = systemData.ships;
-        // this.ships = systemData.ships.map(ship => new Ship(ship, this.name, this.id)); // this pattern is leaner
+        this.colonies = systemData.colonies || [];
 
-        this.colonies = systemData.colonies;
-
-        // This hack is because they don't all work good when system generator is going
+        // This hack is because planet entities are only formed now, whereas they
+        // should be formed during the generation of the planets
         // attach colony entities to planets
         for (const colony of this.colonies) {
             const planet = this.planets.find(x => x.id === colony.planetId);

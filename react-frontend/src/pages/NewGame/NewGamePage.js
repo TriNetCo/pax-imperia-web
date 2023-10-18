@@ -7,7 +7,7 @@ import SpeciesDesignPage from './SpeciesDesignPage';
 import GalaxyConfigPage from './GalaxyConfigPage';
 import ChatLobby from '../ChatPage/ChatLobby';
 import GameDashboardPage from '../GameDashboardPage';
-import {authenticate, getGameConfiguration, joinChatLobby, setGameConfiguration, selectWebsocket} from '../../modules/websocket';
+import {authenticate, getGameConfiguration, joinChatLobby, setGameConfiguration, selectWebsocket, setChatLobbyId} from '../../modules/websocket';
 import './NewGamePage.css';
 import {useDispatch, useSelector} from 'react-redux';
 import UserContext from 'src/app/UserContext';
@@ -31,6 +31,7 @@ const NewGameLayout = () => {
     };
 
     const createNewLobby = () =>  {
+        dispatch(setChatLobbyId(chatLobbyId));
         dispatch(authenticate(userContext.email, userContext.displayName, userContext.token));
         dispatch(joinChatLobby(userContext.email, chatLobbyId));
     };

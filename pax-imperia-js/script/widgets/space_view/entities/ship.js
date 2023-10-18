@@ -8,16 +8,16 @@ export class Ship extends Entity {
     constructor(shipConfig) {
         super();
 
-        this.id = shipConfig.id;
-        this.playerId = shipConfig.playerId;
-        this.systemId = shipConfig.systemId;
-        this.make = shipConfig.shipSpec.make;
-        this.model = shipConfig.shipSpec.model;
-        this.size = shipConfig.shipSpec.size || 1;
+        this.id = shipConfig?.id;
+        this.playerId = shipConfig?.playerId;
+        this.systemId = shipConfig?.systemId;
+        this.make = shipConfig?.shipSpec?.make;
+        this.model = shipConfig?.shipSpec?.model;
+        this.size = shipConfig?.shipSpec?.size || 1;
         this.scale = { x: this.size, y: this.size, z: this.size };
-        this.position = shipConfig.position || { x: 0, y: 0, z: 0 };
+        this.position = shipConfig?.position || { x: 0, y: 0, z: 0 };
+        this.name = shipConfig?.name || "Galactic Potato " + shipConfig?.id;
 
-        this.name = shipConfig.name || "Galactic Potato " + shipConfig.id;
         this.type = 'ship';
         this.playerId = 1;
         this.assetFolder = '/assets/ships/';

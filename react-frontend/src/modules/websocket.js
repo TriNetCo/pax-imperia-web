@@ -18,6 +18,9 @@ export const setGameConfiguration = (chatLobbyId, systemsJson) => ({ type: 'SET_
 export const getGameConfiguration = (chatLobbyId) => ({ type: 'GET_GAME_CONFIGURATION', chatLobbyId });
 export const getGameConfigurationResponse = (payload) => ({ type: 'GET_GAME_CONFIGURATION_RESPONSE', payload });
 
+export const setChatLobbyId = (chatLobbyId) => ({ type: 'SET_CHAT_LOBBY_ID', chatLobbyId });
+
+
 const initialState = {
     time: null,
     status: null,
@@ -51,6 +54,12 @@ export const websocketReducer = (state = { ...initialState }, action) => {
             return { ...state,
                 systemsJson: action.payload.systemsJson,
                 time: action.payload.time };
+        case 'SET_CHAT_LOBBY_ID':
+            alert('SET_CHAT_LOBBY_ID');
+            console.debug('setting chat lobby id ', action.chatLobbyId);
+            return { ...state,
+                chatLobbyId: action.chatLobbyId
+            };
         default:
             console.log('websocketReducer: default action: ' + action.type);
             return state;

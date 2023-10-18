@@ -10,7 +10,7 @@ const initGameData = () => {
     // Main //
     //////////
 
-    Galaxy.seedRandomness('Axc2IJCs;s');
+    // Galaxy.seedRandomness('Axc2IJCs;s');
 
     let galaxy =  Galaxy.generateFromConfig(GameSettings.galaxyWidget);
     let websocket = new WebSocket('ws://localhost:3001/websocket');
