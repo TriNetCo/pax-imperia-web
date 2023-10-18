@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { Queue } from '../../models/helpers.js';
 import { SpriteFlipbook } from '../../models/spriteFlipbook.js';
 import Entity from './entities/entity.js';
+import { Ship } from './entities/ship.js';
+import { System } from './entities/system.js';
+import { GameStateInterface } from '../../gameStateInterface/gameStateInterface.js';
 
 /**
  * This class handles interactions with the dom
@@ -13,8 +16,9 @@ export class SpaceViewDomManager {
      * @param {*} config
      * @param {Object} clientObjects
      * @param {SpriteFlipbook} clientObjects.selectionSprite - This is just a sprite that is used to show the selection
-     * @param {*} system
+     * @param {System} system
      * @param {*} systemClickHandler
+     * @param {GameStateInterface} gameStateInterface
      */
     constructor(config, clientObjects, system, systemClickHandler, gameStateInterface) {
         this.c = config;
@@ -113,6 +117,35 @@ export class SpaceViewDomManager {
 
             this.populateConsoleBody();
             this.populateStaticConsole();
+        }
+
+        window.handleBuildShipButton = async (shipType) => {
+
+            // this.gameStateInterface.spawnShip(shipType, this.system.id);
+
+            // this.gameStateInterface.performAction({
+            //     subject: {
+            //         type: "system",
+            //         id: this.system.id
+            //     },
+            //     verb: "build",
+            //     object: {
+            //         type: "ship",
+            //         id: shipType
+            //     }
+            // });
+            // })
+
+            const ship = this.gameStateInterface.galaxy.spawnShip(shipType, this.system.id);
+
+
+
+            const spaceViewLoader = this.gameStateInterface.spaceViewWidget.spaceViewAnimator.spaceViewLoader;
+
+            spaceViewLoader.loadOutline(ship);
+            await spaceViewLoader.loadShip(ship);
+            ship.setLoadAttributes(ship.object3d);
+            this.scene.add(ship.object3d);
         }
 
     }
@@ -371,9 +404,9 @@ export class SpaceViewDomManager {
     populateStaticConsole() {
         let html = '';
         const selectionTarget = this.selectionSprite.selectionTarget;
-        if (!selectionTarget || !selectionTarget.parentEntity.getStaticConsoleHtml) return
-
-        html = selectionTarget.parentEntity.getStaticConsoleHtml();
+        if (selectionTarget) {
+            html = selectionTarget.parentEntity.getStaticConsoleHtml();
+        }
         document.getElementById("static-console").innerHTML = html;
     }
 

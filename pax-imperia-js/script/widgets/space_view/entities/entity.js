@@ -108,7 +108,7 @@ export default class Entity {
         return html;
     }
 
-    getPlayerButtonsHtml() {
+    getStaticConsoleHtml() {
         return '';
     }
 }

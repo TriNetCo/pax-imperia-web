@@ -2,6 +2,7 @@ import { StarName } from './starName.js';
 import { SystemGenerator } from './systemGenerator.js';
 import { getRandomNum, seedRandomness } from './helpers.js';
 import { System } from '../../script/widgets/space_view/entities/system.js';
+import { Ship } from '../widgets/space_view/entities/ship.js';
 
 
 export class Galaxy {
@@ -75,6 +76,33 @@ export class Galaxy {
             }
         }
         return entity;
+    }
+
+    /**
+     * This function spawns a ship in the galaxy and adds it to the specified system.
+     * Please note that this doesn't load the ship.  If that's desired, you'll need to
+     * as the spaceViewLoader to do that.
+     * @param {*} shipType
+     * @param {*} systemId
+     * @returns
+     */
+    spawnShip(shipType, systemId) {
+
+        // TODO: fix how this is hard-coded and not acknowledging shipType
+        const shipData = {
+            "name": "ship_GalacticLeopard6_0_0112",
+            "id": "0_0112",
+            "playerId": 1,
+            "position":  {"x": -11.08,"y": -1.18,"z": 5.48},
+            "shipMake": "GalacticLeopard",
+            "shipModel": 6,
+            "size": 0.00015
+        };
+        const ship = new Ship(shipData, "unused", systemId);
+
+        const system = this.getSystem(systemId);
+        system.addEntity(ship);
+        return ship;
     }
 
     ///////////////////////////////

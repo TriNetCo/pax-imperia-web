@@ -75,7 +75,6 @@ export class SpaceViewAnimator {
         // TODO: should camera reset every frame??
         // this.resetCamera()
         this.handleInputs();
-        console.log('done hanlding inputs')
         this.updateObjects();
         const startTime = Date.now();
         this.renderer.render(this.scene, this.camera);
@@ -106,7 +105,8 @@ export class SpaceViewAnimator {
         } else {
             if (this.selectionSprite.selectionTarget) {
                 const selectedEntity = this.selectionSprite.selectionTarget.parentEntity;
-                selectedEntity.resetMovement();
+                if (selectedEntity.controllered)
+                    selectedEntity.resetMovement();
             }
 
         }

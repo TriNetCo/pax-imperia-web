@@ -17,6 +17,7 @@ export class Colony {
         this.foodProductionRate = colonyConfig?.foodProductionRate || defaulColonyConfig.foodProductionRate;
         this.woodGatherRate = colonyConfig?.woodGatherRate || defaulColonyConfig.woodGatherRate;
         this.buildRate = colonyConfig?.buildRate || defaulColonyConfig.buildRate;
+        this.availableShips = colonyConfig?.availableShips || defaulColonyConfig.availableShips;
         this.availableBuildings = colonyConfig?.availableBuildings || defaulColonyConfig.availableBuildings;
         this.buildings = colonyConfig?.startingBuildings || defaulColonyConfig.startingBuildings;
         this.defaultOrderOfWork = ['build', 'farm', 'mine', 'research', 'gather'];
@@ -327,50 +328,25 @@ export class Colony {
      */
 
     getBuildHtml() {
-        let html = `<div id="lower-console-colony-build">
-            <br/><div><b>AVAILABLE BUILDINGS</b></div>
-            <table>
-                <tr>
-                    <th style="text-align:center;">
-                    </th>
-                    <th style="text-align:center;">
-                        Building
-                    </th>
-                    <th style="text-align:center;">
-                        Cost
-                    </th>
-                    <th style="text-align:center;">
-                        Workers
-                    </th>
-                    <th style="text-align:center;">
-                        Time
-                    </th>
-                </tr>`;
-        Object.entries(this.availableBuildings).forEach(([type, value]) => {
-            const label = value.label;
-            const costHtml = Object.entries(value.cost).map(([resource, amount]) => {
-                return `<span>${resource}: ${amount}</span>`
-            }).join('');
-            const disabled = this.isBuildDisabled(type);
-            html += `<tr>
-                <td>
-                    <button id="build-${type}" onclick="handleBuildButton('${type}')" ${disabled}>+</button>
-                </td>
-                <td style="text-align:center;">
-                    ${label}
-                </td>
-                <td>
-                    ${costHtml}
-                </td>
-                <td>
-                    ${value.construction.workers}
-                </td>
-                <td>
-                    ${value.construction.timeCost}
-                </td>
-                </tr>`
-        });
-        html += '</table></div>';
+        let html = `<div id="lower-console-colony-build">`;
+
+        html += `<div><b>SHIPYARD</b></div>`;
+        html += '<table>';
+        html += this.getShipyardHeader();
+        html += this.getShipyardRows();
+        html += '</table>';
+
+
+        html += `<div><b>ORBITAL STRUCTURE</b></div>`;
+
+
+        html += '<div><b>GROUND STRUCTURE</b></div>';
+        html += '<table>';
+        html += this.getGroundStructureHeader();
+        html += this.getGroundStructureRows();
+        html += '</table>';
+
+        html += '</div>';
         return html;
     }
 
@@ -381,6 +357,80 @@ export class Colony {
                 return 'disabled';
             }
         }
+    }
+
+    getGroundStructureHeader() {
+        return `
+            <tr>
+                <th></th>
+                <th>Building</th>
+                <th>Cost</th>
+                <th>Workers</th>
+                <th>Time</th>
+            </tr>
+        `;
+    }
+
+    getShipyardHeader() {
+        return `
+            <tr>
+                <th></th>
+                <th>Type</th>
+                <th>Cost</th>
+                <th>Workers</th>
+                <th>Time</th>
+            </tr>
+        `;
+    }
+
+    getShipyardRows() {
+        return Object.entries(this.availableShips).map(([type, value]) => {
+            const costHtml = Object.entries(value.cost).map(([resource, amount]) => {
+                return `<span>${resource}: ${amount}</span>`
+            }).join('');
+
+            const disabled = false;
+
+            return (`
+                <tr>
+                    <td>
+                        <button id="build-${type}"
+                                onclick="handleBuildShipButton('${type}')"
+                                ${disabled}>+</button>
+                    </td>
+                    <td>${value.label}</td>
+                    <td>${costHtml}</td>
+                    <td>${value.construction.workers}</td>
+                    <td>${value.construction.timeCost}</td>
+                </tr>
+            `);
+        }).join('');
+    }
+
+    getGroundStructureRows() {
+        const groundStructureRows = Object.entries(this.availableBuildings).map(([type, value]) => {
+            const label = value.label;
+            const costHtml = Object.entries(value.cost).map(([resource, amount]) => {
+                return `<span>${resource}: ${amount}</span>`
+            }).join('');
+            const disabled = this.isBuildDisabled(type);
+
+            return (`
+                <tr>
+                    <td>
+                        <button id="build-${type}"
+                                onclick="handleBuildButton('${type}')"
+                                ${disabled}>+</button>
+                    </td>
+                    <td>${label}</td>
+                    <td>${costHtml}</td>
+                    <td>${value.construction.workers}</td>
+                    <td>${value.construction.timeCost}</td>
+                </tr>
+            `);
+        });
+
+        return groundStructureRows.join('')
     }
 
     getBuildingStatsHtml() {
@@ -446,6 +496,39 @@ const defaulColonyConfig = {
         'farm': 1,
         'foodStorage': 2,
         'woodStorage': 1,
+    },
+    availableShips: {
+        'spyShip': {
+            label: 'Spy Ship',
+            cost: { 'metal': 100 },
+            construction: { 'workers': 50, 'timeCost': 30 },
+        },
+        'colonyShip': {
+            label: 'Colony Ship',
+            cost: { 'metal': 100 },
+            construction: { 'workers': 50, 'timeCost': 30 },
+        },
+        'destroyer': {
+            label: 'Destroyer',
+            cost: { 'metal': 100 },
+            construction: { 'workers': 50, 'timeCost': 30 },
+        },
+        'cruiserTank': {
+            label: 'Cruiser Tank',
+            cost: { 'metal': 100 },
+            construction: { 'workers': 50, 'timeCost': 30 },
+        },
+        'artilaryShip': {
+            label: 'Artilary Ship',
+            cost: { 'metal': 100 },
+            construction: { 'workers': 50, 'timeCost': 30 },
+        },
+        'carrier': {
+            label: 'Carrier',
+            cost: { 'metal': 100 },
+            construction: { 'workers': 50, 'timeCost': 30 },
+        },
+
     },
     availableBuildings: {
         'housing': {
