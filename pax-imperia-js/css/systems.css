@@ -85,11 +85,12 @@
 
 #galaxy-and-console {
     position: relative;
-    /* height: 184px; */
+    height: 205px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    background: black;
 }
 
 #hud {

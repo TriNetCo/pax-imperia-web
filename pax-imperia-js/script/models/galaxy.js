@@ -10,6 +10,14 @@ export class Galaxy {
     /** @type {System[]} */
     systems;
 
+    planetIds = [];
+
+    colonyIds = [];
+    nextColonyId = 0;
+
+    shipIds = [];
+    nextShipId = 0;
+
     /**
      * @param {Object} galaxyWidgetSettings Configurations passed to galaxy from the galaxyWidget.  If this parameter is omitted, systemsJson must be provided.
      * @param {number} galaxyWidgetSettings.canvasWidth Determines the area where stars can be placed
@@ -29,9 +37,11 @@ export class Galaxy {
     static generateFromConfig(galaxyWidgetSettings) {
         const galaxy = new Galaxy();
         const systemsData = galaxy.generateSystems(galaxyWidgetSettings);
+        galaxy.systems = galaxy.unpackSystemsData(systemsData);
+
         const connections = galaxy.generateConnections(systemsData);
         galaxy.addConnectionsToSystems(systemsData, connections);
-        galaxy.systems = galaxy.unpackSystemsData(systemsData);
+
         return galaxy;
     }
 
@@ -49,6 +59,20 @@ export class Galaxy {
         return galaxy;
     }
 
+    collectIds(systems) {
+        for (const system of systems) {
+            for (const ship of system.ships) {
+                this.shipIds.push(ship.id);
+            }
+            for (const planet of system.planets) {
+                this.planetIds.push(planet.id);
+            }
+            for (const colony of system.colonies) {
+                this.colonyIds.push(colony.id);
+            }
+        }
+    }
+
     toJson() {
         return JSON.stringify(this.systems);
     }
@@ -59,6 +83,8 @@ export class Galaxy {
             const system = new System(systemData);
             systems.push(system);
         }
+        this.collectIds(systems);
+
         return systems;
     }
 
@@ -86,16 +112,17 @@ export class Galaxy {
      * @param {*} systemId
      * @returns
      */
-    spawnShip(shipType, systemId) {
+    spawnShip(shipSpec, systemId, playerId, position) {
 
+        const { x, y, z } = position; // -11.08, -1.18, 5.48
         // TODO: fix how this is hard-coded and not acknowledging shipType
         const shipData = {
             "name": "ship_GalacticLeopard6_0_0112",
             "id": "0_0112",
-            "playerId": 1,
-            "position":  {"x": -11.08,"y": -1.18,"z": 5.48},
-            "shipMake": "GalacticLeopard",
-            "shipModel": 6,
+            "playerId": playerId,
+            "position":  {"x": x, "y": y, "z": z},
+            "shipMake": shipSpec["make"],
+            "shipModel": shipSpec["model"],
             "size": 0.00015
         };
         const ship = new Ship(shipData, "unused", systemId);
@@ -118,6 +145,8 @@ export class Galaxy {
         let systemsData = [];
         let starName = new StarName();
 
+        const systemGenerator = new SystemGenerator(c);
+
         // Define systems with coordinates
         for (let i = 0; i < c.systemCount; i++) {
             let position = this.generateSystemPosition(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
@@ -133,11 +162,14 @@ export class Galaxy {
                     break;
                 }
             }
-            const systemIndex = i; // TODO: randomize systemIndex
-            const systemGenerator = new SystemGenerator(systemIndex, position, starName.pick(), c.systemRadius, c);
-            const systemData = systemGenerator.generateData();
+            const systemIndex = i;
+            const systemData = systemGenerator.generateSystem(systemIndex, position, starName.pick());
             systemsData.push(systemData);
         }
+
+        this.nextColonyId = systemGenerator.nextColonyId;
+        this.nextShipId = systemGenerator.nextShipId;
+
         return systemsData;
     }
 

@@ -26,7 +26,8 @@ test('galaxyDrawer can call drawBackground', () => {
     const galaxyDrawer = new GalaxyDrawer({
         cx: mockCx,
         galaxy: galaxy,
-        mouse: mockMouse
+        mouse: mockMouse,
+        systemRadius: 5,
     });
 
     galaxyDrawer.drawBackground();

@@ -15,20 +15,30 @@ export class System {
     wormholes;
     /** @type {Ship[]} */
     ships;
+    /** @type {Colony[]} */
+    colonies;
 
     constructor(systemData) {
         unpackData(systemData, this);
         this.stars = this.createRepresentations(systemData.stars, Star, this.name, this.id);
         this.planets = this.createRepresentations(systemData.planets, Planet, this.name, this.id);
         this.wormholes = this.createRepresentations(systemData.connections, Wormhole, this.name, this.id, systemData.position);
-        this.ships = systemData.ships.map(ship => new Ship(ship, this.name, this.id)); // this pattern is leaner
-        this.planets[0].colony = new Colony(1, this.planets[0], 0);
-        if (this.planets[1]) {
-            this.planets[1].colony = new Colony(2, this.planets[1], 0);
+
+        this.ships = systemData.ships;
+        // this.ships = systemData.ships.map(ship => new Ship(ship, this.name, this.id)); // this pattern is leaner
+
+        this.colonies = systemData.colonies;
+
+        // This hack is because they don't all work good when system generator is going
+        // attach colony entities to planets
+        for (const colony of this.colonies) {
+            const planet = this.planets.find(x => x.id === colony.planetId);
+            planet.colony = colony;
         }
-        if (this.ships[1]) {
-            this.ships[1].playerId = 2;
-        }
+
+        // if (this.ships[1]) {
+        //     this.ships[1].playerId = 2;
+        // }
 
     }
 

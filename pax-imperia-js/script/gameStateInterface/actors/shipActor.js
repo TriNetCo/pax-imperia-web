@@ -93,6 +93,7 @@ export class ShipActor extends Actor {
             return;
         }
         planet.colony = new Colony(
+            this.gameStateInterface.galaxy.nextColonyId,
             action.subject.playerId,
             planet,
             this.gameStateInterface.gameClock.elapsedTime

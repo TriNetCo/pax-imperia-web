@@ -12,6 +12,7 @@ export class GalaxyDrawer {
         this.galaxy = config.galaxy;
         this.mouse = config.mouse;
         this.connections = config.knownConnections;
+        this.systemRadius = config.systemRadius;
         // this.connections = this.collectConnections(this.galaxy.systems);
         this.setCurrentSystem(config.currentSystemId);
         console.log("GalaxyDrawer initialized with currentSystemId: " + this.currentSystemId);
@@ -85,10 +86,10 @@ export class GalaxyDrawer {
 
     drawSystems() {
         let color = "rgb(150, 150, 150)";
+        const radius = this.scaleRadius(this.systemRadius);
         this.galaxy.systems.forEach(system => {
             const x = this.scaleX(system.position.x);
             const y = this.scaleY(system.position.y);
-            const radius = this.scaleRadius(system.radius);
             this.drawDot(x, y, radius, color);
         });
     }

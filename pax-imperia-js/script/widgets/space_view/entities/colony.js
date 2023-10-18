@@ -2,9 +2,10 @@ import { capitalizeFirstLetter } from "../../../models/helpers.js";
 
 export class Colony {
 
-    constructor(playerId, planet, startTime, colonyConfig) {
+    constructor(id, playerId, planetId, startTime, colonyConfig) {
+        this.id = id;
         this.playerId = playerId;
-        this.planet = planet;
+        this.planetId = planetId;
         this.startTime = startTime;
         this.lastUpdated = startTime;
         this.population = colonyConfig?.startingPopulation || defaulColonyConfig.startingPopulation;
@@ -32,6 +33,19 @@ export class Colony {
         this.useAutoAssign = false;
         this.setCapacities();
         this.autoAllocateWork();
+    }
+
+    toJSON() {
+        return ({
+            id: this.id,
+            playerId: this.playerId,
+            planetId: this.planetId,
+            resources: this.resources,
+            population: this.population,
+            buildings: this.buildings,
+            buildingQueue: this.buildingQueue,
+            workAllocation: this.workAllocation,
+        });
     }
 
     setCapacities() {
@@ -391,11 +405,14 @@ export class Colony {
 
             const disabled = false;
 
+            var shipSpec = JSON.stringify(this.availableShips[type]['spec']).replaceAll("\n", "").replaceAll(" ", "").replaceAll('"', '~');
+
+            console.log('shipSpec ', shipSpec);
             return (`
                 <tr>
                     <td>
                         <button id="build-${type}"
-                                onclick="handleBuildShipButton('${type}')"
+                                onclick="handleBuildShipButton('${shipSpec}')"
                                 ${disabled}>+</button>
                     </td>
                     <td>${value.label}</td>
@@ -471,12 +488,12 @@ export class Colony {
         if (!existingLog) {
             this.logs.push({ message: message, timestamp: this.time });
             if (!existingNewLog) {
-                this.newLogs.push(this.planet.name + ' - ' + message);
+                this.newLogs.push(this.planetId + ' - ' + message);
             }
         } else if (existingLog?.timestamp < this.time - 60) {
             existingLog.timestamp = this.time;
             if (!existingNewLog) {
-                this.newLogs.push(this.planet.name + ' - ' + message);
+                this.newLogs.push(this.planetId + ' - ' + message);
             }
         }
     }
@@ -500,31 +517,55 @@ const defaulColonyConfig = {
     availableShips: {
         'spyShip': {
             label: 'Spy Ship',
+            spec: {
+                make: 'GalacticLeopard',
+                model: '6'
+            },
             cost: { 'metal': 100 },
             construction: { 'workers': 50, 'timeCost': 30 },
         },
         'colonyShip': {
             label: 'Colony Ship',
+            spec: {
+                make: 'GalacticLeopard',
+                model: '6'
+            },
             cost: { 'metal': 100 },
             construction: { 'workers': 50, 'timeCost': 30 },
         },
         'destroyer': {
             label: 'Destroyer',
+            spec: {
+                make: 'GalacticLeopard',
+                model: '6'
+            },
             cost: { 'metal': 100 },
             construction: { 'workers': 50, 'timeCost': 30 },
         },
         'cruiserTank': {
             label: 'Cruiser Tank',
+            spec: {
+                make: 'GalacticLeopard',
+                model: '6'
+            },
             cost: { 'metal': 100 },
             construction: { 'workers': 50, 'timeCost': 30 },
         },
         'artilaryShip': {
             label: 'Artilary Ship',
+            spec: {
+                make: 'GalacticLeopard',
+                model: '6'
+            },
             cost: { 'metal': 100 },
             construction: { 'workers': 50, 'timeCost': 30 },
         },
         'carrier': {
             label: 'Carrier',
+            spec: {
+                make: 'GalacticLeopard',
+                model: '6'
+            },
             cost: { 'metal': 100 },
             construction: { 'workers': 50, 'timeCost': 30 },
         },

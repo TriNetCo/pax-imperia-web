@@ -119,33 +119,9 @@ export class SpaceViewDomManager {
             this.populateStaticConsole();
         }
 
-        window.handleBuildShipButton = async (shipType) => {
-
-            // this.gameStateInterface.spawnShip(shipType, this.system.id);
-
-            // this.gameStateInterface.performAction({
-            //     subject: {
-            //         type: "system",
-            //         id: this.system.id
-            //     },
-            //     verb: "build",
-            //     object: {
-            //         type: "ship",
-            //         id: shipType
-            //     }
-            // });
-            // })
-
-            const ship = this.gameStateInterface.galaxy.spawnShip(shipType, this.system.id);
-
-
-
-            const spaceViewLoader = this.gameStateInterface.spaceViewWidget.spaceViewAnimator.spaceViewLoader;
-
-            spaceViewLoader.loadOutline(ship);
-            await spaceViewLoader.loadShip(ship);
-            ship.setLoadAttributes(ship.object3d);
-            this.scene.add(ship.object3d);
+        window.handleBuildShipButton = async (encodedSpec) => {
+            const shipSpec = JSON.parse(encodedSpec.replaceAll("~", '"'));
+            this.gameStateInterface.spawnShip(shipSpec, 2, this.system.id, { x: 5, y: 0, z: 0 });
         }
 
     }

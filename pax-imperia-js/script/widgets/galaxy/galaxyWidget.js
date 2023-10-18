@@ -32,7 +32,8 @@ export class GalaxyWidget {
             galaxy: this.galaxy,
             mouse: this.mouse,
             currentSystemId: overrideConfig.currentSystemId,
-            knownConnections: this.gameStateInterface.knownConnections
+            knownConnections: this.gameStateInterface.knownConnections,
+            systemRadius: this.c.systemRadius,
         });
         this.galaxyDomManager = new GalaxyDomManager(
             cx,

@@ -1,17 +1,15 @@
 import { getRandomNum, roundToDecimal } from './helpers.js'
 import { shipConfigs, shipOptions } from '../widgets/space_view/entities/shipConfigs.js';
+import {Colony} from '../widgets/space_view/entities/colony.js';
+import { Ship } from '../widgets/space_view/entities/ship.js';
 
 export class SystemGenerator {
-    constructor(id, position, name, radius, c) {
-        this.id = id;
-        this.name = name;
-        this.position = position;
-        this.radius = radius;
-        this.connections = [];
-        this.stars = [this.generateStar(c)];
-        this.planets = this.generatePlanets(c, id);
-        // Place a ship in every system
-        this.ships = this.generateShips(c);
+    constructor(c) {
+        this.nextShipId = 0;
+        this.nextPlanetId = 0;
+        this.nextColonyId = 0;
+        this.c = c;
+
         // Use manual system for debugging
         if (false) {
             this.stars = this.manualStars
@@ -21,7 +19,22 @@ export class SystemGenerator {
 
     // this function serializes the data to an object without actually
     // serializing it to a string which a database and network connection would want
-    generateData() {
+    generateSystem(id, position, name, radius) {
+        this.id = id;
+        this.position = position;
+        this.name = name;
+        this.radius = this.c.systemRadius;
+
+        this.connections = [];
+        this.stars = [this.generateStar(id)];
+        this.planets = this.generatePlanets(id);
+        this.colonies = this.generateDebugColonies(this.planets);
+
+        // Place a ship in every system
+        this.ships = this.generateShips();
+
+        // This is creating a new object, and loading it with all the
+        // data from this object, but not the functions?
         let data = {};
         for (var key in this) {
             data[key] = this[key];
@@ -29,12 +42,13 @@ export class SystemGenerator {
         return (data);
     }
 
-    generateStar(c) {
+    generateStar(id) {
         // Currently generates a single star
         let star = {
+            "id": id,
             "index": 0,
             "atmosphere": "sun",
-            "size": getRandomNum(c.minStarSize, c.maxStarSize, 2),
+            "size": getRandomNum(this.c.minStarSize, this.c.maxStarSize, 2),
             "distance_from_star": 0,
             "spin_speed": getRandomNum(0.5, 1.5, 1),
             "starting_angle": 0,
@@ -42,7 +56,8 @@ export class SystemGenerator {
         return star;
     }
 
-    generatePlanets(c, systemId) {
+    generatePlanets(systemId) {
+        const c = this.c;
         let planets = [];
         let planetCount = getRandomNum(c.minPlanetCount, c.maxPlanetCount, 0);
         let minDistance = this.stars[0].size;
@@ -54,7 +69,7 @@ export class SystemGenerator {
             let startingAngle = getRandomNum(0, Math.PI, 2);
 
             let planet = {
-                "id": systemId + "_" + i,
+                "id": this.getNextPlanetId(),
                 "number": i,
                 "atmosphere": "earthlike000" + getRandomNum(1, 9, 0),
                 "cloud_type": "clouds000" + getRandomNum(1, 9, 0),
@@ -69,7 +84,29 @@ export class SystemGenerator {
         return planets;
     }
 
-    generateShips(c) {
+    // For debugging, we'll put a colony for player 1 on the first planet
+    // and a colony for player 2 on the second planet
+    generateDebugColonies() {
+        let colonies = [];
+
+        colonies.push(new Colony(this.getNextColonyId(), 1, this.planets[0]["id"], 0))
+
+        // I need to figure out how I attach a colony to a planet
+        // before, you just put a colony onto the planet entity, but
+        // this stage is running before we have any entities defined...
+        //
+        this.planets[0].colony = colonies[0];
+
+
+        if (this.planets[1]) {
+            colonies.push(new Colony(this.getNextColonyId(), 2, this.planets[1]["id"], 0))
+            // this.planets[1].colony = colonies[1];
+        }
+
+        return colonies;
+    }
+
+    generateShips() {
         let ships = [];
         let shipCount = getRandomNum(1, 3, 0);
         let systemShipMake = null; //this.getShipMake(null, null);
@@ -85,17 +122,35 @@ export class SystemGenerator {
             let ship = {
                 // give ships unique names
                 "name": "ship_" + shipMake + shipModel + "_" + this.id + "_" + i,
-                "id": this.id + "_" + i,
+                "id": this.getNextShipId(),
                 "position": { x: shipX, y: shipY, z: shipZ },
                 "shipMake": shipMake,
                 "shipModel": shipModel,
                 "size": this.getShipSize(shipMake, shipModel),
             }
-            ships.push(ship);
 
+            ships.push( new Ship(ship, this.name, this.id) );
 
         }
         return ships;
+    }
+
+    getNextShipId() {
+        const shipId = this.nextShipId;
+        this.nextShipId += 1;
+        return shipId;
+    }
+
+    getNextPlanetId() {
+        const planetId = this.nextPlanetId;
+        this.nextPlanetId += 1;
+        return planetId;
+    }
+
+    getNextColonyId() {
+        const colonyId = this.nextColonyId;
+        this.nextColonyId += 1;
+        return colonyId;
     }
 
     getShipMake(strategy, override = null) {

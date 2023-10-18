@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import { ShipActor } from "./actors/shipActor.js";
-import { PlanetActor } from "./actors/planetActor.js";
+import { ColonyActor } from "./actors/colonyActor.js";
 import { StationActor } from "./actors/stationActor.js";
 import { PlayerActor } from "./actors/playerActor.js";
 import { SpaceViewWidget } from '../widgets/space_view/spaceViewWidget.js';
@@ -40,7 +40,7 @@ export class GameStateInterface {
         this.websocket.onmessage = this.onMessage;
 
         this.shipActor = new ShipActor(this.websocket, this);
-        this.planetActor = new PlanetActor(this.websocket, this);
+        this.colonyActor = new ColonyActor(this.websocket, this);
         this.stationActor = new StationActor(this.websocket, this);
         this.playerActor = new PlayerActor(this.websocket, this);
 
@@ -73,7 +73,7 @@ export class GameStateInterface {
 
     // this method is called when the user performs a network action
     sendAction(action) {
-        this.websocket.send(action);
+        this.websocket.send(JSON.stringify(action));
     }
 
     /**
@@ -94,8 +94,8 @@ export class GameStateInterface {
             case "ship":
                 this.shipActor.handle(action);
                 break;
-            case "planet":
-                this.planetActor.handle(action);
+            case "colony":
+                this.colonyActor.handle(action);
                 break;
             case "station":
                 this.stationActor.handle(action);
@@ -122,6 +122,24 @@ export class GameStateInterface {
 
     addEventLogEntries(entries) {
         entries.forEach(entry => this.addEventLogEntry(entry));
+    }
+
+    async spawnShip(shipSpec, playerId, systemId, position) {
+        const action = {
+            subject: {
+                type: "colony",
+            },
+            name: "spawnShip",
+            data: {
+                shipSpec,
+                systemId,
+                position,
+                playerId,
+            }
+        };
+
+        this.sendAction(action);
+        this.performAction(action);
     }
 
 }
