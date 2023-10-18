@@ -77,6 +77,19 @@ export class Galaxy {
         return JSON.stringify(this.systems);
     }
 
+
+    getNextShipId() {
+        const id = this.nextShipId;
+        this.nextShipId += 1;
+        return id;
+    }
+
+    getNextColonyId() {
+        const id = this.nextColonyId;
+        this.nextColonyId += 1;
+        return id;
+    }
+
     unpackSystemsData(systemsData) {
         const systems = [];
         for (const systemData of systemsData) {
@@ -112,22 +125,10 @@ export class Galaxy {
      * @param {*} systemId
      * @returns
      */
-    spawnShip(shipSpec, systemId, playerId, position) {
+    spawnShip(shipConfig) {
+        const ship = new Ship(shipConfig);
 
-        const { x, y, z } = position; // -11.08, -1.18, 5.48
-        // TODO: fix how this is hard-coded and not acknowledging shipType
-        const shipData = {
-            "name": "ship_GalacticLeopard6_0_0112",
-            "id": "0_0112",
-            "playerId": playerId,
-            "position":  {"x": x, "y": y, "z": z},
-            "shipMake": shipSpec["make"],
-            "shipModel": shipSpec["model"],
-            "size": 0.00015
-        };
-        const ship = new Ship(shipData, "unused", systemId);
-
-        const system = this.getSystem(systemId);
+        const system = this.getSystem(shipConfig.systemId);
         system.addEntity(ship);
         return ship;
     }

@@ -121,7 +121,15 @@ export class SpaceViewDomManager {
 
         window.handleBuildShipButton = async (encodedSpec) => {
             const shipSpec = JSON.parse(encodedSpec.replaceAll("~", '"'));
-            this.gameStateInterface.spawnShip(shipSpec, 2, this.system.id, { x: 5, y: 0, z: 0 });
+
+            const shipConfig = {
+                systemId: this.system.id,
+                playerId: this.gameStateInterface.playerId,
+                position: { x: 5, y: 0, z: 0 },
+                shipSpec: shipSpec,
+            };
+
+            this.gameStateInterface.spawnShip(shipConfig);
         }
 
     }
@@ -269,6 +277,7 @@ export class SpaceViewDomManager {
      */
     moveShip(ship3d, target = null, mode = 'default') {
         // ship3d is the 3d object and shipEntity is the JS object
+        /** @type {Ship} */
         const shipEntity = ship3d.parentEntity;
         const shipId = shipEntity.name;
         const targetEntity = target ? target.parentEntity : null;
@@ -301,6 +310,8 @@ export class SpaceViewDomManager {
         if (['default', 'move'].includes(mode) && !target) {
             shipEntity.setShipDestinationPointFromMouse(this.mouse, this.camera);
         }
+
+
 
         // re-set ship as target after moving
         this.selectTarget(ship3d);

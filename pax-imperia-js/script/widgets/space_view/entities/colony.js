@@ -519,7 +519,8 @@ const defaulColonyConfig = {
             label: 'Spy Ship',
             spec: {
                 make: 'GalacticLeopard',
-                model: '6'
+                model: '6',
+                size: 0.00015,
             },
             cost: { 'metal': 100 },
             construction: { 'workers': 50, 'timeCost': 30 },
@@ -528,7 +529,8 @@ const defaulColonyConfig = {
             label: 'Colony Ship',
             spec: {
                 make: 'GalacticLeopard',
-                model: '6'
+                model: '6',
+                size: 0.00015,
             },
             cost: { 'metal': 100 },
             construction: { 'workers': 50, 'timeCost': 30 },
@@ -537,7 +539,8 @@ const defaulColonyConfig = {
             label: 'Destroyer',
             spec: {
                 make: 'GalacticLeopard',
-                model: '6'
+                model: '6',
+                size: 0.00015,
             },
             cost: { 'metal': 100 },
             construction: { 'workers': 50, 'timeCost': 30 },
@@ -546,7 +549,8 @@ const defaulColonyConfig = {
             label: 'Cruiser Tank',
             spec: {
                 make: 'GalacticLeopard',
-                model: '6'
+                model: '6',
+                size: 0.00015,
             },
             cost: { 'metal': 100 },
             construction: { 'workers': 50, 'timeCost': 30 },
@@ -555,7 +559,8 @@ const defaulColonyConfig = {
             label: 'Artilary Ship',
             spec: {
                 make: 'GalacticLeopard',
-                model: '6'
+                model: '6',
+                size: 0.00015,
             },
             cost: { 'metal': 100 },
             construction: { 'workers': 50, 'timeCost': 30 },
@@ -564,7 +569,8 @@ const defaulColonyConfig = {
             label: 'Carrier',
             spec: {
                 make: 'GalacticLeopard',
-                model: '6'
+                model: '6',
+                size: 0.00015,
             },
             cost: { 'metal': 100 },
             construction: { 'workers': 50, 'timeCost': 30 },

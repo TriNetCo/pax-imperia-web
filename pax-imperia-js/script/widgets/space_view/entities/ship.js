@@ -1,27 +1,39 @@
 import Entity from './entity.js';
-import { roundToDecimal, getRandomNum } from '../../../models/helpers.js';
+import {roundToDecimal, getRandomNum, getBasePath, unpackData} from '../../../models/helpers.js';
 import * as THREE from 'three';
 import { Galaxy } from '../../../models/galaxy.js';
 
 export class Ship extends Entity {
-    constructor(data, systemName, systemId) {
-        super(data, systemName, systemId);
+
+    constructor(shipConfig) {
+        super();
+
+        this.id = shipConfig.id;
+        this.playerId = shipConfig.playerId;
+        this.systemId = shipConfig.systemId;
+        this.make = shipConfig.shipSpec.make;
+        this.model = shipConfig.shipSpec.model;
+        this.size = shipConfig.shipSpec.size || 1;
+        this.scale = { x: this.size, y: this.size, z: this.size };
+        this.position = shipConfig.position || { x: 0, y: 0, z: 0 };
+
+        this.name = shipConfig.name || "Galactic Potato " + shipConfig.id;
         this.type = 'ship';
         this.playerId = 1;
         this.assetFolder = '/assets/ships/';
         this.object3ds = {};
 
-        // this.assetPath = `${this.assetFolder}Meshes/${this.shipMake}/${this.shipMake}${this.shipModel}.fbx`;
-        // this.texturePath = `${this.assetFolder}Textures/${this.shipMake}/Standard/${this.shipMake}_White.png`;
-        // this.normalMapPath = `${this.assetFolder}Textures/${this.shipMake}/Standard/${this.shipMake}_Normal.png`;
-        // this.metallicSmoothnessMapPath = `${this.assetFolder}Textures/${this.shipMake}/Standard/${this.shipMake}_MetallicSmoothness.png`;
-        // this.emissionMapPath = `${this.assetFolder}Textures/${this.shipMake}/Standard/${this.shipMake}_Emission2.png`;
+        // this.assetPath = `${this.assetFolder}Meshes/${this.make}/${this.make}${this.model}.fbx`;
+        // this.texturePath = `${this.assetFolder}Textures/${this.make}/Standard/${this.make}_White.png`;
+        // this.normalMapPath = `${this.assetFolder}Textures/${this.make}/Standard/${this.make}_Normal.png`;
+        // this.metallicSmoothnessMapPath = `${this.assetFolder}Textures/${this.make}/Standard/${this.make}_MetallicSmoothness.png`;
+        // this.emissionMapPath = `${this.assetFolder}Textures/${this.make}/Standard/${this.make}_Emission2.png`;
 
-        this.assetPath = `${this.assetFolder}Meshes/${this.shipMake}/${this.shipMake}${this.shipModel}.fbx`;
-        this.texturePath = `${this.assetFolder}Textures/${this.shipMake}/${this.shipMake}_White.png`;
-        this.normalMapPath = `${this.assetFolder}Textures/${this.shipMake}/${this.shipMake}_Normal.png`;
-        this.metallicSmoothnessMapPath = `${this.assetFolder}Textures/${this.shipMake}/${this.shipMake}_MetallicSmoothness.png`;
-        this.emissionMapPath = `${this.assetFolder}Textures/${this.shipMake}/${this.shipMake}_Emission2.png`;
+        this.assetPath = `${this.assetFolder}Meshes/${this.make}/${this.make}${this.model}.fbx`;
+        this.texturePath = `${this.assetFolder}Textures/${this.make}/${this.make}_White.png`;
+        this.normalMapPath = `${this.assetFolder}Textures/${this.make}/${this.make}_Normal.png`;
+        this.metallicSmoothnessMapPath = `${this.assetFolder}Textures/${this.make}/${this.make}_MetallicSmoothness.png`;
+        this.emissionMapPath = `${this.assetFolder}Textures/${this.make}/${this.make}_Emission2.png`;
 
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/ship_thumbnail.png";
         this.scale = { x: this.size, y: this.size, z: this.size };
@@ -49,8 +61,8 @@ export class Ship extends Entity {
             id: this.id,
             playerId: this.playerId,
             position: this.position,
-            shipMake: this.shipMake,
-            shipModel: this.shipModel,
+            make: this.make,
+            model: this.model,
             size: this.size,
         });
     }
@@ -118,15 +130,24 @@ export class Ship extends Entity {
     }
 
     setShipDestinationPointFromMouse(mouse, camera) {
-        const shipEntity = this;
-        const ship3d = this.object3d;
+        this.destinationPoint = this.findClickIntersection(mouse, camera);
+    }
 
-        // find intersection between mouse click and plane of ship
+    /**
+     * Find intersection between mouse click and plane of ship.
+     *
+     * @param {*} mouse
+     * @param {*} camera
+     * @returns
+     */
+    findClickIntersection(mouse, camera) {
         this.raycaster.setFromCamera(mouse, camera);
-        const shipPlane = new THREE.Plane(new THREE.Vector3(0, 0, ship3d.position.z), -ship3d.position.z);
+
+        const shipPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1));
+
         const intersects = new THREE.Vector3();
         this.raycaster.ray.intersectPlane(shipPlane, intersects);
-        shipEntity.destinationPoint = { x: intersects.x, y: intersects.y, z: intersects.z };
+        return intersects;
     }
 
     setShipDestinationPointRelatively(x, y, z) {

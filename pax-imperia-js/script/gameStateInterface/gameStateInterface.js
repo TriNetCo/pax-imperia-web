@@ -124,21 +124,25 @@ export class GameStateInterface {
         entries.forEach(entry => this.addEventLogEntry(entry));
     }
 
-    async spawnShip(shipSpec, playerId, systemId, position) {
+    async spawnShip(shipConfig) {
         const action = {
             subject: {
                 type: "colony",
             },
             name: "spawnShip",
             data: {
-                shipSpec,
-                systemId,
-                position,
-                playerId,
+                shipConfig: {
+                    id: this.galaxy.getNextShipId(), // notice how gameStateInterface is deciding the ID :)
+                    ...shipConfig,
+                },
             }
         };
 
         this.sendAction(action);
+
+        // TODO: Fix how there's way too much indirection here
+        // maybe we should just have systemActor.spawnShip(action) since it's
+        // the anything technically could spawn another ship (e.g. a wormhole)
         this.performAction(action);
     }
 

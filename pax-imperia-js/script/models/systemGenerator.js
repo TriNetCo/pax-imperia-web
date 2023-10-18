@@ -119,17 +119,19 @@ export class SystemGenerator {
             let shipMake = 'GalacticLeopard'
             // let shipModel = this.getShipModel('random', shipMake, i);
             let shipModel = 6;
-            let ship = {
-                // give ships unique names
-                "name": "ship_" + shipMake + shipModel + "_" + this.id + "_" + i,
-                "id": this.getNextShipId(),
-                "position": { x: shipX, y: shipY, z: shipZ },
-                "shipMake": shipMake,
-                "shipModel": shipModel,
-                "size": this.getShipSize(shipMake, shipModel),
+            let shipConfig = {
+                id: this.getNextShipId(),
+                playerId: 1,
+                systemId: this.id,
+                position: { x: shipX, y: shipY, z: shipZ },
+                shipSpec: {
+                    make: shipMake,
+                    model: shipModel,
+                    size: this.getShipSize(shipMake, shipModel),
+                },
             }
 
-            ships.push( new Ship(ship, this.name, this.id) );
+            ships.push( new Ship(shipConfig) );
 
         }
         return ships;

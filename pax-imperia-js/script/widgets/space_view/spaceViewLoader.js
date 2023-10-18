@@ -215,7 +215,7 @@ export class SpaceViewLoader {
     }
 
     async loadShip(entity) {
-        const cacheName = entity.shipMake + entity.shipModel;
+        const cacheName = entity.make + entity.model;
         const shipObj = await this.cacheMonster.retrieveObject3d(cacheName, async () => {
             const shipMesh = await this.cacheMonster.retrieveAsset(entity.assetPath);
             this.addMeshStandardMaterial(shipMesh)

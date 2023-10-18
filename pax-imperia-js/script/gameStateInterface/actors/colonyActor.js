@@ -24,16 +24,11 @@ export class ColonyActor extends Actor {
     }
 
     async spawnShip(action) {
-        console.log('colonyActor handling action', action)
-
-        // unpack action into variables
-        const { shipSpec, systemId, playerId, position } = action.data;
-
         // unpack globals
         const galaxy = this.gameStateInterface.galaxy
         const spaceViewLoader = this.gameStateInterface.spaceViewWidget.spaceViewAnimator.spaceViewLoader;
 
-        const ship = galaxy.spawnShip(shipSpec, systemId, playerId, position);
+        const ship = galaxy.spawnShip(action.data.shipConfig);
 
         spaceViewLoader.loadOutline(ship);
         await spaceViewLoader.loadShip(ship);
