@@ -4,7 +4,6 @@ import { ShipActor } from "./actors/shipActor.js";
 import { ColonyActor } from "./actors/colonyActor.js";
 import { StationActor } from "./actors/stationActor.js";
 import { PlayerActor } from "./actors/playerActor.js";
-import { SpaceViewWidget } from '../widgets/space_view/spaceViewWidget.js';
 import { Galaxy } from '../models/galaxy.js';
 
 /**
@@ -28,7 +27,7 @@ import { Galaxy } from '../models/galaxy.js';
  */
 export class GameStateInterface {
 
-    /** @type {SpaceViewWidget} - the player's current spaceViewWidget */
+    /** @type {SpaceViewWidget} - Don't import, it breaks react tests */
     spaceViewWidget;
     /** @type {Galaxy} */
     galaxy;
