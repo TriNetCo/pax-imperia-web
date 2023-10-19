@@ -1,5 +1,5 @@
 import Entity from './entity.js';
-import {roundToDecimal, getRandomNum, getBasePath, unpackData} from '../../../models/helpers.js';
+import { roundToDecimal, getRandomNum } from '../../../models/helpers.js';
 import * as THREE from 'three';
 import { Galaxy } from '../../../models/galaxy.js';
 
@@ -22,12 +22,6 @@ export class Ship extends Entity {
         this.playerId = 1;
         this.assetFolder = '/assets/ships/';
         this.object3ds = {};
-
-        // this.assetPath = `${this.assetFolder}Meshes/${this.make}/${this.make}${this.model}.fbx`;
-        // this.texturePath = `${this.assetFolder}Textures/${this.make}/Standard/${this.make}_White.png`;
-        // this.normalMapPath = `${this.assetFolder}Textures/${this.make}/Standard/${this.make}_Normal.png`;
-        // this.metallicSmoothnessMapPath = `${this.assetFolder}Textures/${this.make}/Standard/${this.make}_MetallicSmoothness.png`;
-        // this.emissionMapPath = `${this.assetFolder}Textures/${this.make}/Standard/${this.make}_Emission2.png`;
 
         this.assetPath = `${this.assetFolder}Meshes/${this.make}/${this.make}${this.model}.fbx`;
         this.texturePath = `${this.assetFolder}Textures/${this.make}/${this.make}_White.png`;

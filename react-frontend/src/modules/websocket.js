@@ -55,8 +55,6 @@ export const websocketReducer = (state = { ...initialState }, action) => {
                 systemsJson: action.payload.systemsJson,
                 time: action.payload.time };
         case 'SET_CHAT_LOBBY_ID':
-            alert('SET_CHAT_LOBBY_ID');
-            console.debug('setting chat lobby id ', action.chatLobbyId);
             return { ...state,
                 chatLobbyId: action.chatLobbyId
             };
