@@ -13,3 +13,5 @@ Using the firebase library, the JS client redirects the user to firebase's Azure
 
 ###### Firebase Bugs
 There is currently a bug where firebase doesn't work with multiple tabs so good on Macs.  It has to do with their hacks for channeling messages between a cross-origin iframe and the main window using IndexedDB.  To work around this, the `upload_firebase_helpers.sh` script is used which uploads some important snippets to the domain name.  React must use this domain as the authdomain instead of the default `PROJECT_ID.firebaseapp.com` domain so that in production, iframes are never cross-origin and don't require special hacks to enable communication between processes.
+
+Upate: I'm on a PR adding these files to the bundle served by react to support the GH Pages deployment.
