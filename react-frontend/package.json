@@ -13,7 +13,7 @@
     "@reduxjs/toolkit": "^1.9.1",
     "@testing-library/user-event": "^14.4.3",
     "cjs-loader": "^0.1.0",
-    "firebase": "^9.15.0",
+    "firebase": "^10.5.0",
     "pax-imperia-js": "file:..\\pax-imperia-js",
     "react": "^18.2.0",
     "react-app-rewired": "^2.2.1",

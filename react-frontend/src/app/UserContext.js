@@ -32,10 +32,27 @@ const CTX = {
         setUser(dataShell);
     },
 
-    login: () => {
+    login: async () => {
         localStorage.setItem('loginStatus', 'pending');
-        _azureAuth.signInMicrosoft();
+
+        if (_azureAuth.redirectStrategy === 'redirect') {
+            // This was for login via redirect which is a broken trash feature
+            _azureAuth.signInMicrosoft();
+            // A redirect takes place so this is never called
+            console.log('HIHIHIHIHI FROM THE PAST, I WAS WRONG!');
+            return;
+        }
+        return _azureAuth.signInMicrosoftPopup();
     },
+
+    // loginWithRedirect: () => {
+    //     localStorage.setItem('loginStatus', 'pending');
+    //     _azureAuth.signInMicrosoft();
+    // },
+    // loginWithPopup: async () => {
+    //     localStorage.setItem('loginStatus', 'pending');
+    //     return _azureAuth.signInMicrosoftPopup();
+    // },
 
     logout: () => {
         CTX.updateKeys({
@@ -46,7 +63,7 @@ const CTX = {
         _azureAuth.signOutMicrosoft();
     },
 
-    fillUserInfoFromRedirect: (usr, credential) => {
+    fillUserInfoFromProviderData: (usr, credential) => {
         const profileBlobPicUrl = (usr.photoURL != null && usr.photoURL !== '')
             ? usr.photoURL
             : defaultProfilePicture;

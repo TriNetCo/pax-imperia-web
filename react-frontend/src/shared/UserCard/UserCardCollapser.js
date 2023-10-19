@@ -18,8 +18,9 @@ const UserCardCollapser = ({children}) => {
         setShowing( (prev) => !prev );
     };
 
-    const handleLogin = () => {
-        userContext.login();
+    const handleLogin = async () => {
+        const result = await userContext.login();
+        userContext.fillUserInfoFromProviderData(result.user, result.credential);
         setShowing(true);
     };
 

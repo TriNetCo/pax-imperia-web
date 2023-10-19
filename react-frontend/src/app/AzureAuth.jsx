@@ -4,14 +4,15 @@ import {
     getAuth,
     getRedirectResult,
     OAuthProvider,
-    signInWithRedirect
+    signInWithRedirect,
+    signInWithPopup
 } from 'firebase/auth';
 import { getAnalytics, logEvent } from 'firebase/analytics';
 import AppConfig from '../AppConfig';
 
 const config = {
     apiKey: AppConfig.FIREBASE_API_KEY,
-    authDomain: AppConfig.AUTH_DOMAIN,
+    authDomain: AppConfig.AUTH_DOMAIN, // unless self-hosting to custom domain, use `${GOOGLE_PROJECT_ID}.firebaseapp.com`
     projectId: AppConfig.GOOGLE_PROJECT_ID,
     storageBucket: `${AppConfig.GOOGLE_PROJECT_ID}.appspot.com`,
     messagingSenderId: '197061503647',
@@ -19,6 +20,7 @@ const config = {
     measurementId: 'G-7DWTH6NHTD',
 };
 
+const redirectStrategy = 'popup';
 let app;
 let auth;
 let analytics;
@@ -29,12 +31,16 @@ const provider = new OAuthProvider('microsoft.com').setCustomParameters({
 
 
 async function initApp() {
-    app  = await initializeApp(config);
+    app  = initializeApp(config);
     analytics = getAnalytics(app);
-    auth = await getAuth(app);
+    auth = getAuth(app);
+
     // if (AppConfig.APP_ENV === 'local-test')
     //   connectAuthEmulator(auth, 'http://localhost:9099');
-    return await catchRedirectSignInMicrosoft();
+
+    if (redirectStrategy == 'redirect') {
+        return await catchRedirectSignInMicrosoft();
+    }
 }
 
 async function signInMicrosoft() {
@@ -100,15 +106,18 @@ function getFirebaseUser() {
 
 // TODO: refactor all of above functions into the below class.
 export default class AzureAuth {
+    redirectStrategy = redirectStrategy;
+
     constructor() {
     }
 
-    /* initLoginContext will call 1 of the 4 handlers based on the scenario was have going with firebase:
-   * - redirectSuccessHandler: When we're coming back to the app from a redirect with login OAuth
-   * - redirectStuckHandler: When something exceptional took place during the login process and our local context thinks we're pending a login redirect, but redirect information isn't coming in right
-   * - alreadyLoggedInHandler: When we're already logged in via firefox and only need to check to see if we need to update our login token
-   * - loginExpiredHandler: When our local login context thinks we're logged in, but firebase probably knows our login has expired
-   */
+
+    /** initLoginContext will call 1 of the 4 handlers based on the scenario was have going with firebase:
+    * - redirectSuccessHandler: When we're coming back to the app from a redirect with login OAuth
+    * - redirectStuckHandler: When something exceptional took place during the login process and our local context thinks we're pending a login redirect, but redirect information isn't coming in right
+    * - alreadyLoggedInHandler: When we're already logged in via firefox and only need to check to see if we need to update our login token
+    * - loginExpiredHandler: When our local login context thinks we're logged in, but firebase probably knows our login has expired
+    */
     async initLoginContext(handlers) {
         const result = await initApp();
 
@@ -135,12 +144,37 @@ export default class AzureAuth {
         };
     }
 
+    async initLoginContextFromPopup(handlers) {
+        await initApp();
+
+        const user = getAuth().currentUser;
+
+        if (user) {
+            handlers.popupSuccessHandler({
+                user: user,
+                credential: {
+                    accessToken: user.accessToken,
+                    providerId: user.providerData[0].providerId,
+                }
+            });
+        }
+    }
+
     async initApp() {
         return await initApp();
     }
 
     async signInMicrosoft() {
         return await signInMicrosoft();
+    }
+
+    async signInMicrosoftPopup() {
+        return signInWithPopup(auth, provider).then((result) => {
+            return ({
+                user:       result.user,
+                credential: OAuthProvider.credentialFromResult(result)
+            });
+        }).catch(error => console.log(error));
     }
 
     async signOutMicrosoft() {

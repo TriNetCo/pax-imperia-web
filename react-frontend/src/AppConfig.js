@@ -22,7 +22,7 @@ const getAppConfig = () => {
                 BUILD_VERSION:     process.env.REACT_APP_PAX_BUILD_VERSION,
                 SOCKET_URL:        'ws://localhost:3001/websocket',
                 BACKEND_URL:       'http://localhost:3001',
-                AUTH_DOMAIN:       process.env.REACT_APP_AUTH_DOMAIN,
+                AUTH_DOMAIN:       `${process.env.REACT_APP_PAX_GOOGLE_PROJECT_ID}.firebaseapp.com`,
                 FIREBASE_API_KEY:  process.env.REACT_APP_PAX_FIREBASE_API_KEY,
                 GOOGLE_PROJECT_ID: process.env.REACT_APP_PAX_GOOGLE_PROJECT_ID,
             };

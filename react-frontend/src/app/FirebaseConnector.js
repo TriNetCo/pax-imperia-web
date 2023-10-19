@@ -9,6 +9,20 @@ export const applicationLogicToCallOnAuthInit = () => {
     console.log('TODO: add application logic');
 };
 
+export const popupSuccessHandler = (userContext) => {
+    return (result) => {
+        if (result == null) return;
+
+        console.debug('popupSuccessHandler: User appears to be logged in with Firebase Auth.');
+        const user = result.user;
+        const credential = result.credential;
+
+        userContext.fillUserInfoFromProviderData(user, credential);
+        // TODO: Add application logic for after successful authentication here
+        applicationLogicToCallOnAuthInit();
+    };
+};
+
 export const redirectSuccessHandler = (userContext) => {
     return (result) => {
         if (result == null) return;
@@ -17,7 +31,7 @@ export const redirectSuccessHandler = (userContext) => {
         const user = result.user;
         const credential = result.credential;
 
-        userContext.fillUserInfoFromRedirect(user, credential);
+        userContext.fillUserInfoFromProviderData(user, credential);
         // TODO: Add application logic for after successful authentication here
         applicationLogicToCallOnAuthInit();
         throw 'end handler chain';
@@ -71,12 +85,21 @@ const FirebaseConnector = ({children, azureAuth}) => {
             return;
         }
 
-        azureAuth.initLoginContext({
-            redirectSuccessHandler: redirectSuccessHandler(userContext),
-            redirectStuckHandler: redirectStuckHandler(userContext),
-            alreadyLoggedInHandler: alreadyLoggedInHandler(userContext),
-            loginExpiredHandler: loginExpiredHandler(userContext),
-        });
+        switch(azureAuth.redirectStrategy) {
+            case 'popup':
+                azureAuth.initLoginContextFromPopup({
+                    popupSuccessHandler: popupSuccessHandler(userContext),
+                });
+                break;
+            case 'redirect':
+                azureAuth.initLoginContext({
+                    redirectSuccessHandler: redirectSuccessHandler(userContext),
+                    redirectStuckHandler: redirectStuckHandler(userContext),
+                    alreadyLoggedInHandler: alreadyLoggedInHandler(userContext),
+                    loginExpiredHandler: loginExpiredHandler(userContext),
+                });
+                break;
+        }
 
     }, []);
 

@@ -19,7 +19,7 @@ describe('LoginPage tests', () => {
     });
 
     expect(getByText('Logged Out'));
-    expect(getByText('Sign in using Redirect'));
+    expect(getByText('Sign in via Firebase/ MS'));
   });
 
   test('renders LoginPage with localStorage data', () => {

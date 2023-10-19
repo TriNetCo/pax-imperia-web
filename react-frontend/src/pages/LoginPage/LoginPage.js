@@ -13,8 +13,9 @@ export default function LoginPage() {
     renderCount++;
     const userContext = useContext(UserContext);
 
-    const handleLogin = () => {
-        userContext.login();
+    const handleLogin = async () => {
+        const result = await userContext.login();
+        userContext.fillUserInfoFromProviderData(result.user, result.credential);
     };
 
     const handleLogout = () => {
@@ -30,7 +31,7 @@ export default function LoginPage() {
     };
 
     const LoginButton = () => {
-        return <button className="ml-auto" onClick={handleLogin}>Sign in using Redirect</button>;
+        return <button className="ml-auto" onClick={handleLogin}>Sign in via Firebase/ MS</button>;
     };
 
     const ShowTokenButton = () => {

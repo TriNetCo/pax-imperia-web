@@ -35,7 +35,7 @@ describe("FirebaseConnector tests", () => {
     userContext.initUser( (internalProxy) => { userContext = internalProxy; });
   })
 
-  test('redirectSuccessHandler will fillUserInfoFromRedirect', () => {
+  test('redirectSuccessHandler will fillUserInfoFromProviderData', () => {
     const handlerUnderTest = redirectSuccessHandler(userContext)
 
     try {
