@@ -59,7 +59,7 @@ export class SpaceViewWidget {
 
     resetThreeObjects() {
         this.clientObjects.scene = new THREE.Scene();
-        this.clientObjects.camera = new THREE.PerspectiveCamera(15, this.c.canvasWidth / this.c.canvasHeight, 1, 10000);
+        this.clientObjects.camera = new THREE.PerspectiveCamera(15, this.c.canvasWidth / this.c.canvasHeight, 1, 40000);
         this.cacheMonster.scene = this.clientObjects.scene;
         this.cacheMonster.camera = this.clientObjects.camera;
         this.renderer.compile(this.clientObjects.scene, this.clientObjects.camera);

@@ -39,6 +39,7 @@ export class SpaceViewDomManager {
         this.previousTargets = new Queue(3);
         this.eventLogHtml = '';
         this.previousConsoleBodyHtml = '';
+        this.pressedKeys = {};
 
         window.SpaceViewDomManager = this; // TODO: remove the dependency that Entity has on this global
 
@@ -141,7 +142,7 @@ export class SpaceViewDomManager {
     handleDistanceSlider = (event) => {
         const distance = event.target.value;
         const spaceViewAnimator = this.gameStateInterface.spaceViewWidget.spaceViewAnimator;
-        spaceViewAnimator.resetCamera(distance);
+        spaceViewAnimator.zoomCamera(distance);
     }
 
     ////////////////////
@@ -188,6 +189,15 @@ export class SpaceViewDomManager {
             this.moveShip(currentSelection, clickTarget, 'default');
         }
     }
+
+    #keyDownHandler = (event) => {
+        this.pressedKeys[event.key] = true;
+    }
+
+    #keyUpHandler = (event) => {
+        this.pressedKeys[event.key] = false;
+    }
+
 
     ///////////////////////////
     // Click Handler Helpers //
@@ -416,6 +426,7 @@ export class SpaceViewDomManager {
         this.addMouseMovement();
         this.addMouseClick();
         this.addMouseDoubleClick();
+        this.addKeyPresses();
     }
 
     addMouseMovement() {
@@ -438,6 +449,11 @@ export class SpaceViewDomManager {
 
     addMouseDoubleClick() {
         this.canvas.addEventListener('dblclick', this.#doubleClickHandler);
+    }
+
+    addKeyPresses() {
+        document.addEventListener('keydown', this.#keyDownHandler);
+        document.addEventListener('keyup', this.#keyUpHandler);
     }
 
     addHud() {
@@ -470,6 +486,8 @@ export class SpaceViewDomManager {
         this.canvas.removeEventListener('click', this.#clickHandler);
         this.canvas.removeEventListener('dblclick', this.#doubleClickHandler);
         this.canvas.removeEventListener('contextmenu', this.#rightClickHandler);
+        document.removeEventListener('keydown', this.#keyDownHandler);
+        document.removeEventListener('keyup', this.#keyUpHandler);
         const hudElement = document.getElementById('hud');
         if (hudElement) {
             hudElement.remove();
