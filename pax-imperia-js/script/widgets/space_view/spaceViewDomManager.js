@@ -5,11 +5,18 @@ import Entity from './entities/entity.js';
 import { Ship } from './entities/ship.js';
 import { System } from './entities/system.js';
 import { GameStateInterface } from '../../gameStateInterface/gameStateInterface.js';
+import { SpaceViewAnimator } from './spaceViewAnimator.js';
+import { SpaceViewInputHandler } from './spaceViewInputHandler.js';
 
 /**
  * This class handles interactions with the dom
  */
 export class SpaceViewDomManager {
+
+    /** @type {SpaceViewAnimator} */
+    spaceViewAnimator;
+    /** @type {SpaceViewInputHandler} */
+    spaceViewInputHandler;
 
     /**
      *
@@ -41,7 +48,9 @@ export class SpaceViewDomManager {
         this.previousConsoleBodyHtml = '';
         this.pressedKeys = {};
 
-        window.SpaceViewDomManager = this; // TODO: remove the dependency that Entity has on this global
+        // currently necessary for ship movement which accesses global
+        // TODO: remove the dependency
+        window.spaceViewDomManager = this;
 
         window.clickThumbnail = (targetType, targetName) => {
             const entity = this.system[targetType + 's'].find(x => x.name === targetName);
@@ -141,8 +150,7 @@ export class SpaceViewDomManager {
 
     handleDistanceSlider = (event) => {
         const distance = event.target.value;
-        const spaceViewAnimator = this.gameStateInterface.spaceViewWidget.spaceViewAnimator;
-        spaceViewAnimator.zoomCamera(distance);
+        this.spaceViewAnimator.zoomCamera(distance);
     }
 
     ////////////////////

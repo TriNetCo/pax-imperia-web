@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { SpaceViewAnimator } from './spaceViewAnimator.js';
 import { SpaceViewDomManager } from './spaceViewDomManager.js';
+import { SpaceViewInputHandler } from './spaceViewInputHandler.js';
 import { SpriteFlipbook } from '../../models/spriteFlipbook.js'
 import { System } from './entities/system.js';
 import { getBasePath } from '../../models/helpers.js';
@@ -94,7 +95,6 @@ export class SpaceViewWidget {
             this.systemClickHandler,
             this.gameStateInterface,
         );
-        window.spaceViewDomManager = this.spaceViewDomManager; // currently necessary for ship movement which accesses global
         this.spaceViewDomManager.attachDomEventsToCode();
         this.spaceViewDomManager.populateHtml();
 
@@ -106,6 +106,20 @@ export class SpaceViewWidget {
             this.cacheMonster,
             this.gameStateInterface,
         );
+
+        this.spaceViewInputHandler = new SpaceViewInputHandler();
+
+        // link classes together
+        this.spaceViewAnimator.spaceViewDomManager = this.spaceViewDomManager;
+        this.spaceViewAnimator.spaceViewInputHandler = this.spaceViewInputHandler;
+
+        this.spaceViewDomManager.spaceViewAnimator = this.spaceViewAnimator;
+        this.spaceViewDomManager.spaceViewInputHandler = this.spaceViewInputHandler;
+
+        this.spaceViewInputHandler.spaceViewAnimator = this.spaceViewAnimator;
+        this.spaceViewInputHandler.spaceViewDomManager = this.spaceViewDomManager;
+
+        // start drawing
         await this.spaceViewAnimator.populateScene();
         this.spaceViewAnimator.startDrawLoop();
     }
