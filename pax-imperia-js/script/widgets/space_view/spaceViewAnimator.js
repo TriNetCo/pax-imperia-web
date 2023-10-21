@@ -5,11 +5,17 @@ import CacheMonster from '../../models/cacheMonster.js';
 import { Galaxy } from '../../models/galaxy.js';
 import { System } from './entities/system.js';
 import TimeLord from '../../models/timeLord.js';
+import { SpaceViewDomManager } from './spaceViewDomManager.js';
+import { SpaceViewInputHandler } from './spaceViewInputHandler.js';
 
 export class SpaceViewAnimator {
 
     /** @type {THREE.WebGLRenderer} */
     renderer;
+    /** @type {SpaceViewDomManager} */
+    spaceViewDomManager;
+    /** @type {SpaceViewInputHandler} */
+    spaceViewInputHandler;
 
     /**
      *
@@ -121,7 +127,7 @@ export class SpaceViewAnimator {
 
 
     handleKeyboardInputs() {
-        const pressedKeys = this.gameStateInterface?.spaceViewWidget?.spaceViewDomManager?.pressedKeys;
+        const pressedKeys = this?.spaceViewDomManager?.pressedKeys;
         if (!pressedKeys) return;
 
         // if the spacebar key is pressed, select the first ship in the system
@@ -221,12 +227,10 @@ export class SpaceViewAnimator {
     }
 
     updateConsoleBody(elapsedTime) {
-        if (Math.round(elapsedTime * 60) / 60 % 1 == 0 && // This check ensures we do something once every second
-            this.gameStateInterface.spaceViewWidget.spaceViewDomManager) {
-            const spaceViewDomManager = this.gameStateInterface.spaceViewWidget.spaceViewDomManager;
-            if (spaceViewDomManager.selectionSprite.selectionTarget) {
-                spaceViewDomManager.populateConsoleBody();
-            }
+        // update once a second only when a target is selected
+        if (Math.round(elapsedTime * 60) / 60 % 1 == 0 &&
+            this?.spaceViewDomManager?.selectionSprite?.selectionTarget) {
+            this.spaceViewDomManager.populateConsoleBody();
         }
     }
 
