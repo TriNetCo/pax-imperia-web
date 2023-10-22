@@ -1,4 +1,4 @@
-import * as THREE from 'https://threejs.org/build/three.module.js';
+import * as THREE from 'three';
 import { SpaceViewAnimator } from "./spaceViewAnimator.js";
 import { SpaceViewDomManager } from "./spaceViewDomManager.js";
 import { System } from "./entities/system.js";
