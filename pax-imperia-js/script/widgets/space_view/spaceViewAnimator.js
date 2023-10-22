@@ -33,6 +33,8 @@ export class SpaceViewAnimator {
         this.galaxy = galaxy;
         this.cacheMonster = cacheMonster;
         this.gameStateInterface = gameStateInterface;
+        this.fps = config.fps;
+        this.gameClock = gameStateInterface.gameClock;
 
         // unpack clientObjects
         this.scene = clientObjects.scene;
@@ -41,10 +43,10 @@ export class SpaceViewAnimator {
         this.camera = clientObjects.camera;
         this.cx = clientObjects.cx;
         this.mouse = clientObjects.mouse;
-        this.clock = clientObjects.gameClock;
 
         this.cameraDistance = 50;
         this.firstPersonView = false;
+        this.frameClock = new THREE.Clock(true);
 
         THREE.Cache.enabled = true;  // for development,  please set this to false :)
     }
@@ -59,6 +61,7 @@ export class SpaceViewAnimator {
     }
 
     startDrawLoop() {
+        console.log('startDrawLoop')
         this.isDrawLoopEnabled = true;
         this.drawLoop();
     }
@@ -79,8 +82,12 @@ export class SpaceViewAnimator {
     }
 
     async animate() {
-        // TODO: should camera reset every frame??
-        // this.trackCamera();
+        // skip frames according to fps setting
+        const elapsedTime = this?.frameClock?.getElapsedTime() || 1;
+        const fpsInterval = 1 / this.fps;
+        if (elapsedTime < fpsInterval) return;
+        this.frameClock.start();
+
         this.spaceViewInputHandler.handleInputs();
         this.updateObjects();
         const startTime = Date.now();
@@ -135,9 +142,9 @@ export class SpaceViewAnimator {
 
     updateObjects() {
         // seconds since clock reset
-        const deltaTime = this.clock.getDelta();
+        const deltaTime = this.gameClock.getDelta();
         // seconds since clock started (avoiding getElapsedTime() which resets clock)
-        const elapsedTime = this.clock.elapsedTime;
+        const elapsedTime = this.gameClock.elapsedTime;
 
         // these happen once per second
         this.updateHtmlClock(elapsedTime);
@@ -206,6 +213,8 @@ export class SpaceViewAnimator {
         this.renderer.compile(this.scene, this.camera);
         timeLord.endAndReset('compile')
 
+        // use animate instead of render so that there's not a lurch in time
+        // when we call animate the first time in drawLoop
         await this.animate();
         timeLord.end('first animation')
     }

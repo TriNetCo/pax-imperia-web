@@ -10,7 +10,17 @@ const initGameData = () => {
     // Main //
     //////////
 
-    Galaxy.seedRandomness('Axc2IJCs;s');
+    Galaxy.seedRandomness('Axd2IJCs;s');
+
+    // add storedPreferences to gameSettings
+    const storedPreferences = localStorage.getItem('preferences');
+    const gameSettings = GameSettings;
+    Object.entries(JSON.parse(storedPreferences)).forEach(([key, value]) => {
+        gameSettings.galaxyWidget[key] = value;
+        gameSettings.spaceViewWidget[key] = value;
+    });
+    console.log('###storedPreferences', GameSettings.storedPreferences);
+
 
     let galaxy =  Galaxy.generateFromConfig(GameSettings.galaxyWidget);
     let websocket = new WebSocket('ws://localhost:3001/websocket');

@@ -26,22 +26,23 @@ const PreferencesPage = () => {
         <div>
             <h1>Preferences</h1>
             <label>
-                FPS:
+                Galaxy FPS:
                 <select name="fps" value={preferences.fps || ''} onChange={handlePreferenceChange}>
                     <option value="">-- Select a Framerate --</option>
                     <option value="60">60</option>
-                    <option value="1">1</option>
+                    <option value="30">30</option>
+                    <option value="15">15</option>
+                    <option value="4">4</option>
+                    <option value="2">2</option>
                 </select>
             </label>
             <br />
             <label>
-                Language:
-                <select name="language" value={preferences.language || ''} onChange={handlePreferenceChange}>
-                    <option value="">-- Select a language --</option>
-                    <option value="en">English</option>
-                    <option value="es">Español</option>
-                </select>
+                Seed:
+                <input type="text" id="seed" name="seed" value={preferences.seed || 'Axd2IJCs;s'} onInput={handlePreferenceChange}>
+                </input>
             </label>
+            <div><a href="/">Back</a></div>
         </div>
     );
 };

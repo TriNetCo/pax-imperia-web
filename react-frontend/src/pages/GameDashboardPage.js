@@ -45,6 +45,7 @@ const GameDashboardPage = () => {
                             {/* <li><a href="surface.html">Surface View</a></li> */}
                             {/* <li><a href="new_game.html">New Game Parameters</a></li> */}
                             <li><a href="species.html">Species Design</a></li>
+                            <li><a href="/">Back</a></li>
                         </ul>
                     </div>
                 </div>

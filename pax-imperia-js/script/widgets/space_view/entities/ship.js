@@ -217,6 +217,7 @@ export class Ship extends Entity {
     }
 
     moveToDestinationPoint(deltaTime) {
+        // TODO: moves slower when fps is low?
         if (!this.destinationPoint) { return; }
 
         const positionVector = new THREE.Vector3().copy(this.object3d.position);

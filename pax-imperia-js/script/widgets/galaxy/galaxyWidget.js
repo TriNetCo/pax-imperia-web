@@ -15,11 +15,13 @@ export class GalaxyWidget {
     /**
      *
      * @param {*} config
+     * @param {number} config.fps frames per second
      * @param {Galaxy} galaxy
      * @param {GameStateInterface} gameStateInterface
      */
     constructor(config, galaxy, gameStateInterface) {
         this.c = config;
+        this.fps = config.fps;
         this.mouse = { x: 0, y: 0 };
         this.galaxy = galaxy;
         this.gameStateInterface = gameStateInterface;
@@ -41,6 +43,8 @@ export class GalaxyWidget {
             knownConnections: this.gameStateInterface.knownConnections,
             systemRadius: this.c.systemRadius,
             currentSystemId: overrideConfig.currentSystemId,
+            fps: this.fps,
+            gameStateInterface: this.gameStateInterface,
         });
         this.galaxyDomManager = new GalaxyDomManager(
             cx,
