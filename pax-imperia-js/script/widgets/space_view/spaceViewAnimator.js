@@ -266,7 +266,6 @@ export class SpaceViewAnimator {
     switchToFirstPerson(selectionTarget) {
         if (selectionTarget?.parentEntity?.type != 'ship') return;
 
-        this.firstPersonView = true;
         // selectionTarget.rotation.set(0, Math.PI * 1.5, 0);
 
 
@@ -296,6 +295,9 @@ export class SpaceViewAnimator {
         this.camera.lookAt(this.firstPersonGroup.position);
 
         this.spaceViewDomManager.selectTarget(null);
+
+        this.firstPersonView = true;
+
     }
 
     async redrawWormholeText(wormhole) {

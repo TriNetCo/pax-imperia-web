@@ -109,6 +109,7 @@ export class SpaceViewInputHandler {
     handleShipMovement3d(xAxis, yAxis, thrust) {
         const firstPersonGroup = this.firstPersonGroup;
         const firstPersonShip = this.firstPersonTarget;
+        if (!firstPersonShip) return;
 
         // if the left/ right button are pressed, rotate the ship left/right
         if (xAxis) {
@@ -129,11 +130,12 @@ export class SpaceViewInputHandler {
             firstPersonShip.translateZ(thrust * 0.05);
         }
 
-        // this.saveShipVectors(firstPersonShip);
+        this.saveShipVectors(firstPersonShip);
     }
 
     saveShipVectors(ship) {
         var position = new THREE.Vector3();
+        // debugger;
         ship.getWorldPosition(position);
         this.laggedShipPosition.unshift(ship);
 
