@@ -46,7 +46,6 @@ export class SpaceViewDomManager {
         this.previousTargets = new Queue(3);
         this.eventLogHtml = '';
         this.previousConsoleBodyHtml = '';
-        this.pressedKeys = {};
 
         // currently necessary for ship movement which accesses global
         // TODO: remove the dependency
@@ -199,11 +198,13 @@ export class SpaceViewDomManager {
     }
 
     #keyDownHandler = (event) => {
-        this.pressedKeys[event.key] = true;
+        const entry = { pressed: true, handled: false }
+        this.spaceViewInputHandler.keyStates[event.key] = entry;
     }
 
     #keyUpHandler = (event) => {
-        this.pressedKeys[event.key] = false;
+        const entry = { pressed: false, handled: false }
+        this.spaceViewInputHandler.keyStates[event.key] = entry;
     }
 
 
@@ -229,6 +230,12 @@ export class SpaceViewDomManager {
         }
         this.populateHtml();
         window.selectionTarget = this.selectionSprite.selectionTarget;
+    }
+
+    selectEntity(entity) {
+        if (entity && entity?.object3d) {
+            this.selectTarget(entity.object3d);
+        }
     }
 
     unselectTarget() {
