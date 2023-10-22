@@ -50,8 +50,8 @@ export class GalaxyDrawer {
     drawConnections() {
         const cx = this.cx;
         const connections = this.connections;
-        cx.strokeStyle = "orange";
-        cx.lineWidth = this.scaleRadius(1, 0);
+        cx.strokeStyle = "rgb(170, 170, 255)";
+        cx.lineWidth = this.scaleRadius(2, 1);
         for (let i = 0, len = connections.length; i < len; i++) {
             const startSystem = this.galaxy.getSystem(connections[i][0]);
             const startX = this.scaleX(startSystem.position.x);
@@ -95,7 +95,7 @@ export class GalaxyDrawer {
     }
 
     drawSystems() {
-        let color = "rgb(170, 170, 255)";
+        const color = "rgb(170, 170, 255)";
         this.galaxy.systems.forEach(system => {
             const radius = this.getSystemRadius(system);
             const x = this.scaleX(system.position.x);
@@ -105,9 +105,9 @@ export class GalaxyDrawer {
     }
 
     drawHoveredSystem() {
-        let color = "white";
+        const color = "white";
         for (let i = 0; i < this.galaxy.systems.length; i++) {
-            let system = this.galaxy.systems[i];
+            const system = this.galaxy.systems[i];
             if (this.isMouseHovering(system)) {
                 const radius = this.getSystemRadius(system, 2);
                 const x = this.scaleX(system.position.x);

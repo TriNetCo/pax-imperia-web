@@ -62,7 +62,7 @@ export class Ship extends Entity {
     }
 
     update(elapsedTime, deltaTime, system, galaxy) {
-        this.handleWormholeJumping(galaxy);
+        this.handleWormholeJumping(deltaTime, galaxy);
         this.recalculateDestinationPoint(this.destinationEntity);
         this.handleColonizing(system);
         this.moveToDestinationPoint(deltaTime);
@@ -153,7 +153,7 @@ export class Ship extends Entity {
         this.controllered = true;
     }
 
-    async handleWormholeJumping(galaxy) {
+    async handleWormholeJumping(deltaTime, galaxy) {
         if (!this.destinationEntity || this.destinationEntity?.type != 'wormhole') {
             return;
         }
@@ -161,7 +161,8 @@ export class Ship extends Entity {
         const distanceFromDest = this.object3d.position.distanceTo(
             this.destinationEntity.object3d.position);
         const toSystemId = this.destinationEntity.toId;
-        if (distanceFromDest <= this.speed) {
+        if (distanceFromDest <= deltaTime * this.speed) {
+            console.log("distanceFromDest <= this.speed")
             this.discoverSystem(this.destinationEntity.id);
             // copy ship data to wormhole system data
             this.resetMovement();
@@ -227,7 +228,7 @@ export class Ship extends Entity {
 
         // If the destinationPoint is within [speed] units away from this.position,
         // then move to destination and set destinationPoint to null
-        if (distanceFromDest <= this.speed) {
+        if (distanceFromDest <= deltaTime * this.speed) {
             this.object3d.position.copy(destinationVector);
             this.destinationPoint = null;
             this.destinationEntity = null;
@@ -264,7 +265,7 @@ export class Ship extends Entity {
         this.destinationPoint = { "x": destX, "y": destY, "z": destZ };
     }
 
-    handleColonizing() {
+    handleColonizing(deltaTime) {
         // don't start colonization animation until ship is close enough to planet
         if (this.destinationEntity || !this.colonizeTarget) return;
 
@@ -272,7 +273,7 @@ export class Ship extends Entity {
         // 0, 0, 0, points to planet
         this.object3d.rotation.set(0, 0, 0);
         // update animation progress
-        this.colonizeAnimationProgress += this.speed / 20;
+        this.colonizeAnimationProgress += deltaTime * this.speed * 3;
         // delete ship once landing animation finished
         if (this.colonizeAnimationProgress >= 1) {
             const colonizeAction = {
