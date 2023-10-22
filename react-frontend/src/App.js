@@ -11,6 +11,7 @@ import LandingPage from './pages/LandingPage/LandingPage';
 import NewGameLayout from './pages/NewGame/NewGamePage';
 import AboutPage from './pages/AboutPage';
 import usePageTracking from './app/usePageTracking';
+import PreferencesPage from './pages/PreferencesPage/PreferencesPage';
 
 function App() {
     usePageTracking();
@@ -27,6 +28,7 @@ function App() {
                 <Route exact path="/users" component={UsersPage} />
                 <Route exact path="/about" component={AboutPage} />
                 <Route exact path="/chat" component={ChatPage} />
+                <Route exact path="/preferences" component={PreferencesPage} />
 
                 {/* End State for Menu and stuff */}
                 <Route exact path="/"                          component={LandingPage}      />        {/* Shows the Sign-in stuff or the user's dashboard including 'newgame' button */}
