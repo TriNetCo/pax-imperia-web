@@ -21,7 +21,7 @@ export class GalaxyWidget {
      */
     constructor(config, galaxy, gameStateInterface) {
         this.c = config;
-        this.fps = config.fps;
+        this.fps = config?.fps || 60;
         this.mouse = { x: 0, y: 0 };
         this.galaxy = galaxy;
         this.gameStateInterface = gameStateInterface;

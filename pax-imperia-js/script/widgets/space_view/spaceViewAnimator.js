@@ -33,7 +33,7 @@ export class SpaceViewAnimator {
         this.galaxy = galaxy;
         this.cacheMonster = cacheMonster;
         this.gameStateInterface = gameStateInterface;
-        this.fps = config.fps;
+        this.fps = config?.fps || 60;
         this.gameClock = gameStateInterface.gameClock;
 
         // unpack clientObjects

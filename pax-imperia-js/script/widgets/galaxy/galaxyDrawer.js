@@ -14,9 +14,9 @@ export class GalaxyDrawer {
         this.mouse = config.mouse;
         this.connections = config.knownConnections;
         this.systemRadius = config.systemRadius;
-        this.fps = config.fps;
+        this.fps = config?.fps || 60;
         this.gameStateInterface = config.gameStateInterface;
-        this.gameClock = this.gameStateInterface.gameClock;
+        this.gameClock = this.gameStateInterface?.gameClock;
         this.frameClock = new THREE.Clock(true);
         // this.connections = this.collectConnections(this.galaxy.systems);
         this.setCurrentSystem(config.currentSystemId);
