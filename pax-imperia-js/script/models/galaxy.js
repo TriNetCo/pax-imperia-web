@@ -75,7 +75,6 @@ export class Galaxy {
             for (const planet of system.planets) {
                 this.planetIds.push(planet.id);
             }
-
             for (const colony of system.colonies) {
                 this.colonyIds.push(colony.id);
             }

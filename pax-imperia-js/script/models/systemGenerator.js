@@ -19,7 +19,7 @@ export class SystemGenerator {
 
     // this function serializes the data to an object without actually
     // serializing it to a string which a database and network connection would want
-    generateSystem(id, position, name, radius) {
+    generateSystem(id, position, name) {
         this.id = id;
         this.position = position;
         this.name = name;
@@ -28,10 +28,9 @@ export class SystemGenerator {
         this.connections = [];
         this.stars = [this.generateStar(id)];
         this.planets = this.generatePlanets(id);
-        this.colonies = this.generateDebugColonies(this.planets);
 
-        // Place a ship in every system
-        this.ships = this.generateShips();
+        this.colonies = this.generateDebugColonies(this.planets);
+        this.ships = this.generateDebugShips();
 
         // This is creating a new object, and loading it with all the
         // data from this object, but not the functions?
@@ -85,28 +84,22 @@ export class SystemGenerator {
     }
 
     // For debugging, we'll put a colony for player 1 on the first planet
-    // and a colony for player 2 on the second planet
+    // and a colony for player 2 on the second planet if it exists
     generateDebugColonies() {
         let colonies = [];
 
         colonies.push(new Colony(this.getNextColonyId(), 1, this.planets[0]["id"], 0))
-
-        // I need to figure out how I attach a colony to a planet
-        // before, you just put a colony onto the planet entity, but
-        // this stage is running before we have any entities defined...
-        //
         this.planets[0].colony = colonies[0];
-
 
         if (this.planets[1]) {
             colonies.push(new Colony(this.getNextColonyId(), 2, this.planets[1]["id"], 0))
-            // this.planets[1].colony = colonies[1];
+            this.planets[1].colony = colonies[1];
         }
 
         return colonies;
     }
 
-    generateShips() {
+    generateDebugShips() {
         let ships = [];
         let shipCount = getRandomNum(1, 3, 0);
         let systemShipMake = null; //this.getShipMake(null, null);
