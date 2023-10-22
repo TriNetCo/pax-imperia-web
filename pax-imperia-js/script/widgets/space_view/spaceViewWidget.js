@@ -24,6 +24,8 @@ export class SpaceViewWidget {
     spaceViewAnimator;
     /** @type {SpaceViewDomManager} */
     spaceViewDomManager;
+    /** @type {SpaceViewInputHandler} */
+    spaceViewInputHandler;
     /** @type {System} */
     system;
     /** @type {THREE.WebGLRenderer} */
@@ -88,6 +90,7 @@ export class SpaceViewWidget {
     }
 
     async buildSystemClasses() {
+        // create new instances of the 3 classes
         this.spaceViewDomManager = new SpaceViewDomManager(
             this.c,
             this.clientObjects,
@@ -95,8 +98,6 @@ export class SpaceViewWidget {
             this.systemClickHandler,
             this.gameStateInterface,
         );
-        this.spaceViewDomManager.attachDomEventsToCode();
-        this.spaceViewDomManager.populateHtml();
 
         this.spaceViewAnimator = new SpaceViewAnimator(
             this.c,
@@ -107,7 +108,9 @@ export class SpaceViewWidget {
             this.gameStateInterface,
         );
 
-        this.spaceViewInputHandler = new SpaceViewInputHandler();
+        this.spaceViewInputHandler = new SpaceViewInputHandler(
+            this.system
+        );
 
         // link classes together
         this.spaceViewAnimator.spaceViewDomManager = this.spaceViewDomManager;
@@ -118,6 +121,10 @@ export class SpaceViewWidget {
 
         this.spaceViewInputHandler.spaceViewAnimator = this.spaceViewAnimator;
         this.spaceViewInputHandler.spaceViewDomManager = this.spaceViewDomManager;
+
+        // populate sidebar
+        this.spaceViewDomManager.attachDomEventsToCode();
+        this.spaceViewDomManager.populateHtml();
 
         // start drawing
         await this.spaceViewAnimator.populateScene();

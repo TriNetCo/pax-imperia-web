@@ -81,7 +81,7 @@ export class SpaceViewAnimator {
     async animate() {
         // TODO: should camera reset every frame??
         // this.trackCamera();
-        this.handleInputs();
+        this.spaceViewInputHandler.handleInputs();
         this.updateObjects();
         const startTime = Date.now();
         this.renderer.render(this.scene, this.camera);
@@ -89,108 +89,6 @@ export class SpaceViewAnimator {
             this.firstRenderTime = Date.now() - startTime;
             console.log(this.firstRenderTime + " ms: theBlack (first render)");
         }
-    }
-
-    // TODO: This wants to live in it's own file
-    handleInputs() {
-        this.handleKeyboardInputs();
-        this.handleGamepadInputs();
-    }
-
-    handleGamepadInputs() {
-        if (!navigator) return;
-        const gamepad = navigator.getGamepads()[0];
-        if (!gamepad) return;
-
-        const xAxis = Math.floor(gamepad.axes[0] * 5);
-        const yAxis = Math.floor(-gamepad.axes[1] * 5);
-        this.handleShipMovement2d(xAxis, yAxis);
-
-        // right stick up/down moves zoom slider
-        const r_yAxis = gamepad.axes[3];
-        if (r_yAxis > 0.3 || r_yAxis < -0.3) {
-            // Update zoom slider
-            const distanceSlider = document.getElementById('distance-slider');
-            const originalZoomValue = parseInt(distanceSlider.value);
-            const newZoomValue = originalZoomValue + r_yAxis;
-            distanceSlider.value = newZoomValue;
-            this.zoomCamera(newZoomValue);
-            console.log('zoom: ', newZoomValue);
-        }
-
-        // when we press down on the directional pad, we select the first ship in the system
-        if (gamepad.buttons[13].pressed) {
-            const firstShip = this.system.ships[0];
-            firstShip.select();
-        }
-    }
-
-
-    handleKeyboardInputs() {
-        const pressedKeys = this?.spaceViewDomManager?.pressedKeys;
-        if (!pressedKeys) return;
-
-        // if the spacebar key is pressed, select the first ship in the system
-        // and switch to first person view
-        if (pressedKeys[' ']) {
-            if (!this.firstPersonView) {
-                const firstShip = this.system.ships[1];
-                firstShip.select();
-                this.switchToFirstPerson(firstShip.object3d);
-                firstShip.select();
-            }
-            else {
-                this.firstPersonView = false;
-            }
-        }
-
-        const xAxis = pressedKeys['ArrowRight'] ? 1 : pressedKeys['ArrowLeft'] ? -1 : 0;
-        const yAxis = pressedKeys['ArrowUp'] ? 1 : pressedKeys['ArrowDown'] ? -1 : 0;
-
-        this.handleShipMovement3d(xAxis, yAxis, pressedKeys);
-        // this.handleShipMovement2d(xAxis, yAxis);
-    }
-
-    handleShipMovement3d(xAxis, yAxis, pressedKeys) {
-
-        // if the left/ right button are pressed, rotate the ship left/right
-        if (xAxis) {
-            const selectedEntity = this?.selectionSprite?.selectionTarget?.parentEntity;
-            if (selectedEntity?.type != 'ship') return;
-            const obj3d = selectedEntity.object3d;
-
-            obj3d.rotation.y = obj3d.rotation.y + xAxis * -0.1;
-        }
-
-        if (yAxis) {
-            const selectedEntity = this?.selectionSprite?.selectionTarget?.parentEntity;
-            if (selectedEntity?.type != 'ship') return;
-            const obj3d = selectedEntity.object3d;
-
-            obj3d.rotation.x = obj3d.rotation.x + yAxis * 0.1;
-        }
-
-
-    }
-
-    handleShipMovement2d(xAxis, yAxis) {
-        const selectedEntity = this?.selectionSprite?.selectionTarget?.parentEntity;
-        if (selectedEntity?.type != 'ship') return;
-
-        // if x/y movement input not large enough, release ship controls
-        if (xAxis < 0.4 & xAxis > -0.4 & yAxis < 0.4 & yAxis > -0.4) {
-            if (selectedEntity.controllered) {
-                selectedEntity.resetMovement();
-            }
-            return;
-        }
-
-        if (this.firstPersonView) {
-            selectedEntity.setShipDestinationPointRelatively(0, yAxis, xAxis);
-        } else {
-            selectedEntity.setShipDestinationPointRelatively(xAxis, yAxis, 0);
-        }
-
     }
 
     // trackCamera() {
@@ -313,7 +211,7 @@ export class SpaceViewAnimator {
     }
 
     addCameraToScene() {
-        const distance = 50 * 2;
+        const distance = this.cameraDistance * 2;
 
         this.camera.position.set(0, distance, 0);
         this.camera.lookAt(this.scene.position);
@@ -346,26 +244,36 @@ export class SpaceViewAnimator {
         // this.camera.add(cameraLight);
     }
 
+    switchToThirdPerson() {
+        this.firstPersonView = false;
+
+        // set camera back
+        this.camera.removeFromParent(); // remove from firstPersonGroup
+        this.addCameraToScene();
+
+        // remove ship obj3d from firstPersonGroup
+        this.firstPersonTarget.removeFromParent();
+        this.firstPersonTarget.position.copy(this.firstPersonGroup.position);
+        this.firstPersonTarget.rotation.copy(this.firstPersonGroup.rotation);
+        this.firstPersonGroup.remove();
+        this.firstPersonGroup = null;
+        this.scene.add(this.firstPersonTarget);
+
+        // relink ship entity to ship obj3d
+        this.firstPersonTarget.parentEntity.object3d = this.firstPersonTarget;
+    }
+
     switchToFirstPerson(selectionTarget) {
-
-        const t = selectionTarget;
-        t.rotation.y = 3.14 * 1.5
-        t.rotation.x = 0;
-        t.rotation.z = 0;
-
-        // selectionTarget.add(this.cameraPivot);
-        // this.camera.position.set(0, 0, this.cameraDistance);
-        // this.camera.lookAt(selectionTarget);
-        // this.camera.updateProjectionMatrix();
+        if (selectionTarget?.parentEntity?.type != 'ship') return;
 
         this.firstPersonView = true;
-        this.firstPersonTarget = selectionTarget;
-        selectionTarget.parentEntity.firstPersonView = true;
+        // selectionTarget.rotation.set(0, Math.PI * 1.5, 0);
 
-        // const v1 = new THREE.Vector3(0, 0, 1).applyQuaternion(selectionTarget.quaternion);
-        // this.camera.quaternion.copy(selectionTarget.quaternion);
-        // this.camera.position.copy(selectionTarget.position).add(v1.multiplyScalar(-2));
-        // this.camera.lookAt(selectionTarget.position);
+
+        this.firstPersonTarget = selectionTarget;
+        this.firstPersonEntity = selectionTarget.parentEntity;
+        this.firstPersonEntity.firstPersonView = true;
+
         this.firstPersonGroup = new THREE.Group();
         this.firstPersonGroup.position.copy(selectionTarget.position);
         this.firstPersonGroup.rotation.copy(selectionTarget.rotation);
@@ -377,20 +285,17 @@ export class SpaceViewAnimator {
 
         selectionTarget.parentEntity.object3d = this.firstPersonGroup;
         this.firstPersonGroup.parentEntity = selectionTarget.parentEntity;
+        this.spaceViewDomManager.selectTarget(this.firstPersonGroup);
 
         this.camera.removeFromParent();
-        this.camera.position.set(0, 2, -10);
+        this.cameraPivot.remove();
+
+        this.camera = new THREE.PerspectiveCamera(30, this.c.canvasWidth / this.c.canvasHeight, 1, 30000);
         this.firstPersonGroup.add(this.camera);
+        this.camera.position.set(0, 2, -20);
         this.camera.lookAt(this.firstPersonGroup.position);
 
-        // // this.cameraPivot.remove();
-        // // this.scene.add(this.camera);
-        // this.camera.position.set(0, 0, 0);
-        // this.firstPersonTarget.add(this.camera);
-        // // this.camera.position.z = -2;
-        // // this.camera.position.set(0, -10, 0);
-        // this.camera.lookAt(this.firstPersonTarget.position);
-
+        this.spaceViewDomManager.selectTarget(null);
     }
 
     async redrawWormholeText(wormhole) {
