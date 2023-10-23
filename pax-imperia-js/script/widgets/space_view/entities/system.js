@@ -3,7 +3,6 @@ import { Planet } from './planet.js';
 import { Ship } from './ship.js';
 import { Wormhole } from './wormhole.js';
 import { Colony } from './colony.js';
-import { unpackData } from '../../../models/helpers.js'
 
 export class System {
 
@@ -19,26 +18,17 @@ export class System {
     colonies;
 
     constructor(systemData) {
-        unpackData(systemData, this);
-        this.stars = this.createRepresentations(systemData.stars, Star, this.name, this.id);
-        this.planets = this.createRepresentations(systemData.planets, Planet, this.name, this.id);
-        this.wormholes = this.createRepresentations(systemData.connections, Wormhole, this.name, this.id, systemData.position);
+        this.name = systemData.name;
+        this.id = systemData.id;
+        this.position = systemData.position;
+        this.radius = systemData.radius;
 
+        // Entities
+        this.wormholes = systemData.connections;
+        this.planets = systemData.planets;
+        this.stars = systemData.stars;
         this.ships = systemData.ships;
         this.colonies = systemData.colonies || [];
-
-        // This hack is because planet entities are only formed now, whereas they
-        // should be formed during the generation of the planets
-        // attach colony entities to planets
-        for (const colony of this.colonies) {
-            const planet = this.planets.find(x => x.id === colony.planetId);
-            planet.colony = colony;
-        }
-
-        // if (this.ships[1]) {
-        //     this.ships[1].playerId = 2;
-        // }
-
     }
 
     toJSON() {
@@ -117,15 +107,6 @@ export class System {
             default:
                 throw new Error(`Invalid entity type: ${entity.type}`);
         }
-    }
-
-    createRepresentations(entitiesData, cls, systemName, systemId, systemPosition = null) {
-        let representations = [];
-        for (const entityData of entitiesData) {
-            let representation = new cls(entityData, systemName, systemId, systemPosition);
-            representations.push(representation);
-        };
-        return representations;
     }
 
 }

@@ -3,6 +3,7 @@ import { SystemGenerator } from './systemGenerator.js';
 import { getRandomNum, seedRandomness } from './helpers.js';
 import { System } from '../../script/widgets/space_view/entities/system.js';
 import { Ship } from '../widgets/space_view/entities/ship.js';
+import { Wormhole } from '../widgets/space_view/entities/wormhole.js';
 
 
 export class Galaxy {
@@ -258,13 +259,16 @@ export class Galaxy {
 
     addConnectionToSystem(systemsData, systemId, connectedSystemId) {
         const connectedSystemData = systemsData[connectedSystemId];
-        const connection = {
-            id: systemId + '_' + connectedSystemData.id,
-            fromId: systemId,
-            toId: connectedSystemData.id,
-            name: connectedSystemData.name,
-            toPosition: connectedSystemData.position
-        };
-        systemsData[systemId].connections.push(connection);
+
+        const wormhole = new Wormhole({
+                    id: systemId + '_' + connectedSystemData.id,
+                    fromId: systemId,
+                    toId: connectedSystemData.id,
+                    name: connectedSystemData.name,
+                    srcSystemPosition: systemsData[systemId].position,
+                    dstSystemPosition: connectedSystemData.position
+                });
+
+        systemsData[systemId].connections.push(wormhole);
     }
 }

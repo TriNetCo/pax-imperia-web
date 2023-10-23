@@ -2,6 +2,8 @@ import { getRandomNum, roundToDecimal } from './helpers.js'
 import { shipConfigs, shipOptions } from '../widgets/space_view/entities/shipConfigs.js';
 import {Colony} from '../widgets/space_view/entities/colony.js';
 import { Ship } from '../widgets/space_view/entities/ship.js';
+import { Star } from '../widgets/space_view/entities/star.js';
+import { Planet } from '../widgets/space_view/entities/planet.js';
 
 export class SystemGenerator {
     constructor(c) {
@@ -17,17 +19,15 @@ export class SystemGenerator {
         }
     }
 
-    // this function serializes the data to an object without actually
-    // serializing it to a string which a database and network connection would want
-    generateSystem(id, position, name) {
+    generateSystem(id, position, systemName) {
         this.id = id;
         this.position = position;
-        this.name = name;
+        this.name = systemName;
         this.radius = this.c.systemRadius;
 
         this.connections = [];
-        this.stars = [this.generateStar(id)];
-        this.planets = this.generatePlanets(id);
+        this.stars = [this.generateStar(id, systemName)];
+        this.planets = this.generatePlanets(id, systemName);
 
         this.colonies = this.generateDebugColonies(this.planets);
         this.ships = this.generateDebugShips();
@@ -41,9 +41,8 @@ export class SystemGenerator {
         return (data);
     }
 
-    generateStar(id) {
-        // Currently generates a single star
-        let star = {
+    generateStar(id, systemName) {
+        let starConfig = {
             "id": id,
             "index": 0,
             "atmosphere": "sun",
@@ -52,10 +51,10 @@ export class SystemGenerator {
             "spin_speed": getRandomNum(0.5, 1.5, 1),
             "starting_angle": 0,
         };
-        return star;
+        return new Star(starConfig, systemName, id);
     }
 
-    generatePlanets(systemId) {
+    generatePlanets(systemId, systemName) {
         const c = this.c;
         let planets = [];
         let planetCount = getRandomNum(c.minPlanetCount, c.maxPlanetCount, 0);
@@ -67,7 +66,7 @@ export class SystemGenerator {
             let planetDistance = roundToDecimal(minDistance + planetSize + additionalDistance, 2);
             let startingAngle = getRandomNum(0, Math.PI, 2);
 
-            let planet = {
+            let planetConfig = {
                 "id": this.getNextPlanetId(),
                 "number": i,
                 "atmosphere": "earthlike000" + getRandomNum(1, 9, 0),
@@ -78,6 +77,7 @@ export class SystemGenerator {
                 "starting_angle": startingAngle,
             };
             minDistance = planetDistance + planetSize;
+            const planet = new Planet(planetConfig, systemName, systemId);
             planets.push(planet);
         };
         return planets;
@@ -127,6 +127,12 @@ export class SystemGenerator {
             ships.push( new Ship(shipConfig) );
 
         }
+
+        // Make the second ship in every system belong to player 2
+        if (ships[1]) {
+            ships[1].playerId = 2;
+        }
+
         return ships;
     }
 

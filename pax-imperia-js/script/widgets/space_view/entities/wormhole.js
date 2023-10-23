@@ -6,18 +6,25 @@ export class Wormhole extends Entity {
     /** @type {THREE.Sprite} */
     textSprite;
 
-    constructor(data, systemName, systemId, systemPosition) {
-        super(data, systemName, systemId);
-        this.name = '???';
+    /**
+     *
+     * @param {Object} config
+     * @param {Object} config.srcSystemPosition
+     * @param {Object} config.dstSystemPosition
+     * @param {string} config.id
+     * @param {string} config.name
+     * @param {string} config.toId
+     * @param {string} config.fromId
+     */
+    constructor(config) {
+        super(config);
         this.type = 'wormhole';
+        this.name = '???';
         this.assetPath = "/assets/wormholes/wormhole.png";
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/wormhole_thumbnail.png";
-        // this.size = 0.3;
         this.size = 3;
         this.scale = { x: this.size, y: this.size, z: this.size };
-        // this.position is in Galactic View coordinates
-        // this.position = {x: -20, y: relativeZ, z: -10};
-        this.position = this.calculateWormholeProjection(this.toPosition, systemPosition);
+        this.position = this.calculateWormholeProjection(config.dstSystemPosition, config.srcSystemPosition);
         this.known = false;
     }
 
@@ -27,7 +34,7 @@ export class Wormhole extends Entity {
             name: this.name,
             fromId: this.fromId,
             toId: this.toId,
-            toPosition: this.toPosition,
+            dstSystemPosition: this.dstSystemPosition,
         });
     }
 
