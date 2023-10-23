@@ -257,7 +257,9 @@ export class SpaceViewAnimator {
         this.firstPersonView = false;
 
         // set camera back
-        this.camera.removeFromParent(); // remove from firstPersonGroup
+        this.camera.remove();
+        this.camera = new THREE.PerspectiveCamera(15,
+            this.c.canvasWidth / this.c.canvasHeight, 1, 30000);
         this.addCameraToScene();
 
         // remove ship obj3d from firstPersonGroup

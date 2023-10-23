@@ -13,14 +13,30 @@ export class GalaxyDrawer {
         this.galaxy = config.galaxy;
         this.mouse = config.mouse;
         this.connections = config.knownConnections;
+        // this.connections = this.collectConnections(this.galaxy.systems);
         this.systemRadius = config.systemRadius;
         this.fps = config?.fps || 60;
         this.gameStateInterface = config.gameStateInterface;
         this.gameClock = this.gameStateInterface?.gameClock;
+
+        this.setTheme();
         this.frameClock = new THREE.Clock(true);
-        // this.connections = this.collectConnections(this.galaxy.systems);
         this.setCurrentSystem(config.currentSystemId);
         console.log("GalaxyDrawer initialized with currentSystemId: " + this.currentSystemId);
+    }
+
+    setTheme(themeName) {
+        if (themeName == "navigator") {
+            this.backgroundColor = "#04161c";
+            this.connectionColor = "#76671D";
+            this.systemColor = "#d6b248";
+            this.systemShape = "circle outline";
+        } else {
+            this.backgroundColor = "#000000";
+            this.connectionColor = "#76671D";
+            this.systemColor = "rgb(170, 170, 255)";
+            this.systemShape = "diamond";
+        }
     }
 
     setCurrentSystem(systemId) {
@@ -37,20 +53,20 @@ export class GalaxyDrawer {
         this.drawBackground();
         this.drawConnections();
         this.drawSystems();
-        this.drawHoveredSystem();
         this.drawCurrentSystem();
+        this.drawHoveredSystem();
     }
 
     drawBackground() {
         let cx = this.cx;
-        cx.fillStyle = "Black";
+        cx.fillStyle = this.backgroundColor;
         cx.fillRect(0, 0, cx.canvas.width, cx.canvas.height);
     }
 
     drawConnections() {
         const cx = this.cx;
         const connections = this.connections;
-        cx.strokeStyle = "rgb(170, 170, 255)";
+        cx.strokeStyle = this.connectionColor;
         cx.lineWidth = this.scaleRadius(2, 1);
         for (let i = 0, len = connections.length; i < len; i++) {
             const startSystem = this.galaxy.getSystem(connections[i][0]);
@@ -95,12 +111,12 @@ export class GalaxyDrawer {
     }
 
     drawSystems() {
-        const color = "rgb(170, 170, 255)";
+        const color = this.systemColor;
         this.galaxy.systems.forEach(system => {
             const radius = this.getSystemRadius(system);
             const x = this.scaleX(system.position.x);
             const y = this.scaleY(system.position.y);
-            this.drawDiamond(x, y, radius, color);
+            this.drawPoint(x, y, radius, color);
         });
     }
 
@@ -112,7 +128,7 @@ export class GalaxyDrawer {
                 const radius = this.getSystemRadius(system, 2);
                 const x = this.scaleX(system.position.x);
                 const y = this.scaleY(system.position.y);
-                this.drawDiamond(x, y, radius, color);
+                this.drawPoint(x, y, radius, color);
                 this.drawHoveredSystemName(system.name, x, y, radius);
                 break;
             }
@@ -126,7 +142,7 @@ export class GalaxyDrawer {
             const radius = this.getSystemRadius(system, 1.5);
             const x = this.scaleX(system.position.x);
             const y = this.scaleY(system.position.y);
-            this.drawDiamond(x, y, radius, color);
+            this.drawPoint(x, y, radius, color);
         }
     }
 
@@ -183,15 +199,48 @@ export class GalaxyDrawer {
         return offset;
     }
 
-    drawDot(x, y, radius, color) {
+    isMouseHovering(system) {
+        const hoverRadius = this.scaleRadius(system.radius + 3);
+        const x = this.scaleX(system.position.x);
+        const y = this.scaleY(system.position.y);
+        const isHovering = this.mouse.x > x - hoverRadius
+            && this.mouse.x < x + hoverRadius + 1
+            && this.mouse.y > y - hoverRadius
+            && this.mouse.y < y + hoverRadius + 2;
+        return isHovering;
+    }
+
+    ////////////////////////////
+    // System shape functions //
+    ////////////////////////////
+
+    drawPoint(x, y, radius, color) {
+        if (this.systemShape == "circle outline") {
+            this.drawCircleOutline(x, y, radius, color);
+        } else if (this.systemShape == "diamond") {
+            this.drawDiamond(x, y, radius, color);
+        } else {
+            this.drawCircle(x, y, radius, color);
+        }
+    }
+
+    drawCircle(x, y, radius, color) {
+        this.cx.fillStyle = color;
         this.cx.beginPath();
         this.cx.arc(x, y, radius, 0, 2 * Math.PI, false);
-        this.cx.fillStyle = color;
         this.cx.fill();
     }
 
+    drawCircleOutline(x, y, radius, color) {
+        this.cx.strokeStyle = color;
+        this.cx.fillStyle = color;
+        this.cx.lineWidth = this.scaleRadius(2, 1);
+        this.cx.beginPath();
+        this.cx.arc(x, y, radius, 0, 2 * Math.PI, false);
+        this.cx.stroke();
+    }
+
     drawDiamond(x, y, radius, color) {
-        //radius = radius * 1.5 + 5;
         this.cx.fillStyle = color;
         this.cx.beginPath();
         this.cx.arc(x - radius, y - radius, radius, 0, Math.PI * 1 / 2, false);
@@ -210,16 +259,9 @@ export class GalaxyDrawer {
         cx.fill();
     }
 
-    isMouseHovering(system) {
-        const hoverRadius = this.scaleRadius(system.radius + 3);
-        const x = this.scaleX(system.position.x);
-        const y = this.scaleY(system.position.y);
-        const isHovering = this.mouse.x > x - hoverRadius
-            && this.mouse.x < x + hoverRadius + 1
-            && this.mouse.y > y - hoverRadius
-            && this.mouse.y < y + hoverRadius + 2;
-        return isHovering;
-    }
+    /////////////////////
+    // Scale functions //
+    /////////////////////
 
     getSystemRadius(system, multiplier = 1.0) {
         const planetCount = system.planets.length;

@@ -50,7 +50,7 @@ test('the update function returns actions when appropriate', async () => {
     ship.removeObject3d = () => { };
 
     // Excercise the code
-    const actions = await ship.handleWormholeJumping(galaxy);
+    const actions = await ship.handleWormholeJumping(1 / 60, galaxy);
 
     // Verify the results
     expect(ship.actions[0].verb).toBe('discover');

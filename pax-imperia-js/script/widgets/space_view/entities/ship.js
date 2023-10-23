@@ -33,7 +33,7 @@ export class Ship extends Entity {
         this.scale = { x: this.size, y: this.size, z: this.size };
         this.defaultRotation = { x: Math.PI / 4, y: -Math.PI / 2, z: Math.PI / 8 };
         this.rotation = this.defaultRotation;
-        this.speed = 0.2;
+        this.speed = 0.2; // per frame at 60 fps
         this.previousSystemId = typeof this.previousSystemId === 'undefined' ? null : this.previousSystemId;
         this.buttonState = null;
         // movement animation attributes
@@ -161,8 +161,7 @@ export class Ship extends Entity {
         const distanceFromDest = this.object3d.position.distanceTo(
             this.destinationEntity.object3d.position);
         const toSystemId = this.destinationEntity.toId;
-        if (distanceFromDest <= deltaTime * this.speed) {
-            console.log("distanceFromDest <= this.speed")
+        if (distanceFromDest <= this.speed * deltaTime * 60) {
             this.discoverSystem(this.destinationEntity.id);
             // copy ship data to wormhole system data
             this.resetMovement();
@@ -228,7 +227,7 @@ export class Ship extends Entity {
 
         // If the destinationPoint is within [speed] units away from this.position,
         // then move to destination and set destinationPoint to null
-        if (distanceFromDest <= deltaTime * this.speed) {
+        if (distanceFromDest <= speedMultiplier) {
             this.object3d.position.copy(destinationVector);
             this.destinationPoint = null;
             this.destinationEntity = null;
