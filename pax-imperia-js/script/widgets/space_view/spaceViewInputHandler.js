@@ -117,7 +117,7 @@ export class SpaceViewInputHandler {
         }
 
         if (yAxis) {
-            firstPersonShip.rotation.x += yAxis * 0.01;
+            firstPersonShip.rotation.x += -yAxis * 0.01;
         }
 
         if (thrust) {
@@ -130,24 +130,52 @@ export class SpaceViewInputHandler {
             firstPersonShip.translateZ(thrust * 0.05);
         }
 
+        // saves ship's position and rotation
         this.saveShipVectors(firstPersonShip);
+        // after x frames, update camera's position and rotation to match ship's
+        this.updateFirstPersonGroup();
     }
 
     saveShipVectors(ship) {
-        var position = new THREE.Vector3();
-        // debugger;
+        let position = new THREE.Vector3();
         ship.getWorldPosition(position);
-        this.laggedShipPosition.unshift(ship);
+        this.laggedShipPosition.unshift(position);
 
-        var quaternion = new THREE.Quaternion()
+        let quaternion = new THREE.Quaternion()
         ship.getWorldQuaternion(quaternion)
         this.laggedShipQuaternion.unshift(quaternion);
-        // let rotation = new THREE.Euler()
-        // rotation.setFromQuaternion(quaternion)
     }
 
     updateFirstPersonGroup() {
+        const lagSteps = 20;
+        if (this.laggedShipPosition.length <= lagSteps) return;
 
+        // attach the ship to scene so that it's not impacted by
+        // changes to the firstPersonGroup
+        this.spaceViewAnimator.scene.attach(this.firstPersonTarget);
+
+        // why doesn't this work?
+        // this.firstPersonGroup.position.set(this.laggedShipPosition[lagSteps]);
+        // this.firstPersonGroup.quaternion.set(this.laggedShipQuaternion[lagSteps]);
+
+        const laggedPosition = this.laggedShipPosition.pop();
+        this.firstPersonGroup.position.set(
+            laggedPosition.x,
+            laggedPosition.y,
+            laggedPosition.z
+        );
+
+        const laggedQuaternion = this.laggedShipQuaternion.pop();
+        this.firstPersonGroup.quaternion.set(
+            laggedQuaternion.x,
+            laggedQuaternion.y,
+            laggedQuaternion.z,
+            laggedQuaternion.w
+        );
+
+        // reattach
+        this.firstPersonGroup.attach(this.firstPersonTarget);
+        this.spaceViewAnimator.camera.lookAt(this.firstPersonGroup.position);
     }
 
     handleShipMovement2d(xAxis, yAxis) {
@@ -177,6 +205,8 @@ export class SpaceViewInputHandler {
                 perspectiveKey.handled = true;
                 this.spaceViewAnimator.switchToThirdPerson();
             }
+            this.laggedShipPosition = [];
+            this.laggedShipQuaternion = [];
         }
     }
 

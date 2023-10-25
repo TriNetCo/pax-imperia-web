@@ -483,6 +483,9 @@ export class Colony {
     }
 
     pushLog(message) {
+        // only log your own messages
+        if (!this.playerId == 1) return;
+
         const existingLog = this.logs.find(log => log.message == message);
         const existingNewLog = this.newLogs.find(log => log == message);
         if (!existingLog) {

@@ -31,6 +31,7 @@ export class GalaxyDrawer {
             this.connectionColor = "#76671D";
             this.systemColor = "#d6b248";
             this.systemShape = "circle outline";
+            // css background-color rgba(120 150 160 / 40%)
         } else {
             this.backgroundColor = "#000000";
             this.connectionColor = "#76671D";

@@ -64,7 +64,7 @@ export class Ship extends Entity {
     update(elapsedTime, deltaTime, system, galaxy) {
         this.handleWormholeJumping(deltaTime, galaxy);
         this.recalculateDestinationPoint(this.destinationEntity);
-        this.handleColonizing(system);
+        this.handleColonizing(deltaTime, galaxy);
         this.moveToDestinationPoint(deltaTime);
         this.handleOrbiting(elapsedTime);
 
@@ -264,15 +264,17 @@ export class Ship extends Entity {
         this.destinationPoint = { "x": destX, "y": destY, "z": destZ };
     }
 
-    handleColonizing(deltaTime) {
+    handleColonizing(deltaTime, galaxy) {
         // don't start colonization animation until ship is close enough to planet
         if (this.destinationEntity || !this.colonizeTarget) return;
+        console.log('handleColonizing')
 
         // rotate to land on planet
         // 0, 0, 0, points to planet
         this.object3d.rotation.set(0, 0, 0);
         // update animation progress
-        this.colonizeAnimationProgress += deltaTime * this.speed * 3;
+        // TODO: depend on deltaTime
+        this.colonizeAnimationProgress += this.speed * 3 / 9;
         // delete ship once landing animation finished
         if (this.colonizeAnimationProgress >= 1) {
             const colonizeAction = {
@@ -307,9 +309,11 @@ export class Ship extends Entity {
 
         if (!this.orbitStartTime) {
             this.orbitStartTime = elapsedTime;
-            this.object3d.rotation.x = Math.PI / 4;
+            // this.object3d.rotation.x = Math.PI / 4;
+            // this.object3d.rotation.z = Math.PI / 8;
+            this.object3d.rotation.x = Math.PI / 2;
             this.object3d.rotation.y = -Math.PI / 2;
-            this.object3d.rotation.z = Math.PI / 8;
+            this.object3d.rotation.z = Math.PI / 4;
         }
 
         const startAngle = Math.PI / 2;
@@ -320,6 +324,14 @@ export class Ship extends Entity {
         this.object3d.position.x = centerX + orbitDist * Math.cos(orbitAngle);
         this.object3d.position.z = centerZ + orbitDist * Math.sin(orbitAngle);
         this.object3d.position.y = centerY;
+
+        this.object3d.rotateOnAxis(new THREE.Vector3(1, 0, 0), orbitSpeed * Math.PI / 40);
+
+        // angle pi/2 => x = pi/2, y = -pi/2
+        // angle pi => x = pi, y = 0
+        // x = pi, y = 0
+        // this.object3d.rotation.x = orbitAngle;
+        // this.object3d.rotation.y = orbitAngle - Math.PI;
     }
 
     synchronizeEntityWithObj3d() {
