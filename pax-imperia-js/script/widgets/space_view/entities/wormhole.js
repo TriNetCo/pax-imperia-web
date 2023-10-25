@@ -34,6 +34,7 @@ export class Wormhole extends Entity {
             name: this.name,
             fromId: this.fromId,
             toId: this.toId,
+            srcSystemPosition: this.srcSystemPosition,
             dstSystemPosition: this.dstSystemPosition,
         });
     }

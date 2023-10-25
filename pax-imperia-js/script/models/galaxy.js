@@ -4,6 +4,9 @@ import { getRandomNum, seedRandomness } from './helpers.js';
 import { System } from '../../script/widgets/space_view/entities/system.js';
 import { Ship } from '../widgets/space_view/entities/ship.js';
 import { Wormhole } from '../widgets/space_view/entities/wormhole.js';
+import { Star } from '../widgets/space_view/entities/star.js';
+import { Planet } from '../widgets/space_view/entities/planet.js';
+import { Colony } from '../widgets/space_view/entities/colony.js';
 
 
 export class Galaxy {
@@ -37,13 +40,9 @@ export class Galaxy {
      */
     static generateFromConfig(galaxyWidgetSettings) {
         const galaxy = new Galaxy();
-        const systemsData = galaxy.generateSystems(galaxyWidgetSettings);
+        galaxy.systems = galaxy.generateSystems(galaxyWidgetSettings);
 
-        // Do Wormholes
-        const connections = galaxy.generateConnections(systemsData);
-        galaxy.addConnectionsToSystems(systemsData, connections);
-
-        galaxy.systems = galaxy.unpackSystemsData(systemsData);
+        galaxy.collectEntityIds(galaxy.systems);
 
         return galaxy;
     }
@@ -57,18 +56,28 @@ export class Galaxy {
     */
     static initializeFromJson(systemsJson) {
         const galaxy = new Galaxy();
-        const systemsData = JSON.parse(systemsJson);
 
-        // Below is commented out because the JSON is serialized with this data
-        // // Do Wormholes
-        // const connections = galaxy.generateConnections(systemsData);
-        // galaxy.addConnectionsToSystems(systemsData, connections);
+        galaxy.systems = galaxy.deserializeGalaxyFromJson(systemsJson);
 
-        galaxy.systems = galaxy.unpackSystemsData(systemsData);
         return galaxy;
     }
 
-    collectIds(systems) {
+    toJSON() {
+        return JSON.stringify({
+            nextShipId: this.nextShipId,
+            nextPlanetId: this.nextPlanetId,
+            nextColonyId: this.nextColonyId,
+            systems: this.systems.map(system => system.toJSON())
+        });
+    }
+
+    /**
+     * Builds an array of important entity IDs for indexing purposes.  This is
+     * used to quickly find entities by ID.
+     *
+     * @param {System[]} systems
+     */
+    collectEntityIds(systems) {
         for (const system of systems) {
             for (const ship of system.ships) {
                 this.shipIds.push(ship.id);
@@ -82,11 +91,6 @@ export class Galaxy {
         }
     }
 
-    toJson() {
-        return JSON.stringify(this.systems);
-    }
-
-
     getNextShipId() {
         const id = this.nextShipId;
         this.nextShipId += 1;
@@ -99,13 +103,34 @@ export class Galaxy {
         return id;
     }
 
-    unpackSystemsData(systemsData) {
+    deserializeGalaxyFromJson(systemsJson) {
         const systems = [];
-        for (const systemData of systemsData) {
+        const importData = JSON.parse(systemsJson);
+        this.nextShipId = importData.nextShipId;
+        this.nextPlanetId = importData.nextPlanetId;
+        this.nextColonyId = importData.nextColonyId;
+
+        importData.systems.forEach(systemData => {
             const system = new System(systemData);
+
+            system.stars = systemData.stars.map(
+                starData => new Star(starData));
+
+            system.planets = systemData.planets.map(
+                planetData => new Planet(planetData));
+
+            system.colonies = systemData.colonies.map(
+                colonyData => new Colony(colonyData));
+
+            system.ships = systemData.ships.map(
+                shipData => new Ship(shipData));
+
+            system.wormholes = systemData.wormholes.map(
+                wormholeData => new Wormhole(wormholeData));
+
             systems.push(system);
-        }
-        this.collectIds(systems);
+        });
+        this.collectEntityIds(systems);
 
         return systems;
     }
@@ -142,28 +167,25 @@ export class Galaxy {
         return ship;
     }
 
-    ///////////////////////////////
-    // Generate New Systems Data //
-    ///////////////////////////////
-
-    // parameters of galaxies:
-    //   How many systems
-    //   How close can they be to each other? systemBuffer
-    //   How far can they be from each other?
-    //   how linear/ branchy (connectivity) is everything?
+    /**
+     * Generates systems containing stars, planets, and ships
+     *
+     * @param {*} c
+     * @returns {System[]}
+     */
     generateSystems(c) {
-        let systemsData = [];
+        let systems = [];
         let starName = new StarName();
 
         const systemGenerator = new SystemGenerator(c);
 
-        // Define systems with coordinates
         for (let i = 0; i < c.systemCount; i++) {
+            // Define systems with coordinates
             let position = this.generateSystemPosition(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
             let attempt = 0;
             // Try maxPlacementAttempts times to find a system far enough away
             // from existing systems
-            while (!this.isValidDistance(systemsData, position, c.systemBuffer)) {
+            while (!this.isValidDistance(systems, position, c.systemBuffer)) {
                 position = this.generateSystemPosition(c.canvasWidth, c.canvasHeight, c.canvasBuffer);
                 attempt += 1;
                 if (attempt == c.maxPlacementAttempts) {
@@ -173,14 +195,21 @@ export class Galaxy {
                 }
             }
             const systemIndex = i;
-            const systemData = systemGenerator.generateSystem(systemIndex, position, starName.pick());
-            systemsData.push(systemData);
+            const system = systemGenerator.generateSystem(systemIndex, position, starName.pick());
+            systems.push(system);
         }
 
         this.nextColonyId = systemGenerator.nextColonyId;
         this.nextShipId = systemGenerator.nextShipId;
 
-        return systemsData;
+        //////////////////
+        // Do Wormholes //
+        //////////////////
+
+        const connections = this.generateConnections(systems);
+        this.addWormholesToSystems(systems, connections);
+
+        return systems;
     }
 
     generateSystemPosition(canvasWidth, canvasHeight, canvasBuffer) {
@@ -209,29 +238,34 @@ export class Galaxy {
         return isValid;
     }
 
-    generateConnections(systemsData) {
+    /**
+     *
+     * @param {System[]} systems
+     * @returns {number[][]}
+     */
+    generateConnections(systems) {
         let connections = [];
         let connectedSystems = [];
-        while (connectedSystems.length < systemsData.length && systemsData.length > 1) {
+        while (connectedSystems.length < systems.length && systems.length > 1) {
             let minDist = Infinity;
             let minI;
             let minJ;
 
             // 1. Loop through all pairings of the systems to find the two closest systems
-            for (let i = 0; i < systemsData.length - 1; i++) {
-                for (let j = i + 1; j < systemsData.length; j++) {
+            for (let i = 0; i < systems.length - 1; i++) {
+                for (let j = i + 1; j < systems.length; j++) {
                     // If this is our first connection, or if i is connected while j is not, or vice versa
                     // then we should see if they're a minimal distance from each other so that they can be
                     // connected.
                     if (connections.length == 0
                         || (connectedSystems.includes(i) && !connectedSystems.includes(j))
                         || (connectedSystems.includes(j) && !connectedSystems.includes(i))) {
-                        let dist = (systemsData[i].position.x - systemsData[j].position.x) ** 2 +
-                            (systemsData[i].position.y - systemsData[j].position.y) ** 2;
+                        let dist = (systems[i].position.x - systems[j].position.x) ** 2 +
+                            (systems[i].position.y - systems[j].position.y) ** 2;
                         if (dist < minDist) {
                             minDist = dist;
-                            minI = systemsData[i].id;
-                            minJ = systemsData[j].id;
+                            minI = systems[i].id;
+                            minJ = systems[j].id;
                         };
                     };
                 };
@@ -248,27 +282,33 @@ export class Galaxy {
         return connections;
     }
 
-    addConnectionsToSystems(systemsData, connections) {
+    /**
+     * Constructs a wormhole entity for each endpoint found in the connections
+     * array and adds it to the appropriate system.
+     *
+     * @param {System[]} systems
+     * @param {number[][]} connections - e.g. [[0,1], [1,0], [0,2], [2,0], [2,3]]
+     */
+    addWormholesToSystems(systems, connections) {
         connections.forEach(connection => {
-            const i = connection[0];
-            const j = connection[1];
-            this.addConnectionToSystem(systemsData, i, j);
-            this.addConnectionToSystem(systemsData, j, i);
+            const a = connection[0];
+            const b = connection[1];
+            this.addWormholeToSystem(systems, a, b);
+            this.addWormholeToSystem(systems, b, a);
         });
     }
 
-    addConnectionToSystem(systemsData, systemId, connectedSystemId) {
-        const connectedSystemData = systemsData[connectedSystemId];
+    addWormholeToSystem(systems, srcSystemId, dstSystemId) {
+        const srcSystem = systems[srcSystemId];
+        const dstSystem = systems[dstSystemId];
 
-        const wormhole = new Wormhole({
-                    id: systemId + '_' + connectedSystemData.id,
-                    fromId: systemId,
-                    toId: connectedSystemData.id,
-                    name: connectedSystemData.name,
-                    srcSystemPosition: systemsData[systemId].position,
-                    dstSystemPosition: connectedSystemData.position
-                });
+        const wormhole = new Wormhole({ id: srcSystemId + '_' + dstSystem.id,
+                                        fromId: srcSystemId,
+                                        toId: dstSystem.id,
+                                        name: dstSystem.name,
+                                        srcSystemPosition: srcSystem.position,
+                                        dstSystemPosition: dstSystem.position });
 
-        systemsData[systemId].connections.push(wormhole);
+        srcSystem.wormholes.push(wormhole);
     }
 }

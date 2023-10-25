@@ -14,11 +14,13 @@ test('galaxyWidget can serialize the systemsData to JSON and deserialize from JS
     const serializedData = galaxyWidget.exportGalaxyDataToJson();
 
     // Serialize the Galaxy to JSON
-    const firstSystemOriginal = JSON.parse(serializedData)[0];
+    const firstSystemOriginal = JSON.parse(serializedData).systems[0];
+
+    // console.log(serializedData)
 
     // It's ok to change this if you've made a change you know will impact how
     // the galaxy is serialized (e.g. adding new properties)
-    expect(serializedData.length).toBe(3095);
+    expect(serializedData.length).toBe(4525);
 
     // reset the galaxyWidget and Import the JSON again
     galaxyWidget = new GalaxyWidget();
@@ -30,8 +32,9 @@ test('galaxyWidget can serialize the systemsData to JSON and deserialize from JS
 
     const system = galaxyWidget.galaxy.systems[0];
     expect(system.name).toBe(firstSystemOriginal.name);
-    expect(system.wormholes.length).toBe(1);
+    expect(system.stars.length).toBe(1);
     expect(system.planets.length).toBe(4);
     expect(system.ships.length).toBe(3);
+    expect(system.wormholes.length).toBe(1);
 
 });

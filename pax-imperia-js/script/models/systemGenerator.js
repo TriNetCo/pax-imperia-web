@@ -1,9 +1,10 @@
 import { getRandomNum, roundToDecimal } from './helpers.js'
 import { shipConfigs, shipOptions } from '../widgets/space_view/entities/shipConfigs.js';
-import {Colony} from '../widgets/space_view/entities/colony.js';
+import { Colony } from '../widgets/space_view/entities/colony.js';
 import { Ship } from '../widgets/space_view/entities/ship.js';
 import { Star } from '../widgets/space_view/entities/star.js';
 import { Planet } from '../widgets/space_view/entities/planet.js';
+import { System } from '../widgets/space_view/entities/system.js';
 
 export class SystemGenerator {
     constructor(c) {
@@ -11,34 +12,30 @@ export class SystemGenerator {
         this.nextPlanetId = 0;
         this.nextColonyId = 0;
         this.c = c;
-
-        // Use manual system for debugging
-        if (false) {
-            this.stars = this.manualStars
-            this.planets = this.manualPlanets
-        }
     }
 
+    /**
+     * Generates a system complete with star, planets, colonies and ships.
+     *
+     * @param {number} id - system id
+     * @param {Object} position
+     * @param {String} systemName
+     * @returns {System}
+     */
     generateSystem(id, position, systemName) {
-        this.id = id;
-        this.position = position;
-        this.name = systemName;
-        this.radius = this.c.systemRadius;
+        const system = new System({
+            id,
+            position,
+            name: systemName,
+            radius: this.c.systemRadius,
+        });
 
-        this.connections = [];
-        this.stars = [this.generateStar(id, systemName)];
-        this.planets = this.generatePlanets(id, systemName);
+        system.stars = [this.generateStar(id, systemName)];
+        system.planets = this.generatePlanets(id, systemName, system.stars);
+        system.colonies = this.generateDebugColonies(system.planets);;
+        system.ships = this.generateDebugShips(id, system.stars);
 
-        this.colonies = this.generateDebugColonies(this.planets);
-        this.ships = this.generateDebugShips();
-
-        // This is creating a new object, and loading it with all the
-        // data from this object, but not the functions?
-        let data = {};
-        for (var key in this) {
-            data[key] = this[key];
-        };
-        return (data);
+        return system;
     }
 
     generateStar(id, systemName) {
@@ -54,11 +51,11 @@ export class SystemGenerator {
         return new Star(starConfig, systemName, id);
     }
 
-    generatePlanets(systemId, systemName) {
+    generatePlanets(systemId, systemName, stars) {
         const c = this.c;
         let planets = [];
         let planetCount = getRandomNum(c.minPlanetCount, c.maxPlanetCount, 0);
-        let minDistance = this.stars[0].size;
+        let minDistance = stars[0].size;
 
         for (let i = 0; i < planetCount; i++) {
             let planetSize = getRandomNum(c.minPlanetSize, c.maxPlanetSize, 2);
@@ -85,21 +82,21 @@ export class SystemGenerator {
 
     // For debugging, we'll put a colony for player 1 on the first planet
     // and a colony for player 2 on the second planet if it exists
-    generateDebugColonies() {
+    generateDebugColonies(planets) {
         let colonies = [];
 
-        colonies.push(new Colony(this.getNextColonyId(), 1, this.planets[0]["id"], 0))
-        this.planets[0].colony = colonies[0];
+        colonies.push(new Colony(this.getNextColonyId(), 1, planets[0]["id"], 0))
+        planets[0].colony = colonies[0];
 
-        if (this.planets[1]) {
-            colonies.push(new Colony(this.getNextColonyId(), 2, this.planets[1]["id"], 0))
-            this.planets[1].colony = colonies[1];
+        if (planets[1]) {
+            colonies.push(new Colony(this.getNextColonyId(), 2, planets[1]["id"], 0))
+            planets[1].colony = colonies[1];
         }
 
         return colonies;
     }
 
-    generateDebugShips() {
+    generateDebugShips(systemId, stars) {
         let ships = [];
         let shipCount = getRandomNum(1, 3, 0);
         let systemShipMake = null; //this.getShipMake(null, null);
@@ -107,7 +104,7 @@ export class SystemGenerator {
         for (let i = 0; i < shipCount; i++) {
             let shipX = getRandomNum(-16, 16, 2);
             let shipY = getRandomNum(-8, 12, 2);
-            let shipZ = getRandomNum(this.stars[0].size, 12, 2);
+            let shipZ = getRandomNum(stars[0].size, 12, 2);
             // let shipMake = systemShipMake || this.getShipMake('override');
             let shipMake = 'GalacticLeopard'
             // let shipModel = this.getShipModel('random', shipMake, i);
@@ -115,7 +112,7 @@ export class SystemGenerator {
             let shipConfig = {
                 id: this.getNextShipId(),
                 playerId: 1,
-                systemId: this.id,
+                systemId: systemId,
                 position: { x: shipX, y: shipY, z: shipZ },
                 shipSpec: {
                     make: shipMake,
@@ -206,7 +203,7 @@ export class SystemGenerator {
         return size;
     }
 
-    toJson() {
+    toJSON() {
         return JSON.stringify(this)
     }
 

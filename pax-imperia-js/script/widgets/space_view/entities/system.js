@@ -17,6 +17,18 @@ export class System {
     /** @type {Colony[]} */
     colonies;
 
+    /**
+     *
+     * @param {Object} systemData
+     * @param {string} systemData.name
+     * @param {number} systemData.id
+     * @param {number} systemData.radius
+     *
+     * @param {Object} systemData.position
+     * @param {number} systemData.position.x
+     * @param {number} systemData.position.y
+     * @param {number} systemData.position.z
+     */
     constructor(systemData) {
         this.name = systemData.name;
         this.id = systemData.id;
@@ -24,11 +36,11 @@ export class System {
         this.radius = systemData.radius;
 
         // Entities
-        this.wormholes = systemData.connections;
-        this.planets = systemData.planets;
-        this.stars = systemData.stars;
-        this.ships = systemData.ships;
-        this.colonies = systemData.colonies || [];
+        this.stars = [];
+        this.planets = [];
+        this.ships = [];
+        this.colonies = [];
+        this.wormholes = [];
     }
 
     toJSON() {
@@ -37,9 +49,10 @@ export class System {
             name: this.name,
             position: this.position,
             radius: this.radius,
-            connections: this.connections,
+            wormholes: this.wormholes,
             stars: this.stars,
             planets: this.planets,
+            colonies: this.colonies,
             ships: this.ships
         };
         return systemJson;

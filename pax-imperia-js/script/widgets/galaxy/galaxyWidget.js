@@ -60,7 +60,7 @@ export class GalaxyWidget {
     }
 
     exportGalaxyDataToJson() {
-        return this.galaxy.toJson();
+        return this.galaxy.toJSON();
     }
 
     importGalaxyData(systemsJson) {

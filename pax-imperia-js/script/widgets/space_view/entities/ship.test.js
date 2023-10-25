@@ -31,7 +31,7 @@ const galaxy = Galaxy.generateFromConfig(galaxyWidgetConfig);
 //     expect(actions.verb).toBe('discover');
 // });
 
-test('the update function returns actions when appropriate', async () => {
+test('when a ship\'s update should have the ship jump a wormhold, it returns actions', async () => {
 
     // Make wormhole
     const wormhole = galaxy.systems[0].wormholes[0];
@@ -41,7 +41,8 @@ test('the update function returns actions when appropriate', async () => {
 
     // Make ship
     const ship = new Ship();
-    ship.systemId = wormhole.systemId;
+    ship.systemId = wormhole.fromId;
+    ship.previousSystemId = wormhole.fromId;
     ship.destinationEntity = wormhole;
     ship.object3d = {
         position: { x: 100, y: 100, z: 0, distanceTo: () => 0 }
