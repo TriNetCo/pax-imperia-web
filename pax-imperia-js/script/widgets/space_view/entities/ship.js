@@ -63,24 +63,26 @@ export class Ship extends Entity {
 
     update(elapsedTime, deltaTime, system, galaxy) {
         this.handleWormholeJumping(deltaTime, galaxy);
-        this.recalculateDestinationPoint(this.destinationEntity);
+        this.handleMovementTowardsDestination(deltaTime);
+        this.updateOutlinePosition();
         this.handleColonizing(deltaTime, galaxy);
-        this.moveToDestinationPoint(deltaTime);
-        this.handleOrbiting(elapsedTime);
+        this.handleOrbitingAnimation(elapsedTime);
 
         // update HTML but don't send to DOM unless it has changed
         this.updateConsoleBodyHtml();
 
+        // return actions for GameStateInterface to handle
+        const actionsBuffer = this.actions;
+        this.actions = []; // clear actions
+        return actionsBuffer;
+    };
+
+    updateOutlinePosition() {
         if (this.object3ds['outline']) {
             const { x, y, z } = this.object3d.position;
             this.object3ds['outline'].position.set(x, y, z);
         }
-
-        // return actions for GameStateInterface to handle
-        const actions = this.actions;
-        this.actions = []; // clear actions
-        return actions;
-    };
+    }
 
     updateConsoleBodyHtml() {
         // leave blank if not player 1
@@ -216,7 +218,9 @@ export class Ship extends Entity {
         this.position.z = wormhole.position.z + 1;
     }
 
-    moveToDestinationPoint(deltaTime) {
+    handleMovementTowardsDestination(deltaTime) {
+        this.destinationPoint = this.recalculateDestinationPoint();
+
         // TODO: moves slower when fps is low?
         if (!this.destinationPoint) { return; }
 
@@ -233,7 +237,7 @@ export class Ship extends Entity {
             this.destinationEntity = null;
         } else {
             if (!this.controllered) {
-                this.object3d.lookAt(destinationVector);
+                this.object3d.lookAt(destinationVector); // Point the ship towards the destination.  Don't do this if we're using a controller
             }
             const displacementVector = destinationVector
                 .sub(positionVector)
@@ -249,25 +253,25 @@ export class Ship extends Entity {
      * Updates the point that the ship is moving towards because the
      * destination entity may have moved.
      */
-    recalculateDestinationPoint(destinationEntity) {
-        if (!destinationEntity) return;
+    recalculateDestinationPoint() {
+        if (!this.destinationEntity) return this.destinationPoint; // nop
+        const destObj3d = this.destinationEntity.object3d;
 
-        const destX = destinationEntity.object3d.position.x;
-        const destY = destinationEntity.object3d.position.y;
-        let destZ = destinationEntity.object3d.position.z;
+        const destX = destObj3d.position.x;
+        const destY = destObj3d.position.y;
+        let destZ = destObj3d.position.z;
 
         // put ship in front of stars and planets so they can be seen
-        if (['star', 'planet'].includes(destinationEntity.type)) {
-            destZ += destinationEntity.object3d.scale.z * 2;
+        if (['star', 'planet'].includes(this.destinationEntity.type)) {
+            destZ += destObj3d.scale.z * 2;
         }
 
-        this.destinationPoint = { "x": destX, "y": destY, "z": destZ };
+        return { "x": destX, "y": destY, "z": destZ };
     }
 
     handleColonizing(deltaTime, galaxy) {
         // don't start colonization animation until ship is close enough to planet
         if (this.destinationEntity || !this.colonizeTarget) return;
-        console.log('handleColonizing')
 
         // rotate to land on planet
         // 0, 0, 0, points to planet
@@ -299,7 +303,7 @@ export class Ship extends Entity {
         }
     }
 
-    handleOrbiting(elapsedTime) {
+    handleOrbitingAnimation(elapsedTime) {
         if (!this.orbitTarget || this.destinationPoint) { return; }
 
         const centerX = this.orbitTarget.object3d.position.x;

@@ -153,9 +153,6 @@ export class SpaceViewAnimator {
         const actions = [];
         const logs = [];
 
-        // TODO: use elapsedTime instead of deltaTime
-        this.selectionSprite.update(deltaTime);
-
         for (const star of this.system['stars']) {
             star.update(elapsedTime);
         }
@@ -173,6 +170,9 @@ export class SpaceViewAnimator {
         for (const action of actions) {
             this.gameStateInterface.performAction(action);
         }
+
+        // TODO: use elapsedTime instead of deltaTime
+        this.selectionSprite.update(deltaTime);
 
         this.gameStateInterface.addEventLogEntries(logs);
     }
