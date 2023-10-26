@@ -52,17 +52,17 @@ The domain model got huge so it lives [here](complete_domain_model.md).  Usually
 
 [This](system_model.md). is just a glimps of the Domain Model associated with Systems, so includes all the 3D/ Space stuff, but not the mundane User/ research/ etc stuff.
 
-##### Graphics Pipeline Diagram:
+#### Graphics Pipeline Diagram:
 
 This section describes how a planet is rendered in orbit around it's sun.
 
 ###### SpaceViewWidget
 
-At the top-most level, `SpaceViewWidget` will setup a camera and stuff via a call to `beginGame`.  Once that setup is dealt with, `spaceViewWidget.draw()` will be called 60 times per second via the `requestAnimationFrame` API.  This renders to a canvas element at 60fps.
+At the top-most level, `SpaceViewWidget` will setup a camera and stuff via a call to `loadWidget`.  Currently, the widget is composed of 3 main classes: SpaceViewAnimator, SpaceViewDomManager and SpaceViewInputHandler.  
 
 ###### SpaceViewAnimator
 
-`spaceViewWidget.draw()` is just a call to `SpaceViewAnimator.drawLoop()`.  `SpaceViewAnimator` has access to the system data and will iterate over all space entities, calling their respective update functions, one being `Planet#update()`.
+ `spaceViewAnimator.animate()` will be called 60 times per second via the `requestAnimationFrame` API.  This renders to a canvas element at 60fps.  `SpaceViewAnimator` represents the main game loop and therefore has access to pretty much everything, including the system data.  The `SpaceViewAnimator` will iterate over all space entities, calling their respective update functions, one being `Planet#update()`.
 
 ###### Entity - Planet
 
