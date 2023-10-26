@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { SpaceViewAnimator } from './spaceViewAnimator.js';
 import { SpaceViewDomManager } from './spaceViewDomManager.js';
 import { SpaceViewInputHandler } from './spaceViewInputHandler.js';
-import { SpriteFlipbook } from '../../models/spriteFlipbook.js'
+import { SelectionSprite } from '../../models/spriteFlipbook.js'
 import { System } from './entities/system.js';
 import { getBasePath } from '../../models/helpers.js';
 import CacheMonster from '../../models/cacheMonster.js';
@@ -68,7 +68,7 @@ export class SpaceViewWidget {
         this.cacheMonster.camera = this.clientObjects.camera;
         this.renderer.compile(this.clientObjects.scene, this.clientObjects.camera);
 
-        this.clientObjects.selectionSprite = new SpriteFlipbook(
+        this.clientObjects.selectionSprite = new SelectionSprite(
             this.clientObjects.scene,
             this.basePath + '/assets/sprite_sheets/selection_sprite_sheet.png',
             1,  // nCols in sprite sheet

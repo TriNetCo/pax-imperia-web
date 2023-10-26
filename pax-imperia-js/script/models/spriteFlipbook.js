@@ -1,9 +1,10 @@
 import * as THREE from 'three';
+import {Queue} from './helpers.js';
 
 /**
- * This class provides to functionality to animate sprite sheets.
+ * This class provides functionality around animating sprite sheets.
  */
-export class SpriteFlipbook {
+export class SelectionSprite {
 
     currentTile = 0;
     elapsedTime = 0;
@@ -43,6 +44,8 @@ export class SpriteFlipbook {
         sprite.name = "selectionSprite";
         sprite.visible = false;
         scene.add(sprite);
+
+        this.previousTargets = new Queue(3);
     }
 
     update(deltaTime) {
@@ -86,23 +89,37 @@ export class SpriteFlipbook {
         this.sprite.position = vector3;
     }
 
+
+    /////////////////////
+    // SELECTION LOGIC //
+    /////////////////////
+
     /**
      * Selects an object3d to be highlighted by the selection sprite.
      *
      * @param {THREE.Object3D} selectionTarget
      */
     select(selectionTarget) {
-        window.target = selectionTarget.parentEntity;
+        this.previousTargets.push(selectionTarget);
         this.selectionTarget = selectionTarget;
         this.selectionEntity = selectionTarget.parentEntity;
+        if (typeof window !== 'undefined') {
+            window.target = selectionTarget.parentEntity;
+            window.selectionTarget = this.selectionTarget;
+        }
     }
 
     /**
      * Removes the highlighting and selection from the HUD.
      */
     unselect() {
+        this.previousTargets.push(null);
         this.selectionTarget = null;
         this.selectionEntity = null;
+        if (typeof window !== 'undefined') {
+            window.target = null;
+            window.selectionTarget = null;
+        }
     }
 
 }

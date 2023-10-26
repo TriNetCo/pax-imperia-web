@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Queue } from '../../models/helpers.js';
-import { SpriteFlipbook } from '../../models/spriteFlipbook.js';
+import { SelectionSprite } from '../../models/spriteFlipbook.js';
 import Entity from './entities/entity.js';
 import { System } from './entities/system.js';
 import { GameStateInterface } from '../../gameStateInterface/gameStateInterface.js';
@@ -21,7 +21,7 @@ export class SpaceViewDomManager {
      *
      * @param {*} config
      * @param {Object} clientObjects
-     * @param {SpriteFlipbook} clientObjects.selectionSprite - This is just a sprite that is used to show the selection
+     * @param {SelectionSprite} clientObjects.selectionSprite - This is just a sprite that is used to show the selection
      * @param {System} system
      * @param {*} systemClickHandler
      * @param {GameStateInterface} gameStateInterface
@@ -40,9 +40,6 @@ export class SpaceViewDomManager {
         this.selectionSprite = clientObjects.selectionSprite;
 
         this.raycaster = new THREE.Raycaster();
-        this.previousTarget = null;
-        this.previousPreviousTarget = null;
-        this.previousTargets = new Queue(3);
         this.eventLogHtml = '';
         this.previousConsoleBodyHtml = '';
         this.spaceViewInputHandler = spaceViewInputHandler;
@@ -56,19 +53,20 @@ export class SpaceViewDomManager {
         window.clickThumbnail = (targetType, targetName) => {
             const entity = this.system[targetType + 's'].find(x => x.name === targetName);
             this.selectTarget(entity.object3d);
+            // entity.select();
             this.populateHtml();
         };
 
         window.handleTargetButton = (buttonState) => {
             /** @type {Entity} */
-            const parentEntity = this.selectionSprite.selectionTarget.parentEntity;
+            const parentEntity = this.selectionSprite.selectionEntity;
             parentEntity.buttonState = buttonState;
             // let user know which button is selected
             document.getElementById(buttonState).style.background = '#A9A9A9'; // default color ButtonFace
         };
 
         window.handleAssignButton = () => {
-            const colony = this.selectionSprite.selectionTarget.parentEntity.colony;
+            const colony = this.selectionSprite.selectionEntity.colony;
             const workAllocation = window.getDomWorkAllocations(colony)
             colony.setNewWorkAllocation(workAllocation);
 
@@ -95,7 +93,7 @@ export class SpaceViewDomManager {
         }
 
         window.handleWorkSlider = () => {
-            const colony = this.selectionSprite.selectionTarget.parentEntity.colony;
+            const colony = this.selectionSprite.selectionEntity.colony;
             const newWorkAllocation = window.getDomWorkAllocations(colony)
 
             // update total workers count
@@ -110,7 +108,7 @@ export class SpaceViewDomManager {
         };
 
         window.handleAutoAssign = (checked) => {
-            const colony = this.selectionSprite.selectionTarget.parentEntity.colony;
+            const colony = this.selectionSprite.selectionEntity.colony;
             colony.useAutoAssign = checked;
 
             if (checked) {
@@ -123,7 +121,7 @@ export class SpaceViewDomManager {
         };
 
         window.handleBuildButton = (buildingType) => {
-            const colony = this.selectionSprite.selectionTarget.parentEntity.colony;
+            const colony = this.selectionSprite.selectionEntity.colony;
             colony.startBuilding(buildingType);
 
             this.populateConsoleBody();
@@ -159,25 +157,34 @@ export class SpaceViewDomManager {
     ////////////////////
 
     #clickHandler = (event) => {
-        event.preventDefault();
+        // TODO: Check if we're actually doubleclicking...
+
+        // event.preventDefault();
+
+        // if (event.detail === 2) { return; } // let the doubleclick handler handle this
+        console.log("CLICK")
+
+
         const selectionTarget = this.findSelectionTarget(event);
         this.selectTarget(selectionTarget);
         this.populateHtml();
     }
 
     doubleClickHandler = (event) => {
+        console.log("DBLCLICK")
+
         // on a doubleclick, previousTargets queue will look like:
         //     0: double-clicked object or object behind,
         //     1: double-clicked object,
         //     2: object before double-click
         // so it is safest to use previousTargets[1] as double-click target
-        const clickTarget = this.previousTargets[1]
+        const clickTarget = this.selectionSprite.previousTargets[1]
 
         // check if the target before double click was a ship
-        const subjectEntity = this.previousTargets[2] ? this.previousTargets[2].parentEntity : null;
+        const subjectEntity = this.selectionSprite.previousTargets[2] ? this.selectionSprite.previousTargets[2].parentEntity : null;
         if (subjectEntity && subjectEntity.type == "ship") {
             subjectEntity.moveShip(clickTarget, 'default', this.mouse, this.camera);
-            this.selectTarget(subjectEntity.object3d); // re-set ship as target after moving
+            subjectEntity.select();
         } else if (clickTarget?.parentEntity.type === "wormhole") {
             // navigate through wormhole (unless ship was just moved through wormhole)
             const systemId = clickTarget.parentEntity.toId;
@@ -217,6 +224,11 @@ export class SpaceViewDomManager {
     // Click Handler Helpers //
     ///////////////////////////
 
+    // Selects an object3d if one is passed in, or
+    // unselects if no object3d is passed in
+    // and, if a ship was selected before and we're interacting with it
+    //   via it's button consoles, perform the action associated with the button
+    // and populate the html
     selectTarget(object3d) {
         // select new target
         if (object3d) {
@@ -224,32 +236,25 @@ export class SpaceViewDomManager {
         } else {
             this.selectionSprite.unselect();
         }
-        // add latest target to queue
-        this.previousTargets.push(this.selectionSprite.selectionTarget);
 
         // TODO: this doesn't feel right... selectTarget results in a call to moveShip???  Why? is this method when a command is fired from the HTML DOM markup?
-        if ( this.previousTargets[1] &&
-             this.previousTargets[1].parentEntity.type == "ship" &&
-             this.previousTargets[1].parentEntity.buttonState) {
-            const buttonState = this.previousTargets[1].parentEntity.buttonState
-            this.previousTargets[1].parentEntity.moveShip(this.previousTargets[0], buttonState, this.mouse, this.camera);
+        if ( this.isInteractingWithShipThroughButtons() ) {
+            const ship = this.selectionSprite.previousTargets[1].parentEntity;
+            const shipTarget = this.selectionSprite.previousTargets[0];
+
+            const buttonState = ship.buttonState
+            ship.moveShip(shipTarget, buttonState, this.mouse, this.camera);
         }
+
         this.populateHtml();
-        window.selectionTarget = this.selectionSprite.selectionTarget;
     }
 
-    // TODO: Delete this unused function
-    selectEntity(entity) {
-        if (entity && entity?.object3d) {
-            this.selectTarget(entity.object3d);
-        }
-    }
+    isInteractingWithShipThroughButtons() {
+        const shipObject3d = this.selectionSprite.previousTargets[1];
 
-    unselectTarget() {
-        if (this.selectionSprite.selectionTarget) {
-            this.selectionSprite.unselect();
-            this.previousTargets.push(null);
-        }
+        return (shipObject3d
+                && shipObject3d.parentEntity.type == "ship"
+                && shipObject3d.parentEntity.buttonState);
     }
 
     /*
@@ -390,6 +395,19 @@ export class SpaceViewDomManager {
     // Attach Dom Events //
     ///////////////////////
 
+    detachFromDom() {
+        this.canvas.removeEventListener('mousemove', this.mouseMovementHandler);
+        this.canvas.removeEventListener('click', this.#clickHandler);
+        this.canvas.removeEventListener('dblclick', this.doubleClickHandler);
+        this.canvas.removeEventListener('contextmenu', this.#rightClickHandler);
+        document.removeEventListener('keydown', this.#keyDownHandler);
+        document.removeEventListener('keyup', this.#keyUpHandler);
+        const hudElement = document.getElementById('hud');
+        if (hudElement) {
+            hudElement.remove();
+        }
+    }
+
     attachDomEventsToCode() {
         this.addHud();
         this.addMouseMovement();
@@ -448,40 +466,6 @@ export class SpaceViewDomManager {
 
         const canvasAndButtons = document.getElementById('canvas-and-buttons');
         canvasAndButtons.appendChild(el);
-    }
-
-    detachFromDom() {
-        this.canvas.removeEventListener('mousemove', this.mouseMovementHandler);
-        this.canvas.removeEventListener('click', this.#clickHandler);
-        this.canvas.removeEventListener('dblclick', this.doubleClickHandler);
-        this.canvas.removeEventListener('contextmenu', this.#rightClickHandler);
-        document.removeEventListener('keydown', this.#keyDownHandler);
-        document.removeEventListener('keyup', this.#keyUpHandler);
-        const hudElement = document.getElementById('hud');
-        if (hudElement) {
-            hudElement.remove();
-        }
-    }
-
-    //////////////////////
-    // Drawing Commands //
-    //////////////////////
-
-    /**
-     * This function recursively walks up the tree of parents until it finds the root scene
-     * and removes the highest order group from that scene.
-     */
-    removeContainerFromScene(container) {
-        let parent = container.parent;
-
-        if (parent.type == "Scene") {
-            console.log("Deleting object at (" + container.position.x
-                + ", " + container.position.y
-                + ", " + container.position.z + ")");
-            parent.remove(container);
-        } else {
-            this.removeContainerFromScene(container.parent);
-        }
     }
 
 }
