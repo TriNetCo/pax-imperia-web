@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { Queue } from '../../models/helpers.js';
 import { SpriteFlipbook } from '../../models/spriteFlipbook.js';
 import Entity from './entities/entity.js';
-import { Ship } from './entities/ship.js';
 import { System } from './entities/system.js';
 import { GameStateInterface } from '../../gameStateInterface/gameStateInterface.js';
 import { SpaceViewAnimator } from './spaceViewAnimator.js';
@@ -171,8 +170,10 @@ export class SpaceViewDomManager {
         // so it is safest to use previousTargets[1] as double-click target
         const clickTarget = this.previousTargets[1]
         // check if the target before double click was a ship
-        if (this.previousTargets[2]?.parentEntity?.type == "ship") {
-            this.moveShip(this.previousTargets[2], clickTarget, 'default');
+        const subjectEntity = this.previousTargets[2] ? this.previousTargets[2].parentEntity : null;
+        if (subjectEntity.type == "ship") {
+            subjectEntity.moveShip(clickTarget, 'default', this.mouse, this.camera);
+            this.selectTarget(subjectEntity.object3d); // re-set ship as target after moving
         } else if (clickTarget?.parentEntity.type === "wormhole") {
             // navigate through wormhole (unless ship was just moved through wormhole)
             const systemId = clickTarget.parentEntity.toId;
@@ -185,15 +186,15 @@ export class SpaceViewDomManager {
 
     #rightClickHandler = (event) => {
         event.preventDefault();
-        const currentSelection = this.selectionSprite.selectionTarget;
+        const currentSelection = this.selectionSprite.selectionEntity;
         if (!currentSelection) {
             return;
         }
 
         // Right-click handler for selected ships
-        if (currentSelection.parentEntity.type == "ship") {
+        if (currentSelection.type == "ship") {
             const clickTarget = this.findSelectionTarget(event);
-            this.moveShip(currentSelection, clickTarget, 'default');
+            currentSelection.moveShip(clickTarget, 'default', this.mouse, this.camera);
         }
     }
 
@@ -222,16 +223,18 @@ export class SpaceViewDomManager {
         // add latest target to queue
         this.previousTargets.push(this.selectionSprite.selectionTarget);
 
-        if (this.previousTargets[1] &&
-            this.previousTargets[1].parentEntity.type == "ship" &&
-            this.previousTargets[1].parentEntity.buttonState) {
+        // TODO: this doesn't feel right... selectTarget results in a call to moveShip???  Why? is this method when a command is fired from the HTML DOM markup?
+        if ( this.previousTargets[1] &&
+             this.previousTargets[1].parentEntity.type == "ship" &&
+             this.previousTargets[1].parentEntity.buttonState) {
             const buttonState = this.previousTargets[1].parentEntity.buttonState
-            this.moveShip(this.previousTargets[1], this.previousTargets[0], buttonState);
+            this.previousTargets[1].parentEntity.moveShip(this.previousTargets[0], buttonState, this.mouse, this.camera);
         }
         this.populateHtml();
         window.selectionTarget = this.selectionSprite.selectionTarget;
     }
 
+    // TODO: Delete this unused function
     selectEntity(entity) {
         if (entity && entity?.object3d) {
             this.selectTarget(entity.object3d);
@@ -289,59 +292,6 @@ export class SpaceViewDomManager {
         } else {
             return (this.getParentObject(parent));
         }
-    }
-
-    /*
-     * This function moves a ship to a target. If the target is a planet, it will orbit.
-     * If the target is a wormhole, it will move through the wormhole.
-     * If the target is an enemy ship, it will attack it.
-     * If the target is a friendly ship, it will form up with it.
-     * @param {THREE.Object3D} ship3d - the 3d object of the ship
-     * @param {THREE.Object3D} target - the 3d object of the target
-     * @param {string} mode - the mode of movement.  Choose: default, colonize, move, orbit, attack, formup
-     */
-    moveShip(ship3d, target = null, mode = 'default') {
-        // ship3d is the 3d object and shipEntity is the JS object
-        /** @type {Ship} */
-        const shipEntity = ship3d.parentEntity;
-        const shipId = shipEntity.name;
-        const targetEntity = target ? target.parentEntity : null;
-        // clear all movement
-        shipEntity.resetMovement();
-
-        // We need to send the shipId, targetId and mode to the server so it can
-        // perform this logic also, updating it's system data and also sending the command
-        // to all clients so they can preform the logic as well.
-
-
-        if (mode == 'colonize' &&
-            target &&
-            target.parentEntity.type != 'planet') {
-            alert("Only planets can be colonized");
-            return;
-        }
-
-        // set targets based on movement mode
-        // default behavior moves to target and orbits
-        if (['default', 'move', 'orbit', 'colonize'].includes(mode) && target) {
-            shipEntity.destinationEntity = targetEntity;
-        }
-        if (['default', 'orbit'].includes(mode) && target) {
-            shipEntity.orbitTarget = targetEntity;
-        }
-        if (mode == 'colonize' && target && !targetEntity.colony) {
-            shipEntity.colonizeTarget = targetEntity;
-        }
-        if (['default', 'move'].includes(mode) && !target) {
-            shipEntity.setShipDestinationPointFromMouse(this.mouse, this.camera);
-        }
-
-
-
-        // re-set ship as target after moving
-        this.selectTarget(ship3d);
-        // clear ship button state
-        shipEntity.buttonState = null;
     }
 
 
@@ -513,7 +463,8 @@ export class SpaceViewDomManager {
     // Drawing Commands //
     //////////////////////
 
-    /* This function recursively walks up the tree of parents until it finds the root scene
+    /**
+     * This function recursively walks up the tree of parents until it finds the root scene
      * and removes the highest order group from that scene.
      */
     removeContainerFromScene(container) {

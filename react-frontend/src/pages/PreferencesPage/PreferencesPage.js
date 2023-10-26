@@ -34,6 +34,8 @@ const PreferencesPage = () => {
                     <option value="15">15</option>
                     <option value="4">4</option>
                     <option value="2">2</option>
+                    <option value="1">1</option>
+                    <option value="0">0</option>
                 </select>
             </label>
             <br />

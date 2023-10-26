@@ -61,12 +61,61 @@ export class Ship extends Entity {
         });
     }
 
+    /**
+     * Moves the ship to a target. If the target is a planet, it will orbit.
+     * If the target is a wormhole, it will move through the wormhole.
+     * If the target is an enemy ship, it will attack it.
+     * If the target is a friendly ship, it will form up with it.
+     *
+     * @param {THREE.Object3D} target - the 3d object of the target
+     * @param {string} mode - the mode of movement.  Choose: default, colonize, move, orbit, attack, formup
+     */
+    moveShip(target = null, mode = 'default', mouse, camera) {
+        const ship3d = this.object3d;
+
+        const shipId = this.name;
+        const targetEntity = target ? target.parentEntity : null;
+        // clear all movement
+        this.resetMovement();
+
+        // We need to send the shipId, targetId and mode to the server so it can
+        // perform this logic also, updating it's system data and also sending the command
+        // to all clients so they can preform the logic as well.
+
+        if (mode == 'colonize' &&
+            target &&
+            target.parentEntity.type != 'planet') {
+            alert("Only planets can be colonized");
+            return;
+        }
+
+        // set targets based on movement mode
+        // default behavior moves to target and orbits
+        if (['default', 'move', 'orbit', 'colonize'].includes(mode) && target) {
+            this.destinationEntity = targetEntity;
+        }
+        if (['default', 'orbit'].includes(mode) && target) {
+            this.orbitTarget = targetEntity;
+        }
+        if (mode == 'colonize' && target && !targetEntity.colony) {
+            this.colonizeTarget = targetEntity;
+        }
+
+        if (['default', 'move'].includes(mode) && !target) {
+            this.setShipDestinationPointFromMouse(mouse, camera);
+        }
+
+        // clear ship button state
+        this.buttonState = null;
+    }
+
     update(elapsedTime, deltaTime, system, galaxy) {
         this.handleWormholeJumping(deltaTime, galaxy);
         this.handleMovementTowardsDestination(deltaTime);
-        this.updateOutlinePosition();
         this.handleColonizing(deltaTime, galaxy);
         this.handleOrbitingAnimation(elapsedTime);
+
+        this.updateOutlinePosition();
 
         // update HTML but don't send to DOM unless it has changed
         this.updateConsoleBodyHtml();
@@ -221,7 +270,6 @@ export class Ship extends Entity {
     handleMovementTowardsDestination(deltaTime) {
         this.destinationPoint = this.recalculateDestinationPoint();
 
-        // TODO: moves slower when fps is low?
         if (!this.destinationPoint) { return; }
 
         const positionVector = new THREE.Vector3().copy(this.object3d.position);
@@ -229,8 +277,14 @@ export class Ship extends Entity {
         const distanceFromDest = positionVector.distanceTo(destinationVector);
         const speedMultiplier = this.speed * deltaTime * 60;
 
-        // If the destinationPoint is within [speed] units away from this.position,
-        // then move to destination and set destinationPoint to null
+        const displacementVector = new THREE.Vector3().copy(this.destinationPoint);
+
+        // This instruction mutates the destinationVector!
+        displacementVector        // = 4, 1, 1
+            .sub(positionVector)  // - 2, 1, 1 = 2, 0, 0
+            .normalize()          // (norm) = 1, 0, 0 // This is the direction we're moving
+            .multiplyScalar(speedMultiplier, speedMultiplier, speedMultiplier); // this calculates how far to move in that direction resulting in the displacementVector
+
         if (distanceFromDest <= speedMultiplier) {
             this.object3d.position.copy(destinationVector);
             this.destinationPoint = null;
@@ -239,12 +293,8 @@ export class Ship extends Entity {
             if (!this.controllered) {
                 this.object3d.lookAt(destinationVector); // Point the ship towards the destination.  Don't do this if we're using a controller
             }
-            const displacementVector = destinationVector
-                .sub(positionVector)
-                .normalize()
-                .multiplyScalar(speedMultiplier, speedMultiplier, speedMultiplier);
-            const finalVector = positionVector.add(displacementVector);
-            this.object3d.position.copy(finalVector);
+
+            this.object3d.position.add(displacementVector);
             this.synchronizeEntityWithObj3d();
         }
     }
@@ -261,7 +311,9 @@ export class Ship extends Entity {
         const destY = destObj3d.position.y;
         let destZ = destObj3d.position.z;
 
-        // put ship in front of stars and planets so they can be seen
+        // If the destination is a star/ planet, make the ship's destination
+        // towards the camera so they can be seen.  Otherwise the destination
+        // will be inside of a 3D mesh!
         if (['star', 'planet'].includes(this.destinationEntity.type)) {
             destZ += destObj3d.scale.z * 2;
         }

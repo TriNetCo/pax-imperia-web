@@ -10,8 +10,12 @@ export class SpriteFlipbook {
     map;
     material;
     sprite;
+
     /** @type {THREE.Object3D}  */
-    selectionTarget = null;
+    selectionTarget;
+
+    /** @type {Entity} */
+    selectionEntity;
 
     constructor(scene, spriteTexture, tilesHoriz, tilesVert, loopFrameDuration) {
         this.tilesHoriz = tilesHoriz;
@@ -82,13 +86,23 @@ export class SpriteFlipbook {
         this.sprite.position = vector3;
     }
 
+    /**
+     * Selects an object3d to be highlighted by the selection sprite.
+     *
+     * @param {THREE.Object3D} selectionTarget
+     */
     select(selectionTarget) {
         window.target = selectionTarget.parentEntity;
         this.selectionTarget = selectionTarget;
+        this.selectionEntity = selectionTarget.parentEntity;
     }
 
+    /**
+     * Removes the highlighting and selection from the HUD.
+     */
     unselect() {
         this.selectionTarget = null;
+        this.selectionEntity = null;
     }
 
 }
