@@ -3,6 +3,7 @@ import { Galaxy } from "../../../models/galaxy";
 import { Ship } from "./ship"
 
 import { createMockPlanet, createMockPosition } from "../../../../test_support/Factory";
+import * as THREE from 'three';
 
 const galaxyWidgetConfig = GameSettings.galaxyWidget;
 const galaxy = Galaxy.generateFromConfig(galaxyWidgetConfig);
@@ -66,9 +67,10 @@ test("when a ship enroute to orbit reaches/ overshoots it's destinationEntity, i
     planet.object3d.scale.z = 0; // this ensures the destinationPoint isn't changed after calling recaluclateDestinationPoint
     const ship = new Ship();
     ship.object3d = {
-        position: createMockPosition({ x: 1, y: 1, z: 1 }),
-        rotation: { x: 0, y: 0, z: 0 },
+        position: new THREE.Vector3(1, 1, 1),
+        rotation: new THREE.Vector3(0, 0, 0),
         lookAt: () => { },
+        rotateOnAxis: () => { },
     };
     ship.speed = 1;
 
