@@ -30,10 +30,28 @@ mindmap
             Add backend support for "users management"
             ::icon(fa fa-book)
         ::icon(fa fa-star)
-        Automated Database Migrations
+        Testing
         ::icon(fa fa-star)
-            I should use MongoDB, right?
-            ::icon(fa fa-question)
+        Multiplayer
+        ::icon(fa fa-star)
+            Deploy backend 
+            ::icon(fa fa-star)
+            Program Client to send commands
+            ::icon(fa fa-star)
+            Program backend to Relay commands
+            ::icon(fa fa-star)
+            Program network tooling 
+            ::icon(fa fa-star)
+        AI
+        ::icon(fa fa-star)
+            Basic Controls, interactions and Goal Optimization
+            ::icon(fa fa-star)
+            Local Speech to Text
+            ::icon(fa fa-star)
+            Character Roleplay Consistency
+            ::icon(fa fa-star)
+            Guide-Railing and staying productive
+            ::icon(fa fa-star)
 ```
 
 
