@@ -18,7 +18,7 @@ graph LR;
 ##### Current Work MindMap
 I'm playing around with using mind maps because they help you get a better spacial sense about the work being done and helps me reason about how some domains of work might expand.
 
-```
+```mermaid
 mindmap
     root((Pax <br/> Features))
         Get Web UX Ready for Customers
@@ -29,7 +29,6 @@ mindmap
         ::icon(fa fa-star)
             Add backend support for "users management"
             ::icon(fa fa-book)
-        B
         ::icon(fa fa-star)
         Automated Database Migrations
         ::icon(fa fa-star)
