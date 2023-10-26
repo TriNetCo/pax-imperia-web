@@ -31,7 +31,15 @@ export class GameStateInterface {
     spaceViewWidget;
     /** @type {Galaxy} */
     galaxy;
+    /** @type {WebSocket} */
+    websocket;
 
+    /**
+     *
+     * @param {Object} configs
+     * @param {Galaxy} configs.galaxy
+     * @param {WebSocket} configs.websocket
+     */
     constructor(configs) {
         this.galaxy = configs.galaxy;
         this.websocket = configs.websocket;
@@ -105,6 +113,8 @@ export class GameStateInterface {
         }
     }
 
+    // TODO: Extract this class into a separate logger, EventLogger
+    // Inject it into the class
     addEventLogEntry(entry) {
         this.eventLog.push({ time: this.gameClock.elapsedTime, entry: entry });
         const spaceViewDomManager = this.spaceViewWidget.spaceViewDomManager;

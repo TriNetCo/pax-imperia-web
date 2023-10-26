@@ -163,7 +163,7 @@ export class SpaceViewAnimator {
         }
 
         for (const ship of this.system['ships']) {
-            const shipActions = ship.update(elapsedTime, deltaTime, this.system, this.galaxy);
+            const shipActions = ship.update(elapsedTime, deltaTime, this.gameStateInterface);
             actions.push(...shipActions);
         }
 

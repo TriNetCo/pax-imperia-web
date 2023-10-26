@@ -1,7 +1,12 @@
 import * as THREE from 'three';
 
 import { Planet } from "../script/widgets/space_view/entities/planet";
+import {GameStateInterface} from '../script/gameStateInterface/gameStateInterface';
 
+const websocket = {
+    send: () => { },
+    onmessage: () => { }
+};
 
 export const createMockPosition = (config) => {
     const defaults = {
@@ -26,3 +31,20 @@ export const createMockPlanet = (positionConfig) => {
     return planet;
 }
 
+
+export const createMockGameStateInterface = (config) => {
+    const gameStateInterface = new GameStateInterface( {...config, ...{websocket} });
+    gameStateInterface.spaceViewWidget = {
+        system: config.galaxy.systems[1],
+        spaceViewDomManager: {
+            populateHtml: () => { },
+            selectTarget: () => { },
+        },
+        spaceViewAnimator: {
+            addOutline: () => { },
+        },
+    };
+
+    gameStateInterface.addEventLogEntry = () => { };
+    return gameStateInterface;
+}

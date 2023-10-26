@@ -26,7 +26,7 @@ export class SpaceViewDomManager {
      * @param {*} systemClickHandler
      * @param {GameStateInterface} gameStateInterface
      */
-    constructor(config, clientObjects, system, systemClickHandler, gameStateInterface) {
+    constructor(config, clientObjects, system, systemClickHandler, gameStateInterface, spaceViewInputHandler) {
         this.c = config;
         this.system = system;
         this.systemClickHandler = systemClickHandler;
@@ -45,9 +45,12 @@ export class SpaceViewDomManager {
         this.previousTargets = new Queue(3);
         this.eventLogHtml = '';
         this.previousConsoleBodyHtml = '';
+        this.spaceViewInputHandler = spaceViewInputHandler;
 
         // currently necessary for ship movement which accesses global
         // TODO: remove the dependency
+        if (typeof window === 'undefined') return; // for testing, return here...
+
         window.spaceViewDomManager = this;
 
         window.clickThumbnail = (targetType, targetName) => {
@@ -162,16 +165,17 @@ export class SpaceViewDomManager {
         this.populateHtml();
     }
 
-    #doubleClickHandler = (event) => {
+    doubleClickHandler = (event) => {
         // on a doubleclick, previousTargets queue will look like:
         //     0: double-clicked object or object behind,
         //     1: double-clicked object,
         //     2: object before double-click
         // so it is safest to use previousTargets[1] as double-click target
         const clickTarget = this.previousTargets[1]
+
         // check if the target before double click was a ship
         const subjectEntity = this.previousTargets[2] ? this.previousTargets[2].parentEntity : null;
-        if (subjectEntity.type == "ship") {
+        if (subjectEntity && subjectEntity.type == "ship") {
             subjectEntity.moveShip(clickTarget, 'default', this.mouse, this.camera);
             this.selectTarget(subjectEntity.object3d); // re-set ship as target after moving
         } else if (clickTarget?.parentEntity.type === "wormhole") {
@@ -413,7 +417,7 @@ export class SpaceViewDomManager {
     }
 
     addMouseDoubleClick() {
-        this.canvas.addEventListener('dblclick', this.#doubleClickHandler);
+        this.canvas.addEventListener('dblclick', this.doubleClickHandler);
     }
 
     addKeyPresses() {
@@ -449,7 +453,7 @@ export class SpaceViewDomManager {
     detachFromDom() {
         this.canvas.removeEventListener('mousemove', this.mouseMovementHandler);
         this.canvas.removeEventListener('click', this.#clickHandler);
-        this.canvas.removeEventListener('dblclick', this.#doubleClickHandler);
+        this.canvas.removeEventListener('dblclick', this.doubleClickHandler);
         this.canvas.removeEventListener('contextmenu', this.#rightClickHandler);
         document.removeEventListener('keydown', this.#keyDownHandler);
         document.removeEventListener('keyup', this.#keyUpHandler);

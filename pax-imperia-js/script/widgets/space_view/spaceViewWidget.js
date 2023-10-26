@@ -33,14 +33,15 @@ export class SpaceViewWidget {
     /** @type {CacheMonster} */
     cacheMonster;
 
-    constructor(config, clientObjects, gameStateInterface) {
+    constructor(config, clientObjects, gameStateInterface, renderer) {
         this.c = config;
         this.clientObjects = clientObjects;
         this.gameStateInterface = gameStateInterface;
         this.galaxy = gameStateInterface.galaxy;
         gameStateInterface.spaceViewWidget = this;
 
-        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        // TODO: float this renderer constructor up??? mostly because it depends on document
+        this.renderer = renderer ? renderer : new THREE.WebGLRenderer({ antialias: true });
         this.basePath = getBasePath();
         this.clientObjects.mouse = new THREE.Vector2(0, 0);
         this.clientObjects.gameClock = gameStateInterface.gameClock;
@@ -90,6 +91,11 @@ export class SpaceViewWidget {
     }
 
     async buildSystemClasses() {
+
+        this.spaceViewInputHandler = new SpaceViewInputHandler(
+            this.system
+        );
+
         // create new instances of the 3 classes
         this.spaceViewDomManager = new SpaceViewDomManager(
             this.c,
@@ -97,6 +103,7 @@ export class SpaceViewWidget {
             this.system,
             this.systemClickHandler,
             this.gameStateInterface,
+            this.spaceViewInputHandler,
         );
 
         this.spaceViewAnimator = new SpaceViewAnimator(
@@ -108,19 +115,16 @@ export class SpaceViewWidget {
             this.gameStateInterface,
         );
 
-        this.spaceViewInputHandler = new SpaceViewInputHandler(
-            this.system
-        );
-
         // link classes together
         this.spaceViewAnimator.spaceViewDomManager = this.spaceViewDomManager;
         this.spaceViewAnimator.spaceViewInputHandler = this.spaceViewInputHandler;
 
         this.spaceViewDomManager.spaceViewAnimator = this.spaceViewAnimator;
-        this.spaceViewDomManager.spaceViewInputHandler = this.spaceViewInputHandler;
 
         this.spaceViewInputHandler.spaceViewAnimator = this.spaceViewAnimator;
         this.spaceViewInputHandler.spaceViewDomManager = this.spaceViewDomManager;
+
+        if (typeof window === 'undefined') return; // return if we're just testing
 
         // populate sidebar
         this.spaceViewDomManager.attachDomEventsToCode();

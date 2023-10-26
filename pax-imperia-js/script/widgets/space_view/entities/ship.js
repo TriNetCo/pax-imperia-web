@@ -2,6 +2,7 @@ import Entity from './entity.js';
 import { roundToDecimal, getRandomNum } from '../../../models/helpers.js';
 import * as THREE from 'three';
 import { Galaxy } from '../../../models/galaxy.js';
+import { GameStateInterface } from '../../../gameStateInterface/gameStateInterface.js';
 
 export class Ship extends Entity {
 
@@ -109,7 +110,16 @@ export class Ship extends Entity {
         this.buttonState = null;
     }
 
-    update(elapsedTime, deltaTime, system, galaxy) {
+    /**
+     *
+     * @param {number} elapsedTime
+     * @param {number} deltaTime
+     * @param {GameStateInterface} gameStateInterface
+     * @returns {Array}
+     */
+    update(elapsedTime, deltaTime, gameStateInterface) {
+        const galaxy = gameStateInterface.galaxy;
+        const spaceViewDomManager = gameStateInterface.spaceViewWidget.spaceViewDomManager;
         this.handleWormholeJumping(deltaTime, galaxy);
         this.handleMovementTowardsDestination(deltaTime);
         this.handleColonizing(deltaTime, galaxy);
@@ -329,8 +339,7 @@ export class Ship extends Entity {
         // 0, 0, 0, points to planet
         this.object3d.rotation.set(0, 0, 0);
         // update animation progress
-        // TODO: depend on deltaTime
-        this.colonizeAnimationProgress += this.speed * 3 / 9;
+        this.colonizeAnimationProgress += this.speed * deltaTime * 20;
         // delete ship once landing animation finished
         if (this.colonizeAnimationProgress >= 1) {
             const colonizeAction = {
@@ -339,6 +348,8 @@ export class Ship extends Entity {
                 object: { type: 'planet', id: this.colonizeTarget.id }
             };
             this.actions.push(colonizeAction);
+
+            // TODO: Float these methods up
             this.removeObject3d();
             this.removeFromSystem(galaxy);
         } else {

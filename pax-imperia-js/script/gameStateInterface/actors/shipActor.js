@@ -98,6 +98,8 @@ export class ShipActor extends Actor {
             planet,
             this.gameStateInterface.gameClock.elapsedTime
         );
+
+        // TODO: Float this method up
         // if player is currently in the system with the colonized planet
         if (this.gameStateInterface.spaceViewWidget.system.id === planet.systemId) {
             this.gameStateInterface.spaceViewWidget.spaceViewAnimator.addOutline(planet);

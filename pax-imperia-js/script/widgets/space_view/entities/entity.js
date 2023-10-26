@@ -77,16 +77,21 @@ export default class Entity {
     removeObject3d() {
         this.unselect()
         // delete 3d object from scene
-        this.object3d.parent.remove(this.object3d);
+        this.object3d.parent?.remove(this.object3d);
     }
+
+    // TODO: move this to Galaxy
 
     removeFromSystem(galaxy) {
         // delete entity from system object
         // find index of entity in list of entities in system
         const system = galaxy.getSystem(this.systemId);
         system.removeEntity(this.type, this.id);
-        // update sidebar
-        window.spaceViewDomManager.populateHtml();
+
+        // // TODO: Float this method up
+        if (typeof window !== 'undefined') {
+            window.spaceViewDomManager.populateHtml(); // update sidebar
+        }
     }
 
     /////////////////////
