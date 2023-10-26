@@ -13,7 +13,7 @@ const initGameData = () => {
     Galaxy.seedRandomness('Axd2IJCs;s');
 
     // add storedPreferences to gameSettings
-    const storedPreferences = localStorage.getItem('preferences');
+    const storedPreferences = localStorage.getItem('preferences') || '{}';
     const gameSettings = GameSettings;
     Object.entries(JSON.parse(storedPreferences)).forEach(([key, value]) => {
         gameSettings.galaxyWidget[key] = value;
