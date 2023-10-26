@@ -61,7 +61,7 @@ test('when a ship\'s update should have the ship jump a wormhold, it defines act
     expect(ship.actions[0].verb).toBe('discover');
 });
 
-test("when a ship enroute to orbit reaches/ overshoots it's destinationEntity, it should release it's destination target ending travel", async () => {
+test("when a ship enroute to orbit reaches/ overshoots it's destinationEntity, it should release it's destination target, ending travel", async () => {
     // Set it up so it will overshoot it's destination
     const planet = createMockPlanet({ x: 2, y: 1, z: 1 });
     planet.object3d.scale.z = 0; // this ensures the destinationPoint isn't changed after calling recaluclateDestinationPoint
@@ -72,7 +72,7 @@ test("when a ship enroute to orbit reaches/ overshoots it's destinationEntity, i
         lookAt: () => { },
         rotateOnAxis: () => { },
     };
-    ship.speed = 1;
+    ship.speed = 2;
 
     // Excercise the code
 
@@ -83,6 +83,9 @@ test("when a ship enroute to orbit reaches/ overshoots it's destinationEntity, i
     ship.handleMovementTowardsDestination(deltaTime, galaxy);
 
     expect(ship.destinationEntity).toBe(null);
+    expect(ship.object3d.position.x).toBe(planet.object3d.position.x);
+    expect(ship.object3d.position.y).toBe(planet.object3d.position.y);
+    expect(ship.object3d.position.z).toBe(planet.object3d.position.z);
 
     ship.handleOrbitingAnimation(deltaTime);
 
@@ -105,9 +108,6 @@ test("when a ship enroute to orbit a planet is updated, and it's not all the way
     // Excercise the code
 
     ship.moveShip(planet.object3d, 'default');
-
-    expect(ship.destinationEntity).toBe(planet); // just a quick implementation check :)
-
     ship.handleMovementTowardsDestination(deltaTime, galaxy);
 
     expect(ship.destinationEntity).toBe(planet);
