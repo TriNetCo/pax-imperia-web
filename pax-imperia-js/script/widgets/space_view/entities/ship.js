@@ -374,32 +374,40 @@ export class Ship extends Entity {
         const centerZ = this.orbitTarget.object3d.position.z;
         const centerY = this.orbitTarget.object3d.position.y;
         const orbitDist = this.orbitTarget.object3d.scale.z * 2;
+        const startAngle = Math.PI / 2;
 
-        if (!this.orbitStartTime) {
+        if (this.orbitStartTime === null) { // Warning: checking null allows a start time of zero
             this.orbitStartTime = elapsedTime;
-            // this.object3d.rotation.x = Math.PI / 4;
-            // this.object3d.rotation.z = Math.PI / 8;
-            this.object3d.rotation.x = Math.PI / 2;
-            this.object3d.rotation.y = -Math.PI / 2;
-            this.object3d.rotation.z = Math.PI / 4;
+
+            // We need to zero the ship's rotation out so the math
+            // isn't complex
+            this.object3d.rotation.x = 0;
+            this.object3d.rotation.y = 0;
+            this.object3d.rotation.z = 0;
+
+            // lol I love this feature
+            const orbitScale = this.orbitTarget.object3d.scale.x * this.size;
+            this.object3d.scale.set(orbitScale, orbitScale, orbitScale);
         }
 
-        const startAngle = Math.PI / 2;
-        const timeOrbiting = elapsedTime - this.orbitStartTime;
-        const orbitSpeed = this.speed / orbitDist * 2 + 0.05;
-        const orbitAngle = startAngle + timeOrbiting * orbitSpeed * Math.PI;
+        const orbitAngle = this.getOrbitAngle(startAngle, elapsedTime);
 
         this.object3d.position.x = centerX + orbitDist * Math.cos(orbitAngle);
         this.object3d.position.z = centerZ + orbitDist * Math.sin(orbitAngle);
         this.object3d.position.y = centerY;
 
-        this.object3d.rotateOnAxis(new THREE.Vector3(1, 0, 0), orbitSpeed * Math.PI / 40);
+                                  // The rotation of the nose        We offset the rotation
+                                  // of the ship is based on         here so that the ship
+                                  // the angle of the ship's orbit   is always facing parallel
+        this.object3d.rotation.y = -1 * (orbitAngle - startAngle) + (1.5 * Math.PI);
+    }
 
-        // angle pi/2 => x = pi/2, y = -pi/2
-        // angle pi => x = pi, y = 0
-        // x = pi, y = 0
-        // this.object3d.rotation.x = orbitAngle;
-        // this.object3d.rotation.y = orbitAngle - Math.PI;
+    getOrbitAngle(startAngle, elapsedTime) {
+        const timeOrbiting = elapsedTime - this.orbitStartTime;
+        const orbitSpeed = 0.5;
+        let orbitAngle = (timeOrbiting * orbitSpeed * Math.PI + startAngle) % (2 * Math.PI);
+
+        return orbitAngle;
     }
 
     synchronizeEntityWithObj3d() {

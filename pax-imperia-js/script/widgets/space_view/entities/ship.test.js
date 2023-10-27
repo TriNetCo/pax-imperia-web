@@ -120,5 +120,47 @@ test("given a ship enroute to colonize, when it reaches it's destinationEntity, 
 });
 
 test("the ship's orbiting animation should set the ship's position to the correct position", () => {
+    const ship = createTestShip({ x: 0, y: 0, z: 0 });
+    ship.speed = 1;
+    ship.orbitStartTime = 0;
+    ship.orbitRadius = 1;
+    ship.orbitSpeed = 1;
+    ship.orbitTarget = {
+        object3d: {
+            position: { x: 0, y: 0, z: 0 },
+            scale: { x: 1, y: 1, z: 1 },
+        }
+    };
+
+    let elapsedTime = 1;
+
+    ship.handleOrbitingAnimation(elapsedTime);
+
+    expect(ship.object3d.position.x).toBe(-2);
+    expect(ship.object3d.position.y).toBe(0);
+    expect(ship.object3d.position.z).toBe(2.4492935982947064e-16);
+
+    expect(ship.object3d.rotation.y).toBe(Math.PI);
+
+    elapsedTime = 2;
+    ship.handleOrbitingAnimation(elapsedTime);
+    expect(ship.object3d.rotation.y).toBe(Math.PI/2);
+
+    elapsedTime = 3;
+    ship.handleOrbitingAnimation(elapsedTime);
+    expect(ship.object3d.rotation.y).toBe(Math.PI * 2);
+
+    elapsedTime = 4;
+    ship.handleOrbitingAnimation(elapsedTime);
+    expect(ship.object3d.rotation.y).toBe(Math.PI * 1.5);
+
+    // First full rotation is complete
+    elapsedTime = 5;
+    ship.handleOrbitingAnimation(elapsedTime);
+    expect(ship.object3d.rotation.y).toBe(Math.PI);
+
+    elapsedTime = 6;
+    ship.handleOrbitingAnimation(elapsedTime);
+    expect(ship.object3d.rotation.y).toBe(Math.PI / 2);
 
 });
