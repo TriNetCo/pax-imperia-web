@@ -69,8 +69,6 @@ export default class Entity {
      * Remove Object3d from scene e.g. when ship colonizes planet or jumps through wormhole
      */
     removeObject3d() {
-        // TODO: Float this operation up
-        // delete 3d object from scene
         this.object3d.parent?.remove(this.object3d);
     }
 

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 import { Planet } from "../script/widgets/space_view/entities/planet";
 import {GameStateInterface} from '../script/gameStateInterface/gameStateInterface';
+import {Ship} from '../script/widgets/space_view/entities/ship';
 
 const websocket = {
     send: () => { },
@@ -48,3 +49,20 @@ export const createMockGameStateInterface = (config) => {
     gameStateInterface.addEventLogEntry = () => { };
     return gameStateInterface;
 }
+
+
+export const createTestShip = (config) => {
+    const ship = new Ship();
+    ship.object3d = {
+        position: createMockPosition(config),
+        rotation: new THREE.Vector3(0, 0, 0),
+        scale: new THREE.Vector3(1, 1, 1),
+        lookAt: () => { },
+        rotateOnAxis: () => { },
+    };
+    ship.systemId = 0;
+    ship.id = 0;
+    ship.speed = 1;
+
+    return ship;
+};

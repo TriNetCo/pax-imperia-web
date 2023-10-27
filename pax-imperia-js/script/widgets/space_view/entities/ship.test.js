@@ -1,40 +1,12 @@
 import { GameSettings } from "../../../gameSettings";
 import { Galaxy } from "../../../models/galaxy";
-import { Ship } from "./ship"
 
-import { createMockPlanet, createMockPosition, createMockGameStateInterface } from "../../../../test_support/Factory";
-import * as THREE from 'three';
+import {createMockPlanet, createMockPosition, createMockGameStateInterface, createTestShip} from '../../../../test_support/Factory';
 
 const galaxyWidgetConfig = GameSettings.galaxyWidget;
 const galaxy = Galaxy.generateFromConfig(galaxyWidgetConfig);
 
 const deltaTime = 1/60;
-
-// test('the update function returns actions when appropriate', () => {
-//     const ship = new Ship();
-
-//     const data = {};
-//     const elapsedTime = 0;
-//     const deltaTime = 1;
-//     const system = {};
-//     const galaxy = {};
-
-//     ship.destinationEntity = {
-//         type: 'wormhole',
-//         id: 1,
-//         name: 'wormhole',
-//         object3d: {
-//             position: { x: 0, y: 0, z: 0, distanceTo: () => 0 }
-//         }
-//     };
-//     ship.object3d = {
-//         position: { x: 100, y: 100, z: 0, distanceTo: () => 100 }
-//     };
-
-//     const actions = ship.update(elapsedTime, deltaTime, system, galaxy);
-
-//     expect(actions.verb).toBe('discover');
-// });
 
 test("when a ship's update should have the ship jump a wormhold, it defines actions", async () => {
 
@@ -45,17 +17,17 @@ test("when a ship's update should have the ship jump a wormhold, it defines acti
     };
 
     // Make ship
-    const ship = new Ship();
+    const ship = createTestShip({ x: 100, y: 100, z: 0 });
+
+    // associate ship with wormhole
     ship.systemId = wormhole.fromId;
     ship.previousSystemId = wormhole.fromId;
     ship.destinationEntity = wormhole;
-    ship.object3d = {
-        position: createMockPosition({ x: 100, y: 100 })
-    };
-    ship.removeFromSystem = (e) => { };
-    ship.removeObject3d = () => { };
 
-    // Excercise the code
+    ////////////////////////
+    // Excercise the code //
+    ////////////////////////
+
     ship.handleWormholeJumping(deltaTime, galaxy);
 
     // Verify the results
@@ -66,13 +38,7 @@ test("when a ship enroute to orbit reaches/ overshoots it's destinationEntity, i
     // Set it up so it will overshoot it's destination
     const planet = createMockPlanet({ x: 2, y: 1, z: 1 });
     planet.object3d.scale.z = 0; // this ensures the destinationPoint isn't changed after calling recaluclateDestinationPoint
-    const ship = new Ship();
-    ship.object3d = {
-        position: new THREE.Vector3(1, 1, 1),
-        rotation: new THREE.Vector3(0, 0, 0),
-        lookAt: () => { },
-        rotateOnAxis: () => { },
-    };
+    const ship = createTestShip({ x: 1, y: 1, z: 1 });
     ship.speed = 2;
 
     // Excercise the code
@@ -98,12 +64,8 @@ test("when a ship enroute to orbit a planet is updated, and it's not all the way
     // Set it up so it will overshoot it's destination
     const planet = createMockPlanet({ x: 2, y: 1, z: 1 });
     planet.object3d.scale.z = 0; // this ensures the destinationPoint isn't changed after calling recaluclateDestinationPoint
-    const ship = new Ship();
-    ship.object3d = {
-        position: createMockPosition({ x: 1, y: 1, z: 1 }),
-        rotation: new THREE.Vector3(0, 0, 0),
-        lookAt: () => { },
-    };
+
+    const ship = createTestShip({ x: 1, y: 1, z: 1 });
     ship.speed = 0.5;
 
     // Excercise the code
@@ -119,16 +81,7 @@ test("when a ship enroute to orbit a planet is updated, and it's not all the way
 
 test("given a ship enroute to colonize, when it reaches it's destinationEntity, then it should colonize the planet", async () => {
     // Set it up so it will overshoot it's destination
-    const ship = new Ship();
-    ship.object3d = {
-        position: createMockPosition({ x: 1, y: 1, z: 1 }),
-        rotation: new THREE.Vector3(0, 0, 0),
-        scale: new THREE.Vector3(1, 1, 1),
-        lookAt: () => { },
-    };
-    ship.speed = 1;
-    ship.systemId = 0;
-    ship.id = 0;
+    const ship = createTestShip({ x: 1, y: 1, z: 1 });
 
     // TODO: make creation of planets more beautiful
     const planet = createMockPlanet({ x: 1, y: 2, z: 1});
@@ -163,5 +116,9 @@ test("given a ship enroute to colonize, when it reaches it's destinationEntity, 
     gameStateInterface.performAction(ship.actions[0]);
 
     expect(planet.colony).toBeTruthy();
+
+});
+
+test("the ship's orbiting animation should set the ship's position to the correct position", () => {
 
 });
