@@ -36,7 +36,7 @@ const deltaTime = 1/60;
 //     expect(actions.verb).toBe('discover');
 // });
 
-test('when a ship\'s update should have the ship jump a wormhold, it defines actions', async () => {
+test("when a ship's update should have the ship jump a wormhold, it defines actions", async () => {
 
     // Make wormhole
     const wormhole = galaxy.systems[0].wormholes[0];

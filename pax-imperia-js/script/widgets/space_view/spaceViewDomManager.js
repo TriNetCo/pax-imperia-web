@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { Queue } from '../../models/helpers.js';
-import { SelectionSprite } from '../../models/spriteFlipbook.js';
+import { SelectionSprite } from '../../models/selectionSprite.js';
 import Entity from './entities/entity.js';
 import { System } from './entities/system.js';
 import { GameStateInterface } from '../../gameStateInterface/gameStateInterface.js';
@@ -168,8 +167,8 @@ export class SpaceViewDomManager {
         const clickTarget = this.selectionSprite.previousTargets[0]
 
         // check if the target before double click was a ship
-        const subjectEntity = this.selectionSprite.previousTargets[1] ? this.selectionSprite.previousTargets[1].parentEntity : null;
-        if (subjectEntity && subjectEntity.type == "ship") {
+        const subjectEntity = this.selectionSprite.previousTargets[1]?.parentEntity;
+        if (subjectEntity?.type == "ship") {
             subjectEntity.moveShip(clickTarget, 'default', this.mouse, this.camera);
             subjectEntity.select();
         } else if (clickTarget?.parentEntity.type === "wormhole") {

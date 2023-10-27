@@ -1,7 +1,7 @@
 import {GameSettings} from '../../gameSettings';
 import { GameStateInterface } from '../../gameStateInterface/gameStateInterface';
 import {Galaxy} from '../../models/galaxy';
-import { SelectionSprite } from '../../models/spriteFlipbook';
+import { SelectionSprite } from '../../models/selectionSprite';
 import { SpaceViewWidget } from './spaceViewWidget';
 
 Galaxy.seedRandomness('Axc2IJCs;s');

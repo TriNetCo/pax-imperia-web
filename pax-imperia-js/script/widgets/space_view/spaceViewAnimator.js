@@ -7,7 +7,7 @@ import { System } from './entities/system.js';
 import TimeLord from '../../models/timeLord.js';
 import { SpaceViewDomManager } from './spaceViewDomManager.js';
 import { SpaceViewInputHandler } from './spaceViewInputHandler.js';
-import { SelectionSprite } from '../../models/spriteFlipbook.js';
+import { SelectionSprite } from '../../models/selectionSprite.js';
 
 export class SpaceViewAnimator {
 

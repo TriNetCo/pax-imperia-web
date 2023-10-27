@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { SpaceViewAnimator } from './spaceViewAnimator.js';
 import { SpaceViewDomManager } from './spaceViewDomManager.js';
 import { SpaceViewInputHandler } from './spaceViewInputHandler.js';
-import { SelectionSprite } from '../../models/spriteFlipbook.js'
+import { SelectionSprite } from '../../models/selectionSprite.js'
 import { System } from './entities/system.js';
 import { getBasePath } from '../../models/helpers.js';
 import CacheMonster from '../../models/cacheMonster.js';
