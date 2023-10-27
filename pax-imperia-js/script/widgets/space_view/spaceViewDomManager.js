@@ -52,8 +52,7 @@ export class SpaceViewDomManager {
 
         window.clickThumbnail = (targetType, targetName) => {
             const entity = this.system[targetType + 's'].find(x => x.name === targetName);
-            this.selectTarget(entity.object3d);
-            // entity.select();
+            this.handleSelectionChange(entity.object3d);
             this.populateHtml();
         };
 
@@ -157,31 +156,19 @@ export class SpaceViewDomManager {
     ////////////////////
 
     #clickHandler = (event) => {
-        // TODO: Check if we're actually doubleclicking...
-
-        // event.preventDefault();
-
-        // if (event.detail === 2) { return; } // let the doubleclick handler handle this
-        console.log("CLICK")
-
+        event.preventDefault();
+        if (event.detail === 2) { return; } // let the doubleclick handler handle this
 
         const selectionTarget = this.findSelectionTarget(event);
-        this.selectTarget(selectionTarget);
+        this.handleSelectionChange(selectionTarget);
         this.populateHtml();
     }
 
     doubleClickHandler = (event) => {
-        console.log("DBLCLICK")
-
-        // on a doubleclick, previousTargets queue will look like:
-        //     0: double-clicked object or object behind,
-        //     1: double-clicked object,
-        //     2: object before double-click
-        // so it is safest to use previousTargets[1] as double-click target
-        const clickTarget = this.selectionSprite.previousTargets[1]
+        const clickTarget = this.selectionSprite.previousTargets[0]
 
         // check if the target before double click was a ship
-        const subjectEntity = this.selectionSprite.previousTargets[2] ? this.selectionSprite.previousTargets[2].parentEntity : null;
+        const subjectEntity = this.selectionSprite.previousTargets[1] ? this.selectionSprite.previousTargets[1].parentEntity : null;
         if (subjectEntity && subjectEntity.type == "ship") {
             subjectEntity.moveShip(clickTarget, 'default', this.mouse, this.camera);
             subjectEntity.select();
@@ -228,8 +215,7 @@ export class SpaceViewDomManager {
     // unselects if no object3d is passed in
     // and, if a ship was selected before and we're interacting with it
     //   via it's button consoles, perform the action associated with the button
-    // and populate the html
-    selectTarget(object3d) {
+    handleSelectionChange(object3d) {
         // select new target
         if (object3d) {
             this.selectionSprite.select(object3d);
@@ -237,36 +223,37 @@ export class SpaceViewDomManager {
             this.selectionSprite.unselect();
         }
 
-        // TODO: this doesn't feel right... selectTarget results in a call to moveShip???  Why? is this method when a command is fired from the HTML DOM markup?
-        if ( this.isInteractingWithShipThroughButtons() ) {
+        this.handleSelectionWhenInteractingWithShipViaButtons();
+    }
+
+    handleSelectionWhenInteractingWithShipViaButtons() {
+        if ( this.isInteractingWithShipViaButtons() ) {
             const ship = this.selectionSprite.previousTargets[1].parentEntity;
             const shipTarget = this.selectionSprite.previousTargets[0];
 
             const buttonState = ship.buttonState
             ship.moveShip(shipTarget, buttonState, this.mouse, this.camera);
+            ship.select();
         }
-
-        this.populateHtml();
     }
 
-    isInteractingWithShipThroughButtons() {
+    isInteractingWithShipViaButtons() {
         const shipObject3d = this.selectionSprite.previousTargets[1];
 
         return (shipObject3d
-                && shipObject3d.parentEntity.type == "ship"
+                && shipObject3d.parentEntity.type
                 && shipObject3d.parentEntity.buttonState);
     }
 
-    /*
+    /**
      * This function finds the object that the mouse is currently over (handy to fire
      * in the click handlers).
+     *
      * @param {event} event - the click event
-     * @returns {THREE.Object3D} - the object that was clicked on
-     * @returns {null} - if no object was clicked on
+     * @returns {THREE.Object3D} object3d - The object that was clicked on
+     * @returns {null} null - if no object was clicked on
      */
     findSelectionTarget(event) {
-        //const unselectableNames = ["selectionSprite", "wormholeText"];
-
         this.raycaster.setFromCamera(this.mouse, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children);
 
@@ -284,10 +271,10 @@ export class SpaceViewDomManager {
                 selection = obj;
             } else {
                 // Returns a selection different from current selectionTarget
-                selection = obj;
-                return selection;
+                return obj;
             }
         }
+
         // Returns null unless the current selectionTarget was selected again
         return selection;
     }

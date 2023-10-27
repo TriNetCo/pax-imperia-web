@@ -7,6 +7,7 @@ import { System } from './entities/system.js';
 import TimeLord from '../../models/timeLord.js';
 import { SpaceViewDomManager } from './spaceViewDomManager.js';
 import { SpaceViewInputHandler } from './spaceViewInputHandler.js';
+import { SelectionSprite } from '../../models/spriteFlipbook.js';
 
 export class SpaceViewAnimator {
 
@@ -20,7 +21,8 @@ export class SpaceViewAnimator {
     /**
      *
      * @param {*} config
-     * @param {*} clientObjects
+     * @param {Object} clientObjects
+     * @param {SelectionSprite} clientObjects.selectionSprite
      * @param {System} system
      * @param {Galaxy} galaxy
      * @param {CacheMonster} cacheMonster
@@ -138,7 +140,6 @@ export class SpaceViewAnimator {
             this.spaceViewDomManager.populateConsoleBody();
         }
     }
-
 
     updateObjects() {
         // seconds since clock reset
@@ -295,7 +296,7 @@ export class SpaceViewAnimator {
 
         selectionTarget.parentEntity.object3d = this.firstPersonGroup;
         this.firstPersonGroup.parentEntity = selectionTarget.parentEntity;
-        this.spaceViewDomManager.selectTarget(this.firstPersonGroup);
+        this.spaceViewDomManager.handleSelectionChange(this.firstPersonGroup);
 
         this.camera.removeFromParent();
         this.cameraPivot.remove();
@@ -305,7 +306,7 @@ export class SpaceViewAnimator {
         this.camera.position.set(0, 2, -20);
         this.camera.lookAt(this.firstPersonGroup.position);
 
-        this.spaceViewDomManager.selectTarget(null);
+        this.spaceViewDomManager.handleSelectionChange(null);
 
         this.firstPersonView = true;
 

@@ -19,17 +19,21 @@ export class SelectionSprite {
     selectionEntity;
 
     constructor(scene, spriteTexture, tilesHoriz, tilesVert, loopFrameDuration) {
+        this.spriteTexture = spriteTexture;
         this.tilesHoriz = tilesHoriz;
         this.tilesVert = tilesVert;
         this.scene = scene;
         this.loopFrameDuration = loopFrameDuration;
+        this.previousTargets = new Queue(3);
+    }
 
-        const map = new THREE.TextureLoader().load(spriteTexture);
+    loadGraphics() {
+        const map = new THREE.TextureLoader().load(this.spriteTexture);
         this.map = map;
         map.magFilter = THREE.NearestFilter;
-        map.repeat.set(1 / tilesHoriz, 1 / tilesVert);
+        map.repeat.set(1 / this.tilesHoriz, 1 / this.tilesVert);
         map.offset.x = 0;
-        map.offset.y = (this.currentTile % tilesVert) / tilesVert;
+        map.offset.y = (this.currentTile % this.tilesVert) / this.tilesVert;
 
         const material = new THREE.SpriteMaterial({
             map: map,
@@ -43,15 +47,20 @@ export class SelectionSprite {
         sprite.scale.set(scale, scale);
         sprite.name = "selectionSprite";
         sprite.visible = false;
-        scene.add(sprite);
-
-        this.previousTargets = new Queue(3);
+        this.scene.add(sprite);
     }
 
     update(deltaTime) {
-        // UpdateSelectionTarget
         const selectionTarget = this.selectionTarget;
-        if (selectionTarget != null) {
+
+        if (!selectionTarget) {
+            this.sprite.visible = false;
+        }
+        else if (!this.scene.children.includes(selectionTarget) ) {
+            this.unselect();
+            this.sprite.visible = false;
+        }
+        else {
             this.sprite.visible = true;
             const p = selectionTarget.position;
             this.setPosition(p.x, p.y, p.z);
@@ -60,8 +69,6 @@ export class SelectionSprite {
             } else {
                 this.setScale(selectionTarget.scale);
             }
-        } else {
-            this.sprite.visible = false;
         }
 
         // cycleSpriteFlipbook

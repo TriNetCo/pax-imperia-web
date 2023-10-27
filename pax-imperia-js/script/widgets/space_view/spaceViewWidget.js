@@ -40,20 +40,19 @@ export class SpaceViewWidget {
         this.galaxy = gameStateInterface.galaxy;
         gameStateInterface.spaceViewWidget = this;
 
-        // TODO: float this renderer constructor up??? mostly because it depends on document
-        this.renderer = renderer ? renderer : new THREE.WebGLRenderer({ antialias: true });
         this.basePath = getBasePath();
         this.clientObjects.mouse = new THREE.Vector2(0, 0);
         this.clientObjects.gameClock = gameStateInterface.gameClock;
+
+        // TODO: Float these up possibly
+        this.renderer = renderer ? renderer : new THREE.WebGLRenderer({ antialias: true });
         this.cacheMonster = new CacheMonster(this.renderer);
     }
 
     loadWidget(systemIndex, systemClickHandler) {
+        console.log("LOADWIDGET");
         this.systemClickHandler = systemClickHandler;
         this.system = this.galaxy.getSystem(systemIndex);
-
-        // TODO: fix this so the console is created by the widget
-        // this.clientObjects.consoleDiv.innerHTML = "Resume";
 
         this.setupRenderer();
         this.resetThreeObjects();
@@ -72,8 +71,10 @@ export class SpaceViewWidget {
             this.clientObjects.scene,
             this.basePath + '/assets/sprite_sheets/selection_sprite_sheet.png',
             1,  // nCols in sprite sheet
-            10, // nRows
+            10, // nRows in sprite sheet
             0.04); // loopFrameDuration
+
+        this.clientObjects.selectionSprite.loadGraphics();
     }
 
     changeSystem(systemIndex) {

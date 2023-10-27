@@ -56,7 +56,7 @@ test('when a ship\'s update should have the ship jump a wormhold, it defines act
     ship.removeObject3d = () => { };
 
     // Excercise the code
-    await ship.handleWormholeJumping(deltaTime, galaxy);
+    ship.handleWormholeJumping(deltaTime, galaxy);
 
     // Verify the results
     expect(ship.actions[0].verb).toBe('discover');
@@ -129,11 +129,6 @@ test("given a ship enroute to colonize, when it reaches it's destinationEntity, 
     ship.speed = 1;
     ship.systemId = 0;
     ship.id = 0;
-
-    // TODO: shouldn't need to hack this,
-    // ship shouldn't need to know about spaceViewDomManager
-    // unselect should be deferred to spriteFlipbook
-    ship.unselect = () => { };
 
     // TODO: make creation of planets more beautiful
     const planet = createMockPlanet({ x: 1, y: 2, z: 1});

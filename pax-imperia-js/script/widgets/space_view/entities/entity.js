@@ -57,30 +57,22 @@ export default class Entity {
     }
 
     select() {
-        window.spaceViewDomManager.selectTarget(this.object3d);
+        window.spaceViewDomManager.handleSelectionChange(this.object3d);
     }
 
     /////////////////////////////////
-    // Unselect and Remove Methods //
+    // Removal Methods             //
     /////////////////////////////////
 
-    unselect() {
-        // TODO: remove spaceViewDomManager global
-        if (window.spaceViewDomManager.selectionSprite.selectionTarget == this.object3d) {
-            window.spaceViewDomManager.unselectTarget();
-        }
-    }
 
     /**
      * Remove Object3d from scene e.g. when ship colonizes planet or jumps through wormhole
      */
     removeObject3d() {
-        this.unselect()
+        // TODO: Float this operation up
         // delete 3d object from scene
         this.object3d.parent?.remove(this.object3d);
     }
-
-    // TODO: move this to Galaxy
 
     removeFromSystem(galaxy) {
         // delete entity from system object
@@ -88,7 +80,7 @@ export default class Entity {
         const system = galaxy.getSystem(this.systemId);
         system.removeEntity(this.type, this.id);
 
-        // // TODO: Float this method up
+        // TODO: Float this method up
         if (typeof window !== 'undefined') {
             window.spaceViewDomManager.populateHtml(); // update sidebar
         }

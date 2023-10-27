@@ -1,6 +1,7 @@
 import {GameSettings} from '../../gameSettings';
 import { GameStateInterface } from '../../gameStateInterface/gameStateInterface';
 import {Galaxy} from '../../models/galaxy';
+import { SelectionSprite } from '../../models/spriteFlipbook';
 import { SpaceViewWidget } from './spaceViewWidget';
 
 Galaxy.seedRandomness('Axc2IJCs;s');
@@ -12,6 +13,7 @@ const clientObjects = {
     cx: {
         canvas: {},
     },
+    selectionSprite: new SelectionSprite(),
 }
 
 const websocket = {
@@ -48,10 +50,9 @@ test('Given I just entered a system, when I double click a wormhole, then I navi
     /////////////
 
     // performing an initial click on a wormhole will have this effect
-    spaceViewWidget.spaceViewDomManager.previousTargets.push(wormhole.object3d);
+    spaceViewWidget.spaceViewDomManager.handleSelectionChange(wormhole.object3d);
 
     // The second consecutive click will do the following
-    spaceViewWidget.spaceViewDomManager.previousTargets.push(wormhole.object3d);
     spaceViewWidget.spaceViewDomManager.doubleClickHandler({});
 
     /////////////

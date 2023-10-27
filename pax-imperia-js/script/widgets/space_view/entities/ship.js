@@ -214,7 +214,7 @@ export class Ship extends Entity {
         this.controllered = true;
     }
 
-    async handleWormholeJumping(deltaTime, galaxy) {
+    handleWormholeJumping(deltaTime, galaxy) {
         if (!this.destinationEntity || this.destinationEntity?.type != 'wormhole') {
             return;
         }
@@ -226,6 +226,7 @@ export class Ship extends Entity {
             this.discoverSystem(this.destinationEntity.id);
             // copy ship data to wormhole system data
             this.resetMovement();
+
             this.removeObject3d();
             // delete ship from current system
             this.removeFromSystem(galaxy);
