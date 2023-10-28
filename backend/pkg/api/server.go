@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -50,7 +51,14 @@ func RunServer() {
 		wshandler(c.Writer, c.Request)
 	})
 
-	router.Run(listenAddress + ":" + port)
+	// Run this in it's own thread thingy
+	go func() {
+		router.Run(listenAddress + ":" + port)
+	}()
+
+	time.Sleep(1 * time.Second)
+
+	StartRepl()
 }
 
 func CORS() gin.HandlerFunc {
