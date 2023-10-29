@@ -48,22 +48,21 @@ export class Galaxy {
     }
 
     static seedRandomness(seed) {
+        this.seed = seed;
         seedRandomness(seed);
     }
 
     /**
     * @param {string} systemsJson A JSON string representing the systemsJson data
     */
-    static initializeFromJson(systemsJson) {
-        const galaxy = new Galaxy();
-
-        galaxy.systems = galaxy.deserializeGalaxyFromJson(systemsJson);
-
-        return galaxy;
+    initializeFromJson(systemsJson) {
+        this.systems = this.deserializeGalaxyFromJson(systemsJson);
     }
 
-    toJSON() {
+    toJSON(clock) {
         return JSON.stringify({
+            seed: this.seed,
+            clock: clock, // TODO: Implement SyncClock as a message sent from the server which set's the current tick of the true game clock
             nextShipId: this.nextShipId,
             nextPlanetId: this.nextPlanetId,
             nextColonyId: this.nextColonyId,
@@ -106,19 +105,24 @@ export class Galaxy {
     deserializeGalaxyFromJson(systemsJson) {
         const systems = [];
         const importData = JSON.parse(systemsJson);
+        this.seed = importData.seed;
         this.nextShipId = importData.nextShipId;
         this.nextPlanetId = importData.nextPlanetId;
         this.nextColonyId = importData.nextColonyId;
 
         importData.systems.forEach(systemData => {
             const system = new System(systemData);
+            const systemName = system.name;
+            const systemId = system.id;
 
             system.stars = systemData.stars.map(
-                starData => new Star(starData));
+                starData => new Star(starData, systemName, systemId));
 
             system.planets = systemData.planets.map(
-                planetData => new Planet(planetData));
+                planetData => new Planet(planetData, systemName, systemId));
 
+            // TODO: Get SD's input on this, since TheNotary soloed it and it's different
+            // Ship's pattern may be the best
             system.colonies = systemData.colonies.map(
                 colonyData => new Colony(colonyData));
 

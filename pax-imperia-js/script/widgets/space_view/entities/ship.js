@@ -54,11 +54,14 @@ export class Ship extends Entity {
         return ({
             name: this.name,
             id: this.id,
+            systemId: this.systemId,
             playerId: this.playerId,
             position: this.position,
-            make: this.make,
-            model: this.model,
-            size: this.size,
+            shipSpec: {
+                make: this.make,
+                model: this.model,
+                size: this.size,
+            },
         });
     }
 

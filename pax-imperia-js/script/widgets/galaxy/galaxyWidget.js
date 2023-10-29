@@ -60,14 +60,20 @@ export class GalaxyWidget {
     }
 
     exportGalaxyDataToJson() {
-        return this.galaxy.toJSON();
+        const startTime = this.gameStateInterface.gameClock.startTime;
+        return this.galaxy.toJSON(startTime);
     }
 
     importGalaxyData(systemsJson) {
         let canvas = this.canvas;
         let systemClickHandler = this.systemClickHandler;
 
-        this.galaxy = Galaxy.initializeFromJson(systemsJson);
+        // We need to re-use the existing galaxy object so that changes are
+        // reflected automatically by anything holding a reference to that galaxy
+        // (e.g. the space view widget)
+        this.galaxy.initializeFromJson(systemsJson);
+
+        this.gameStateInterface.gameClock.startTime = this.galaxy.startTime;
 
         if (this.canvas === undefined) return;  // Keep this for a unit testing hack so I wouldn't have to mock the browser's jazz
 
