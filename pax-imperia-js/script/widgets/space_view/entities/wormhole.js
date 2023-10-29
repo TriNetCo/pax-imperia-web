@@ -1,10 +1,6 @@
 import Entity from './entity.js'
-import * as THREE from 'three';
 
 export class Wormhole extends Entity {
-
-    /** @type {THREE.Sprite} */
-    textSprite;
 
     /**
      *
@@ -22,8 +18,7 @@ export class Wormhole extends Entity {
         this.name = '???';
         this.assetPath = "/assets/wormholes/wormhole.png";
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/wormhole_thumbnail.png";
-        this.size = 3;
-        this.scale = { x: this.size, y: this.size, z: this.size };
+        this.wormholeSize = 3;
         this.position = this.calculateWormholeProjection(config.dstSystemPosition, config.srcSystemPosition);
         this.known = false;
     }

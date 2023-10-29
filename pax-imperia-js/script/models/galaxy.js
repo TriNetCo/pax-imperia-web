@@ -155,6 +155,12 @@ export class Galaxy {
         return entity;
     }
 
+    removeEntity(type, id) {
+        const entity = this.getEntity(type, id);
+        const system = this.getSystem(entity.systemId);
+        system.removeEntity(type, id);
+    }
+
     /**
      * This function spawns a ship in the galaxy and adds it to the specified system.
      * Please note that this doesn't load the ship.  If that's desired, you'll need to
@@ -306,12 +312,14 @@ export class Galaxy {
         const srcSystem = systems[srcSystemId];
         const dstSystem = systems[dstSystemId];
 
-        const wormhole = new Wormhole({ id: srcSystemId + '_' + dstSystem.id,
-                                        fromId: srcSystemId,
-                                        toId: dstSystem.id,
-                                        name: dstSystem.name,
-                                        srcSystemPosition: srcSystem.position,
-                                        dstSystemPosition: dstSystem.position });
+        const wormhole = new Wormhole({
+            id: srcSystemId + '_' + dstSystem.id,
+            fromId: srcSystemId,
+            toId: dstSystem.id,
+            name: dstSystem.name,
+            srcSystemPosition: srcSystem.position,
+            dstSystemPosition: dstSystem.position
+        });
 
         srcSystem.wormholes.push(wormhole);
     }

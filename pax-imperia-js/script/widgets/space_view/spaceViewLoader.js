@@ -34,9 +34,7 @@ export class SpaceViewLoader {
         }
 
         for (const wormhole of this.system['wormholes']) {
-            // load wormhole
-            promises.push(this.loadWormhole(wormhole));
-            promises.push(this.addWormholeText(wormhole));
+            promises.push(this.loadWormholeStuff(wormhole));
         }
 
         for (const ship of this.system['ships']) {
@@ -54,7 +52,9 @@ export class SpaceViewLoader {
     }
 
     async loadStarStuff(entity) {
-        const groupObj = new THREE.Group();
+        const groupObj = entity.object3d || new THREE.Group();
+        if (groupObj.children.length > 0) { return groupObj; }
+
         const starObj = await this.loadStarSurface(entity);
         const coronaObjs = await this.loadStarCoronas(entity);
         groupObj.add(starObj, ...coronaObjs);
@@ -82,6 +82,7 @@ export class SpaceViewLoader {
                 return starMesh;
             }
         )
+        starObj.name = 'star';
         entity.object3ds.star = starObj;
         return starObj;
     }
@@ -100,6 +101,7 @@ export class SpaceViewLoader {
         );
         const coronaScale = 2.4;
         coronaObj.scale.set(coronaScale, coronaScale, coronaScale);
+        coronaObj.name = 'corona';
 
         // create 3 coronas
         const coronaObjs = [coronaObj, coronaObj.clone(), coronaObj.clone()];
@@ -112,7 +114,9 @@ export class SpaceViewLoader {
 
 
     async loadPlanetStuff(entity) {
-        const groupObj = new THREE.Group();
+        const groupObj = entity.object3d || new THREE.Group();
+        if (groupObj.children.length > 0) { return groupObj; }
+
         const planetObj = await this.loadPlanetSurface(entity);
         const cloudObj = await this.loadPlanetCloud(entity);
         groupObj.add(planetObj, cloudObj);
@@ -145,8 +149,7 @@ export class SpaceViewLoader {
             }
         );
 
-        // entity.setLoadAttributes(planetObj);
-        entity.linkObject3d(planetObj);
+        planetObj.name = 'planet';
         entity.object3ds.planet = planetObj;
         return planetObj;
     }
@@ -171,6 +174,7 @@ export class SpaceViewLoader {
             }
         );
 
+        cloudObj.name = 'cloud';
         cloudObj.isClouds = true;
         cloudObj.notClickable = true;
         entity.object3ds.cloud = cloudObj;
@@ -202,8 +206,21 @@ export class SpaceViewLoader {
         const scale = 2.8;
         outlineObj.scale.set(scale, scale, scale);
         outlineObj.notClickable = true;
+        outlineObj.name = 'outline';
         entity.object3ds.outline = outlineObj;
         return outlineObj;
+    }
+
+    async loadWormholeStuff(entity) {
+        const groupObj = entity.object3d || new THREE.Group();
+        if (groupObj.children.length > 0) { return groupObj; }
+
+        const wormholeObj = await this.loadWormhole(entity);
+        const textObj = await this.addWormholeText(entity);
+        groupObj.add(wormholeObj, textObj);
+        entity.setLoadAttributes(groupObj);
+        entity.linkObject3d(groupObj);
+        return groupObj;
     }
 
     async loadWormhole(entity) {
@@ -213,19 +230,37 @@ export class SpaceViewLoader {
                 return await this.loadBillboard('/assets/wormholes/wormhole.png');
             }
         );
-        entity.linkObject3d(wormholeObj);
-        entity.setLoadAttributes(wormholeObj);
+        wormholeObj.scale.set(
+            entity.wormholeSize,
+            entity.wormholeSize,
+            entity.wormholeSize
+        );
+        wormholeObj.name = 'wormhole';
+        entity.object3ds.wormhole = wormholeObj;
         return wormholeObj;
     }
 
+    async addWormholeText(entity) {
+        let text = entity.name || 'Sector' + entity.id;
+        let opts = { fontface: 'Tahoma', fontsize: 28 };
+        let sprite = this.makeTextSprite(text, opts);
+        sprite.name = 'wormholeText'; // rename to 'text'
+        sprite.notClickable = true;
+        // offset below (y) wormhole graphic
+        sprite.position.set(0, -1.1, 0);
+        entity.textSprite = sprite;
+        entity.object3ds.text = sprite;
+        return sprite;
+    }
+
     async loadShipStuff(entity) {
-        const groupObj = new THREE.Group();
+        const groupObj = entity.object3d || new THREE.Group();
+        if (groupObj.children.length > 0) { return groupObj; }
+
         const shipObj = await this.loadShip(entity);
         const outlineObj = await this.loadOutline(entity);
         groupObj.add(shipObj, outlineObj);
         entity.setLoadAttributes(groupObj);
-        // don't use the entity's scale because it's already applied to the ship
-        groupObj.scale.set(1, 1, 1);
         entity.linkObject3d(groupObj);
         return groupObj;
     }
@@ -238,7 +273,10 @@ export class SpaceViewLoader {
             await this.loadAndApplyTexturesToShip(shipMesh, entity);
             return shipMesh;
         });
-        shipObj.scale.set(entity.scale.x, entity.scale.y, entity.scale.z);
+        // resize the ship instead of the entire three group, since ship models
+        // are very large compared to everything else and mess up the camera scaling
+        shipObj.scale.set(entity.shipSize, entity.shipSize, entity.shipSize);
+        shipObj.name = 'ship';
         entity.object3ds.ship = shipObj;
         return shipObj;
     }
@@ -370,21 +408,6 @@ export class SpaceViewLoader {
         }
     }
 
-    async addWormholeText(entity) {
-        let text = entity.name || 'Sector' + entity.id;
-        let opts = { fontface: 'Tahoma', fontsize: 26 };
-        let sprite = this.makeTextSprite(text, opts);
-        sprite.name = 'wormholeText';
-        sprite.notClickable = true;
-        // offset below (y) and slightly behind (z) wormhole graphic
-        sprite.position.set(
-            entity.position.x,
-            entity.position.y - 1,
-            entity.position.z - 0.1);
-        entity.textSprite = sprite;
-        return sprite;
-    }
-
     makeTextSprite(text, opts) {
         var parameters = opts || {};
         var fontface = parameters.fontface || 'Tahoma';
@@ -426,19 +449,3 @@ export class SpaceViewLoader {
     }
 
 }
-
-// NOTES
-// load single child
-//   e.g. Star, Planet, Ship, Wormhole, clouds, corona
-//   complete means base mesh with all textures, layers
-// STEPS
-// check if cached
-// if cached -> pull complete obj3d from cache
-// if not cached
-//   1. load base (mesh or billboard)
-//   2. execute custom cb for textures, materials, etc. and apply to base
-//      to create complete obj3d
-//   3. set attributes (position, rotation)
-//   4. link to entity IF clickableObj
-//   5. push complete obj3d to cache
-// return obj3d promise

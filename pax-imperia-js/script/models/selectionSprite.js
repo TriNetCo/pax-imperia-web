@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {Queue} from './helpers.js';
+import { Queue } from './helpers.js';
 
 /**
  * This class provides functionality around animating sprite sheets.
@@ -56,7 +56,7 @@ export class SelectionSprite {
         if (!selectionTarget) {
             this.sprite.visible = false;
         }
-        else if (!this.scene.children.includes(selectionTarget) ) {
+        else if (!this.scene.children.includes(selectionTarget)) {
             this.unselect();
             this.sprite.visible = false;
         }
@@ -64,11 +64,7 @@ export class SelectionSprite {
             this.sprite.visible = true;
             const p = selectionTarget.position;
             this.setPosition(p.x, p.y, p.z);
-            if (selectionTarget.parentEntity.type == "ship") {
-                this.setScale({ x: 1, y: 1, z: 1 });
-            } else {
-                this.setScale(selectionTarget.scale);
-            }
+            this.setScale(selectionTarget.scale);
         }
 
         // cycleSpriteFlipbook
@@ -126,6 +122,16 @@ export class SelectionSprite {
         if (typeof window !== 'undefined') {
             window.target = null;
             window.selectionTarget = null;
+        }
+    }
+
+    getPreviousTarget(i) {
+        // will only return target if target is still in scene
+        const target = this.previousTargets[i];
+        if (this.scene.children.includes(target)) {
+            return target;
+        } else {
+            return null;
         }
     }
 

@@ -17,7 +17,6 @@ export class Planet extends Entity {
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/oxygen_thumbnail.png";
         this.position = { x: 0, y: 0, z: 2 * this.distance_from_star };
         this.consoleBody = '';
-        this.object3ds = {};
     }
 
     toJSON() {

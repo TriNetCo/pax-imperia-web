@@ -46,7 +46,7 @@ export class SpaceViewWidget {
 
         // TODO: Float these up possibly
         this.renderer = renderer ? renderer : new THREE.WebGLRenderer({ antialias: true });
-        this.cacheMonster = new CacheMonster(this.renderer);
+        this.cacheMonster = new CacheMonster();
     }
 
     loadWidget(systemIndex, systemClickHandler) {
@@ -63,8 +63,6 @@ export class SpaceViewWidget {
     resetThreeObjects() {
         this.clientObjects.scene = new THREE.Scene();
         this.clientObjects.camera = new THREE.PerspectiveCamera(15, this.c.canvasWidth / this.c.canvasHeight, 1, 40000);
-        this.cacheMonster.scene = this.clientObjects.scene;
-        this.cacheMonster.camera = this.clientObjects.camera;
         this.renderer.compile(this.clientObjects.scene, this.clientObjects.camera);
 
         this.clientObjects.selectionSprite = new SelectionSprite(

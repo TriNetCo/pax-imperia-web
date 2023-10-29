@@ -11,9 +11,7 @@ export default class CacheMonster {
     hitCounter = {};
     camera;
 
-    constructor(renderer, scene) {
-        this.renderer = renderer;
-        this.scene = scene;
+    constructor() {
     }
 
     /**

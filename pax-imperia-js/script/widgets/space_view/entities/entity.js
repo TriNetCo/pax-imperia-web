@@ -18,6 +18,7 @@ export default class Entity {
         unpackData(data, this);
         this.scale = { x: this.size, y: this.size, z: this.size };
         this.object3d = new THREE.Group();
+        this.setLoadAttributes(this.object3d);
         this.object3ds = {};
     }
 
@@ -53,9 +54,6 @@ export default class Entity {
         object3d.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
         object3d.scale.set(this.scale.x, this.scale.y, this.scale.z);
         object3d.name = this.name;
-        if (object3d.children[0]) {
-            object3d.children[0].name = this.name;
-        }
     }
 
     select() {

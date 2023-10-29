@@ -14,15 +14,13 @@ export class Ship extends Entity {
         this.systemId = shipConfig?.systemId;
         this.make = shipConfig?.shipSpec?.make;
         this.model = shipConfig?.shipSpec?.model;
-        this.size = shipConfig?.shipSpec?.size || 1;
-        this.scale = { x: this.size, y: this.size, z: this.size };
+        this.shipSize = shipConfig?.shipSpec?.size || 1;
         this.position = shipConfig?.position || { x: 0, y: 0, z: 0 };
         this.name = shipConfig?.name || "Galactic Potato " + shipConfig?.id;
 
         this.type = 'ship';
         this.playerId = 1;
         this.assetFolder = '/assets/ships/';
-        this.object3ds = {};
 
         this.assetPath = `${this.assetFolder}Meshes/${this.make}/${this.make}${this.model}.fbx`;
         this.texturePath = `${this.assetFolder}Textures/${this.make}/${this.make}_White.png`;
@@ -212,24 +210,19 @@ export class Ship extends Entity {
     }
 
     handleWormholeJumping(deltaTime, galaxy) {
-        if (!this.destinationEntity || this.destinationEntity?.type != 'wormhole') {
-            return;
-        }
+        const wormhole = this.destinationEntity;
+        if (!wormhole || wormhole?.type != 'wormhole') { return; }
+
         // if ship is close enough to wormhole, move it to the next system
         const distanceFromDest = this.object3d.position.distanceTo(
-            this.destinationEntity.object3d.position);
-        const toSystemId = this.destinationEntity.toId;
+            wormhole.object3d.position);
         if (distanceFromDest <= this.speed * deltaTime * 60) {
-            this.discoverSystem(this.destinationEntity.id);
-            // copy ship data to wormhole system data
+            this.discoverSystem(wormhole.id);
             this.resetMovement();
-
             this.removeObject3d();
-            // delete ship from current system
             this.removeFromSystem(galaxy);
-            // move to new system
-            this.pushToSystem(toSystemId, galaxy);
-            this.setPositionNearWormhole(toSystemId, galaxy);
+            this.pushToSystem(wormhole.toId, galaxy);
+            this.setPositionInNewSystem(wormhole.toId, galaxy);
         }
     }
 
@@ -267,12 +260,16 @@ export class Ship extends Entity {
      * @param {*} systemId
      * @param {Galaxy} galaxy
      */
-    setPositionNearWormhole(systemId, galaxy) {
+    setPositionInNewSystem(systemId, galaxy) {
         const destSystem = galaxy.getSystem(systemId);
         const wormhole = destSystem.getWormholeTo(this.previousSystemId);
-        this.position.x = wormhole.position.x + getRandomNum(-2, 2, 2);
-        this.position.y = wormhole.position.y + getRandomNum(-2, 2, 2);
-        this.position.z = wormhole.position.z + 1;
+        const destStarObj = destSystem.stars[0].object3d;
+        this.object3d.position.set(
+            wormhole.position.x + getRandomNum(-2, 2, 2),
+            wormhole.position.y + getRandomNum(-2, 2, 2),
+            wormhole.position.z + 4
+        );
+        this.object3d.lookAt(destStarObj.position);
     }
 
     handleMovementTowardsDestination(deltaTime) {

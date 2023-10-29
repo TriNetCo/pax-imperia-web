@@ -313,13 +313,13 @@ export class SpaceViewAnimator {
     }
 
     async redrawWormholeText(wormhole) {
-        // remove old wormhole text from scene
-        const oldTextSprite = wormhole.textSprite;
-        this.scene.remove(oldTextSprite);
+        // remove old wormhole text from three group
+        const oldTextSprite = wormhole.object3ds.text;
+        wormhole.object3d.remove(oldTextSprite);
 
         // redraw wormhole text in scene
         const newTextSprite = await this.spaceViewLoader.addWormholeText(wormhole);
-        this.scene.add(newTextSprite);
+        wormhole.object3d.add(newTextSprite);
     }
 
     async addOutline(entity) {

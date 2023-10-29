@@ -164,17 +164,17 @@ export class SpaceViewDomManager {
     }
 
     doubleClickHandler = (event) => {
-        const clickTarget = this.selectionSprite.previousTargets[0]
+        const clickTarget = this.selectionSprite.getPreviousTarget(0);
 
         // check if the target before double click was a ship
-        const subjectEntity = this.selectionSprite.previousTargets[1]?.parentEntity;
-        if (subjectEntity?.type == "ship") {
+        const subjectEntity = this.selectionSprite.getPreviousTarget(1)?.parentEntity;
+        if (subjectEntity?.type == 'ship') {
             subjectEntity.moveShip(clickTarget, 'default', this.mouse, this.camera);
             subjectEntity.select();
-        } else if (clickTarget?.parentEntity.type === "wormhole") {
-            // navigate through wormhole (unless ship was just moved through wormhole)
+        } else if (clickTarget?.parentEntity.type === 'wormhole') {
+            // navigate through wormhole (unless ship is being moved toward wormhole)
             const systemId = clickTarget.parentEntity.toId;
-            const path = "/systems/" + systemId;
+            const path = '/systems/' + systemId;
             this.systemClickHandler(path);
             return;
         }
@@ -189,7 +189,7 @@ export class SpaceViewDomManager {
         }
 
         // Right-click handler for selected ships
-        if (currentSelection.type == "ship") {
+        if (currentSelection.type == 'ship') {
             const clickTarget = this.findSelectionTarget(event);
             currentSelection.moveShip(clickTarget, 'default', this.mouse, this.camera);
         }
@@ -226,9 +226,9 @@ export class SpaceViewDomManager {
     }
 
     handleSelectionWhenInteractingWithShipViaButtons() {
-        if ( this.isInteractingWithShipViaButtons() ) {
-            const ship = this.selectionSprite.previousTargets[1].parentEntity;
-            const shipTarget = this.selectionSprite.previousTargets[0];
+        if (this.isInteractingWithShipViaButtons()) {
+            const ship = this.selectionSprite.getPreviousTarget(1).parentEntity;
+            const shipTarget = this.selectionSprite.getPreviousTarget(0);
 
             const buttonState = ship.buttonState
             ship.moveShip(shipTarget, buttonState, this.mouse, this.camera);
@@ -237,11 +237,11 @@ export class SpaceViewDomManager {
     }
 
     isInteractingWithShipViaButtons() {
-        const shipObject3d = this.selectionSprite.previousTargets[1];
+        const shipObject3d = this.selectionSprite.getPreviousTarget(1);
 
         return (shipObject3d
-                && shipObject3d.parentEntity.type
-                && shipObject3d.parentEntity.buttonState);
+            && shipObject3d.parentEntity.type
+            && shipObject3d.parentEntity.buttonState);
     }
 
     /**
@@ -261,9 +261,7 @@ export class SpaceViewDomManager {
         for (let i = 0; i < intersects.length; i++) {
             let obj = this.getParentObject(intersects[i].object);
             // cannot click on wormhole text, selection sprite, clouds, etc.
-            if (obj.notClickable) {
-                continue;
-            }
+            if (obj.notClickable) { continue; }
             // If current selectionTarget clicked again, remember it
             // but look for an object behind to select instead
             if (obj == this.selectionSprite.selectionTarget) {
