@@ -1,5 +1,6 @@
-import { Colony } from './colony.js';
 import Entity from './entity.js'
+import { Colony } from './colony.js';
+import * as THREE from 'three';
 
 export class Planet extends Entity {
 
@@ -33,35 +34,41 @@ export class Planet extends Entity {
     }
 
     update(elapsedTime) {
-        const logs = [];
-
         // update the group (planet, clouds, outline)
-
-        // update rotation
-        // negative for rotating counter-clockwise
-        this.object3d.rotation.y = -0.3 * this.spin_speed * elapsedTime;
-
-        // update revolution
-        // speed is determined by distance from star without randomness
-        // square of the planet's orbital period is proportional to the cube of its semimajor axis
-        // pow(d, 3) = pow(period, 2), velocity = pow(1/d, 0.5), Math.pow(1/d, 0.5)
-        const speedMultiplier = 3;
-        const d = this.distance_from_star;
-        let angle = elapsedTime * Math.pow(speedMultiplier / d, 2) + this.starting_angle;
-        this.object3d.position.x = d * Math.cos(angle);
-        this.object3d.position.z = d * Math.sin(angle);
+        this.object3d.position.copy(this.getPosition(elapsedTime));
+        this.object3d.rotation.copy(this.getRotation(elapsedTime));
 
         // update the cloud's rotation within the group
         // clouds are rotating twice as fast because their cumulative rotation
         // is the group's rotation + their own rotation
         this.object3ds.cloud.rotation.y = -0.3 * this.spin_speed * elapsedTime;
 
+        const logs = [];
         if (this.colony) {
             const colonyLogs = this.colony.update(elapsedTime);
             logs.push(...colonyLogs);
         }
-
         return logs;
+    }
+
+    getPosition(elapsedTime) {
+        // update revolution
+        // speed is determined by distance from star without randomness
+        // square of the planet's orbital period is proportional to the cube of its semimajor axis
+        // pow(d, 3) = pow(period, 2), velocity = pow(1/d, 0.5), Math.pow(1/d, 0.5)
+        const speedMultiplier = 3;
+        const angle = elapsedTime
+            * Math.pow(speedMultiplier / this.distance_from_star, 2)
+            + this.starting_angle;
+        const x = this.distance_from_star * Math.cos(angle);
+        const z = this.distance_from_star * Math.sin(angle);
+        return new THREE.Vector3(x, 0, z);
+    }
+
+    getRotation(elapsedTime) {
+        // negative for rotating counter-clockwise
+        const y = -0.3 * this.spin_speed * elapsedTime;
+        return new THREE.Euler(0, y, 0);
     }
 
     getConsoleHtml() {

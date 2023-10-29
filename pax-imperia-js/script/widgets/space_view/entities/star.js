@@ -19,14 +19,22 @@ export class Star extends Entity {
             return
         }
         // rotate star
-        const rotation = 0.3 * this.spin_speed * elapsedTime;
-        this.object3d.rotation.y = rotation;
-        this.object3d.rotation.x = rotation;
+        this.object3d.rotation.copy(this.getRotation(elapsedTime));
 
         // rotate coronas
+        const rotation = 0.3 * this.spin_speed * elapsedTime;
         this.jumbleCorona(this.object3ds.corona1, elapsedTime, 1, 0.05, 0.05);
         this.object3ds.corona2.material.rotation = -rotation * 0.75;
         this.object3ds.corona3.material.rotation = rotation * 0.5;
+    }
+
+    getPosition(elapsedTime) {
+        return new THREE.Vector3(0, 0, 0);
+    }
+
+    getRotation(elapsedTime) {
+        const rotation = 0.3 * this.spin_speed * elapsedTime;
+        return new THREE.Euler(rotation, rotation, 0);
     }
 
     jumbleCorona(object3d, elapsedTime, rotationSpeed, sinAmplitude, cosAmplitude) {

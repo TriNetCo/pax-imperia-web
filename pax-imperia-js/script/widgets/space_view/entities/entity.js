@@ -3,9 +3,6 @@ import { getBasePath, unpackData } from '../../../models/helpers.js'
 
 export default class Entity {
 
-    /** @type {THREE.Object3D} */
-    object3d;
-
     constructor(data, systemName = "", systemId) {
         this.type = "";
         this.size = 1;
@@ -16,7 +13,6 @@ export default class Entity {
         this.consoleBody = '';
         this.basePath = getBasePath();
         unpackData(data, this);
-        this.scale = { x: this.size, y: this.size, z: this.size };
         this.object3d = new THREE.Group();
         this.setLoadAttributes(this.object3d);
         this.object3ds = {};
@@ -50,9 +46,8 @@ export default class Entity {
      */
     setLoadAttributes(object3d) {
         object3d.position.set(this.position.x, this.position.y, this.position.z);
-        // rotation is in radians
         object3d.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
-        object3d.scale.set(this.scale.x, this.scale.y, this.scale.z);
+        object3d.scale.set(this.size, this.size, this.size);
         object3d.name = this.name;
     }
 

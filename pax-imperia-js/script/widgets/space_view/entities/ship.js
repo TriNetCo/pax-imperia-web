@@ -1,8 +1,8 @@
 import Entity from './entity.js';
+import { GameStateInterface } from '../../../gameStateInterface/gameStateInterface.js';
+import { Galaxy } from '../../../models/galaxy.js';
 import { roundToDecimal, getRandomNum } from '../../../models/helpers.js';
 import * as THREE from 'three';
-import { Galaxy } from '../../../models/galaxy.js';
-import { GameStateInterface } from '../../../gameStateInterface/gameStateInterface.js';
 
 export class Ship extends Entity {
 
@@ -15,7 +15,7 @@ export class Ship extends Entity {
         this.make = shipConfig?.shipSpec?.make;
         this.model = shipConfig?.shipSpec?.model;
         this.shipSize = shipConfig?.shipSpec?.size || 1;
-        this.position = shipConfig?.position || { x: 0, y: 0, z: 0 };
+        this.position = this.position || shipConfig?.position;
         this.name = shipConfig?.name || "Galactic Potato " + shipConfig?.id;
 
         this.type = 'ship';
@@ -29,7 +29,6 @@ export class Ship extends Entity {
         this.emissionMapPath = `${this.assetFolder}Textures/${this.make}/${this.make}_Emission2.png`;
 
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/ship_thumbnail.png";
-        this.scale = { x: this.size, y: this.size, z: this.size };
         this.defaultRotation = { x: Math.PI / 4, y: -Math.PI / 2, z: Math.PI / 8 };
         this.rotation = this.defaultRotation;
         this.speed = 0.2; // per frame at 60 fps
@@ -54,7 +53,16 @@ export class Ship extends Entity {
             id: this.id,
             systemId: this.systemId,
             playerId: this.playerId,
-            position: this.position,
+            position: {
+                x: this.object3d.position.x,
+                y: this.object3d.position.y,
+                z: this.object3d.position.z
+            },
+            rotation: {
+                x: this.object3d.rotation.x,
+                y: this.object3d.rotation.y,
+                z: this.object3d.rotation.z
+            },
             shipSpec: {
                 make: this.make,
                 model: this.model,
