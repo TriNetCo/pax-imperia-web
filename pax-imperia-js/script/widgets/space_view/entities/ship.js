@@ -185,6 +185,9 @@ export class Ship extends Entity {
         this.colonizeTarget = null;
         this.colonizeAnimationProgress = null;
         this.controllered = false;
+        if (this.object3d) {
+            this.object3d.scale.set(1, 1, 1);
+        }
     }
 
     setShipDestinationPointFromMouse(mouse, camera) {
@@ -389,7 +392,7 @@ export class Ship extends Entity {
             this.object3d.rotation.z = 0;
 
             // lol I love this feature
-            const orbitScale = this.orbitTarget.object3d.scale.x * this.size;
+            const orbitScale = this.orbitTarget.object3d.scale.x;
             this.object3d.scale.set(orbitScale, orbitScale, orbitScale);
         }
 
@@ -399,9 +402,9 @@ export class Ship extends Entity {
         this.object3d.position.z = centerZ + orbitDist * Math.sin(orbitAngle);
         this.object3d.position.y = centerY;
 
-                                  // The rotation of the nose        We offset the rotation
-                                  // of the ship is based on         here so that the ship
-                                  // the angle of the ship's orbit   is always facing parallel
+        // The rotation of the nose        We offset the rotation
+        // of the ship is based on         here so that the ship
+        // the angle of the ship's orbit   is always facing parallel
         this.object3d.rotation.y = -1 * (orbitAngle - startAngle) + (1.5 * Math.PI);
     }
 
