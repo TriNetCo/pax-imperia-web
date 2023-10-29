@@ -128,8 +128,6 @@ export class Ship extends Entity {
         this.handleColonizing(deltaTime, galaxy);
         this.handleOrbitingAnimation(elapsedTime);
 
-        this.updateOutlinePosition();
-
         // update HTML but don't send to DOM unless it has changed
         this.updateConsoleBodyHtml();
 
@@ -138,13 +136,6 @@ export class Ship extends Entity {
         this.actions = []; // clear actions
         return actionsBuffer;
     };
-
-    updateOutlinePosition() {
-        if (this.object3ds['outline']) {
-            const { x, y, z } = this.object3d.position;
-            this.object3ds['outline'].position.set(x, y, z);
-        }
-    }
 
     updateConsoleBodyHtml() {
         // leave blank if not player 1

@@ -30,10 +30,7 @@ export class SpaceViewLoader {
         }
 
         for (const planet of this.system['planets']) {
-            // load planet
-            promises.push(this.loadPlanetSurface(planet));
-            promises.push(this.loadPlanetCloud(planet));
-            promises.push(this.loadOutline(planet));
+            promises.push(this.loadPlanetStuff(planet));
         }
 
         for (const wormhole of this.system['wormholes']) {
@@ -43,8 +40,7 @@ export class SpaceViewLoader {
         }
 
         for (const ship of this.system['ships']) {
-            promises.push(this.loadShip(ship));
-            promises.push(this.loadOutline(ship));
+            promises.push(this.loadShipStuff(ship));
         }
 
         // Block here until all the parallel async functions are finished
@@ -58,9 +54,13 @@ export class SpaceViewLoader {
     }
 
     async loadStarStuff(entity) {
-        const primary = await this.loadStarSurface(entity);
-        const stuff = await this.loadStarCoronas(entity)
-        return [primary, stuff];
+        const groupObj = new THREE.Group();
+        const starObj = await this.loadStarSurface(entity);
+        const coronaObjs = await this.loadStarCoronas(entity);
+        groupObj.add(starObj, ...coronaObjs);
+        entity.setLoadAttributes(groupObj);
+        entity.linkObject3d(groupObj);
+        return groupObj;
     }
 
     /**
@@ -82,48 +82,8 @@ export class SpaceViewLoader {
                 return starMesh;
             }
         )
-
-        entity.setLoadAttributes(starObj);
-        entity.linkObject3d(starObj);
+        entity.object3ds.star = starObj;
         return starObj;
-    }
-
-    /**
-     * @param {Entity} entity
-     * @returns {Promise<THREE.Object3D[]>}
-     */
-    async loadOutline(entity) {
-        if (!(entity.colony || (entity?.playerId != 1 && entity.type === 'ship'))) {
-            return;
-        }
-
-        let colorName = 'red';
-        let color = 0xff0000;
-        if (entity?.colony?.playerId == 1 || entity?.playerId == 1) {
-            color = null;
-            colorName = 'teal';
-        }
-        console.log('color', color)
-
-        const circlePath = '/assets/planets/teal_circle.png';
-        const outlineObj = await this.cacheMonster.retrieveObject3d(
-            colorName + 'Circle',
-            async () => {
-                return await this.loadBillboard(circlePath, color);
-            }
-        );
-
-        // set position, scale, etc. attributes
-        entity.setLoadAttributes(outlineObj);
-        let scale = entity.scale.x * 2.8;
-        if (entity.type == 'ship') {
-            scale = entity.scale.x * 18000;
-        }
-        outlineObj.notClickable = true;
-        outlineObj.scale.set(scale, scale, scale);
-        entity.outlineObject3d = outlineObj;
-        entity.object3ds.outline = outlineObj;
-        return outlineObj;
     }
 
     /**
@@ -134,18 +94,35 @@ export class SpaceViewLoader {
         const coronaObj = await this.cacheMonster.retrieveObject3d(
             'corona',
             async () => {
-                return await this.loadBillboard('/assets/orbitals/textures/sun/corona/corona.png');
+                const coronaPath = '/assets/orbitals/textures/sun/corona/corona.png';
+                return await this.loadBillboard(coronaPath);
             }
         );
-        // set position, scale, etc. attributes
-        entity.setLoadAttributes(coronaObj)
-        const coronaScale = entity.scale.x * 2.4;
+        const coronaScale = 2.4;
         coronaObj.scale.set(coronaScale, coronaScale, coronaScale);
+
         // create 3 coronas
         const coronaObjs = [coronaObj, coronaObj.clone(), coronaObj.clone()];
         coronaObjs.forEach(corona => { corona.notClickable = true; })
-        entity.coronaObject3ds = coronaObjs;
+        entity.object3ds.corona1 = coronaObjs[0];
+        entity.object3ds.corona2 = coronaObjs[1];
+        entity.object3ds.corona3 = coronaObjs[2];
         return coronaObjs;
+    }
+
+
+    async loadPlanetStuff(entity) {
+        const groupObj = new THREE.Group();
+        const planetObj = await this.loadPlanetSurface(entity);
+        const cloudObj = await this.loadPlanetCloud(entity);
+        groupObj.add(planetObj, cloudObj);
+        if (entity.colony) {
+            const outlineObj = await this.loadOutline(entity);
+            groupObj.add(outlineObj);
+        }
+        entity.setLoadAttributes(groupObj);
+        entity.linkObject3d(groupObj);
+        return groupObj;
     }
 
     /**
@@ -168,9 +145,9 @@ export class SpaceViewLoader {
             }
         );
 
-        entity.setLoadAttributes(planetObj);
+        // entity.setLoadAttributes(planetObj);
         entity.linkObject3d(planetObj);
-        entity.object3ds.clickable = planetObj;
+        entity.object3ds.planet = planetObj;
         return planetObj;
     }
 
@@ -196,10 +173,37 @@ export class SpaceViewLoader {
 
         cloudObj.isClouds = true;
         cloudObj.notClickable = true;
-
-        entity.setLoadAttributes(cloudObj);
         entity.object3ds.cloud = cloudObj;
         return cloudObj;
+    }
+
+    /**
+     * @param {Entity} entity
+     * @returns {Promise<THREE.Object3D[]>}
+     */
+    async loadOutline(entity) {
+        // enemies are red
+        let colorName = 'red';
+        let color = 0xff0000;
+        if (entity?.playerId == 1 || entity?.colony?.playerId == 1) {
+            // you are teal (default color of the circle)
+            color = null;
+            colorName = 'teal';
+        }
+
+        const circlePath = '/assets/planets/teal_circle.png';
+        const outlineObj = await this.cacheMonster.retrieveObject3d(
+            colorName + 'Circle',
+            async () => {
+                return await this.loadBillboard(circlePath, color);
+            }
+        );
+
+        const scale = 2.8;
+        outlineObj.scale.set(scale, scale, scale);
+        outlineObj.notClickable = true;
+        entity.object3ds.outline = outlineObj;
+        return outlineObj;
     }
 
     async loadWormhole(entity) {
@@ -214,9 +218,20 @@ export class SpaceViewLoader {
         return wormholeObj;
     }
 
+    async loadShipStuff(entity) {
+        const groupObj = new THREE.Group();
+        const shipObj = await this.loadShip(entity);
+        const outlineObj = await this.loadOutline(entity);
+        groupObj.add(shipObj, outlineObj);
+        entity.setLoadAttributes(groupObj);
+        // don't use the entity's scale because it's already applied to the ship
+        groupObj.scale.set(1, 1, 1);
+        entity.linkObject3d(groupObj);
+        return groupObj;
+    }
+
     async loadShip(entity) {
         const cacheName = entity.make + entity.model;
-        const shipGroup = new THREE.Group();
         const shipObj = await this.cacheMonster.retrieveObject3d(cacheName, async () => {
             const shipMesh = await this.cacheMonster.retrieveAsset(entity.assetPath);
             this.addMeshStandardMaterial(shipMesh)
@@ -224,12 +239,8 @@ export class SpaceViewLoader {
             return shipMesh;
         });
         shipObj.scale.set(entity.scale.x, entity.scale.y, entity.scale.z);
-
-        shipGroup.add(shipObj);
-        entity.setLoadAttributes(shipGroup);
-        shipGroup.scale.set(1, 1, 1);
-        entity.linkObject3d(shipGroup);
-        return shipGroup;
+        entity.object3ds.ship = shipObj;
+        return shipObj;
     }
 
     /**

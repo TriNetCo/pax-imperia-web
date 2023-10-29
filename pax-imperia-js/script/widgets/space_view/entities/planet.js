@@ -36,25 +36,26 @@ export class Planet extends Entity {
     update(elapsedTime) {
         const logs = [];
 
-        for (var key in this.object3ds) {
-            const obj3d = this.object3ds[key];
+        // update the group (planet, clouds, outline)
 
-            // update rotation
-            // negative for rotating counter-clockwise
-            const spinImprover = obj3d.isClouds ? 2 : 1;
-            obj3d.rotation.y = -0.3 * this.spin_speed * spinImprover * elapsedTime;
+        // update rotation
+        // negative for rotating counter-clockwise
+        this.object3d.rotation.y = -0.3 * this.spin_speed * elapsedTime;
 
-            // update revolution
-            // speed is determined by distance from star without randomness
-            const speedMultiplier = 3;
-            const d = this.distance_from_star;
-            // square of the planet's orbital period is proportional to the cube of its semimajor axis
-            // pow(d, 3) = pow(period, 2), velocity = pow(1/d, 0.5), Math.pow(1/d, 0.5)
+        // update revolution
+        // speed is determined by distance from star without randomness
+        // square of the planet's orbital period is proportional to the cube of its semimajor axis
+        // pow(d, 3) = pow(period, 2), velocity = pow(1/d, 0.5), Math.pow(1/d, 0.5)
+        const speedMultiplier = 3;
+        const d = this.distance_from_star;
+        let angle = elapsedTime * Math.pow(speedMultiplier / d, 2) + this.starting_angle;
+        this.object3d.position.x = d * Math.cos(angle);
+        this.object3d.position.z = d * Math.sin(angle);
 
-            let angle = elapsedTime * Math.pow(speedMultiplier / d, 2) + this.starting_angle;
-            obj3d.position.x = d * Math.cos(angle);
-            obj3d.position.z = d * Math.sin(angle);
-        };
+        // update the cloud's rotation within the group
+        // clouds are rotating twice as fast because their cumulative rotation
+        // is the group's rotation + their own rotation
+        this.object3ds.cloud.rotation.y = -0.3 * this.spin_speed * elapsedTime;
 
         if (this.colony) {
             const colonyLogs = this.colony.update(elapsedTime);

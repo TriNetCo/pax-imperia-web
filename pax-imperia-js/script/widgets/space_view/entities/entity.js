@@ -17,6 +17,8 @@ export default class Entity {
         this.basePath = getBasePath();
         unpackData(data, this);
         this.scale = { x: this.size, y: this.size, z: this.size };
+        this.object3d = new THREE.Group();
+        this.object3ds = {};
     }
 
     toJSON() {

@@ -14,19 +14,19 @@ export class Star extends Entity {
     }
 
     update(elapsedTime) {
-        if (!this.object3d || !this.coronaObject3ds) {
+        if (!this.object3d || !this.object3ds?.corona3) {
             console.log('early star update')
             return
         }
-        // rotate star surface
+        // rotate star
         const rotation = 0.3 * this.spin_speed * elapsedTime;
         this.object3d.rotation.y = rotation;
         this.object3d.rotation.x = rotation;
 
         // rotate coronas
-        this.jumbleCorona(this.coronaObject3ds[0], elapsedTime, 1, 0.15, 0.15);
-        this.coronaObject3ds[1].material.rotation = -rotation * 0.75;
-        this.coronaObject3ds[2].material.rotation = rotation * 0.5;
+        this.jumbleCorona(this.object3ds.corona1, elapsedTime, 1, 0.05, 0.05);
+        this.object3ds.corona2.material.rotation = -rotation * 0.75;
+        this.object3ds.corona3.material.rotation = rotation * 0.5;
     }
 
     jumbleCorona(object3d, elapsedTime, rotationSpeed, sinAmplitude, cosAmplitude) {
