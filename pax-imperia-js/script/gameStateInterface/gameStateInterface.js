@@ -33,6 +33,8 @@ export class GameStateInterface {
     galaxy;
     /** @type {WebSocket} */
     websocket;
+    /** @type {THREE.Clock} */
+    gameClock;
 
     /**
      *

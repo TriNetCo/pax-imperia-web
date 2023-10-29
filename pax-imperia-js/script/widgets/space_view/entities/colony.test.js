@@ -25,7 +25,13 @@ const config = {
 };
 
 test('colony removeWorkAllocationsOverCapacity works', () => {
-    const colony = new Colony(1, 1, null, 0, config);
+    const colony = new Colony({
+        id: 1,
+        playerId: 1,
+        planetId: null,
+        startTime: 0,
+        colonyConfig: config
+    });
     colony.workAllocation = {
         'farm': 10000,
         'gather': 0,
@@ -43,7 +49,13 @@ test('colony removeWorkAllocationsOverCapacity works', () => {
 });
 
 test('colony removeWorkAllocationsOverPopulation works', () => {
-    const colony = new Colony(1, 1, null, 0, config);
+    const colony = new Colony({
+        id: 1,
+        playerId: 1,
+        planetId: null,
+        startTime: 0,
+        colonyConfig: config
+    });
     colony.workAllocation = { 'farm': 600, 'gather': 600 };
     colony.orderOfWork = ['farm', 'gather'];
 
@@ -56,7 +68,13 @@ test('colony removeWorkAllocationsOverPopulation works', () => {
 });
 
 test('colony autoAllocateWork works', () => {
-    const colony = new Colony(1, 1, null, 0, config);
+    const colony = new Colony({
+        id: 1,
+        playerId: 1,
+        planetId: null,
+        startTime: 0,
+        colonyConfig: config
+    });
     colony.workAllocation = {
         'farm': 5,
         'mine': 5

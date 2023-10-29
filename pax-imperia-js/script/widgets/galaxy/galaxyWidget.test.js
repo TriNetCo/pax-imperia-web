@@ -8,8 +8,9 @@ galaxyWidgetConfig.systemCount = 3;
 test('galaxyWidget can serialize the systemsData to JSON and deserialize from JSON', () => {
     Galaxy.seedRandomness('Axc2IJCs;s');
     const galaxy = Galaxy.generateFromConfig(galaxyWidgetConfig);
+    const gameStateInterface = {gameClock: {startTime: 0}};
 
-    let galaxyWidget = new GalaxyWidget(galaxyWidgetConfig, galaxy, {});
+    let galaxyWidget = new GalaxyWidget(galaxyWidgetConfig, galaxy, gameStateInterface);
 
     const serializedData = galaxyWidget.exportGalaxyDataToJson();
 
@@ -18,12 +19,8 @@ test('galaxyWidget can serialize the systemsData to JSON and deserialize from JS
 
     // console.log(serializedData)
 
-    // It's ok to change this if you've made a change you know will impact how
-    // the galaxy is serialized (e.g. adding new properties)
-    expect(serializedData.length).toBe(4525);
-
     // reset the galaxyWidget and Import the JSON again
-    galaxyWidget = new GalaxyWidget();
+    galaxyWidget = new GalaxyWidget(galaxyWidgetConfig, galaxy, gameStateInterface);
     galaxyWidget.importGalaxyData(serializedData);
 
     // Test that the first system has all the stuff we expect

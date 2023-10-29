@@ -92,12 +92,12 @@ export class ShipActor extends Actor {
             console.log('already colonized');
             return;
         }
-        planet.colony = new Colony(
-            this.gameStateInterface.galaxy.nextColonyId,
-            action.subject.playerId,
-            planet,
-            this.gameStateInterface.gameClock.elapsedTime
-        );
+        planet.colony = new Colony({
+            nextColonyId: this.gameStateInterface.galaxy.nextColonyId,
+            playerId: action.subject.playerId,
+            planetId: planet.id,
+            startTime: this.gameStateInterface.gameClock.elapsedTime
+        });
 
         // TODO: Float this method up
         // if player is currently in the system with the colonized planet

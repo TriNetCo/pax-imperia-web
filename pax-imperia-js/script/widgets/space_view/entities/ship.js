@@ -10,16 +10,17 @@ export class Ship extends Entity {
         super();
 
         this.id = shipConfig?.id;
-        this.playerId = shipConfig?.playerId;
+        this.name = shipConfig?.name || "Galactic Potato " + shipConfig?.id;
+        this.playerId = shipConfig?.playerId || 1;
         this.systemId = shipConfig?.systemId;
         this.make = shipConfig?.shipSpec?.make;
         this.model = shipConfig?.shipSpec?.model;
         this.shipSize = shipConfig?.shipSpec?.size || 1;
         this.position = this.position || shipConfig?.position;
         this.name = shipConfig?.name || "Galactic Potato " + shipConfig?.id;
+        this.speed = 0.2; // per frame at 60 fps
 
         this.type = 'ship';
-        this.playerId = 1;
         this.assetFolder = '/assets/ships/';
 
         this.assetPath = `${this.assetFolder}Meshes/${this.make}/${this.make}${this.model}.fbx`;
@@ -31,7 +32,6 @@ export class Ship extends Entity {
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/ship_thumbnail.png";
         this.defaultRotation = { x: Math.PI / 4, y: -Math.PI / 2, z: Math.PI / 8 };
         this.rotation = this.defaultRotation;
-        this.speed = 0.2; // per frame at 60 fps
         this.previousSystemId = typeof this.previousSystemId === 'undefined' ? null : this.previousSystemId;
         this.buttonState = null;
         // movement animation attributes

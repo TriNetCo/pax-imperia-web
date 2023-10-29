@@ -2,14 +2,34 @@ import { capitalizeFirstLetter } from "../../../models/helpers.js";
 
 export class Colony {
 
-    constructor(id, playerId, planetId, startTime, colonyConfig) {
-        this.id = id;
-        this.playerId = playerId;
-        this.planetId = planetId;
-        this.startTime = startTime;
-        this.lastUpdated = startTime;
-        this.population = colonyConfig?.startingPopulation || defaulColonyConfig.startingPopulation;
-        this.resources = colonyConfig?.startingResources || defaulColonyConfig.startingResources;
+    /**
+     *
+     * @param {Object} params
+     * @param {number} params.id
+     * @param {number} params.playerId
+     * @param {number} params.planetId
+     * @param {number} params.startTime
+     * @param {number=} params.population
+     * @param {Object=} params.resources
+     * @param {Object=} params.buildings
+     * @param {Array=} params.buildingQueue
+     * @param {Object=} params.workAllocation
+     * @param {Object=} params.colonyConfig
+     */
+    constructor(params) {
+        this.id = params.id;
+        this.playerId = params.playerId;
+        this.planetId = params.planetId;
+        this.startTime = params.startTime;
+        this.lastUpdated = params.startTime;
+
+        this.population = params?.startingPopulation || defaulColonyConfig.startingPopulation;
+        this.resources = params?.startingResources || defaulColonyConfig.startingResources;
+        this.buildings = params?.startingBuildings || defaulColonyConfig.startingBuildings;
+        this.buildingQueue = params?.buildingQueue || [];
+        this.workAllocation = params?.workAllocation || {};
+
+        const colonyConfig = params.colonyConfig;
         this.populationCapacity = colonyConfig?.populationCapacity || defaulColonyConfig.populationCapacity;
         this.foodStorageCapacity = colonyConfig?.foodStorageCapacity || defaulColonyConfig.foodStorageCapacity;
         this.woodStorageCapacity = colonyConfig?.woodStorageCapacity || defaulColonyConfig.woodStorageCapacity;
@@ -20,16 +40,13 @@ export class Colony {
         this.buildRate = colonyConfig?.buildRate || defaulColonyConfig.buildRate;
         this.availableShips = colonyConfig?.availableShips || defaulColonyConfig.availableShips;
         this.availableBuildings = colonyConfig?.availableBuildings || defaulColonyConfig.availableBuildings;
-        this.buildings = colonyConfig?.startingBuildings || defaulColonyConfig.startingBuildings;
         this.defaultOrderOfWork = ['build', 'farm', 'mine', 'research', 'gather'];
         this.orderOfWork = [];
         this.housingCapacities = {};
         this.workplaceCapacities = {};
         this.resourceCapacities = {};
-        this.workAllocation = {};
         this.logs = [];
         this.newLogs = [];
-        this.buildingQueue = [];
         this.useAutoAssign = false;
         this.setCapacities();
         this.autoAllocateWork();
@@ -40,6 +57,9 @@ export class Colony {
             id: this.id,
             playerId: this.playerId,
             planetId: this.planetId,
+            startTime: this.startTime,
+            lastUpdated: this.lastUpdated,
+
             resources: this.resources,
             population: this.population,
             buildings: this.buildings,

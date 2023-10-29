@@ -85,11 +85,21 @@ export class SystemGenerator {
     generateDebugColonies(planets) {
         let colonies = [];
 
-        colonies.push(new Colony(this.getNextColonyId(), 1, planets[0]["id"], 0))
+        colonies.push(new Colony({
+            id: this.getNextColonyId(),
+            playerId: 1,
+            planetId: planets[0]["id"],
+            startTime: 0
+        }))
         planets[0].colony = colonies[0];
 
         if (planets[1]) {
-            colonies.push(new Colony(this.getNextColonyId(), 2, planets[1]["id"], 0))
+            colonies.push(new Colony({
+                id: this.getNextColonyId(),
+                playerId: 2,
+                planetId: planets[1]["id"],
+                startTime: 0
+            }));
             planets[1].colony = colonies[1];
         }
 
