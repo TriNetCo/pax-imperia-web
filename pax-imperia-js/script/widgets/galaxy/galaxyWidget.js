@@ -76,16 +76,8 @@ export class GalaxyWidget {
         const deltaC = importData.timeOrigin - performance.timeOrigin;
 
         // Set the clock
-        // this.gameStateInterface.gameClock = new THREE.Clock(true);
         this.gameStateInterface.gameClock.startTime = importData.gameClock.oldTime + deltaC;
         this.gameStateInterface.gameClock.oldTime = importData.gameClock.oldTime + deltaC;
-
-        console.log("importData.timeOrigin: ", importData.timeOrigin);
-        console.log("performance.timeOrigin: ", performance.timeOrigin);
-        console.log("delta: ", deltaC);
-        console.log("Add delta to oldTime I guess")
-
-        // debugger;
 
         if (this.canvas === undefined) return;  // Keep this for a unit testing hack so I wouldn't have to mock the browser's jazz
 
