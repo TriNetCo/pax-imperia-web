@@ -31,6 +31,11 @@ const NewGameLayout = () => {
     };
 
     const createNewLobby = () =>  {
+        // If we aren't connected over websockets, alert and return
+        if (websocket.status !== 'WS_CONNECTED') {
+            alert('Not connected to websocket.  Is the server running?');
+            return;
+        }
         dispatch(setChatLobbyId(chatLobbyId));
         dispatch(authenticate(userContext.email, userContext.displayName, userContext.token));
         dispatch(joinChatLobby(userContext.email, chatLobbyId));
@@ -42,10 +47,19 @@ const NewGameLayout = () => {
     };
 
     const downloadGameData = () => {
+        if (!websocket.chatLobbyId) {
+            alert('No chatLobbyId.  Disco?');
+            return;
+        }
+
         dispatch(getGameConfiguration(chatLobbyId));
     };
 
     const overrideGameData = () => {
+        if (!websocket.systemsJson) {
+            alert('No game data to override.  Disco?');
+            return;
+        }
         data.galaxyWidget.importGalaxyData(websocket.systemsJson);
     };
 

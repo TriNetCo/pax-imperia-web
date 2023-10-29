@@ -58,6 +58,7 @@ const ChatLobby = () => {
             <div>Connection Status: { websocket.status } </div>
             <div>Authentication Status: { websocket.authenticationStatus } </div>
             <div>chatLobbyUsers: { websocket.chatLobbyUsers }</div>
+            <div>websocket.systemsJson: { !websocket.systemsJson ? 'NULL' : 'POPULATED' }</div>
             {/* We need a way to set our username for debugging */}
             <div>
         Current User:
