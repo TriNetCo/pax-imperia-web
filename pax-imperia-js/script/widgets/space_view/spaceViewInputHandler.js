@@ -100,9 +100,45 @@ export class SpaceViewInputHandler {
 
         if (this.spaceViewAnimator.firstPersonView) {
             const thrust = this.keyStates[' '].pressed ? 1 : 0;
-            this.handleShipMovement3d(-xAxis, -yAxis, thrust);
+            this.handleShipMovement3d(-xAxis, yAxis, thrust);
         } else {
             this.handleShipMovement2d(xAxis, yAxis);
+        }
+    }
+
+    handleShipMovement2d(xAxis, yAxis) {
+        if (this.selectedEntity?.type != 'ship') return;
+
+        // if x/y movement input not large enough, release ship controls
+        if (xAxis < 0.4 & xAxis > -0.4 & yAxis < 0.4 & yAxis > -0.4) {
+            if (this.selectedEntity.controllered) {
+                this.selectedEntity.resetMovement();
+            }
+            return;
+        }
+
+        this.selectedEntity.setShipDestinationPointRelatively(xAxis, yAxis, 0);
+    }
+
+    //////////////////////////
+    // First person methods //
+    //////////////////////////
+
+    handlePerspectiveInput(perspectiveKey) {
+        if (perspectiveKey.pressed && !perspectiveKey.handled) {
+            if (!this.spaceViewAnimator.firstPersonView) {
+                perspectiveKey.handled = true;
+                const firstShip = this.system.ships[0].object3d;
+                const selectionTarget = this.spaceViewDomManager.selectionSprite.selectionTarget;
+                const firstPersonTarget = selectionTarget || firstShip;
+                this.spaceViewAnimator.switchToFirstPerson(firstPersonTarget);
+            }
+            else {
+                perspectiveKey.handled = true;
+                this.spaceViewAnimator.switchToThirdPerson();
+            }
+            this.laggedShipPosition = [];
+            this.laggedShipQuaternion = [];
         }
     }
 
@@ -176,38 +212,6 @@ export class SpaceViewInputHandler {
         // reattach
         this.firstPersonGroup.attach(this.firstPersonTarget);
         this.spaceViewAnimator.camera.lookAt(this.firstPersonGroup.position);
-    }
-
-    handleShipMovement2d(xAxis, yAxis) {
-        if (this.selectedEntity?.type != 'ship') return;
-
-        // if x/y movement input not large enough, release ship controls
-        if (xAxis < 0.4 & xAxis > -0.4 & yAxis < 0.4 & yAxis > -0.4) {
-            if (this.selectedEntity.controllered) {
-                this.selectedEntity.resetMovement();
-            }
-            return;
-        }
-
-        this.selectedEntity.setShipDestinationPointRelatively(xAxis, yAxis, 0);
-    }
-
-    handlePerspectiveInput(perspectiveKey) {
-        if (perspectiveKey.pressed && !perspectiveKey.handled) {
-            if (!this.spaceViewAnimator.firstPersonView) {
-                perspectiveKey.handled = true;
-                const firstShip = this.system.ships[0].object3d;
-                const selectionTarget = this.spaceViewDomManager.selectionSprite.selectionTarget;
-                const firstPersonTarget = selectionTarget || firstShip;
-                this.spaceViewAnimator.switchToFirstPerson(firstPersonTarget);
-            }
-            else {
-                perspectiveKey.handled = true;
-                this.spaceViewAnimator.switchToThirdPerson();
-            }
-            this.laggedShipPosition = [];
-            this.laggedShipQuaternion = [];
-        }
     }
 
 }

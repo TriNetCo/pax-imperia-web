@@ -280,7 +280,6 @@ export class SpaceViewAnimator {
 
         // selectionTarget.rotation.set(0, Math.PI * 1.5, 0);
 
-
         this.firstPersonTarget = selectionTarget;
         this.firstPersonEntity = selectionTarget.parentEntity;
         this.firstPersonEntity.firstPersonView = true;

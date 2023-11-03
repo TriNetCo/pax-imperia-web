@@ -16,7 +16,7 @@ export class Ship extends Entity {
         this.make = shipConfig?.shipSpec?.make;
         this.model = shipConfig?.shipSpec?.model;
         this.shipSize = shipConfig?.shipSpec?.size || 1;
-        this.position = this.position || shipConfig?.position;
+        this.position = shipConfig?.position || { x: 0, y: 0, z: 0 };
         this.name = shipConfig?.name || "Galactic Potato " + shipConfig?.id;
         this.speed = 0.2; // per frame at 60 fps
 
@@ -30,7 +30,7 @@ export class Ship extends Entity {
         this.emissionMapPath = `${this.assetFolder}Textures/${this.make}/${this.make}_Emission2.png`;
 
         this.assetThumbnailPath = this.basePath + "/assets/thumbnails/ship_thumbnail.png";
-        this.defaultRotation = { x: Math.PI / 4, y: -Math.PI / 2, z: Math.PI / 8 };
+        this.defaultRotation = { x: 0, y: -Math.PI / 2, z: 0 };
         this.rotation = this.defaultRotation;
         this.previousSystemId = typeof this.previousSystemId === 'undefined' ? null : this.previousSystemId;
         this.buttonState = null;
