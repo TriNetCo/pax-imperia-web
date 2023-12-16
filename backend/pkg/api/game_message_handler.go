@@ -226,6 +226,10 @@ func handleJoinChatLobby(conn *websocket.Conn, message Message) {
 			return
 		}
 
+		//
+		// Respond to the joiner with the chat lobby users
+		//
+
 		var chatLobbyUsers = getChatLobbyUsers(chatRoom)
 
 		chatRoom.Clients[conn] = clients[conn]
@@ -245,7 +249,12 @@ func handleJoinChatLobby(conn *websocket.Conn, message Message) {
 			debugPrintStruct(response)
 		}
 
-		// Announce user joined to all members of the chatroom
+		conn.WriteJSON(response)
+
+		//
+		// Announce to all users that a new user joined the chat
+		//
+
 		var userJoinAnnouncement = Message{
 			Command: "SYSTEM_MESSAGE_USER_JOINED_CHAT",
 			Payload: map[string]interface{}{
