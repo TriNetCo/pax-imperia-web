@@ -25,3 +25,11 @@ type ChatRoom struct {
 	Clients map[*websocket.Conn]ClientData `json:"clients"`
 	Game    Game                           `json:"game"`
 }
+
+type User struct {
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Role  string `json:"role"`
+	Token string `json:"token"`
+}

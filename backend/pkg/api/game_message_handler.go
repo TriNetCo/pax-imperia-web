@@ -22,7 +22,7 @@ var dataMux sync.Mutex
 /* This is the main websocket handler for the server.  Whenever a message
  * comes into the server, this function will be called.
  */
-func listenToClientMessages(conn *websocket.Conn) {
+func ListenToClientMessages(conn *websocket.Conn) {
 	fmt.Print("Client connected: ", &conn, "\n")
 
 	defer func() {

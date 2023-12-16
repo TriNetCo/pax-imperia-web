@@ -1,4 +1,4 @@
-package api
+package server
 
 import (
 	"fmt"
@@ -10,9 +10,11 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+
+	"github.com/trinetco/pax-imperia-clone/pkg/api"
 )
 
-func RunServer() {
+func Run() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3001"
@@ -39,14 +41,14 @@ func RunServer() {
 
 	router.NoRoute(gin.WrapH(http.FileServer(http.Dir("../pax-imperia-js"))))
 	// router.GET("/auth_test", authTest)
-	router.GET("/auth_test", handleAuthenticateUser)
+	router.GET("/auth_test", api.HandleAuthenticateUser)
 	router.GET("/health", healthCheck)
 	router.GET("/liveness", livenessCheck)
-	router.GET("/albums", getAlbums)
-	router.GET("/test", doTest)
-	router.GET("/users", getUsers)
-	router.GET("/users/", getUsers)
-	router.DELETE("/users/:id", deleteUser)
+	router.GET("/albums", api.GetAlbums)
+	router.GET("/test", api.DoTest)
+	router.GET("/users", api.GetUsers)
+	router.GET("/users/", api.GetUsers)
+	router.DELETE("/users/:id", api.DeleteUser)
 	router.GET("/websocket", func(c *gin.Context) {
 		wshandler(c.Writer, c.Request)
 	})
@@ -58,7 +60,7 @@ func RunServer() {
 
 	time.Sleep(1 * time.Second)
 
-	StartRepl()
+	api.StartRepl()
 }
 
 func CORS() gin.HandlerFunc {
@@ -90,7 +92,7 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	listenToClientMessages(conn)
+	api.ListenToClientMessages(conn)
 }
 
 func healthCheck(c *gin.Context) {

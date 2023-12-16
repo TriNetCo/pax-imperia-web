@@ -20,6 +20,6 @@ var albums = []album{
 }
 
 // getAlbums responds with the list of all albums as JSON.
-func getAlbums(c *gin.Context) {
+func GetAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, albums)
 }

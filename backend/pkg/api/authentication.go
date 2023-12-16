@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"github.com/rs/zerolog/log"
+	. "github.com/trinetco/pax-imperia-clone/pkg/models"
 	"google.golang.org/api/option"
 )
 
@@ -19,7 +20,7 @@ type AuthenticationResponse struct {
 	Authenticated bool `json:"authenticated"`
 }
 
-func handleAuthenticateUser(c *gin.Context) {
+func HandleAuthenticateUser(c *gin.Context) {
 	token := strings.Replace(c.Request.Header["Authorization"][0], "Bearer ", "", 1)
 	log.Printf("Recieved Authorization: %s", token)
 
@@ -93,7 +94,7 @@ func initFirebaseApp() (app *firebase.App, initErr error) {
 	return
 }
 
-func doTest(c *gin.Context) {
+func DoTest(c *gin.Context) {
 
 	// sample token string taken from the New example
 	// tokenString := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJuYmYiOjE0NDQ0Nzg0MDB9.u1riaD1rW97opCoAuRCTy4w58Br-Zk-bh7vLiRIsrpU"
@@ -177,33 +178,25 @@ func doTest(c *gin.Context) {
 // 	jwks.EndBackground()
 // }
 
-type user struct {
-	ID    int    `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Role  string `json:"role"`
-	Token string `json:"token"`
-}
-
-var users = []user{
+var users = []User{
 	{ID: 1, Name: "John Doe", Email: "John@example.com", Role: "admin", Token: "blah"},
 	{ID: 2, Name: "Jane Doe", Email: "jane@example.com", Role: "user", Token: "blahblah"},
 }
 
-func getUsers(c *gin.Context) {
+func GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 	// c.JSON(http.StatusOK, gin.H{
 	// 	"code":    http.StatusOK,
 	// 	"message": users})
 }
 
-func deleteUser(c *gin.Context) {
+func DeleteUser(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		fmt.Println("param 'id' was not an int")
 	}
 
-	var deletedId user
+	var deletedId User
 	deletedId.ID = id
 
 	c.JSON(http.StatusOK, deletedId)

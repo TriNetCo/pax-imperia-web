@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/trinetco/pax-imperia-clone/pkg/api"
+	"github.com/trinetco/pax-imperia-clone/pkg/server"
 )
 
 func main() {
 	// api.TestAuthStuff()
 
-	api.RunServer()
+	server.Run()
 }
