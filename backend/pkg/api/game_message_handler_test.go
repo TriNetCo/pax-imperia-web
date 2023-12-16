@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
+	. "github.com/trinetco/pax-imperia-clone/pkg/models"
 	. "github.com/trinetco/pax-imperia-clone/pkg/testutils"
 )
 

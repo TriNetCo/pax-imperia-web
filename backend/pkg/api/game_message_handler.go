@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/gorilla/websocket"
+	. "github.com/trinetco/pax-imperia-clone/pkg/models"
 )
 
 type ServerConfiguration struct {
