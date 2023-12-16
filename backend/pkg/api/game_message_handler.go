@@ -212,8 +212,6 @@ func debugPrintStruct(response Message) {
 	fmt.Println("JOIN_CHAT_LOBBY_RESPONSE:\n", string(responseJson))
 }
 
-// Private-ish methods...
-
 func getChatLobbyUsers(chatRoom ChatRoom) []string {
 	displayNames := make([]string, 0)
 	for client := range chatRoom.Clients {
@@ -230,6 +228,8 @@ func sendMessageToAllChatroomParticipants(chatRoom ChatRoom, message Message) {
 		}
 	}
 }
+
+// Private-ish methods...
 
 func cleanUpDeadConnection(client *websocket.Conn) {
 	delete(clients, client)

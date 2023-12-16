@@ -21,9 +21,10 @@ type Game struct {
 }
 
 type ChatRoom struct {
-	Name    string                         `json:"name"`
-	Clients map[*websocket.Conn]ClientData `json:"clients"`
-	Game    Game                           `json:"game"`
+	Name        string                         `json:"name"`
+	Clients     map[*websocket.Conn]ClientData `json:"clients"`
+	Game        Game                           `json:"game"`
+	ChatLobbyId string                         `json:"chatLobbyId"`
 }
 
 type User struct {
