@@ -2,8 +2,8 @@ package api
 
 import "github.com/gorilla/websocket"
 
-// The junk in this file makes it so the websocket code can
-// be tested without having to actually use websockets wich smell like cheesse.
+// The rest of the junk in this file makes it so the websocket code can
+// be tested without having to actually use websockets wich smell like cheese.
 
 type WebSocketConnection interface {
 	WriteJSON(v interface{}) error

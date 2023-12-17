@@ -5,22 +5,8 @@ import (
 
 	"github.com/gorilla/websocket"
 	. "github.com/trinetco/pax-imperia-clone/pkg/models"
+	"github.com/trinetco/pax-imperia-clone/pkg/util"
 )
-
-/*
-
-# Global Variables
-conn
-chatRooms
-clients
-serverConfiguration
-
-# External Functions
-sendMessageToAllChatroomParticipants
-getChatLobbyUsers
-debugPrintStruct
-
-*/
 
 func HandleJoinChatLobby(conn *websocket.Conn, message Message) {
 	// fmt.Println("Chat Room ID:", chatLobbyId)
@@ -82,13 +68,13 @@ func respondToJoiner(conn *websocket.Conn, chatRoom ChatRoom) {
 		Payload: map[string]interface{}{
 			"status":         "success",
 			"chatLobbyId":    chatRoom.ChatLobbyId,
-			"chatLobbyUsers": getChatLobbyUsers(chatRoom),
+			"chatLobbyUsers": GetChatLobbyUsers(chatRoom),
 			"message":        "Joined chat lobby",
 		},
 	}
 
 	if serverConfiguration.VerboseMode {
-		debugPrintStruct(response)
+		util.DebugPrintStruct(response)
 	}
 
 	conn.WriteJSON(response)
@@ -105,5 +91,5 @@ func announceUserJoinedChat(conn *websocket.Conn, chatRoom ChatRoom) {
 		},
 	}
 
-	sendMessageToAllChatroomParticipants(chatRoom, userJoinAnnouncement)
+	SendMessageToAllButOneChatroomParticipant(chatRoom, userJoinAnnouncement, conn)
 }
