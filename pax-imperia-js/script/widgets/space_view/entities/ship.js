@@ -54,19 +54,19 @@ export class Ship extends Entity {
             systemId: this.systemId,
             playerId: this.playerId,
             position: {
-                x: this.object3d.position.x,
-                y: this.object3d.position.y,
-                z: this.object3d.position.z
+                x: this.position.x,
+                y: this.position.y,
+                z: this.position.z
             },
             rotation: {
-                x: this.object3d.rotation.x,
-                y: this.object3d.rotation.y,
-                z: this.object3d.rotation.z
+                x: this.rotation.x,
+                y: this.rotation.y,
+                z: this.rotation.z
             },
             shipSpec: {
                 make: this.make,
                 model: this.model,
-                size: this.size,
+                size: this.shipSize,
             },
         });
     }
