@@ -49,10 +49,15 @@ export class SpaceViewWidget {
         this.cacheMonster = new CacheMonster();
     }
 
-    loadWidget(systemIndex, systemClickHandler) {
+    loadWidget(systemIndex, systemClickHandler, configOverride) {
         console.log("LOADWIDGET");
         this.systemClickHandler = systemClickHandler;
         this.system = this.galaxy.getSystem(systemIndex);
+
+        if (configOverride?.canvasFullScreen) {
+            this.c.canvasWidth = document.body.clientWidth;
+            this.c.canvasHeight = document.body.clientHeight;
+        }
 
         this.setupRenderer();
         this.resetThreeObjects();

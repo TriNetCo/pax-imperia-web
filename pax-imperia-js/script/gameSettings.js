@@ -20,6 +20,5 @@ export const GameSettings = {
     spaceViewWidget: {
         canvasWidth: 800,
         canvasHeight: 500,
-
     },
 }

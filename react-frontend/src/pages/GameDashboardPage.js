@@ -17,7 +17,7 @@ const GameDashboardPage = () => {
                 <div className="galaxy-flexer">
                     <div>
                         <h1>Galactic View</h1>
-                        <Galaxy/>
+                        <Galaxy />
                     </div>
 
                 </div>

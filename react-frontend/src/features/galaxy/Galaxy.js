@@ -51,7 +51,7 @@ const Galaxy = ({canvasWidth, canvasHeight}) => {
 
 Galaxy.propTypes = {
     canvasWidth: PropTypes.number,
-    canvasHeight: PropTypes.number
+    canvasHeight: PropTypes.number,
 };
 
 export default Galaxy;

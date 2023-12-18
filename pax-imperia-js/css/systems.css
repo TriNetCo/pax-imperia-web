@@ -1,12 +1,23 @@
+#app-parent.system-app-parent {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+}
+
 #console-div {
     position: relative;
-    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 1050px;
     height: 20px;
     background-color: black;
 
     background-image: url("../assets/backgrounds/system_view_top_f.png");
     background-repeat: no-repeat;
     background-size: contain;
+    z-index: 1
 }
 
 #console-message {
@@ -30,37 +41,54 @@
     height: 20px;
 }
 
+#ultra-container {
+    position: fixed;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#big-container {
+    position:absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    /* height: 100%; */
+
+    position: relative;
+    flex-grow: 1;
+}
+
 .flex-container {
     display: flex;
-    width: 100%;
-    height: 708px;
-    /* overflow: hidden; */
 }
 
 #canvas-and-buttons {
+    /* display:flex; */
     width: 800px;
+    flex: 1;
 }
 
 .flex-container-left {
     /* Flex Child Properties... This is both a flex child as well as a parent to others */
-    flex-grow: 1;
+    /* flex-grow: 1; */
 
     /* Flex Container Properties */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    /* justify-content: space-between; */
 
     margin: 0px;
-    width: 150px;
-    /* height: 708px; */
+    min-width: 224px;
+    height: 708px;
     color: white;
 
     background: grey;
     background-image: url("../assets/backgrounds/system_view_left_f.png");
     background-repeat: no-repeat;
-    background-size: contain;
-
+    background-size: cover;
     user-select: none;
+    z-index: 1;
 }
 
 #btnGovernor {
@@ -76,11 +104,11 @@
     background: black;
 }
 
-#galaxy {
-    background: blue;
-    width: 402px;
-    border: solid 2px grey;
-    height: 200px;
+#canvas-div canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* z-index: -1; */
 }
 
 #galaxy-and-console {
@@ -90,12 +118,46 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    background: black;
+    /* background: black; */
+
+    display: flex;
+    flex: 1;
+}
+
+#galaxy {
+    background: blue;
+    /* width: 402px; */
+    border: solid 2px grey;
+    height: 200px;
+}
+
+#left-hud {
+    position: absolute;
+    top: 466px;
+    background-color: rgba(255, 255, 255, 0.1);
+    left: 240px;
+    color: white;
+    border-radius: 15px;
+    padding: 6px;
+    user-select: none;
+}
+
+#left-hud span {
+    border-right: solid black 4px;
+    padding: 0px 5px 0px 5px;
+}
+#left-hud span:last-child {
+    border:none;
+}
+
+#left-hud:has(span.map-button-down) {
+    top: auto;
+    bottom: 0px;
 }
 
 #hud {
     position: absolute;
-    top: 468px;
+    top: 446px;
     background-color: rgba(255, 255, 255, 0.1);
     right: 0px;
     color: white;
@@ -104,16 +166,40 @@
     user-select: none;
 }
 
+#hud.hud-down {
+    top: auto;
+    bottom: 0px;
+}
+
+#left-panel-min-button {
+    position: absolute;
+    top: 300px;
+    left: 240px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-radius: 15px;
+    padding: 6px;
+    user-select: none;
+}
+
+#left-panel-min-button:has(span.minimized) {
+    left: 0px;
+}
+
 #lower-console-and-button {
     position: relative;
     background: #2b252f;
     border-bottom: black solid 2px;
-    width: 100%;
+    /* width: 100%; */
     padding: 5px;
     height: 194px;
     opacity: 85%;
     overflow-y: scroll;
     z-index: 1;
+
+    max-width: 400px;
+
+    flex: 1;
 }
 
 #lower-console-and-button.expanded {
@@ -128,7 +214,7 @@
 
 #lower-console {
     color: white;
-    width: 95%;
+    /* width: 95%; */
     padding: 5px;
     /* height: 100%; */
 }

@@ -2,9 +2,12 @@ html, body {
   margin: 0;
   /* height: 100%; */
   /* overflow: hidden; */
-  height: 768px;
-  min-height: 768px;
+  /* height: 768px; */
+  /* min-height: 768px; */
   white-space: nowrap;
+
+  height: 100%;
+  width: 100%;
 }
 
 body {
@@ -22,14 +25,8 @@ body {
 
 #app-parent {
     position:relative;
-    /* XGA Resolution */
-    width: 1024px;
-    /* height: 768px; */
-    height: 728px;  /* image scaling error... */
-    /* height: 100%; */
-    margin: 0 auto 0 auto;
-
     border-bottom: solid;
+    height: 100%;
 }
 
 .console-message {

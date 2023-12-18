@@ -150,6 +150,34 @@ export class SpaceViewDomManager {
         this.spaceViewAnimator.zoomCamera(distance);
     }
 
+    handleShowHideMap = (event) => {
+        const hideableElement = document.getElementById('galaxy-and-console');
+        const targetSetting = hideableElement.style.display == 'none' ? '' : 'none';
+        hideableElement.style.display = targetSetting;
+
+        const toggleButton = document.getElementById('map-button');
+        toggleButton.textContent = targetSetting == 'none' ? 'v' : '^';
+        toggleButton.className = targetSetting == 'none' ? 'map-button-down' : 'map-button-up';
+
+        const zoomDiv = document.getElementById('hud');
+        zoomDiv.className = targetSetting == 'none' ? 'hud-down' : '';
+    }
+
+    handleShowHideLeftPanel = (event) => {
+        // debugger;
+        // TODO: write this
+        const hideableElement = document.getElementsByClassName('flex-container-left')[0];
+        const targetSetting = hideableElement.style.display == 'none' ? '' : 'none';
+        hideableElement.style.display = targetSetting;
+
+        // const toggleButton = document.getElementById('left-panel-min-button');
+        // toggleButton.textContent = targetSetting == 'none' ? '>' : '<';
+
+        const toggleButtonLabel = document.getElementById('left-panel-min-span');
+        toggleButtonLabel.textContent = targetSetting == 'none' ? '>' : '<';
+        toggleButtonLabel.className = targetSetting == 'none' ? 'minimized' : 'maximized';
+    }
+
     ////////////////////
     // Click Handlers //
     ////////////////////
@@ -386,13 +414,14 @@ export class SpaceViewDomManager {
         this.canvas.removeEventListener('contextmenu', this.#rightClickHandler);
         document.removeEventListener('keydown', this.#keyDownHandler);
         document.removeEventListener('keyup', this.#keyUpHandler);
-        const hudElement = document.getElementById('hud');
-        if (hudElement) {
-            hudElement.remove();
-        }
+        this.removeHud();
+        this.removeLowerLeftHud();
+        this.removeLeftPanelMinimizer();
     }
 
     attachDomEventsToCode() {
+        this.addLeftPanelMinimizer();
+        this.addLowerLeftHud();
         this.addHud();
         this.addMouseMovement();
         this.addMouseClick();
@@ -428,6 +457,8 @@ export class SpaceViewDomManager {
     }
 
     addHud() {
+        this.removeHud();
+
         // create HUD div
         const el = document.createElement('div');
         el.id = 'hud';
@@ -450,6 +481,63 @@ export class SpaceViewDomManager {
 
         const canvasAndButtons = document.getElementById('canvas-and-buttons');
         canvasAndButtons.appendChild(el);
+    }
+
+    removeHud() {
+        const hudElement = document.getElementById('hud');
+        if (hudElement) {
+            hudElement.remove();
+        }
+    }
+
+    addLowerLeftHud() {
+        this.removeLowerLeftHud();
+
+        // create HUD div
+        const el = document.createElement('div');
+        el.id = 'left-hud';
+        el.onclick = this.handleShowHideMap;
+
+        // add button for map
+        const mapButton = document.createElement('span');
+        mapButton.id = 'map-button';
+        mapButton.textContent = '^';
+        el.appendChild(mapButton);
+
+        const canvasAndButtons = document.getElementById('canvas-and-buttons');
+        canvasAndButtons.appendChild(el);
+    }
+
+    removeLowerLeftHud() {
+        const hudElement = document.getElementById('left-hud');
+        if (hudElement) {
+            hudElement.remove();
+        }
+    }
+
+    addLeftPanelMinimizer() {
+        this.removeLeftPanelMinimizer();
+
+        // create HUD div
+        const el = document.createElement('div');
+        el.id = 'left-panel-min-button';
+        el.onclick = this.handleShowHideLeftPanel;
+
+        // add button for map
+        const minimizeButton = document.createElement('span');
+        minimizeButton.id = 'left-panel-min-span';
+        minimizeButton.textContent = '<';
+        el.appendChild(minimizeButton);
+
+        const canvasAndButtons = document.getElementById('canvas-and-buttons');
+        canvasAndButtons.appendChild(el);
+    }
+
+    removeLeftPanelMinimizer() {
+        const hudElement = document.getElementById('left-panel-min-button');
+        if (hudElement) {
+            hudElement.remove();
+        }
     }
 
 }

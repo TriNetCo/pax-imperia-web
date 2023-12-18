@@ -1,8 +1,9 @@
 import React from 'react';
 import { useEffect, useRef, useContext } from 'react';
 import {GameDataContext} from '../../app/Context';
+import PropTypes from 'prop-types';
 
-const SpaceView = () => {
+const SpaceView = ({canvasFullScreen}) => {
     const data = useContext(GameDataContext);
     let spaceViewWidget = data.spaceViewWidget;
     let galaxyWidget = data.galaxyWidget;
@@ -32,7 +33,11 @@ const SpaceView = () => {
 
             const systemIndex = parseInt(pathname.replace('/systems/', ''));
             const startTime = Date.now();
-            await spaceViewWidget.loadWidget(systemIndex, systemClickHandler);
+            const overrideConfig = {
+                'canvasFullScreen': canvasFullScreen,
+            };
+
+            await spaceViewWidget.loadWidget(systemIndex, systemClickHandler, overrideConfig);
             const deltaTime = Date.now() - startTime;
             console.log(deltaTime + ' ms: spaceViewWidget#loadWidget');
         })();
@@ -49,6 +54,10 @@ const SpaceView = () => {
             style={{ border: 'solid' }}
         />
     );
+};
+
+SpaceView.propTypes = {
+    canvasFullScreen: PropTypes.bool,
 };
 
 export default SpaceView;
