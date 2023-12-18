@@ -156,26 +156,35 @@ export class SpaceViewDomManager {
         hideableElement.style.display = targetSetting;
 
         const toggleButton = document.getElementById('map-button');
-        toggleButton.textContent = targetSetting == 'none' ? 'v' : '^';
-        toggleButton.className = targetSetting == 'none' ? 'map-button-down' : 'map-button-up';
-
         const zoomDiv = document.getElementById('hud');
-        zoomDiv.className = targetSetting == 'none' ? 'hud-down' : '';
+
+        if (targetSetting == 'none') {
+            toggleButton.textContent = '^';
+            toggleButton.classList.add('panel-minimized');
+            zoomDiv.classList.add('hud-down');
+        } else {
+            toggleButton.textContent = 'v';
+            toggleButton.classList.remove('panel-minimized');
+            zoomDiv.classList.remove('hud-down');
+        }
+
     }
 
     handleShowHideLeftPanel = (event) => {
-        // debugger;
-        // TODO: write this
-        const hideableElement = document.getElementsByClassName('flex-container-left')[0];
-        const targetSetting = hideableElement.style.display == 'none' ? '' : 'none';
-        hideableElement.style.display = targetSetting;
-
-        // const toggleButton = document.getElementById('left-panel-min-button');
-        // toggleButton.textContent = targetSetting == 'none' ? '>' : '<';
-
+        // alert('go into hiding');
+        const hideableElement = document.getElementById('flex-container-left');
+        const targetSetting = hideableElement.classList.contains('hidden') ? '' : 'hidden';
         const toggleButtonLabel = document.getElementById('left-panel-min-span');
-        toggleButtonLabel.textContent = targetSetting == 'none' ? '>' : '<';
-        toggleButtonLabel.className = targetSetting == 'none' ? 'minimized' : 'maximized';
+
+        if (targetSetting == 'hidden') {
+            hideableElement.classList.add('hidden');
+            toggleButtonLabel.textContent = '>';
+            toggleButtonLabel.className = 'minimized';
+        } else {
+            hideableElement.classList.remove('hidden');
+            toggleButtonLabel.textContent = '<';
+            toggleButtonLabel.className = 'maximized';
+        }
     }
 
     ////////////////////
@@ -496,12 +505,13 @@ export class SpaceViewDomManager {
         // create HUD div
         const el = document.createElement('div');
         el.id = 'left-hud';
+        el.classList.add('hud-btn');
         el.onclick = this.handleShowHideMap;
 
         // add button for map
         const mapButton = document.createElement('span');
         mapButton.id = 'map-button';
-        mapButton.textContent = '^';
+        mapButton.textContent = 'v';
         el.appendChild(mapButton);
 
         const canvasAndButtons = document.getElementById('canvas-and-buttons');
@@ -521,6 +531,7 @@ export class SpaceViewDomManager {
         // create HUD div
         const el = document.createElement('div');
         el.id = 'left-panel-min-button';
+        el.classList.add('hud-btn');
         el.onclick = this.handleShowHideLeftPanel;
 
         // add button for map
@@ -529,7 +540,7 @@ export class SpaceViewDomManager {
         minimizeButton.textContent = '<';
         el.appendChild(minimizeButton);
 
-        const canvasAndButtons = document.getElementById('canvas-and-buttons');
+        const canvasAndButtons = document.getElementById('panel-minimize-div');
         canvasAndButtons.appendChild(el);
     }
 

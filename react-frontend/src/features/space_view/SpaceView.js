@@ -51,7 +51,6 @@ const SpaceView = ({canvasFullScreen}) => {
     return (
         <div
             id="canvas-div"
-            style={{ border: 'solid' }}
         />
     );
 };

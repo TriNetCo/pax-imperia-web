@@ -43,7 +43,8 @@ const SystemPage = () => {
                     </div>
 
                     <div id="big-container" className="flex-container">
-                        <div className="flex-container-left">
+
+                        <div id="flex-container-left">
                             <div className="left-menu-div">
                                 <h6 id="stars">&#9660; Solar:</h6>
                                 <ul id="star-list" className="sidebar-list"></ul>
@@ -54,11 +55,13 @@ const SystemPage = () => {
                                 <h6 id="wormholes">&#9654; Wormholes:</h6>
                                 <ul id="wormhole-list" className="sidebar-list"></ul>
                             </div>
-                            <div>
+                            <div className="left-menu-bottom">
                                 <button id="btnGovernor">Governor</button>
                             </div>
-
                         </div>
+
+                        <div id="panel-minimize-div"></div>
+
                         <div id="canvas-and-buttons">
                             <SpaceView canvasFullScreen={true} />
 
