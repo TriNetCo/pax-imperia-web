@@ -45,6 +45,7 @@ export class Ship extends Entity {
 
         this.raycaster = new THREE.Raycaster();
         this.controllered = false; // When this is true, mouse movement will not work
+        this.moveable = true;
     }
 
     toJSON() {

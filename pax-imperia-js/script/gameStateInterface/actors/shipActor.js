@@ -61,18 +61,18 @@ export class ShipActor extends Actor {
 
         // make wormhole name visible in destination system
         const connectedWormhole = connectedSystem.wormholes.find(
-            x => x.toId.toString() === wormhole.fromId.toString()
+            x => x.toId.toString() === wormhole.systemId.toString()
         );
-        connectedWormhole.name = galaxy.getSystem(wormhole.fromId).name;
+        connectedWormhole.name = galaxy.getSystem(wormhole.systemId).name;
 
         // add wormhole connection to player's list of connections
-        const connection = [wormhole.fromId, wormhole.toId].sort();
+        const connection = [wormhole.systemId, wormhole.toId].sort();
         this.gameStateInterface.knownConnections.push(connection);
 
         // if player is in system with this wormhole, redraw wormhole text
         const spaceViewWidget = this.gameStateInterface.spaceViewWidget;
         const currentSystemId = spaceViewWidget.system.id;
-        if (currentSystemId === wormhole.fromId) {
+        if (currentSystemId === wormhole.systemId) {
             await spaceViewWidget.spaceViewAnimator.redrawWormholeText(wormhole);
             spaceViewWidget.spaceViewDomManager.populateHtml();
         }

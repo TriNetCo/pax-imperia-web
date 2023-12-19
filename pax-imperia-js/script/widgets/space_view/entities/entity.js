@@ -16,6 +16,7 @@ export default class Entity {
         this.object3d = new THREE.Group();
         this.setLoadAttributes(this.object3d);
         this.object3ds = {};
+        this.moveable = false;
     }
 
     toJSON() {

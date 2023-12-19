@@ -20,8 +20,8 @@ test("when a ship's update should have the ship jump a wormhold, it defines acti
     const ship = createTestShip({ x: 100, y: 100, z: 0 });
 
     // associate ship with wormhole
-    ship.systemId = wormhole.fromId;
-    ship.previousSystemId = wormhole.fromId;
+    ship.systemId = wormhole.systemId;
+    ship.previousSystemId = wormhole.systemId;
     ship.destinationEntity = wormhole;
 
     ////////////////////////

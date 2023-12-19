@@ -18,16 +18,17 @@ export class SelectionSprite {
     /** @type {Entity} */
     selectionEntity;
 
-    constructor(scene, spriteTexture, tilesHoriz, tilesVert, loopFrameDuration) {
+    constructor(system, spriteTexture, tilesHoriz, tilesVert, loopFrameDuration) {
+        this.system = system;
         this.spriteTexture = spriteTexture;
         this.tilesHoriz = tilesHoriz;
         this.tilesVert = tilesVert;
-        this.scene = scene;
         this.loopFrameDuration = loopFrameDuration;
         this.previousTargets = new Queue(3);
     }
 
-    loadGraphics() {
+    loadGraphics(scene) {
+        this.scene = scene;
         const map = new THREE.TextureLoader().load(this.spriteTexture);
         this.map = map;
         map.magFilter = THREE.NearestFilter;
@@ -128,11 +129,15 @@ export class SelectionSprite {
     getPreviousTarget(i) {
         // will only return target if target is still in scene
         const target = this.previousTargets[i];
-        if (this.scene.children.includes(target)) {
+        if ( this.isTargetInThisSystem(target) ) {
             return target;
         } else {
             return null;
         }
+    }
+
+    isTargetInThisSystem(target) {
+        return target && target.parentEntity.systemId == this.system.id;
     }
 
 }

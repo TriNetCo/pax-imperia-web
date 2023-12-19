@@ -87,8 +87,8 @@ export class GalaxyDrawer {
      * Creates an array of connections between systems from a systems array,
      * allowing galaxyDrawer to draw lines between systems efficiently.
      * Each system contains a connections array e.g.
-     * [{fromId: 0, id: "0_74", name: "Perseus", toId: 74, toPosition: {x: 217, y: 191, z: -2.67}},
-     *  {fromId: 0, id: "0_39", name: "Vulpecula", toId: 39, toPosition: {x: 156, y: 172, z: -5.63}}]
+     * [{systemId: 0, id: "0_74", name: "Perseus", toId: 74, toPosition: {x: 217, y: 191, z: -2.67}},
+     *  {systemId: 0, id: "0_39", name: "Vulpecula", toId: 39, toPosition: {x: 156, y: 172, z: -5.63}}]
      * from which we create e.g. [[0, 39], [0, 74], ...]
      * @param {*} systems
      * @returns {number[][]} connections

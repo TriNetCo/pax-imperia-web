@@ -316,7 +316,7 @@ export class Galaxy {
 
         const wormhole = new Wormhole({
             id: srcSystemId + '_' + dstSystem.id,
-            fromId: srcSystemId,
+            systemId: srcSystemId,
             toId: dstSystem.id,
             name: dstSystem.name,
             srcSystemPosition: srcSystem.position,

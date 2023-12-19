@@ -10,7 +10,7 @@ export class Wormhole extends Entity {
      * @param {string} config.id
      * @param {string} config.name
      * @param {string} config.toId
-     * @param {string} config.fromId
+     * @param {string} config.systemId
      */
     constructor(config) {
         super(config);
@@ -27,7 +27,7 @@ export class Wormhole extends Entity {
         return ({
             id: this.id,
             name: this.name,
-            fromId: this.fromId,
+            systemId: this.systemId,
             toId: this.toId,
             srcSystemPosition: this.srcSystemPosition,
             dstSystemPosition: this.dstSystemPosition,

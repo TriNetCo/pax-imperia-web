@@ -11,7 +11,8 @@ const initGameData = () => {
     //////////
 
     // choose a random seed which is a string of 10 characters, e.g. 'Axd2IJCs;s'
-    const seed = Math.random().toString(36).substring(2, 12);
+    let seed = Math.random().toString(36).substring(2, 12);
+    // seed = 'Axc2IJCs;s';
     Galaxy.seedRandomness(seed);
 
     // add storedPreferences to gameSettings

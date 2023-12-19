@@ -59,26 +59,29 @@ export class SpaceViewWidget {
             this.c.canvasHeight = document.body.clientHeight;
         }
 
+        this.setupSelectionSprite();
         this.setupRenderer();
         this.resetThreeObjects();
 
-        return this.buildSystemClasses()
+        return this.buildSystemClasses();
     }
 
     resetThreeObjects() {
         this.clientObjects.scene = new THREE.Scene();
         this.clientObjects.camera = new THREE.PerspectiveCamera(15, this.c.canvasWidth / this.c.canvasHeight, 1, 40000);
         this.renderer.compile(this.clientObjects.scene, this.clientObjects.camera);
+        this.clientObjects.selectionSprite.loadGraphics(this.clientObjects.scene);
+    }
 
+    setupSelectionSprite() {
         this.clientObjects.selectionSprite = new SelectionSprite(
-            this.clientObjects.scene,
+            this.system,
             this.basePath + '/assets/sprite_sheets/selection_sprite_sheet.png',
             1,  // nCols in sprite sheet
             10, // nRows in sprite sheet
             0.04); // loopFrameDuration
-
-        this.clientObjects.selectionSprite.loadGraphics();
     }
+
 
     changeSystem(systemIndex) {
         const newSystem = this.galaxy.getSystem(systemIndex);
@@ -89,6 +92,7 @@ export class SpaceViewWidget {
         this.spaceViewAnimator.stopDrawLoop();
         this.system = newSystem;
 
+        this.setupSelectionSprite();
         this.resetThreeObjects();
 
         return this.buildSystemClasses()

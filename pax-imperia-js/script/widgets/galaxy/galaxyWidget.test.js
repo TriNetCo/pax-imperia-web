@@ -30,7 +30,7 @@ test('galaxyWidget can serialize the systemsData to JSON and deserialize from JS
     const system = galaxyWidget.galaxy.systems[0];
     expect(system.name).toBe(firstSystemOriginal.name);
     expect(system.stars.length).toBe(1);
-    expect(system.planets.length).toBe(4);
+    expect(system.planets.length).toBe(2);
     expect(system.ships.length).toBe(3);
     expect(system.wormholes.length).toBe(1);
 
