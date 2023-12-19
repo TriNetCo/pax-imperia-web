@@ -417,6 +417,7 @@ export class SpaceViewDomManager {
     ///////////////////////
 
     detachFromDom() {
+        window.removeEventListener('resize', this.resetThreeObjects);
         this.canvas.removeEventListener('mousemove', this.mouseMovementHandler);
         this.canvas.removeEventListener('click', this.#clickHandler);
         this.canvas.removeEventListener('dblclick', this.doubleClickHandler);
@@ -428,7 +429,8 @@ export class SpaceViewDomManager {
         this.removeLeftPanelMinimizer();
     }
 
-    attachDomEventsToCode() {
+    attachDomEventsToCode(resetThreeObjects) {
+        this.addHookForWindowResize(resetThreeObjects);
         this.addLeftPanelMinimizer();
         this.addLowerLeftHud();
         this.addHud();
@@ -436,6 +438,11 @@ export class SpaceViewDomManager {
         this.addMouseClick();
         this.addMouseDoubleClick();
         this.addKeyPresses();
+    }
+
+    addHookForWindowResize(resetThreeObjects) {
+        this.resetThreeObjects = resetThreeObjects;
+        window.addEventListener('resize', resetThreeObjects);
     }
 
     addMouseMovement() {

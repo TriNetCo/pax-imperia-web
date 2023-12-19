@@ -33,11 +33,8 @@ const SpaceView = ({canvasFullScreen}) => {
 
             const systemIndex = parseInt(pathname.replace('/systems/', ''));
             const startTime = Date.now();
-            const overrideConfig = {
-                'canvasFullScreen': canvasFullScreen,
-            };
 
-            await spaceViewWidget.loadWidget(systemIndex, systemClickHandler, overrideConfig);
+            await spaceViewWidget.loadWidget(systemIndex, systemClickHandler);
             const deltaTime = Date.now() - startTime;
             console.log(deltaTime + ' ms: spaceViewWidget#loadWidget');
         })();

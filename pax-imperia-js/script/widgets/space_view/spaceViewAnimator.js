@@ -254,14 +254,28 @@ export class SpaceViewAnimator {
         // this.camera.add(cameraLight);
     }
 
+    // assumes third person view
+    resetCamera() {
+        this.camera.remove();
+
+        if (this.firstPersonView) {
+            alert("Resizing in first person view is not implemented ");
+            this.camera = new THREE.PerspectiveCamera(30,
+                this.c.canvasWidth / this.c.canvasHeight, 1, 30000);
+        } else {
+            this.camera = new THREE.PerspectiveCamera(15,
+                this.c.canvasWidth / this.c.canvasHeight, 1, 30000);
+            this.zoomCamera(this.cameraDistance);
+        }
+
+        this.addCameraToScene();
+    }
+
     switchToThirdPerson() {
         this.firstPersonView = false;
 
         // set camera back
-        this.camera.remove();
-        this.camera = new THREE.PerspectiveCamera(15,
-            this.c.canvasWidth / this.c.canvasHeight, 1, 30000);
-        this.addCameraToScene();
+        this.resetCamera();
 
         // remove ship obj3d from firstPersonGroup
         this.firstPersonTarget.removeFromParent();
@@ -277,6 +291,8 @@ export class SpaceViewAnimator {
 
     switchToFirstPerson(selectionTarget) {
         if (selectionTarget?.parentEntity?.type != 'ship') return;
+
+        this.firstPersonView = true;
 
         // selectionTarget.rotation.set(0, Math.PI * 1.5, 0);
 
@@ -306,9 +322,6 @@ export class SpaceViewAnimator {
         this.camera.lookAt(this.firstPersonGroup.position);
 
         this.spaceViewDomManager.handleSelectionChange(null);
-
-        this.firstPersonView = true;
-
     }
 
     async redrawWormholeText(wormhole) {

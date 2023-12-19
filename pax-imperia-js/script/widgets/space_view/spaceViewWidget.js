@@ -47,30 +47,37 @@ export class SpaceViewWidget {
         // TODO: Float these up possibly
         this.renderer = renderer ? renderer : new THREE.WebGLRenderer({ antialias: true });
         this.cacheMonster = new CacheMonster();
+
+        this.resetThreeObjects = () => {
+            this.c.canvasWidth = document.body.clientWidth;
+            this.c.canvasHeight = document.body.clientHeight;
+
+            this.setupSelectionSprite();
+
+            this.setupRenderer();
+
+            this.clientObjects.scene = new THREE.Scene();
+            this.clientObjects.camera = new THREE.PerspectiveCamera(15, this.c.canvasWidth / this.c.canvasHeight, 1, 40000);
+            this.renderer.compile(this.clientObjects.scene, this.clientObjects.camera);
+            this.clientObjects.selectionSprite.loadGraphics(this.clientObjects.scene);
+
+            if (this.spaceViewAnimator) {
+                this.spaceViewAnimator.resetCamera();
+            }
+
+        }
+
     }
 
-    loadWidget(systemIndex, systemClickHandler, configOverride) {
+    loadWidget(systemIndex, systemClickHandler) {
         console.log("LOADWIDGET");
         this.systemClickHandler = systemClickHandler;
         this.system = this.galaxy.getSystem(systemIndex);
 
-        if (configOverride?.canvasFullScreen) {
-            this.c.canvasWidth = document.body.clientWidth;
-            this.c.canvasHeight = document.body.clientHeight;
-        }
-
         this.setupSelectionSprite();
-        this.setupRenderer();
         this.resetThreeObjects();
 
         return this.buildSystemClasses();
-    }
-
-    resetThreeObjects() {
-        this.clientObjects.scene = new THREE.Scene();
-        this.clientObjects.camera = new THREE.PerspectiveCamera(15, this.c.canvasWidth / this.c.canvasHeight, 1, 40000);
-        this.renderer.compile(this.clientObjects.scene, this.clientObjects.camera);
-        this.clientObjects.selectionSprite.loadGraphics(this.clientObjects.scene);
     }
 
     setupSelectionSprite() {
@@ -135,7 +142,7 @@ export class SpaceViewWidget {
         if (typeof window === 'undefined') return; // return if we're just testing
 
         // populate sidebar
-        this.spaceViewDomManager.attachDomEventsToCode();
+        this.spaceViewDomManager.attachDomEventsToCode(this.resetThreeObjects);
         this.spaceViewDomManager.populateHtml();
 
         // start drawing

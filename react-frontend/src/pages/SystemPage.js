@@ -56,7 +56,7 @@ const SystemPage = () => {
                                 <ul id="wormhole-list" className="sidebar-list"></ul>
                             </div>
                             <div className="left-menu-bottom">
-                                <button id="btnGovernor">Governor</button>
+                                <button id="btnGovernor">GOVERNOR</button>
                             </div>
                         </div>
 

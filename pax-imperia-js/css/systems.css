@@ -285,6 +285,15 @@
     width: 59%;
     height: 66%;
     margin-left: 32%;
+    color: rgb(105, 0, 38);
+    font-size:18px;
+    font-weight:bold;
+
+    background-image: url("../assets/backgrounds/system_view_left/button.png");
+    background-repeat: round;
+    background-size: 100%;
+    border-color: #a7a8a7;
+    border-width: 2px 2px;
 }
 
 ul.sidebar-list {
