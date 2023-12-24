@@ -49,7 +49,7 @@ export class SpaceViewWidget {
         this.cacheMonster = new CacheMonster();
 
         this.resetThreeObjects = () => {
-            this.c.canvasWidth = document.body.clientWidth;
+            this.c.canvasWidth  = document.body.clientWidth;
             this.c.canvasHeight = document.body.clientHeight;
 
             this.setupSelectionSprite();
@@ -62,9 +62,10 @@ export class SpaceViewWidget {
             this.clientObjects.selectionSprite.loadGraphics(this.clientObjects.scene);
 
             if (this.spaceViewAnimator) {
-                this.spaceViewAnimator.resetCamera();
+                this.clientObjects.camera = this.spaceViewAnimator.resetCamera();
             }
 
+            return this.clientObjects.camera;
         }
 
     }

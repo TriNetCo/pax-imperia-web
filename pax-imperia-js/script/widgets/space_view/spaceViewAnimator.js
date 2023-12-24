@@ -269,6 +269,7 @@ export class SpaceViewAnimator {
         }
 
         this.addCameraToScene();
+        return this.camera;
     }
 
     switchToThirdPerson() {
