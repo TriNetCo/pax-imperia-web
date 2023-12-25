@@ -293,12 +293,17 @@ export class SpaceViewDomManager {
         this.raycaster.setFromCamera(this.mouse, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children);
 
-        let selection = null;
+
         // Loops through intersected objects (sorted by distance)
+        let selection = null;
         for (let i = 0; i < intersects.length; i++) {
-            let obj = this.getParentObject(intersects[i].object);
+            const clickedObj = intersects[i].object;
+            let obj = this.getParentObject(clickedObj);
+
             // cannot click on wormhole text, selection sprite, clouds, etc.
+            if (clickedObj.notClickable) { continue; }
             if (obj.notClickable) { continue; }
+
             // If current selectionTarget clicked again, remember it
             // but look for an object behind to select instead
             if (obj == this.selectionSprite.selectionTarget) {

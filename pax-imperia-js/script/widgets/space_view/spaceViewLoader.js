@@ -217,7 +217,8 @@ export class SpaceViewLoader {
 
         const wormholeObj = await this.loadWormhole(entity);
         const textObj = await this.addWormholeText(entity);
-        groupObj.add(wormholeObj, textObj);
+        groupObj.add(textObj);
+        groupObj.add(wormholeObj);
         entity.setLoadAttributes(groupObj);
         entity.linkObject3d(groupObj);
         return groupObj;
@@ -248,8 +249,6 @@ export class SpaceViewLoader {
         sprite.notClickable = true;
         // offset below (y) wormhole graphic
         sprite.position.set(0, -1.1, 0);
-        entity.textSprite = sprite;
-        entity.object3ds.text = sprite;
         return sprite;
     }
 
