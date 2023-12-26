@@ -319,7 +319,7 @@ ul.sidebar-list {
 }
 
 .selected-thumbnail {
-    background: orange;
+    background: rgba(255, 182, 12, 0.8);
 }
 
 .left-menu-thumbnail {
