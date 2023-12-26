@@ -304,9 +304,7 @@ export class Ship extends Entity {
             this.destinationPoint = null;
             this.destinationEntity = null;
         } else {
-            if (!this.controllered) {
-                this.object3d.lookAt(destinationVector); // Point the ship towards the destination.  Don't do this if we're using a controller
-            }
+            this.object3d.lookAt(destinationVector); // Point the ship towards the destination.
 
             this.object3d.position.add(displacementVector);
             this.synchronizeEntityWithObj3d();
