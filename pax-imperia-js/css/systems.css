@@ -26,6 +26,13 @@
 #console-message {
     width: 770px;
     margin-left: 40px;
+    position: relative;
+}
+
+#console-message .green-button,
+#console-message span {
+    position: relative;
+    top: -2px;
 }
 
 #time {
@@ -272,12 +279,13 @@
     background-repeat: round;
     background-size: 100%;
 
-    margin-top: 20px 0 0 0;
     border-image-source: url("../assets/backgrounds/system_view_left/junction.png");
     border-image-slice: 17 0 0 0;
     border-image-width: 23px;
     border-image-outset:20px;
     border-image-repeat: stretch;
+
+    z-index: 0;
 }
 
 #btnGovernor {

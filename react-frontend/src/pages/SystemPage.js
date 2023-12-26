@@ -31,7 +31,14 @@ const SystemPage = () => {
                 <div id="ultra-container">
                     <div id="console-div" className="flex-container">
                         <div className="console-message" id="console-message">
-                            Game Paused
+                            <button className="green-button">[Domestic Policy]</button>
+                            <button className="green-button">[Trade Routes]</button>
+                            <button className="green-button">[Foriegn Policy]</button>
+                            <button className="green-button">[Espionage]</button>
+                            <button className="green-button">[Military Planning]</button>
+                            <span>|</span>
+                            <button className="green-button">[Chat]</button>
+                            <button className="green-button">[Log]</button>
                         </div>
 
                         <div className="console-message" id="time"></div>
