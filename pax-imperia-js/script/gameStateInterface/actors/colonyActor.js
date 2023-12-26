@@ -29,11 +29,8 @@ export class ColonyActor extends Actor {
         const spaceViewLoader = this.gameStateInterface.spaceViewWidget.spaceViewAnimator.spaceViewLoader;
 
         const ship = galaxy.spawnShip(action.data.shipConfig);
-
-        spaceViewLoader.loadOutline(ship);
-        await spaceViewLoader.loadShip(ship);
-        ship.setLoadAttributes(ship.object3d);
-        spaceViewLoader.scene.add(ship.object3d);
+        const shipGrp = await spaceViewLoader.loadShipStuff(ship);
+        spaceViewLoader.scene.add(shipGrp);
     }
 
 }

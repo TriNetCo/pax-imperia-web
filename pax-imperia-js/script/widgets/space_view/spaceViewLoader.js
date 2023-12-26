@@ -6,6 +6,8 @@ import TimeLord from '../../models/timeLord.js';
 export class SpaceViewLoader {
 
     /**
+     * This class reads the system data and then loads in the required
+     * meshes, textures, etc. into the scene.
      *
      * @param {CacheMonster} cacheMonster
      * @param {*} scene
