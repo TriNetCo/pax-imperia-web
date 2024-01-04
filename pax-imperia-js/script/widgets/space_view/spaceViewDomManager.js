@@ -49,12 +49,6 @@ export class SpaceViewDomManager {
 
         window.spaceViewDomManager = this;
 
-        window.clickThumbnail = (targetType, targetName) => {
-            const entity = this.system[targetType + 's'].find(x => x.name === targetName);
-            this.handleSelectionChange(entity.object3d);
-            this.populateHtml();
-        };
-
         window.handleTargetButton = (buttonState) => {
             /** @type {Entity} */
             const parentEntity = this.selectionSprite.selectionEntity;
@@ -247,6 +241,18 @@ export class SpaceViewDomManager {
     // Click Handler Helpers //
     ///////////////////////////
 
+    clickThumbnail(targetType, targetName) {
+        const entity = this.system[targetType + 's'].find(x => x.name === targetName);
+        this.handleSelectionChange(entity.object3d);
+        this.populateHtml();
+    }
+
+    clickInfoMoji(targetType, targetId) {
+        if (targetType == 'planet') {
+            alert('TODO: Make it so an overlay pops up with the planet\'s info. ' + targetId);
+        }
+    }
+
     // Selects an object3d if one is passed in, or
     // unselects if no object3d is passed in
     // and, if a ship was selected before and we're interacting with it
@@ -348,7 +354,7 @@ export class SpaceViewDomManager {
 
     populateList(entity_type) {
         let listUl = document.getElementById(entity_type + "-list");
-        let html = '';
+        listUl.textContent = '';
         this.system[entity_type + "s"].forEach(entity => {
             let selectedThumbnail = ""
             let details = ""
@@ -357,19 +363,41 @@ export class SpaceViewDomManager {
                 selectedThumbnail = " selected-thumbnail";
             }
 
-            html += `
-                <li>
-                    <div class="left-menu-thumbnail ${selectedThumbnail}" onclick="clickThumbnail('${entity.type}', '${entity.name}')">
-                        <img src="${entity.assetThumbnailPath}"></img>
-                        <div class="right-side">
-                            <div class="details">${entity.name}${details}
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                `;
+            ///////////////////////////////////////////////////////
+            // create the element with neither HTML nor react :( //
+            ///////////////////////////////////////////////////////
+
+            const li = document.createElement('li');
+
+            const div = document.createElement('div');
+            div.className = `left-menu-thumbnail${selectedThumbnail}`;
+
+            div.onclick = () => {
+                this.clickThumbnail(entity.type, entity.name);
+            }
+
+            const img = document.createElement('img'); img.src = entity.assetThumbnailPath;
+            div.appendChild(img);
+
+            const divB = document.createElement('div'); divB.className = 'right-side';
+            const divC = document.createElement('div'); divC.className = 'details';
+            const span = document.createElement('span'); span.className = 'infomoji';
+            span.innerText = 'ℹ️';
+
+            span.onclick = () => {
+                this.clickInfoMoji(entity.type, entity.id);
+            }
+
+            divC.innerHTML = `${entity.name}${details} `;
+            divC.appendChild(span);
+
+            divB.appendChild(divC);
+
+            div.appendChild(divB);
+            li.appendChild(div);
+
+            listUl.appendChild(li);
         });
-        listUl.innerHTML = html;
     }
 
     populateConsoleBody() {

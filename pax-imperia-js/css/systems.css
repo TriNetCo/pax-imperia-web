@@ -346,8 +346,17 @@ ul.sidebar-list {
 .left-menu-thumbnail .right-side {
     align-self: flex-start;
     height: 100%;
-    display: flex;
+    /* display: flex; */
     margin-left: 16px;
+}
+
+.left-menu-thumbnail .right-side span.infomoji {
+    display: none;
+}
+
+.selected-thumbnail.left-menu-thumbnail .right-side .infomoji {
+    display: inline;
+    /* margin-left: 10px; */
 }
 
 .left-menu-thumbnail .wealth-rating {
