@@ -6,9 +6,9 @@ const GalaxyConfigPage = () => {
     const { data, updateData } = useContext(GameDataContext);
 
     const handleRegenerateSystemBtn = () => {
-        data.galaxyWidget.reload();
-
-        updateData({...data});
+        data.initNewGame();
+        data.gameStateInterface.startClock();
+        updateData(data);
     };
 
     return (

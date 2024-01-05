@@ -18,6 +18,8 @@ export class SpaceViewAnimator {
     /** @type {SpaceViewInputHandler} */
     spaceViewInputHandler;
 
+    lastHtmlClockUpdate = -2;
+
     /**
      *
      * @param {*} config
@@ -124,13 +126,15 @@ export class SpaceViewAnimator {
     }
 
     /**
-     * Since reading and writing to the dom is really expensive, we try to do it only once per second when needed.
+     * Since reading and writing to the dom is really expensive, we try to do
+     * it only once per second when needed.
      * @param {number} elapsedTime
      */
     updateHtmlClock(elapsedTime) {
-        if (Math.round(elapsedTime * 60) / 60 % 1 == 0) { // This check ensures we do something once every second
+        if (elapsedTime >= this.lastHtmlClockUpdate + 1 ) {
+            this.lastHtmlClockUpdate = elapsedTime;
             document.getElementById("time").innerHTML = elapsedTime.toFixed(0);
-        };
+        }
     }
 
     updateConsoleBody(elapsedTime) {

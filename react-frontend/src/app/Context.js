@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect, useDispatch } from 'react-redux';
 import { wsConnect, wsDisconnect } from '../modules/websocket';
@@ -17,22 +17,29 @@ export const disconnect = (dispatch) => {
     dispatch(wsDisconnect());
 };
 
-const Context = ({children, gameData}) => {
+const GameDataContextProvider = ({children, gameData}) => {
     const dispatch = useDispatch();
+    const [data, setData] = useState(gameData);
+    const [key, setKey] = useState(0);
+
+    const updateData = (newData) => {
+        setData(newData);
+        setKey(prevKey => prevKey + 1);
+    };
 
     useEffect( () => {
         connectAndJoin(dispatch);
     }, []);
 
     return (
-        <GameDataContext.Provider value={gameData}>
+        <GameDataContext.Provider value={{data, updateData, key}}>
             {children}
         </GameDataContext.Provider>
 
     );
 };
 
-Context.propTypes = {
+GameDataContextProvider.propTypes = {
     children: PropTypes.element.isRequired,
     gameData: PropTypes.object,
 };
@@ -46,4 +53,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export default connect(mapDispatchToProps)(Context);
+export default connect(mapDispatchToProps)(GameDataContextProvider);

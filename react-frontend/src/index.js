@@ -12,25 +12,30 @@ import './index.css';
 import 'pax-imperia-js/css/app.css';
 import 'pax-imperia-js/css/style.css';
 import 'pax-imperia-js/css/systems.css';
-import Context from './app/Context';
+import GameDataContextProvider from './app/Context';
 import FirebaseConnector from './app/FirebaseConnector';
-import { initGameData } from './app/gameDataInitializer';
 import AzureAuth from './app/AzureAuth';
 import { UserContextProvider } from './app/UserContextProvider';
 const container = document.getElementById('root');
 const root = createRoot(container);
 
 import AppConfig from './AppConfig';
+import GameData from './app/GameData';
 
 console.log(`Loaded version ${AppConfig.BUILD_VERSION}`);
 
-const gameData = initGameData();
+const websocket = new WebSocket('ws://localhost:3001/websocket');
+
+const gameData = new GameData(websocket);
+gameData.initNewGame();
+gameData.gameStateInterface.startClock();
+
 const azureAuth = new AzureAuth();
 
 root.render(
     <Provider store={store}>
         <UserContextProvider azureAuth={azureAuth}>
-            <Context gameData={gameData}>
+            <GameDataContextProvider gameData={gameData}>
                 <FirebaseConnector azureAuth={azureAuth}>
                     {/* <React.StrictMode> */}
                     <Router basename={process.env.REACT_APP_PUBLIC_SUFIX}>
@@ -38,7 +43,7 @@ root.render(
                     </Router>
                     {/* </React.StrictMode> */}
                 </FirebaseConnector>
-            </Context>
+            </GameDataContextProvider>
         </UserContextProvider>
     </Provider>
 );
