@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { connectAndJoin, disconnect } from '../../app/Context';
+import { connectAndJoin, disconnect } from '../../app/GameDataContextProvider';
 import { useDispatch, useSelector } from 'react-redux';
 import { newMessage, selectWebsocket } from '../../modules/websocket';
 import UserContext from '../../app/UserContext';

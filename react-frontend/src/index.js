@@ -12,7 +12,7 @@ import './index.css';
 import 'pax-imperia-js/css/app.css';
 import 'pax-imperia-js/css/style.css';
 import 'pax-imperia-js/css/systems.css';
-import GameDataContextProvider from './app/Context';
+import GameDataContextProvider from './app/GameDataContextProvider';
 import FirebaseConnector from './app/FirebaseConnector';
 import AzureAuth from './app/AzureAuth';
 import { UserContextProvider } from './app/UserContextProvider';

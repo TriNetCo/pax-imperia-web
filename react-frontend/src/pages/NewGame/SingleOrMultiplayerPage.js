@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { GameDataContext } from 'src/app/Context';
+import { GameDataContext } from 'src/app/GameDataContextProvider';
 import {useContext} from 'react';
 
 const SingleOrMultiplayerPage = () => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { GameDataContext } from '../../app/Context';
+import { GameDataContext } from '../../app/GameDataContextProvider';
 import { useHistory } from 'react-router-dom';
 import { GalaxyWidget } from 'pax-imperia-js/script/widgets/galaxy/galaxyWidget';
 

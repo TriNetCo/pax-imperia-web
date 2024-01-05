@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useRef, useContext } from 'react';
-import {GameDataContext} from '../../app/Context';
+import {GameDataContext} from '../../app/GameDataContextProvider';
 import PropTypes from 'prop-types';
 
 const SpaceView = ({canvasFullScreen}) => {

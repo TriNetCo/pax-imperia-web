@@ -1,6 +1,6 @@
 import {Link, Switch, Route} from 'react-router-dom';
 import NewGameBreadCrumb from './NewGameBreadCrumb';
-import { GameDataContext } from 'src/app/Context';
+import { GameDataContext } from 'src/app/GameDataContextProvider';
 import {useContext, useEffect} from 'react';
 import ColonizerConfigPage from './ColonizerConfigPage';
 import SpeciesDesignPage from './SpeciesDesignPage';

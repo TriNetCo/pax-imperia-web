@@ -1,4 +1,4 @@
-import { GameDataContext } from 'src/app/Context';
+import { GameDataContext } from 'src/app/GameDataContextProvider';
 import Galaxy from '../../features/galaxy/Galaxy';
 import { useContext } from 'react';
 

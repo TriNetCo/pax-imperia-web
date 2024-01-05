@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {newMessage, selectWebsocket, authenticate, joinChatLobby} from '../../modules/websocket';
 import ChatMessages from './ChatMessages';
 import ChatLobbyUsers from './ChatLobbyUsers';
-import { GameDataContext } from 'src/app/Context';
+import { GameDataContext } from 'src/app/GameDataContextProvider';
 
 const ChatLobby = () => {
 

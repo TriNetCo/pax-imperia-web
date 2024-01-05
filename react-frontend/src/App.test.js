@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { store } from './app/store';
 import App from './App';
 import { BrowserRouter as Router } from 'react-router-dom';
-import GameDataContextProvider from './app/Context';
+import GameDataContextProvider from './app/GameDataContextProvider';
 import { UserContextProvider } from './app/UserContextProvider';
 import FirebaseConnector from './app/FirebaseConnector';
 
