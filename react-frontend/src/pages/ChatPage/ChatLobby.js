@@ -12,7 +12,7 @@ const ChatLobby = () => {
     const dispatch = useDispatch();
     const websocket = useSelector(selectWebsocket);
     const userContext = useContext(UserContext);
-    const data = useContext(GameDataContext);
+    const { data, updateData } = useContext(GameDataContext);
 
     const sendMessage = () => {
         const outboundMsg = {

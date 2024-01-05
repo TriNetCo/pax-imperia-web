@@ -56,6 +56,10 @@ export class GalaxyWidget {
         this.galaxyDomManager.attachDomEventsToCode();
     }
 
+    reload() {
+        this.galaxy = Galaxy.generateFromConfig(this.galaxy.galaxyWidgetSettings);
+    }
+
     changeSystem(systemIndex) {
         this.galaxyDrawer.setCurrentSystem(systemIndex);
     }

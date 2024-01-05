@@ -128,3 +128,17 @@ html, body {
 .green-button:hover {
     background: rgba(173, 255, 49, 0.238);
 }
+
+.players-menu {
+    margin-left: auto;
+    margin-right: auto;
+    width: 20%;
+}
+
+.players-menu div {
+    padding-top: 20px;
+}
+
+.players-menu div a:visited {
+    color: #00E;
+}

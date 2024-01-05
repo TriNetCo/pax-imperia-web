@@ -2,13 +2,13 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const NavItem = ({ text, path }) => {
+const NavItem = ({ text, path, altPath }) => {
     const location = useLocation();
 
     // This function checks if the current page is the one that is being displayed
     // If it is, it returns the active class, otherwise it returns an empty string
-    const isActive = (page) => {
-        if (location.pathname === page) {
+    const isActive = () => {
+        if (location.pathname === path || location.pathname === altPath) {
             return 'breadcrumb-item active';
         } else {
             return 'breadcrumb-item';
@@ -24,7 +24,8 @@ const NavItem = ({ text, path }) => {
 
 NavItem.propTypes = {
     text: PropTypes.string.isRequired,
-    path: PropTypes.string.isRequired
+    path: PropTypes.string.isRequired,
+    altPath: PropTypes.string
 };
 
 export default NavItem;

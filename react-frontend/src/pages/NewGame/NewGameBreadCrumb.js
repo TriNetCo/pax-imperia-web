@@ -8,7 +8,7 @@ const NewGameBreadCrumb = () => {
         <>
             <nav aria-label="breadcrumb">
                 <ol className="breadcrumb">
-                    <NavItem text="Multiplayer Lobby" path="/new_game" />
+                    <NavItem text="Players" path="/new_game" altPath="/new_game/multiplayer" />
                     <NavItem text="Colonizer Config" path="/new_game/colonizer_config" />
                     <NavItem text="Species Design" path="/new_game/species_design" />
                     <NavItem text="Galaxy Config" path="/new_game/galaxy_config" />

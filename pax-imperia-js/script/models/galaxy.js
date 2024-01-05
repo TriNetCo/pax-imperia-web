@@ -39,8 +39,8 @@ export class Galaxy {
      * @param {number} galaxyWidgetSettings.maxPlanetSize description
      */
     static generateFromConfig(galaxyWidgetSettings) {
-        const galaxy = new Galaxy();
-        galaxy.systems = galaxy.generateSystems(galaxyWidgetSettings);
+        const galaxy = new Galaxy(galaxyWidgetSettings);
+        galaxy.systems = galaxy.generateSystems();
 
         galaxy.collectEntityIds(galaxy.systems);
 
@@ -50,6 +50,10 @@ export class Galaxy {
     static seedRandomness(seed) {
         this.seed = seed;
         seedRandomness(seed);
+    }
+
+    constructor(galaxyWidgetSettings) {
+        this.galaxyWidgetSettings = galaxyWidgetSettings;
     }
 
     /**
@@ -185,7 +189,8 @@ export class Galaxy {
      * @param {*} c
      * @returns {System[]}
      */
-    generateSystems(c) {
+    generateSystems() {
+        const c = this.galaxyWidgetSettings;
         let systems = [];
         let starName = new StarName();
 

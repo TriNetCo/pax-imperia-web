@@ -8,22 +8,22 @@ import { GalaxyWidget } from 'pax-imperia-js/script/widgets/galaxy/galaxyWidget'
 const Galaxy = ({canvasWidth, canvasHeight}) => {
     const history = useHistory();
     const ref = useRef();
-    const data = useContext(GameDataContext);
+    const { data, updateData } = useContext(GameDataContext);
 
     useEffect(() => {
         if (data === null) return; // for testing...
+
         /** @type {GalaxyWidget} */
         const galaxyWidget = data.galaxyWidget;
         const canvas = ref.current;
 
-        const systemClickHandler = (path) => {
-            history.push(path);
-        };
+        const systemClickHandler = path => history.push(path);
 
         const overrideConfig = {
             'canvasWidth': canvasWidth,
             'canvasHeight': canvasHeight,
-            'currentSystemId': data.spaceViewWidget?.system?.id};
+            'currentSystemId': data.spaceViewWidget?.system?.id,
+        };
         galaxyWidget.loadWidget(canvas, systemClickHandler, overrideConfig);
 
         let requestId;
@@ -50,7 +50,7 @@ const Galaxy = ({canvasWidth, canvasHeight}) => {
 };
 
 Galaxy.propTypes = {
-    canvasWidth: PropTypes.number,
+    canvasWidth:  PropTypes.number,
     canvasHeight: PropTypes.number,
 };
 
