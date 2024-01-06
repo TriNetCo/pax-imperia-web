@@ -22,8 +22,7 @@ const GameDataContextProvider = ({children, gameData}) => {
     const [data, setData] = useState(gameData);
     const [key, setKey] = useState(0);
 
-    const updateData = (newData) => {
-        setData(newData);
+    const updateData = () => {
         setKey(prevKey => prevKey + 1);
     };
 
@@ -35,7 +34,6 @@ const GameDataContextProvider = ({children, gameData}) => {
         <GameDataContext.Provider value={{data, updateData, key}}>
             {children}
         </GameDataContext.Provider>
-
     );
 };
 

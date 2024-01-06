@@ -1,14 +1,16 @@
 import { GameDataContext } from 'src/app/GameDataContextProvider';
 import Galaxy from '../../features/galaxy/Galaxy';
 import { useContext } from 'react';
+import {useHistory} from 'react-router-dom';
 
 const GalaxyConfigPage = () => {
     const { data, updateData } = useContext(GameDataContext);
+    const history = useHistory();
 
     const handleRegenerateSystemBtn = () => {
         data.initNewGame();
         data.gameStateInterface.startClock();
-        updateData(data);
+        updateData();
     };
 
     return (

@@ -19,6 +19,8 @@ export default class GameData {
     // /** @type {SpaceViewWidget} */
     spaceViewWidget;
 
+    galaxyCustomizations = {};
+
     seed;
 
     constructor(websocket) {

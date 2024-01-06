@@ -140,6 +140,8 @@
     border-radius: 0px 15px; /* Rounded corners */
     transition: background-color 0.3s ease; /* Smooth transition for hover effect */
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for a 3D effect */
+    color: blue;
+    cursor: pointer;
 }
 
 .play-button:hover {
@@ -147,3 +149,4 @@
     text-decoration: none; /* Removes underline on hover */
     color: #000; /* Dark text color on hover for better contrast */
 }
+

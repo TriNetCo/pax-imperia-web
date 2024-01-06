@@ -20,7 +20,7 @@ const container = document.getElementById('root');
 const root = createRoot(container);
 
 import AppConfig from './AppConfig';
-import GameData from './app/GameData';
+import GameData from './app/game/GameData';
 
 console.log(`Loaded version ${AppConfig.BUILD_VERSION}`);
 
@@ -28,7 +28,6 @@ const websocket = new WebSocket('ws://localhost:3001/websocket');
 
 const gameData = new GameData(websocket);
 gameData.initNewGame();
-gameData.gameStateInterface.startClock();
 
 const azureAuth = new AzureAuth();
 

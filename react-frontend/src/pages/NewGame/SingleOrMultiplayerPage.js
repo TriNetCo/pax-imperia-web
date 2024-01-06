@@ -1,24 +1,52 @@
-import { Link } from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import { GameDataContext } from 'src/app/GameDataContextProvider';
 import {useContext} from 'react';
 
-const SingleOrMultiplayerPage = () => {
-
+// eslint-disable-next-line react/prop-types
+const NiceButton = ({path, lobbyType, callback, children}) => {
     const { data, updateData } = useContext(GameDataContext);
+    const history = useHistory();
+
+    const handleClick = () => {
+        if (callback) {
+            callback();
+        }
+        data.galaxyCustomizations.lobbyType = lobbyType;
+        history.push(path);
+    };
 
     return (
-        <div className='players-menu'>
-            <div>
-                <Link to="/new_game/colonizer_config">Singleplayer</Link>
-            </div>
+        <div>
+            <button onClick={handleClick}>
+                {children}
+            </button>
+        </div>
+    );
+};
 
-            <div>
-                <Link to="/new_game/multiplayer">Host Multiplayer</Link>
-            </div>
+const SingleOrMultiplayerPage = () => {
+    const { data, updateData } = useContext(GameDataContext);
 
-            <div>
-                <Link to="/lobbies">Join Multiplayer</Link>
-            </div>
+    const clearOldGame = () => {
+        data.initNewGame();
+    };
+
+    return (
+        <div className="players-menu">
+            <NiceButton
+                path="/new_game/colonizer_config"
+                lobbyType='singleplayer'
+                callback={clearOldGame}>
+                Singleplayer
+            </NiceButton>
+
+            <NiceButton path="/new_game/multiplayer" lobbyType='multiplayer'>
+                Host Multiplayer
+            </NiceButton>
+
+            <NiceButton path="/lobbies">
+                Join Multiplayer
+            </NiceButton>
         </div>
     );
 };
