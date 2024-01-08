@@ -1,7 +1,7 @@
-import React, { useState, useContext } from 'react';
+import {useState, useContext, useEffect} from 'react';
 import UserContext from '../../app/UserContext';
 import { useDispatch, useSelector } from 'react-redux';
-import {newMessage, selectWebsocket, authenticate, joinChatLobby} from '../../modules/websocket';
+import {newMessage, selectWebsocket, getGameConfiguration, setGameConfiguration, setChatLobbyId} from '../../modules/websocket';
 import ChatMessages from './ChatMessages';
 import ChatLobbyUsers from './ChatLobbyUsers';
 import { GameDataContext } from 'src/app/GameDataContextProvider';
@@ -13,11 +13,36 @@ const ChatLobby = () => {
     const websocket = useSelector(selectWebsocket);
     const userContext = useContext(UserContext);
     const { data, updateData } = useContext(GameDataContext);
+    const chatLobbyId = '1234';
+
+    // Whenever websocket.systemsJson changes to something, import
+    // that to our galaxyWidget automatically
+    useEffect(() => {
+        // alert('USE EFFECT TRIGGERED');
+        if (!websocket.systemsJson) {
+            return;
+        }
+        data.galaxyWidget.importGalaxyData(websocket.systemsJson);
+    }, [websocket.systemsJson]);
+
+    // Whenever our websocket.status changes to WS_CONNECTED
+    // imediately createOrJoinLobby
+    useEffect(() => {
+        // alert('USE EFFECT TRIGGERED about WS_CONNECTED' );
+        if (websocket.status !== 'WS_CONNECTED') {
+            return;
+        }
+
+        // If we already have a lobby, just reconnect to it if our connection was interupted
+        // Don't rebuild the actual lobby (unless it vanished?)
+        createOrJoinLobby();
+
+    }, [websocket.status]);
 
     const sendMessage = () => {
         const outboundMsg = {
             message: msgToSend,
-            user: userContext.displayName,
+            user: userContext.displayName ? userContext.displayName : 'Anonymous',
             userEmail: userContext.email,
             chatLobbyId: websocket.chatLobbyId,
         };
@@ -52,29 +77,72 @@ const ChatLobby = () => {
         }
     };
 
-    return (
-        <div className="chat-lobby">
-            <div>Lobby ID: { websocket.chatLobbyId }</div>
-            <div>Connection Status: { websocket.status } </div>
-            <div>Authentication Status: { websocket.authenticationStatus } </div>
-            <div>chatLobbyUsers: { websocket.chatLobbyUsers }</div>
-            <div>websocket.systemsJson: { !websocket.systemsJson ? 'NULL' : 'POPULATED' }</div>
-            {/* We need a way to set our username for debugging */}
-            <div>
-        Current User:
-                <input className="edit-username-field" disabled={true} type="text" value={userContext.displayName} onChange={handleChangeCurrentUser} />
-                <button className="edit-username-btn" onClick={enableEditButton} >Edit</button>
-            </div>
+    const createOrJoinLobby = () => {
+        data.lobby.createOrJoinLobby(chatLobbyId);
+    };
 
-            <div className="chat-lobby-header">Lobby</div>
-            <ChatLobbyUsers />
-            <ChatMessages />
-            <div className="chat-input">
-                <input type="text" value={msgToSend} onChange={handleMessageChange}
-                    onKeyDown={handleEnterKey} placeholder="Type a message..." />
-                <button onClick={sendMessage}>Send</button>
+    const uploadGameData = () => {
+        const systemsJson = data.galaxyWidget.exportGalaxyDataToJson();
+        dispatch(setGameConfiguration(chatLobbyId, systemsJson));
+    };
+
+    const downloadGameData = () => {
+        if (!websocket.chatLobbyId) {
+            alert('No chatLobbyId.  Disco?');
+            return;
+        }
+
+        // This will populate websocket.systemsJson
+        dispatch(getGameConfiguration(chatLobbyId));
+    };
+
+    // const overrideGameData = () => {
+    //     if (!websocket.systemsJson) {
+    //         alert('No game data to override.  Disco?');
+    //         return;
+    //     }
+    //     data.galaxyWidget.importGalaxyData(websocket.systemsJson);
+    // };
+
+    const leaveLobby = () => {
+        // go to /new_game
+        // send a leave lobby message to the server
+        //
+
+    };
+
+    return (
+        <>
+            {/* <button onClick={createOrJoinLobby}>Create or Join New Lobby</button> */}
+            <button onClick={leaveLobby}>Leave Lobby</button>
+            <button onClick={uploadGameData}>Upload Game Data</button>
+            <button onClick={downloadGameData}>Download Game Data</button>
+            {/* <button onClick={overrideGameData}>Override Game Data</button> */}
+
+            <div className="chat-lobby">
+                <div>Lobby ID: { websocket.chatLobbyId }</div>
+                <div>Connection Status: { websocket.status } </div>
+                <div>Authentication Status: { websocket.authenticationStatus } </div>
+                <div>chatLobbyUsers: { websocket.chatLobbyUsers.join(' ') }</div>
+                <div>websocket.systemsJson: { !websocket.systemsJson ? 'NULL' : 'POPULATED' }</div>
+                {/* We need a way to set our username for debugging */}
+                <div>
+                    Current User:
+                    <input className="edit-username-field" disabled={true} type="text" value={userContext.displayName} onChange={handleChangeCurrentUser} />
+                    <button className="edit-username-btn" onClick={enableEditButton} >Edit</button>
+                </div>
+
+                <div className="chat-lobby-header">Lobby</div>
+                <ChatLobbyUsers />
+                <ChatMessages />
+                <div className="chat-input">
+                    <input type="text" value={msgToSend} onChange={handleMessageChange}
+                        onKeyDown={handleEnterKey} placeholder="Type a message..." />
+                    <button onClick={sendMessage}>Send</button>
+                </div>
             </div>
-        </div>
+        </>
+
     );
 };
 

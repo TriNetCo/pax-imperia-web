@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import { bindActionCreators } from 'redux';
-import { connect, useDispatch } from 'react-redux';
-import { wsConnect, wsDisconnect } from '../modules/websocket';
+import {connect, useDispatch, useSelector} from 'react-redux';
+import {wsConnect, wsDisconnect, selectWebsocket} from '../modules/websocket';
 import PropTypes from 'prop-types';
+import UserContext from './UserContext';
 
 export const GameDataContext = React.createContext(null);
 
@@ -19,6 +20,8 @@ export const disconnect = (dispatch) => {
 
 const GameDataContextProvider = ({children, gameData}) => {
     const dispatch = useDispatch();
+    const websocket = useSelector(selectWebsocket);
+    const userContext = useContext(UserContext);
     const [data, setData] = useState(gameData);
     const [key, setKey] = useState(0);
 
@@ -29,6 +32,8 @@ const GameDataContextProvider = ({children, gameData}) => {
     useEffect( () => {
         connectAndJoin(dispatch);
     }, []);
+
+    gameData.injectReactGarbage({dispatch, userContext, websocket});
 
     return (
         <GameDataContext.Provider value={{data, updateData, key}}>

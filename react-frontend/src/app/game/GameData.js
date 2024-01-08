@@ -4,8 +4,12 @@ import { GameSettings } from 'pax-imperia-js/script/gameSettings';
 import { Galaxy } from 'pax-imperia-js/script/models/galaxy';
 import { GameStateInterface } from 'pax-imperia-js/script/gameStateInterface/gameStateInterface';
 import AppConfig from 'src/AppConfig';
+import Lobby from './Lobby';
 
 export default class GameData {
+
+    /** @type {Lobby} */
+    lobby;
 
     // /** @type {Galaxy} */
     galaxy;
@@ -23,8 +27,9 @@ export default class GameData {
 
     seed;
 
-    constructor(websocket) {
+    constructor(websocket, lobby) {
         this.websocket = websocket;
+        this.lobby = lobby ? lobby : new Lobby(websocket);
 
         this.configureSeed();
 
@@ -45,6 +50,13 @@ export default class GameData {
             [ galaxy,      gameStateInterface,      galaxyWidget,      spaceViewWidget];
 
         this.globalizeClasses();
+    }
+
+    injectReactGarbage(garbage) {
+        this.dispatch = garbage.dispatch;
+        this.lobby.dispatch = garbage.dispatch;
+        this.lobby.websocket = garbage.websocket;
+        this.lobby.userContext = garbage.userContext;
     }
 
     // Globalize classes for debugging

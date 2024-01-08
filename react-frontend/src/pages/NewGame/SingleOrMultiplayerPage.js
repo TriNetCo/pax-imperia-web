@@ -31,16 +31,21 @@ const SingleOrMultiplayerPage = () => {
         data.initNewGame();
     };
 
+    const createMultiplayerLobby = () => {
+
+    };
+
     return (
         <div className="players-menu">
             <NiceButton
                 path="/new_game/colonizer_config"
                 lobbyType='singleplayer'
-                callback={clearOldGame}>
+                callback={ clearOldGame }>
                 Singleplayer
             </NiceButton>
 
-            <NiceButton path="/new_game/multiplayer" lobbyType='multiplayer'>
+            <NiceButton path="/new_game/multiplayer" lobbyType='multiplayer'
+                callback={ createMultiplayerLobby }>
                 Host Multiplayer
             </NiceButton>
 

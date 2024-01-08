@@ -14,6 +14,7 @@ class Game extends React.Component {
     }
 
     connectAndJoin = () => {
+        alert('does this happen');
         const { id, dispatch } = this.props;
         const host = 'ws://127.0.0.1:4000/websocket';
         // const host = `ws://127.0.0.1:8000/ws/game/${id}?token=${localStorage.getItem('token')}`;

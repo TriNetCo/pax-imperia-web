@@ -15,66 +15,11 @@ import UserCard from 'src/shared/UserCard/UserCard';
 import SingleOrMultiplayerPage from './SingleOrMultiplayerPage';
 
 const NewGameLayout = () => {
-
-    const dispatch = useDispatch();
-    const userContext = useContext(UserContext);
-    const { data, updateData } = useContext(GameDataContext);
-    const websocket = useSelector(selectWebsocket);
-    const chatLobbyId = '1234';
-
-    //   useEffect(() => {
-    //     createNewMultiplayerGame();
-    //   }, []);
-
-
-    const createNewMultiplayerGame = () => {
-        createNewLobby();
-    };
-
-    const createNewLobby = () =>  {
-        // If we aren't connected over websockets, alert and return
-        if (websocket.status !== 'WS_CONNECTED') {
-            alert('Not connected to websocket.  Is the server running?');
-            return;
-        }
-        dispatch(setChatLobbyId(chatLobbyId));
-        dispatch(authenticate(userContext.email, userContext.displayName, userContext.token));
-        dispatch(joinChatLobby(userContext.email, chatLobbyId));
-    };
-
-    const setGameData = () => {
-        const systemsJson = data.galaxyWidget.exportGalaxyDataToJson();
-        dispatch(setGameConfiguration(chatLobbyId, systemsJson));
-    };
-
-    const downloadGameData = () => {
-        if (!websocket.chatLobbyId) {
-            alert('No chatLobbyId.  Disco?');
-            return;
-        }
-
-        dispatch(getGameConfiguration(chatLobbyId));
-    };
-
-    const overrideGameData = () => {
-        if (!websocket.systemsJson) {
-            alert('No game data to override.  Disco?');
-            return;
-        }
-        data.galaxyWidget.importGalaxyData(websocket.systemsJson);
-    };
-
-
     return (
         <>
             <UserCard />
             <div className="newgame-wrap">
-                <div className="big-header">New Multiplayer Game</div>
-
-                <button onClick={createNewLobby}>Create or Join New Lobby</button>
-                <button onClick={setGameData}>Set Game Data</button>
-                <button onClick={downloadGameData}>Download Game Data</button>
-                <button onClick={overrideGameData}>Override Game Data</button>
+                <div className="big-header">New Game</div>
 
                 <NewGameBreadCrumb />
                 <Switch>
