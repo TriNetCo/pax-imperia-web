@@ -12,6 +12,7 @@ import NewGameLayout from './pages/NewGame/NewGamePage';
 import AboutPage from './pages/AboutPage';
 import usePageTracking from './app/usePageTracking';
 import PreferencesPage from './pages/PreferencesPage/PreferencesPage';
+import LobbiesPage from './pages/LobbiesPage/LobbiesPage';
 
 function App() {
     usePageTracking();
@@ -30,6 +31,8 @@ function App() {
                 <Route exact path="/chat" component={ChatPage} />
                 <Route exact path="/preferences" component={PreferencesPage} />
 
+                <Route exact path="/lobbies" component={LobbiesPage} />
+
                 {/* End State for Menu and stuff */}
                 <Route exact path="/"                          component={LandingPage}      />        {/* Shows the Sign-in stuff or the user's dashboard including 'newgame' button */}
 
@@ -38,6 +41,7 @@ function App() {
                 {/* End State for Game Pages: */}
                 <Route exact path="/game/:gameId" component={GameDashboardPage} />
                 <Route exact path="/game/:gameId/systems/:systemId" component={SystemPage} />
+
 
             </Switch>
         </div>
