@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import counterReducer from '../features/counter/counterSlice';
 import usersReducer from '../features/users/usersSlice';
-import wsMiddleware from '../middleware/middleware';
+import socketMiddleware from '../middleware/socketMiddleware';
 import { websocketReducer } from '../modules/websocket';
 
 export const store = configureStore({
@@ -11,5 +11,5 @@ export const store = configureStore({
         websocket: websocketReducer
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(wsMiddleware),
+        getDefaultMiddleware().concat(socketMiddleware),
 });
