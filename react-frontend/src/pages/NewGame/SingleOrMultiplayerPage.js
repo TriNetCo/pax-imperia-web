@@ -44,7 +44,7 @@ const SingleOrMultiplayerPage = () => {
                 Singleplayer
             </NiceButton>
 
-            <NiceButton path="/new_game/multiplayer" lobbyType='multiplayer'
+            <NiceButton path="/new_game/lobbies" lobbyType='multiplayer'
                 callback={ createMultiplayerLobby }>
                 Host Multiplayer
             </NiceButton>

@@ -13,6 +13,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import UserContext from 'src/app/UserContext';
 import UserCard from 'src/shared/UserCard/UserCard';
 import SingleOrMultiplayerPage from './SingleOrMultiplayerPage';
+import HostLobbyTab from './HostLobbyTab';
+import JoinLobbyTab from './JoinLobbyTab';
 
 const NewGameLayout = () => {
     return (
@@ -24,12 +26,12 @@ const NewGameLayout = () => {
                 <NewGameBreadCrumb />
                 <Switch>
                     <Route exact path="/new_game" component={SingleOrMultiplayerPage} />
-                    <Route path="/new_game/multiplayer" component={ChatLobby} />
+                    <Route path="/new_game/lobbies" component={HostLobbyTab} />
 
                     <Route path="/new_game/colonizer_config" component={ColonizerConfigPage} />
                     <Route path="/new_game/species_design" component={SpeciesDesignPage} />
                     <Route path="/new_game/galaxy_config" component={GalaxyConfigPage} />
-                    <Route path="/new_game/lobby/:lobbyToken" component={ChatLobby} />
+                    <Route path="/new_game/lobby/:lobbyId" component={JoinLobbyTab} />
                     <Route path="/new_game/lobby/:lobbyToken/game" component={GameDashboardPage} />
                 </Switch>
             </div>

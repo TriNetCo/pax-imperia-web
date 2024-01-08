@@ -8,7 +8,8 @@ const NavItem = ({ text, path, altPath }) => {
     // This function checks if the current page is the one that is being displayed
     // If it is, it returns the active class, otherwise it returns an empty string
     const isActive = () => {
-        if (location.pathname === path || location.pathname === altPath) {
+        if (location.pathname === path
+            || (altPath && location.pathname.includes(altPath)) ) {
             return 'breadcrumb-item active';
         } else {
             return 'breadcrumb-item';

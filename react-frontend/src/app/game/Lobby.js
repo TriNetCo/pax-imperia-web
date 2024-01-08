@@ -13,9 +13,7 @@ export default class Lobby {
             return;
         }
 
-        const displayName = userContext.displayName ? userContext.displayName : 'Anonymous';
-        const email = userContext.email ? userContext.email : 'none@email.atall';
-        const token = userContext.token ? userContext.token : 'anonymous';
+        const {displayName, email, token} = this.getValidFields(userContext);
 
         dispatch(setChatLobbyId(chatLobbyId));
         dispatch(authenticate(email, displayName, token));
@@ -23,5 +21,13 @@ export default class Lobby {
 
         this.chatLobbyId = chatLobbyId;
     };
+
+    getValidFields(userContext) {
+        const displayName = userContext.displayName ? userContext.displayName : 'Anonymous';
+        const email = userContext.email ? userContext.email : 'none@email.atall';
+        const token = userContext.token ? userContext.token : 'anonymous';
+
+        return { displayName, email, token };
+    }
 
 }

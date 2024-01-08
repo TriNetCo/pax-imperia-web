@@ -12,32 +12,16 @@ const ChatLobby = () => {
     const dispatch = useDispatch();
     const websocket = useSelector(selectWebsocket);
     const userContext = useContext(UserContext);
-    const { data, updateData } = useContext(GameDataContext);
-    const chatLobbyId = '1234';
+    const { data } = useContext(GameDataContext);
 
     // Whenever websocket.systemsJson changes to something, import
     // that to our galaxyWidget automatically
     useEffect(() => {
-        // alert('USE EFFECT TRIGGERED');
         if (!websocket.systemsJson) {
             return;
         }
         data.galaxyWidget.importGalaxyData(websocket.systemsJson);
     }, [websocket.systemsJson]);
-
-    // Whenever our websocket.status changes to WS_CONNECTED
-    // imediately createOrJoinLobby
-    useEffect(() => {
-        // alert('USE EFFECT TRIGGERED about WS_CONNECTED' );
-        if (websocket.status !== 'WS_CONNECTED') {
-            return;
-        }
-
-        // If we already have a lobby, just reconnect to it if our connection was interupted
-        // Don't rebuild the actual lobby (unless it vanished?)
-        createOrJoinLobby();
-
-    }, [websocket.status]);
 
     const sendMessage = () => {
         const outboundMsg = {
@@ -77,15 +61,6 @@ const ChatLobby = () => {
         }
     };
 
-    const createOrJoinLobby = () => {
-        data.lobby.createOrJoinLobby(chatLobbyId);
-    };
-
-    const uploadGameData = () => {
-        const systemsJson = data.galaxyWidget.exportGalaxyDataToJson();
-        dispatch(setGameConfiguration(chatLobbyId, systemsJson));
-    };
-
     const downloadGameData = () => {
         if (!websocket.chatLobbyId) {
             alert('No chatLobbyId.  Disco?');
@@ -93,16 +68,8 @@ const ChatLobby = () => {
         }
 
         // This will populate websocket.systemsJson
-        dispatch(getGameConfiguration(chatLobbyId));
+        dispatch(getGameConfiguration(websocket.chatLobbyId));
     };
-
-    // const overrideGameData = () => {
-    //     if (!websocket.systemsJson) {
-    //         alert('No game data to override.  Disco?');
-    //         return;
-    //     }
-    //     data.galaxyWidget.importGalaxyData(websocket.systemsJson);
-    // };
 
     const leaveLobby = () => {
         // send a leave lobby message to the server
@@ -113,7 +80,7 @@ const ChatLobby = () => {
     return (
         <>
             <button onClick={leaveLobby}>Leave Lobby</button>
-            <button onClick={uploadGameData}>Upload Game Data</button>
+            {/* <button onClick={uploadGameData}>Upload Game Data</button> */}
             <button onClick={downloadGameData}>Download Game Data</button>
 
             <div className="chat-lobby">

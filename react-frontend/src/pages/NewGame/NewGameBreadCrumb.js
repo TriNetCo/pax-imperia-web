@@ -29,14 +29,14 @@ const NewGameBreadCrumb = () => {
     };
 
     const stepOnePath = () => {
-        return data.galaxyCustomizations.lobbyType === 'multiplayer' ? '/new_game/multiplayer' : '/new_game';
+        return data.galaxyCustomizations.lobbyType === 'multiplayer' ? '/new_game/lobbies' : '/new_game';
     };
 
     return (
         <>
             <nav aria-label="breadcrumb">
                 <ol className="breadcrumb">
-                    <NavItem text={stepOneLabel()} path={stepOnePath()} altPath="/new_game/multiplayer" />
+                    <NavItem text={stepOneLabel()} path={stepOnePath()} altPath="/new_game/lobbies" />
                     <NavItem text="Colonizer Config" path="/new_game/colonizer_config" />
                     <NavItem text="Species Design" path="/new_game/species_design" />
                     <NavItem text="Galaxy Config" path="/new_game/galaxy_config" />
