@@ -30,7 +30,7 @@ test('Given I just entered a system, when I double click a wormhole, then I navi
 
     const galaxy = Galaxy.generateFromConfig(galaxyWidgetConfig);
 
-    const gameStateInterface = new GameStateInterface({galaxy, websocket});
+    const gameStateInterface = new GameStateInterface({galaxy});
 
     const system = galaxy.systems[0];
     const wormhole = system.wormholes[0];

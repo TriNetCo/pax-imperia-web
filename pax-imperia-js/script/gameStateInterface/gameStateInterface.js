@@ -40,18 +40,15 @@ export class GameStateInterface {
      *
      * @param {Object} configs
      * @param {Galaxy} configs.galaxy
-     * @param {WebSocket} configs.websocket
      */
     constructor(configs) {
         this.galaxy = configs.galaxy;
-        this.websocket = configs.websocket;
         this.gameClock = new THREE.Clock(false);
-        this.websocket.onmessage = this.onMessage;
 
-        this.shipActor = new ShipActor(this.websocket, this);
-        this.colonyActor = new ColonyActor(this.websocket, this);
-        this.stationActor = new StationActor(this.websocket, this);
-        this.playerActor = new PlayerActor(this.websocket, this);
+        this.shipActor = new ShipActor(this);
+        this.colonyActor = new ColonyActor(this);
+        this.stationActor = new StationActor(this);
+        this.playerActor = new PlayerActor(this);
 
         this.knownConnections = [];
         this.eventLog = [];
@@ -60,6 +57,11 @@ export class GameStateInterface {
             0: { id: 0, name: "player1 (you)", color: null },
             1: { id: 1, name: "dr potato", color: 0xff0000 },
         };
+    }
+
+    attachToSocket(websocket) {
+        this.websocket = websocket;
+        this.websocket.onmessage = this.onMessage;
 
     }
 
@@ -82,6 +84,7 @@ export class GameStateInterface {
 
     // this method is called when the user performs a network action
     sendAction(action) {
+        if (!this.websocket) return;
         this.websocket.send(JSON.stringify(action));
     }
 

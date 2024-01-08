@@ -1,8 +1,8 @@
 import {Actor} from './actor.js';
 export class StationActor extends Actor {
 
-    constructor(websocket) {
-        super(websocket);
+    constructor(gameStateInterface) {
+        super(gameStateInterface);
     }
 
     handle(action) {

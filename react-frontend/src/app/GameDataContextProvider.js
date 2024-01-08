@@ -7,8 +7,8 @@ import UserContext from './UserContext';
 
 export const GameDataContext = React.createContext(null);
 
-const websocketPort = '3001';
 export const connectAndJoin = (dispatch) => {
+    const websocketPort = '3001';
     const host = `ws://127.0.0.1:${websocketPort}/websocket`;
 
     // This is where we start using the websocket middleware...

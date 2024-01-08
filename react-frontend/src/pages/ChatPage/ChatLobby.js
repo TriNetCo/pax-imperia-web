@@ -105,25 +105,21 @@ const ChatLobby = () => {
     // };
 
     const leaveLobby = () => {
-        // go to /new_game
         // send a leave lobby message to the server
         //
-
+        // go to /new_game
     };
 
     return (
         <>
-            {/* <button onClick={createOrJoinLobby}>Create or Join New Lobby</button> */}
             <button onClick={leaveLobby}>Leave Lobby</button>
             <button onClick={uploadGameData}>Upload Game Data</button>
             <button onClick={downloadGameData}>Download Game Data</button>
-            {/* <button onClick={overrideGameData}>Override Game Data</button> */}
 
             <div className="chat-lobby">
                 <div>Lobby ID: { websocket.chatLobbyId }</div>
                 <div>Connection Status: { websocket.status } </div>
                 <div>Authentication Status: { websocket.authenticationStatus } </div>
-                <div>chatLobbyUsers: { websocket.chatLobbyUsers.join(' ') }</div>
                 <div>websocket.systemsJson: { !websocket.systemsJson ? 'NULL' : 'POPULATED' }</div>
                 {/* We need a way to set our username for debugging */}
                 <div>

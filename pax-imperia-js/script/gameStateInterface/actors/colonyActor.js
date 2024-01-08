@@ -2,8 +2,8 @@ import { Actor } from "./actor.js";
 
 export class ColonyActor extends Actor {
 
-    constructor(websocket, gameStateInterface) {
-        super(websocket, gameStateInterface);
+    constructor(gameStateInterface) {
+        super(gameStateInterface);
     }
 
     handle(action) {

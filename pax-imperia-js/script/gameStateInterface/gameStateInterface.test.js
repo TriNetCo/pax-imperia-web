@@ -10,7 +10,7 @@ const websocket = {
 const galaxy = new Galaxy();
 
 test("its clock can be started and shared with another client which will have the same elapsed time", done => {
-    const gameStateInterface  = new GameStateInterface({ galaxy, websocket });
+    const gameStateInterface  = new GameStateInterface({ galaxy });
     gameStateInterface.startClock();
 
     const clock1 = gameStateInterface.gameClock;

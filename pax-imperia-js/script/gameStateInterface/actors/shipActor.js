@@ -6,11 +6,10 @@ export class ShipActor extends Actor {
 
     /**
      *
-     * @param {WebSocket} websocket
      * @param {GameStateInterface} gameStateInterface
      */
-    constructor(websocket, gameStateInterface) {
-        super(websocket, gameStateInterface);
+    constructor(gameStateInterface) {
+        super(gameStateInterface);
     }
 
     handle(action) {

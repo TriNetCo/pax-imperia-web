@@ -24,9 +24,7 @@ import GameData from './app/game/GameData';
 
 console.log(`Loaded version ${AppConfig.BUILD_VERSION}`);
 
-const websocket = new WebSocket('ws://localhost:3001/websocket');
-
-const gameData = new GameData(websocket);
+const gameData = new GameData();
 gameData.initNewGame();
 
 const azureAuth = new AzureAuth();

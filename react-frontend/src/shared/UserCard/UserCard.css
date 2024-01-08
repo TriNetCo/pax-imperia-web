@@ -1,6 +1,6 @@
 
 .user-card-container {
-  position: absolute;
+  position: fixed;
   top: 0px;
   right: 20px;
   flex: 1;

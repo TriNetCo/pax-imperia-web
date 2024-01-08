@@ -34,7 +34,7 @@ export const createMockPlanet = (positionConfig) => {
 
 
 export const createMockGameStateInterface = (config) => {
-    const gameStateInterface = new GameStateInterface( {...config, ...{websocket} });
+    const gameStateInterface = new GameStateInterface( {...config });
     gameStateInterface.spaceViewWidget = {
         system: config.galaxy.systems[1],
         spaceViewDomManager: {

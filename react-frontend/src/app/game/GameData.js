@@ -8,6 +8,8 @@ import Lobby from './Lobby';
 
 export default class GameData {
 
+    websocket;
+
     /** @type {Lobby} */
     lobby;
 
@@ -27,9 +29,8 @@ export default class GameData {
 
     seed;
 
-    constructor(websocket, lobby) {
-        this.websocket = websocket;
-        this.lobby = lobby ? lobby : new Lobby(websocket);
+    constructor(lobby) {
+        this.lobby = lobby ? lobby : new Lobby();
 
         this.configureSeed();
 
@@ -41,7 +42,7 @@ export default class GameData {
 
     initNewGame() {
         const galaxy =  Galaxy.generateFromConfig(GameSettings.galaxyWidget);
-        const gameStateInterface = new GameStateInterface({galaxy, websocket: this.websocket});
+        const gameStateInterface = new GameStateInterface({galaxy});
 
         const galaxyWidget = new GalaxyWidget(GameSettings.galaxyWidget, galaxy, gameStateInterface);
         const spaceViewWidget = new SpaceViewWidget(GameSettings.spaceViewWidget, {}, gameStateInterface);
