@@ -1,16 +1,10 @@
 import {Link, Switch, Route} from 'react-router-dom';
 import NewGameBreadCrumb from './NewGameBreadCrumb';
-import { GameDataContext } from 'src/app/GameDataContextProvider';
-import {useContext, useEffect} from 'react';
 import ColonizerConfigPage from './ColonizerConfigPage';
 import SpeciesDesignPage from './SpeciesDesignPage';
 import GalaxyConfigPage from './GalaxyConfigPage';
-import ChatLobby from '../ChatPage/ChatLobby';
 import GameDashboardPage from '../GameDashboardPage';
-import {authenticate, getGameConfiguration, joinChatLobby, setGameConfiguration, selectWebsocket, setChatLobbyId} from '../../modules/websocket';
 import './NewGamePage.css';
-import {useDispatch, useSelector} from 'react-redux';
-import UserContext from 'src/app/UserContext';
 import UserCard from 'src/shared/UserCard/UserCard';
 import SingleOrMultiplayerPage from './SingleOrMultiplayerPage';
 import HostLobbyTab from './HostLobbyTab';

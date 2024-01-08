@@ -1,7 +1,7 @@
 import {useState, useContext, useEffect} from 'react';
 import UserContext from '../../app/UserContext';
 import { useDispatch, useSelector } from 'react-redux';
-import {newMessage, selectWebsocket, getGameConfiguration, setGameConfiguration, setChatLobbyId} from '../../modules/websocket';
+import {newMessage, selectWebsocket, getGameConfiguration} from '../../modules/websocket';
 import ChatMessages from './ChatMessages';
 import ChatLobbyUsers from './ChatLobbyUsers';
 import { GameDataContext } from 'src/app/GameDataContextProvider';

@@ -5,21 +5,34 @@ export const wsConnected = host => ({ type: 'WS_CONNECTED', host });
 export const wsDisconnected = host => ({ type: 'WS_DISCONNECTED', host });
 export const wsError = host => ({ type: 'WS_ERROR', host });
 
-export const newMessage = payload => ({ type: 'NEW_MESSAGE', payload });
-export const newMessageFromServer = payload => ({ type: 'NEW_MESSAGE_FROM_SERVER', payload });
-export const updateGame = (json, player) => ({ type: 'SET_GAME', data: json, player });
-export const joinChatLobby = (user, chatLobbyId) => ({ type: 'JOIN_CHAT_LOBBY', user, chatLobbyId });
-export const joinChatLobbyResponse = (chatLobbyId, chatLobbyUsers) => ({ type: 'JOIN_CHAT_LOBBY_RESPONSE', chatLobbyId, chatLobbyUsers });
+/////////////////////////////////////
+// Outbound Messages and Responses //
+/////////////////////////////////////
+
 export const authenticate = (email, displayName, token) => ({ type: 'AUTHENTICATE', email, displayName, token });
 export const authenticateResponse = (status) => ({ type: 'AUTHENTICATE_RESPONSE', status });
-export const systemMessageUserJoinedChat = (payload) => ({ type: 'SYSTEM_MESSAGE_USER_JOINED_CHAT', payload });
-export const systemMessageChatUserList = (payload) => ({ type: 'SYSTEM_MESSAGE_CHAT_USER_LIST', payload });
+export const newMessage = payload => ({ type: 'NEW_MESSAGE', payload });
+export const joinChatLobby = (user, chatLobbyId) => ({ type: 'JOIN_CHAT_LOBBY', user, chatLobbyId });
+export const joinChatLobbyResponse = (chatLobbyId, chatLobbyUsers) => ({ type: 'JOIN_CHAT_LOBBY_RESPONSE', chatLobbyId, chatLobbyUsers });
 export const setGameConfiguration = (chatLobbyId, systemsJson) => ({ type: 'SET_GAME_CONFIGURATION', payload: { chatLobbyId, systemsJson } });
 export const getGameConfiguration = (chatLobbyId) => ({ type: 'GET_GAME_CONFIGURATION', chatLobbyId });
 export const getGameConfigurationResponse = (payload) => ({ type: 'GET_GAME_CONFIGURATION_RESPONSE', payload });
 
-export const setChatLobbyId = (chatLobbyId) => ({ type: 'SET_CHAT_LOBBY_ID', chatLobbyId });
+// export const updateGame = (json, player) => ({ type: 'SET_GAME', data: json, player });
 
+///////////////////////////
+// Inbound Only Messages //
+///////////////////////////
+
+export const systemMessageUserJoinedChat = (payload) => ({ type: 'SYSTEM_MESSAGE_USER_JOINED_CHAT', payload });
+export const systemMessageChatUserList = (payload) => ({ type: 'SYSTEM_MESSAGE_CHAT_USER_LIST', payload });
+export const newMessageFromServer = payload => ({ type: 'NEW_MESSAGE_FROM_SERVER', payload });
+
+///////////////////////////////////////
+// Non-Networked store manipulations //
+///////////////////////////////////////
+
+export const setChatLobbyId = (chatLobbyId) => ({ type: 'SET_CHAT_LOBBY_ID', chatLobbyId });
 
 const initialState = {
     time: null,
@@ -65,4 +78,3 @@ export const websocketReducer = (state = { ...initialState }, action) => {
 };
 
 export const selectWebsocket = (state) => state.websocket;
-
