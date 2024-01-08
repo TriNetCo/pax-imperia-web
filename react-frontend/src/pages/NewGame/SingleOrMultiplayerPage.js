@@ -1,4 +1,4 @@
-import {Link, useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { GameDataContext } from 'src/app/GameDataContextProvider';
 import {useContext} from 'react';
 

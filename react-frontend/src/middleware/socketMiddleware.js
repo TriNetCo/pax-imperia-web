@@ -37,6 +37,9 @@ const socketMiddleware = () => {
             case 'SYSTEM_MESSAGE_USER_JOINED_CHAT':
                 store.dispatch(actions.systemMessageUserJoinedChat(message.payload));
                 break;
+            case 'SYSTEM_MESSAGE_USER_LEFT_CHAT':
+                store.dispatch(actions.systemMessageUserLeftChat(message.payload));
+                break;
             case 'JOIN_CHAT_LOBBY_RESPONSE':
                 if (message.payload.status === 'success') {
                     console.debug('JOIN_CHAT_LOBBY_RESPONSE', message);
@@ -106,6 +109,13 @@ const socketMiddleware = () => {
                 socket.send(JSON.stringify({
                     command: 'JOIN_CHAT_LOBBY',
                     payload: { user: action.user, chatLobbyId: action.chatLobbyId }
+                }));
+                break;
+            case 'LEAVE_CHAT_LOBBY':
+                console.debug('leaving chat lobby ', action.chatLobbyId);
+                socket.send(JSON.stringify({
+                    command: 'LEAVE_CHAT_LOBBY',
+                    payload: { }
                 }));
                 break;
             case 'AUTHENTICATE':

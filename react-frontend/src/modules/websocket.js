@@ -14,6 +14,7 @@ export const authenticateResponse = (status) => ({ type: 'AUTHENTICATE_RESPONSE'
 export const newMessage = payload => ({ type: 'NEW_MESSAGE', payload });
 export const joinChatLobby = (user, chatLobbyId) => ({ type: 'JOIN_CHAT_LOBBY', user, chatLobbyId });
 export const joinChatLobbyResponse = (chatLobbyId, chatLobbyUsers) => ({ type: 'JOIN_CHAT_LOBBY_RESPONSE', chatLobbyId, chatLobbyUsers });
+export const leaveChatLobby = () => ({ type: 'LEAVE_CHAT_LOBBY' });
 export const setGameConfiguration = (chatLobbyId, systemsJson) => ({ type: 'SET_GAME_CONFIGURATION', payload: { chatLobbyId, systemsJson } });
 export const getGameConfiguration = (chatLobbyId) => ({ type: 'GET_GAME_CONFIGURATION', chatLobbyId });
 export const getGameConfigurationResponse = (payload) => ({ type: 'GET_GAME_CONFIGURATION_RESPONSE', payload });
@@ -25,6 +26,7 @@ export const getGameConfigurationResponse = (payload) => ({ type: 'GET_GAME_CONF
 ///////////////////////////
 
 export const systemMessageUserJoinedChat = (payload) => ({ type: 'SYSTEM_MESSAGE_USER_JOINED_CHAT', payload });
+export const systemMessageUserLeftChat = (payload) => ({ type: 'SYSTEM_MESSAGE_USER_LEFT_CHAT', payload });
 export const systemMessageChatUserList = (payload) => ({ type: 'SYSTEM_MESSAGE_CHAT_USER_LIST', payload });
 export const newMessageFromServer = payload => ({ type: 'NEW_MESSAGE_FROM_SERVER', payload });
 
@@ -59,6 +61,9 @@ export const websocketReducer = (state = { ...initialState }, action) => {
             return { ...state, chatLobbyId: action.chatLobbyId, chatLobbyUsers: action.chatLobbyUsers };
         case 'SYSTEM_MESSAGE_USER_JOINED_CHAT':
             return { ...state, chatLobbyUsers: [...state.chatLobbyUsers, action.payload.displayName ] };
+        case 'SYSTEM_MESSAGE_USER_LEFT_CHAT':
+            const chatLobbyUsers = state.chatLobbyUsers.filter(user => user !== action.payload.displayName);
+            return { ...state, chatLobbyUsers: [...chatLobbyUsers ] };
         case 'SYSTEM_MESSAGE_CHAT_USER_LIST':
             return { ...state, chatLobbyUsers: action.payload };
         case 'AUTHENTICATE_RESPONSE':

@@ -1,13 +1,14 @@
-import {useState, useContext, useEffect} from 'react';
+import { useState, useContext, useEffect } from 'react';
 import UserContext from '../../app/UserContext';
 import { useDispatch, useSelector } from 'react-redux';
-import {newMessage, selectWebsocket, getGameConfiguration} from '../../modules/websocket';
+import { useHistory } from 'react-router-dom';
+import {newMessage, selectWebsocket, getGameConfiguration, leaveChatLobby} from '../../modules/websocket';
 import ChatMessages from './ChatMessages';
 import ChatLobbyUsers from './ChatLobbyUsers';
 import { GameDataContext } from 'src/app/GameDataContextProvider';
 
 const ChatLobby = () => {
-
+    const history = useHistory();
     const [msgToSend, setMsgToSend] = useState('');
     const dispatch = useDispatch();
     const websocket = useSelector(selectWebsocket);
@@ -72,9 +73,8 @@ const ChatLobby = () => {
     };
 
     const leaveLobby = () => {
-        // send a leave lobby message to the server
-        //
-        // go to /new_game
+        dispatch(leaveChatLobby());
+        history.push('/new_game');
     };
 
     return (

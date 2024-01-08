@@ -69,6 +69,8 @@ func ListenToClientMessages(conn *websocket.Conn) {
 			handleAuthenticate(newConn, client, message)
 		case "JOIN_CHAT_LOBBY":
 			HandleJoinChatLobby(conn, message)
+		case "LEAVE_CHAT_LOBBY":
+			HandleLeaveChatLobby(conn)
 		case "NEW_MESSAGE":
 			handleSay(conn, message)
 		case "SET_GAME_CONFIGURATION":
@@ -86,10 +88,14 @@ func ListenToClientMessages(conn *websocket.Conn) {
 
 // This method is called when a client disconnects from the server.
 func cleanUpDeadConnection(client *websocket.Conn) {
-	delete(clients, client)
+	// Check any chat rooms the client is in and remove them from the chat room
 	for _, chatRoom := range chatRooms {
-		delete(chatRoom.Clients, client)
+		if _, clientFound := chatRoom.Clients[client]; clientFound {
+			HandleLeaveChatLobby(client)
+		}
 	}
+
+	delete(clients, client)
 }
 
 func tryExtractFromPayload(payload map[string]interface{}, key string) (string, bool) {

@@ -1,6 +1,10 @@
 package models
 
-import "github.com/gorilla/websocket"
+import (
+	"fmt"
+
+	"github.com/gorilla/websocket"
+)
 
 type Message struct {
 	User    string                 `json:"user"`
@@ -25,6 +29,12 @@ type ChatRoom struct {
 	Clients     map[*websocket.Conn]ClientData `json:"clients"`
 	Game        Game                           `json:"game"`
 	ChatLobbyId string                         `json:"chatLobbyId"`
+}
+
+// runMethod is a method for the Hello struct
+func (h ChatRoom) RemoveClient(conn *websocket.Conn) {
+	fmt.Println("Removing client from chat room")
+	delete(h.Clients, conn)
 }
 
 type User struct {
