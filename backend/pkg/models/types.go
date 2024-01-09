@@ -29,6 +29,7 @@ type ChatRoom struct {
 	Clients     map[*websocket.Conn]ClientData `json:"clients"`
 	Game        Game                           `json:"game"`
 	ChatLobbyId string                         `json:"chatLobbyId"`
+	LobbyKing   *websocket.Conn                `json:"lobbyKing"`
 }
 
 // runMethod is a method for the Hello struct

@@ -20,13 +20,15 @@ const NewGameLayout = () => {
                 <NewGameBreadCrumb />
                 <Switch>
                     <Route exact path="/new_game" component={SingleOrMultiplayerPage} />
-                    <Route path="/new_game/lobbies" component={HostLobbyTab} />
 
                     <Route path="/new_game/colonizer_config" component={ColonizerConfigPage} />
                     <Route path="/new_game/species_design" component={SpeciesDesignPage} />
                     <Route path="/new_game/galaxy_config" component={GalaxyConfigPage} />
-                    <Route path="/new_game/lobby/:lobbyId" component={JoinLobbyTab} />
-                    <Route path="/new_game/lobby/:lobbyToken/game" component={GameDashboardPage} />
+
+                    <Route exact path="/new_game/lobbies" component={HostLobbyTab} />
+
+                    <Route path="/new_game/lobbies/:lobbyId" component={JoinLobbyTab} />
+                    <Route path="/new_game/lobbies/:lobbyToken/game" component={GameDashboardPage} />
                 </Switch>
             </div>
         </>
