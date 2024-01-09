@@ -24,6 +24,12 @@ func HandleLeaveChatLobby(conn *websocket.Conn) {
 
 	chatRoom.RemoveClient(conn)
 
+	// if the room is now empty, delete the room
+	if len(chatRoom.Clients) == 0 {
+		delete(chatRooms, chatRoom.ChatLobbyId)
+		return
+	}
+
 	SendMessageToAllChatroomParticipants(chatRoom, userLeaveAnnouncement)
 }
 

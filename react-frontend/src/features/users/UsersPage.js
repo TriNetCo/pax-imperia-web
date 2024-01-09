@@ -59,5 +59,4 @@ UsersPage.propTypes = {
     actions: PropTypes.array.isRequired,
 };
 
-// export default UsersPage;
 export default connect(mapStateToProps, mapDispatchToProps)(UsersPage);

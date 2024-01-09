@@ -12,7 +12,7 @@ import NewGameLayout from './pages/NewGame/NewGamePage';
 import AboutPage from './pages/AboutPage';
 import usePageTracking from './app/usePageTracking';
 import PreferencesPage from './pages/PreferencesPage/PreferencesPage';
-import LobbiesPage from './pages/LobbiesPage/LobbiesPage';
+import LobbiesPage from './features/lobbies/LobbiesPage';
 
 function App() {
     usePageTracking();

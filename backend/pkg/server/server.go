@@ -49,6 +49,7 @@ func Run() {
 	router.GET("/users", api.GetUsers)
 	router.GET("/users/", api.GetUsers)
 	router.GET("/lobbies", api.GetChatRooms)
+	router.GET("/lobbies/", api.GetChatRooms)
 	router.DELETE("/users/:id", api.DeleteUser)
 	router.GET("/websocket", func(c *gin.Context) {
 		wshandler(c.Writer, c.Request)

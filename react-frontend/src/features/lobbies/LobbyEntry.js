@@ -11,13 +11,13 @@ const LobbyEntry = ({lobby}) => {
     const handleJoinClicked = () => {
         // navigate to /games/lobby.id
         data.galaxyCustomizations.lobbyType = 'multiplayer';
-        history.push(`/new_game/lobbies/${lobby.id}`);
+        history.push(`/new_game/lobbies/${lobby.chatLobbyId}`);
     };
 
     return (
         <div className="lobby-entry">
             <span>{lobby.name}</span>
-            <span>1/4</span>
+            <span>{lobby.clients.length}/4</span>
             <button onClick={handleJoinClicked}>Join</button>
         </div>
     );
