@@ -15,6 +15,7 @@
 
 /* Lobby container */
 .chat-lobby {
+    position:relative;
     color: white;
     max-width: 600px;
     margin: 5% auto;
@@ -133,7 +134,7 @@
     color: #FFD700; /* Golden for a highlighted touch */
 }
 
-.play-button {
+.go-button {
     display: inline-block;
     padding: 5px 15px; /* Adds padding around the text to create a button-like appearance */
     background-color: #FFD700; /* Yellow background color */
@@ -144,9 +145,22 @@
     cursor: pointer;
 }
 
-.play-button:hover {
+.go-button:hover {
     background-color: #E0B400; /* Darker yellow on hover for interactive feedback */
     text-decoration: none; /* Removes underline on hover */
     color: #000; /* Dark text color on hover for better contrast */
 }
 
+.go-button::before {
+    content: 'Play';
+}
+
+.go-button.ready-button-instead::before {
+    content: 'Ready';
+}
+
+.leave-lobby-btn {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}

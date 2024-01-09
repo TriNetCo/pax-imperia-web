@@ -78,34 +78,29 @@ const ChatLobby = () => {
     };
 
     return (
-        <>
-            <button onClick={leaveLobby}>Leave Lobby</button>
-            {/* <button onClick={uploadGameData}>Upload Game Data</button> */}
-            <button onClick={downloadGameData}>Download Game Data</button>
+        <div className="chat-lobby">
+            <button className="leave-lobby-btn" onClick={leaveLobby}>Leave Lobby</button>
 
-            <div className="chat-lobby">
-                <div>Lobby ID: { websocket.chatLobbyId }</div>
-                <div>Connection Status: { websocket.status } </div>
-                <div>Authentication Status: { websocket.authenticationStatus } </div>
-                <div>websocket.systemsJson: { !websocket.systemsJson ? 'NULL' : 'POPULATED' }</div>
-                {/* We need a way to set our username for debugging */}
-                <div>
-                    Current User:
-                    <input className="edit-username-field" disabled={true} type="text" value={userContext.displayName} onChange={handleChangeCurrentUser} />
-                    <button className="edit-username-btn" onClick={enableEditButton} >Edit</button>
-                </div>
+            <div>Lobby ID: { websocket.chatLobbyId }</div>
+            <div>Connection Status: { websocket.status } </div>
+            <div>Authentication Status: { websocket.authenticationStatus } </div>
+            <div>websocket.systemsJson: { !websocket.systemsJson ? 'NULL' : 'POPULATED' }</div>
 
-                <div className="chat-lobby-header">Lobby</div>
-                <ChatLobbyUsers />
-                <ChatMessages />
-                <div className="chat-input">
-                    <input type="text" value={msgToSend} onChange={handleMessageChange}
-                        onKeyDown={handleEnterKey} placeholder="Type a message..." />
-                    <button onClick={sendMessage}>Send</button>
-                </div>
+            {/* <div>
+                Current User:
+                <input className="edit-username-field" disabled={true} type="text" value={userContext.displayName} onChange={handleChangeCurrentUser} />
+                <button className="edit-username-btn" onClick={enableEditButton} >Edit</button>
+            </div> */}
+
+            <div className="chat-lobby-header">Lobby</div>
+            <ChatLobbyUsers />
+            <ChatMessages />
+            <div className="chat-input">
+                <input type="text" value={msgToSend} onChange={handleMessageChange}
+                    onKeyDown={handleEnterKey} placeholder="Type a message..." />
+                <button onClick={sendMessage}>Send</button>
             </div>
-        </>
-
+        </div>
     );
 };
 

@@ -12,6 +12,10 @@ const JoinLobbyTab = () => {
     const { data } = useContext(GameDataContext);
     const chatLobbyId = lobbyId;
 
+    useEffect( () => {
+        data.galaxyCustomizations.lobbyType = 'multiplayer';
+    }, []);
+
     // Whenever our websocket.status changes to WS_CONNECTED
     // imediately createOrJoinLobby
     useEffect( () => {

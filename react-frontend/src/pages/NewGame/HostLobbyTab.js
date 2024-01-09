@@ -10,6 +10,11 @@ const HostLobbyTab = () => {
     const { data } = useContext(GameDataContext);
     const chatLobbyId = '1234';
 
+    useEffect( () => {
+        data.galaxyCustomizations.isLobbyKing = true;
+        data.galaxyCustomizations.lobbyType = 'multiplayer';
+    }, []);
+
     // Whenever our websocket.status changes to WS_CONNECTED
     // imediately createOrJoinLobby
     useEffect( () => {
