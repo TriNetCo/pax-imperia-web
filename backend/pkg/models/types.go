@@ -32,6 +32,29 @@ type ChatRoom struct {
 	LobbyKing   *websocket.Conn                `json:"lobbyKing"`
 }
 
+type ChatRoomJSON struct {
+	Name        string   `json:"name"`
+	Clients     []string `json:"clients"`
+	ChatLobbyId string   `json:"chatLobbyId"`
+	LobbyKing   string   `json:"lobbyKing"`
+}
+
+func (chatRoom ChatRoom) ToJSON() ChatRoomJSON {
+	tempRoom := ChatRoomJSON{
+		Name:        chatRoom.Name,
+		Clients:     make([]string, 0, len(chatRoom.Clients)),
+		ChatLobbyId: chatRoom.ChatLobbyId,
+		LobbyKing:   fmt.Sprintf("%p", chatRoom.LobbyKing), // Convert pointer to string
+	}
+
+	for _, clientData := range chatRoom.Clients {
+		tempRoom.Clients = append(tempRoom.Clients, clientData.DisplayName)
+	}
+
+	return tempRoom
+
+}
+
 // runMethod is a method for the Hello struct
 func (h ChatRoom) RemoveClient(conn *websocket.Conn) {
 	fmt.Println("Removing client from chat room")
