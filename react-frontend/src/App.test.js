@@ -6,19 +6,24 @@ import App from './App';
 import { BrowserRouter as Router } from 'react-router-dom';
 import GameDataContextProvider from './app/GameDataContextProvider';
 import { UserContextProvider } from './app/UserContextProvider';
-import FirebaseConnector from './app/FirebaseConnector';
 
 const azureAuth = {
     initLoginContext: async () => { },
+};
+
+const gameData = {
+    injectReactGarbage: () => { },
 };
 
 test('renders learn react link', () => {
     const { getByText } = render(
         <Provider store={store}>
             <UserContextProvider azureAuth={azureAuth}>
-                <Router>
-                    <App />
-                </Router>
+                <GameDataContextProvider gameData={gameData}>
+                    <Router>
+                        <App />
+                    </Router>
+                </GameDataContextProvider>
             </UserContextProvider>
         </Provider>
     );
