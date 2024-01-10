@@ -3,23 +3,29 @@ package api
 import (
 	"fmt"
 
-	"github.com/gorilla/websocket"
 	. "github.com/trinetco/pax-imperia-clone/pkg/models"
 )
 
-func handleSay(conn *websocket.Conn, message Message) {
+func handleSay(conn WebSocketConnection, message Message) error {
 	chatLobbyId, ok := tryExtractFromPayload(message.Payload, "chatLobbyId")
 	if !ok {
-		return
+		return fmt.Errorf("failed to extract chatLobbyId from payload")
 	}
 
 	chatRoom, exists := chatRooms[chatLobbyId]
 	if !exists {
-		fmt.Println("Error: Chat Room not found, ", chatLobbyId)
-		return
+		return fmt.Errorf("Error: Chat Room not found, %s", chatLobbyId)
 	}
 
-	message.Payload["user"] = clients[conn].DisplayName
+	// Ensure this user is in the chatRoom
+	sender := chatRoom.Clients[conn]
+	if sender.DisplayName == "" {
+		return fmt.Errorf("Error: Sender attempted to send to a chatRoom they're not in, %s", sender.Email)
+	}
+
+	// Ensure no one is spoofing their name
+	message.Payload["user"] = sender.DisplayName
 
 	SendMessageToAllChatroomParticipants(chatRoom, message)
+	return nil
 }

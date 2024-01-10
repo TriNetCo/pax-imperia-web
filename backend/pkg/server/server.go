@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/websocket"
 
 	"github.com/trinetco/pax-imperia-clone/pkg/api"
+	"github.com/trinetco/pax-imperia-clone/pkg/models"
 )
 
 func Run() {
@@ -94,7 +95,11 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	api.ListenToClientMessages(conn)
+	var newConn models.WebSocketConnection = &models.WebSocketConnAdapter{Conn: conn}
+
+	fmt.Print("Client connected: ", &newConn, "\n")
+
+	api.ListenToClientMessages(newConn)
 }
 
 func healthCheck(c *gin.Context) {

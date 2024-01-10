@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/gorilla/websocket"
 	. "github.com/trinetco/pax-imperia-clone/pkg/models"
 )
 
@@ -14,16 +13,14 @@ type ServerConfiguration struct {
 }
 
 var serverConfiguration = ServerConfiguration{}
-var clients = make(map[*websocket.Conn]ClientData)
+var clients = make(map[WebSocketConnection]ClientData)
 var chatRooms = make(map[string]ChatRoom)
 var dataMux sync.Mutex
 
 /* This is the main websocket handler for the server.  Whenever a message
  * comes into the server, this function will be called.
  */
-func ListenToClientMessages(conn *websocket.Conn) {
-	fmt.Print("Client connected: ", &conn, "\n")
-
+func ListenToClientMessages(conn WebSocketConnection) {
 	defer func() {
 		dataMux.Lock()
 		cleanUpDeadConnection(conn)
@@ -65,8 +62,7 @@ func ListenToClientMessages(conn *websocket.Conn) {
 
 		switch message.Command {
 		case "AUTHENTICATE":
-			var newConn WebSocketConnection = &WebSocketConnAdapter{Conn: conn}
-			handleAuthenticate(newConn, client, message)
+			handleAuthenticate(conn, client, message)
 		case "JOIN_CHAT_LOBBY":
 			HandleJoinChatLobby(conn, message)
 		case "LEAVE_CHAT_LOBBY":
@@ -74,7 +70,6 @@ func ListenToClientMessages(conn *websocket.Conn) {
 		case "NEW_MESSAGE":
 			handleSay(conn, message)
 		case "SET_GAME_CONFIGURATION":
-			// message = { "systems": "systemData..." }
 			handleSetGameConfiguration(conn, message)
 		case "GET_GAME_CONFIGURATION":
 			handleGetGameConfiguration(conn, message)
@@ -87,15 +82,17 @@ func ListenToClientMessages(conn *websocket.Conn) {
 }
 
 // This method is called when a client disconnects from the server.
-func cleanUpDeadConnection(client *websocket.Conn) {
+func cleanUpDeadConnection(conn WebSocketConnection) {
+
 	// Check any chat rooms the client is in and remove them from the chat room
 	for _, chatRoom := range chatRooms {
-		if _, clientFound := chatRoom.Clients[client]; clientFound {
-			HandleLeaveChatLobby(client)
+		if _, clientFound := chatRoom.Clients[conn]; clientFound {
+			HandleLeaveChatLobby(conn)
 		}
 	}
 
-	delete(clients, client)
+	fmt.Print("Cleaning up dead connection: ", &conn, "\n")
+	delete(clients, conn)
 }
 
 func tryExtractFromPayload(payload map[string]interface{}, key string) (string, bool) {

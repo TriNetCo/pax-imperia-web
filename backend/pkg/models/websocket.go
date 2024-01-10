@@ -1,9 +1,8 @@
-package api
+package models
 
-import "github.com/gorilla/websocket"
-
-// The rest of the junk in this file makes it so the websocket code can
-// be tested without having to actually use websockets wich smell like cheese.
+import (
+	"github.com/gorilla/websocket"
+)
 
 type WebSocketConnection interface {
 	WriteJSON(v interface{}) error
@@ -15,6 +14,9 @@ type WebSocketConnection interface {
 type WebSocketConnAdapter struct {
 	Conn *websocket.Conn
 }
+
+// The rest of the junk in this file makes it so the websocket code can
+// be tested without having to actually use websockets wich smell like cheese.
 
 func (adapter *WebSocketConnAdapter) WriteJSON(v interface{}) error {
 	return adapter.Conn.WriteJSON(v)

@@ -2,8 +2,6 @@ package models
 
 import (
 	"fmt"
-
-	"github.com/gorilla/websocket"
 )
 
 type Message struct {
@@ -25,11 +23,24 @@ type Game struct {
 }
 
 type ChatRoom struct {
-	Name        string                         `json:"name"`
-	Clients     map[*websocket.Conn]ClientData `json:"clients"`
-	Game        Game                           `json:"game"`
-	ChatLobbyId string                         `json:"chatLobbyId"`
-	LobbyKing   *websocket.Conn                `json:"lobbyKing"`
+	Name        string                             `json:"name"`
+	Clients     map[WebSocketConnection]ClientData `json:"clients"`
+	Game        Game                               `json:"game"`
+	ChatLobbyId string                             `json:"chatLobbyId"`
+	LobbyKing   *WebSocketConnection               `json:"lobbyKing"`
+}
+
+func MakeChatRoom(chatLobbyId string) ChatRoom {
+	return ChatRoom{
+		Name:        chatLobbyId,
+		Clients:     make(map[WebSocketConnection]ClientData),
+		ChatLobbyId: chatLobbyId,
+	}
+}
+
+func (h ChatRoom) RemoveClient(conn WebSocketConnection) {
+	fmt.Println("Removing client from chat room")
+	delete(h.Clients, conn)
 }
 
 type ChatRoomJSON struct {
@@ -53,12 +64,6 @@ func (chatRoom ChatRoom) ToJSON() ChatRoomJSON {
 
 	return tempRoom
 
-}
-
-// runMethod is a method for the Hello struct
-func (h ChatRoom) RemoveClient(conn *websocket.Conn) {
-	fmt.Println("Removing client from chat room")
-	delete(h.Clients, conn)
 }
 
 type User struct {

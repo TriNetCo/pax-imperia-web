@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
 	. "github.com/trinetco/pax-imperia-clone/pkg/models"
 )
 
@@ -41,7 +40,7 @@ func SendMessageToAllChatroomParticipants(chatRoom ChatRoom, message Message) {
 	}
 }
 
-func SendMessageToAllButOneChatroomParticipant(chatRoom ChatRoom, message Message, excluded *websocket.Conn) {
+func SendMessageToAllButOneChatroomParticipant(chatRoom ChatRoom, message Message, excluded WebSocketConnection) {
 	for client := range chatRoom.Clients {
 		if client == excluded {
 			continue

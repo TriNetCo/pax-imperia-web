@@ -3,11 +3,10 @@ package api
 import (
 	"fmt"
 
-	"github.com/gorilla/websocket"
 	. "github.com/trinetco/pax-imperia-clone/pkg/models"
 )
 
-func handleGetGameConfiguration(conn *websocket.Conn, message Message) {
+func handleGetGameConfiguration(conn WebSocketConnection, message Message) {
 	// The client will request the game configuration from the server
 	// The server will send the game configuration to the client
 	// The client will then display the game configuration to the user
@@ -30,7 +29,7 @@ func handleGetGameConfiguration(conn *websocket.Conn, message Message) {
 	fmt.Println("Game configuration sent")
 }
 
-func handleSetGameConfiguration(conn *websocket.Conn, message Message) {
+func handleSetGameConfiguration(conn WebSocketConnection, message Message) {
 	// The client will generate the game configuration and send it to the server
 	// We will need to store that configuration in the chat room
 	// The server will then send the game configuration to all other clients in the chat room

@@ -3,12 +3,11 @@ package api
 import (
 	"fmt"
 
-	"github.com/gorilla/websocket"
 	. "github.com/trinetco/pax-imperia-clone/pkg/models"
 	"github.com/trinetco/pax-imperia-clone/pkg/util"
 )
 
-func HandleJoinChatLobby(conn *websocket.Conn, message Message) {
+func HandleJoinChatLobby(conn WebSocketConnection, message Message) {
 	// fmt.Println("Chat Room ID:", chatLobbyId)
 	chatLobbyId, error := validateInputs(message)
 	if error != nil {
@@ -52,17 +51,13 @@ func findOrCreateChatRoom(chatLobbyId string) ChatRoom {
 	if !exists {
 		fmt.Printf("Creating lobby: %s\n", chatLobbyId)
 
-		chatRoom = ChatRoom{
-			Name:        chatLobbyId,
-			Clients:     make(map[*websocket.Conn]ClientData),
-			ChatLobbyId: chatLobbyId,
-		}
+		chatRoom = MakeChatRoom(chatLobbyId)
 	}
 
 	return chatRoom
 }
 
-func respondToJoiner(conn *websocket.Conn, chatRoom ChatRoom) {
+func respondToJoiner(conn WebSocketConnection, chatRoom ChatRoom) {
 	var response = Message{
 		Command: "JOIN_CHAT_LOBBY_RESPONSE",
 		Payload: map[string]interface{}{
@@ -80,7 +75,7 @@ func respondToJoiner(conn *websocket.Conn, chatRoom ChatRoom) {
 	conn.WriteJSON(response)
 }
 
-func announceUserJoinedChat(conn *websocket.Conn, chatRoom ChatRoom) {
+func announceUserJoinedChat(conn WebSocketConnection, chatRoom ChatRoom) {
 	var userJoinAnnouncement = Message{
 		Command: "SYSTEM_MESSAGE_USER_JOINED_CHAT",
 		Payload: map[string]interface{}{

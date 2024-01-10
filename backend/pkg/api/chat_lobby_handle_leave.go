@@ -1,14 +1,16 @@
 package api
 
 import (
-	"github.com/gorilla/websocket"
+	"fmt"
+
 	. "github.com/trinetco/pax-imperia-clone/pkg/models"
 )
 
-func HandleLeaveChatLobby(conn *websocket.Conn) {
+func HandleLeaveChatLobby(conn WebSocketConnection) {
 	chatRoom := getChatRoomOfClient(conn)
 
 	if chatRoom.ChatLobbyId == "" {
+		fmt.Println("ChatLobbyId not found, can't leave")
 		return
 	}
 
@@ -33,7 +35,7 @@ func HandleLeaveChatLobby(conn *websocket.Conn) {
 	SendMessageToAllChatroomParticipants(chatRoom, userLeaveAnnouncement)
 }
 
-func getChatRoomOfClient(conn *websocket.Conn) ChatRoom {
+func getChatRoomOfClient(conn WebSocketConnection) ChatRoom {
 	for _, chatRoom := range chatRooms {
 		if _, clientFound := chatRoom.Clients[conn]; clientFound {
 			return chatRoom

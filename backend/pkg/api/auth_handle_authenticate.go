@@ -19,7 +19,7 @@ func handleAuthenticate(conn WebSocketConnection, client ClientData, message Mes
 	client.Email = values["email"]
 	client.Token = values["token"]
 	client.AuthStatus = authStatus
-	clients[conn.GetConn()] = client
+	clients[conn] = client
 
 	var response = Message{
 		Command: "AUTHENTICATE_RESPONSE",
