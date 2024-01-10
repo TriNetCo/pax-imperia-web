@@ -21,14 +21,6 @@ const Modal = () => {
 
                 <ChatLobby closeModal={closeModal} />
 
-
-
-                {/* <div className="modal-body">
-                    <span className="close" onClick={closeModal}>&times;</span>
-                    <div id="modalContent">
-                    </div>
-                </div> */}
-
             </div>
 
         </div>
