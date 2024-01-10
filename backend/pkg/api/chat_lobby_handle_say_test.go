@@ -22,7 +22,7 @@ func TestHandleSay(t *testing.T) {
 		{
 			"valid say",
 			`{"chatLobbyId": "1234", "message": "hello world", "user": "Its Me", "Email": "me@example.com"}`,
-			Message{Command: "NEW_MESSAGE", Payload: map[string]interface{}{"chatLobbyId": "1234", "message": "hello world", "user": "Its Me", "Email": "me@example.com"}},
+			Message{Command: "SYSTEM_MESSAGE_NEW_MESSAGE", Payload: map[string]interface{}{"chatLobbyId": "1234", "message": "hello world", "user": "Its Me", "Email": "me@example.com"}},
 			true,
 			false,
 		},
