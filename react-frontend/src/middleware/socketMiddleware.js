@@ -58,12 +58,12 @@ const socketMiddleware = () => {
             case 'update_game_players':
                 // store.dispatch(actions.updateGame(message.game, message.current_player));
                 break;
-            case 'NEW_MESSAGE':
+            case 'SYSTEM_MESSAGE_NEW_MESSAGE':
                 // when we get a new message, we need to update the store by
                 // dispatching an action to the store
                 // but we don't dispatch actions.newMessage, because that would result in an infinite loop
                 // instead, we dispatch actions.newMessageFromServer
-                store.dispatch(actions.newMessageFromServer(message.payload));
+                store.dispatch(actions.systemMessageNewMessage(message.payload));
                 console.debug('received a message', message.payload.message);
                 break;
             default:

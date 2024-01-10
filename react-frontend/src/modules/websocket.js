@@ -51,6 +51,13 @@ export const actionTable = {
             store.dispatch(responseAct('AUTHENTICATE')(message.payload.status));
         },
 
+    },
+
+    'SYSTEM_MESSAGE_NEW_MESSAGE': {
+        action: '',
+
+
+
     }
 };
 
@@ -84,7 +91,7 @@ export const getGameConfigurationResponse = (payload) => ({ type: 'GET_GAME_CONF
 // Inbound Only Messages //
 ///////////////////////////
 
-export const newMessageFromServer = payload => ({ type: 'NEW_MESSAGE_FROM_SERVER', payload });
+export const systemMessageNewMessage = payload => ({ type: 'SYSTEM_MESSAGE_NEW_MESSAGE', payload });
 export const systemMessageUserJoinedChat = (payload) => ({ type: 'SYSTEM_MESSAGE_USER_JOINED_CHAT', payload });
 export const systemMessageUserLeftChat = (payload) => ({ type: 'SYSTEM_MESSAGE_USER_LEFT_CHAT', payload });
 export const systemMessageChatUserList = (payload) => ({ type: 'SYSTEM_MESSAGE_CHAT_USER_LIST', payload });
@@ -118,7 +125,7 @@ export const websocketReducer = (state = { ...initialState }, action) => {
             return { ...state, status: 'WS_DISCONNECTED' };
         case 'SET_GAME':
             return { ...state, game: action.data, current_player: action.player };
-        case 'NEW_MESSAGE_FROM_SERVER':
+        case 'SYSTEM_MESSAGE_NEW_MESSAGE':
             return { ...state, messages: [...state.messages, action.payload] };
         case 'JOIN_CHAT_LOBBY_RESPONSE':
             return { ...state, chatLobbyId: action.chatLobbyId, chatLobbyUsers: action.chatLobbyUsers };

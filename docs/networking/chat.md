@@ -15,7 +15,7 @@
 - [x] SYSTEM_MESSAGE_USER_JOINED_CHAT
 - [x] SYSTEM_MESSAGE_USER_LEFT_CHAT
 - [x] SYSTEM_MESSAGE_CHAT_USER_LIST
-- [x] NEW_MESSAGE_FROM_SERVER
+- [x] SYSTEM_MESSAGE_NEW_MESSAGE
 - [ ] SYSTEM_MESSAGE_LAUNCH_GAME
 
 A user (Client A) hosts a game.  Client B joins the game.  Then Client B leaves the game.  Client C joins, and then Client A launches both players inot the game.
