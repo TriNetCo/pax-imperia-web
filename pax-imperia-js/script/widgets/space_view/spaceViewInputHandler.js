@@ -125,6 +125,15 @@ export class SpaceViewInputHandler {
     //////////////////////////
 
     handlePerspectiveInput(perspectiveKey) {
+        // If the modal is shown, consider the escape key to be meant for the
+        // modal and not the game ;)
+        if (perspectiveKey.pressed && window.modalShown) {
+            document.getElementById('modal').style.display = 'none';
+            window.modalShown = false;
+            perspectiveKey.handled = true;
+            return;
+        }
+
         if (perspectiveKey.pressed && !perspectiveKey.handled) {
             if (!this.spaceViewAnimator.firstPersonView) {
                 perspectiveKey.handled = true;

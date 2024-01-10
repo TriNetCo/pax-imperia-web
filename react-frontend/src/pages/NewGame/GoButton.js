@@ -24,8 +24,10 @@ const GoButton = () => {
 
     const launchMultiplayerGame = () => {
         // Send a REQUEST_LAUNCH_GAME message to the server
-        // Respond to SYSTEM_LAUNCH_GAME in a useEffect
+        // Respond to SYSTEM_MESSAGE_LAUNCH_GAME in a useEffect
 
+        history.push('/systems/1'); // FIXME: This is just stubbed out like this
+        data.gameStateInterface.startClock();
     };
 
     const readyButtonInstead = () => {

@@ -158,9 +158,3 @@
 .go-button.ready-button-instead::before {
     content: 'Ready';
 }
-
-.leave-lobby-btn {
-    position: absolute;
-    right: 0px;
-    top: 0px;
-}

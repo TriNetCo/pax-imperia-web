@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
-import SpaceView from '../features/space_view/SpaceView';
+import SpaceView from '../../features/space_view/SpaceView';
 import { Button, IconButton } from '@mui/material';
 import {useHistory} from 'react-router-dom';
 import Galaxy from 'src/features/galaxy/Galaxy';
+import UserCard from 'src/shared/UserCard/UserCard';
+import Modal from 'src/shared/Modal/Modal';
+import NavConsole from './NavConsole';
 
 const SystemPage = () => {
-    const history = useHistory();
-
-    const handleCloseSystemView = () => {
-        history.push('/systems');
-    };
 
     const handleExpandButton = () => {
         var expandableDiv = document.getElementById('lower-console-and-button');
@@ -28,27 +26,10 @@ const SystemPage = () => {
         <div className="page-wrap">
             <div id="app-parent" className="system-app-parent">
 
-                <div id="ultra-container">
-                    <div id="console-div" className="flex-container">
-                        <div className="console-message" id="console-message">
-                            <button className="green-button">[Research]</button>
-                            <button className="green-button">[Domestic Policy]</button>
-                            <button className="green-button">[Trade Routes]</button>
-                            <button className="green-button">[Foriegn Policy]</button>
-                            <button className="green-button">[Espionage]</button>
-                            <button className="green-button">[Military]</button>
-                            <span>|</span>
-                            <button className="green-button">[Chat]</button>
-                            <button className="green-button">[Log]</button>
-                        </div>
 
-                        <div className="console-message" id="time"></div>
-                        <div className='close-system-view'>
-                            <IconButton onClick={handleCloseSystemView} color="secondary" style={{width: '100%', height: '100%'}}>
-                                <span style={{width: '20px', height: '20px'}}></span>
-                            </IconButton>
-                        </div>
-                    </div>
+                <div id="ultra-container">
+
+                    <NavConsole />
 
                     <div id="big-container" className="flex-container">
 

@@ -123,6 +123,7 @@ html, body {
   font-size: 15px;
   color: greenyellow;
   cursor: pointer;
+  outline: none;
 }
 
 .green-button:hover {

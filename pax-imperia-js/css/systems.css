@@ -6,7 +6,7 @@
     height: 100%;
 }
 
-#console-div {
+#nav-console {
     position: fixed;
     margin-left: auto;
     margin-right: auto;
@@ -17,7 +17,7 @@
     background-image: url("../assets/backgrounds/system_view_top_f.png");
     background-repeat: no-repeat;
     background-size: contain;
-    z-index: 1;
+    z-index: 2;
     user-select: none;
     align-self: center;
     flex: 1;

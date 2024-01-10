@@ -12,7 +12,6 @@
 */
 
 import * as actions from '../modules/websocket';
-import { systemMessageUserJoinedChat } from '../modules/websocket';
 
 const socketMiddleware = () => {
     let socket = null;

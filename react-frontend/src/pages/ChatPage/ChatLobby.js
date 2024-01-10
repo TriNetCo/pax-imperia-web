@@ -6,8 +6,9 @@ import {newMessage, selectWebsocket, getGameConfiguration, leaveChatLobby} from 
 import ChatMessages from './ChatMessages';
 import ChatLobbyUsers from './ChatLobbyUsers';
 import { GameDataContext } from 'src/app/GameDataContextProvider';
+import PropTypes from 'prop-types';
 
-const ChatLobby = () => {
+const ChatLobby = ({closeModal}) => {
     const history = useHistory();
     const [msgToSend, setMsgToSend] = useState('');
     const dispatch = useDispatch();
@@ -79,12 +80,23 @@ const ChatLobby = () => {
 
     return (
         <div className="chat-lobby">
-            <button className="leave-lobby-btn" onClick={leaveLobby}>Leave Lobby</button>
+            { closeModal ? <span className="close" onClick={closeModal}>&times;</span> : '' }
 
-            <div>Lobby ID: { websocket.chatLobbyId }</div>
-            <div>Connection Status: { websocket.status } </div>
-            <div>Authentication Status: { websocket.authenticationStatus } </div>
-            <div>websocket.systemsJson: { !websocket.systemsJson ? 'NULL' : 'POPULATED' }</div>
+
+            <div className="lobby-label">
+                Lobby ID:
+                <input type="text" value={websocket.chatLobbyId} disabled />
+
+                { closeModal ? '' :
+                    <button className="leave-lobby-btn" onClick={leaveLobby}>Leave Lobby</button> }
+            </div>
+
+            { (websocket.status !== 'WS_CONNECTED') ?
+                <div>Connection Status: { websocket.status } </div> : '' }
+
+            {/* <div>Connection Status: { websocket.status } </div> */}
+            {/* <div>Authentication Status: { websocket.authenticationStatus } </div> */}
+            {/* <div>websocket.systemsJson: { !websocket.systemsJson ? 'NULL' : 'POPULATED' }</div> */}
 
             {/* <div>
                 Current User:
@@ -92,7 +104,7 @@ const ChatLobby = () => {
                 <button className="edit-username-btn" onClick={enableEditButton} >Edit</button>
             </div> */}
 
-            <div className="chat-lobby-header">Lobby</div>
+            <div className="chat-lobby-header">Chat Lobby</div>
             <ChatLobbyUsers />
             <ChatMessages />
             <div className="chat-input">
@@ -102,6 +114,11 @@ const ChatLobby = () => {
             </div>
         </div>
     );
+};
+
+
+ChatLobby.propTypes = {
+    closeModal: PropTypes.func,
 };
 
 export default ChatLobby;
