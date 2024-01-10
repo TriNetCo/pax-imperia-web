@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { connectAndJoin, disconnect } from '../../app/GameDataContextProvider';
 import { useDispatch, useSelector } from 'react-redux';
-import { newMessage, selectWebsocket } from '../../modules/websocket';
+import { selectWebsocket, act } from '../../modules/websocket';
 import UserContext from '../../app/UserContext';
 import { useHistory } from 'react-router-dom';
 import { getAuthOutput } from '../../app/AzureAuth';
@@ -22,7 +22,7 @@ export default function DebugPage() {
 
     const sendMessage = () => {
         setWebsocketConsole(websocketConsole + 'sent: ' + msgToSend + '\n');
-        dispatch(newMessage(msgToSend));
+        dispatch(act('NEW_MESSAGE')(msgToSend));
     };
 
     const handleMessageChange = event => {

@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from 'react';
 import UserContext from '../../app/UserContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {newMessage, selectWebsocket, getGameConfiguration, leaveChatLobby} from '../../modules/websocket';
+import {selectWebsocket, act} from '../../modules/websocket';
 import ChatMessages from './ChatMessages';
 import ChatLobbyUsers from './ChatLobbyUsers';
 import { GameDataContext } from 'src/app/GameDataContextProvider';
@@ -32,7 +32,7 @@ const ChatLobby = ({closeModal}) => {
             userEmail: userContext.email,
             chatLobbyId: websocket.chatLobbyId,
         };
-        dispatch(newMessage(outboundMsg));
+        dispatch(act('NEW_MESSAGE')(outboundMsg));
         setMsgToSend('');
     };
 
@@ -64,7 +64,7 @@ const ChatLobby = ({closeModal}) => {
     };
 
     const leaveLobby = () => {
-        dispatch(leaveChatLobby());
+        dispatch(act('LEAVE_CHAT_LOBBY')());
         history.push('/new_game');
     };
 

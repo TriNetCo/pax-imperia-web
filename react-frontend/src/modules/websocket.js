@@ -31,13 +31,21 @@ export const wsError = host => ({ type: 'WS_ERROR', host });
 
 // short for action to make dispatch calls less hideous and avoid name collisions
 export const actionTable = {
-    'AUTHENTICATE': { // also AUTHENTICATE_RESPONSE
+
+    //////////////////////////////////////
+    // Outbound Messages with Responses //
+    //////////////////////////////////////
+
+    'AUTHENTICATE': {
+
+        // 1. The action is called to initiate the messaging cycle
         action: (email, displayName, token) =>
             ({ type: 'AUTHENTICATE', email, displayName, token }),
 
+        // 2. Once the action is disptached, this middlwareSend function is invoked by middleware
         middlewareSend: (action, socket) => {
             socket.send(JSON.stringify({
-                command: 'AUTHENTICATE',
+                command: action.type,
                 payload: {
                     email: action.email,
                     displayName: action.displayName,
@@ -45,20 +53,141 @@ export const actionTable = {
             }));
         },
 
+        // 3. The middleware will fire this function when an AUTHENTICATE_RESPONSE message
+        // comes in which will then dispatch the responseAction leading to the reducer
+        // dealing with the rest
+        middlewareRecieve: (store, message) => {
+            store.dispatch(responseAct(message.command)(message.payload.status));
+        },
+
+        // 4. Responses AUTHENTICATE are defined here, but will come in as
+        // type AUTHENTICATE_RESPONSE
         responseAction: (status) => ({ type: 'AUTHENTICATE_RESPONSE', status }),
 
+    },
+
+    'JOIN_CHAT_LOBBY': {
+        action: (user, chatLobbyId) => ({ type: 'JOIN_CHAT_LOBBY', user, chatLobbyId }),
+
+        middlewareSend: (action, socket) => {
+            socket.send(JSON.stringify({
+                command: action.type,
+                payload: { user: action.user, chatLobbyId: action.chatLobbyId }
+            }));
+        },
+
+        responseAction: (chatLobbyId, chatLobbyUsers) => ({ type: 'JOIN_CHAT_LOBBY_RESPONSE', chatLobbyId, chatLobbyUsers }),
+
         middlewareRecieve: (store, message) => {
-            store.dispatch(responseAct('AUTHENTICATE')(message.payload.status));
+            if (message.payload.status === 'success') {
+                store.dispatch(responseAct(message.command)(message.payload.chatLobbyId, message.payload.chatLobbyUsers));
+            }
         },
 
     },
 
+    'GET_GAME_CONFIGURATION': {
+        action: (chatLobbyId) => ({ type: 'GET_GAME_CONFIGURATION', chatLobbyId }),
+
+        middlewareSend: (action, socket) => {
+            socket.send(JSON.stringify({
+                command: action.type,
+                payload: { chatLobbyId: action.chatLobbyId }
+            }));
+        },
+
+        responseAction: (payload) => ({ type: 'GET_GAME_CONFIGURATION_RESPONSE', payload }),
+
+        middlewareRecieve: (store, message) => {
+            console.log('not really implemented');
+            store.dispatch(responseAct(message.command)(message.payload));
+        },
+
+    },
+
+    'SET_GAME_CONFIGURATION': {
+        action: (chatLobbyId, systemsJson) =>
+            ({ type: 'SET_GAME_CONFIGURATION', payload: { chatLobbyId, systemsJson } }),
+
+        middlewareSend: (action, socket) => {
+            socket.send(JSON.stringify({
+                command: action.type,
+                payload: action.payload
+            }));
+        },
+
+        responseAction: (payload) => ({ type: 'SET_GAME_CONFIGURATION_RESPONSE', payload }),
+
+        middlewareRecieve: (store, message) => {
+            store.dispatch(responseAct(message.command)(message.payload));
+        },
+
+    },
+
+
+    ///////////////////////////////
+    // Dangled Outbound Messages //
+    ///////////////////////////////
+
+    'NEW_MESSAGE': {
+        action: (payload) => ({ type: 'NEW_MESSAGE', payload }),
+
+        middlewareSend: (action, socket) => {
+            socket.send(JSON.stringify({
+                command: action.type,
+                payload: action.payload,
+            }));
+        },
+
+    },
+
+    'LEAVE_CHAT_LOBBY': {
+        action: () => ({ type: 'LEAVE_CHAT_LOBBY' }),
+
+        middlewareSend: (action, socket) => {
+            socket.send(JSON.stringify({
+                command: action.type
+            }));
+        },
+    },
+
+
+    ///////////////////////////
+    // Inbound Only Messages //
+    ///////////////////////////
+
     'SYSTEM_MESSAGE_NEW_MESSAGE': {
-        action: '',
+        responseAction: (payload) => ({ type: 'SYSTEM_MESSAGE_NEW_MESSAGE', payload }),
 
+        middlewareRecieve: (store, message) => {
+            store.dispatch(responseAct(message.command)(message.payload));
+        },
+    },
 
+    'SYSTEM_MESSAGE_USER_JOINED_CHAT': {
+        responseAction: (payload) => ({ type: 'SYSTEM_MESSAGE_USER_JOINED_CHAT', payload }),
 
-    }
+        middlewareRecieve: (store, message) => {
+            store.dispatch(responseAct(message.command)(message.payload));
+        },
+    },
+
+    'SYSTEM_MESSAGE_USER_LEFT_CHAT': {
+        responseAction: (payload) => ({ type: 'SYSTEM_MESSAGE_USER_LEFT_CHAT', payload }),
+
+        middlewareRecieve: (store, message) => {
+            store.dispatch(responseAct(message.command)(message.payload));
+        },
+    },
+
+    'SYSTEM_MESSAGE_CHAT_USER_LIST': {
+        responseAction: (payload) => ({ type: 'SYSTEM_MESSAGE_CHAT_USER_LIST', payload }),
+
+        middlewareRecieve: (store, message) => {
+            store.dispatch(responseAct(message.command)(message.payload));
+        },
+    },
+
 };
 
 // allows `dispatch(act('AUTHENTICATE')(email, displayName, token))` syntax
@@ -67,34 +196,9 @@ export const act = (key) => {
 };
 
 export const responseAct = (key) => {
-    return actionTable[key].responseAction;
+    return actionTable[key.replace(/_RESPONSE$/, '')].responseAction;
 };
 
-
-/////////////////////////////////////
-// Outbound Messages and Responses //
-/////////////////////////////////////
-
-// export const authenticate = (email, displayName, token) => ({ type: 'AUTHENTICATE', email, displayName, token });
-// export const authenticateResponse = (status) => ({ type: 'AUTHENTICATE_RESPONSE', status });
-export const newMessage = payload => ({ type: 'NEW_MESSAGE', payload });
-export const joinChatLobby = (user, chatLobbyId) => ({ type: 'JOIN_CHAT_LOBBY', user, chatLobbyId });
-export const joinChatLobbyResponse = (chatLobbyId, chatLobbyUsers) => ({ type: 'JOIN_CHAT_LOBBY_RESPONSE', chatLobbyId, chatLobbyUsers });
-export const leaveChatLobby = () => ({ type: 'LEAVE_CHAT_LOBBY' });
-export const setGameConfiguration = (chatLobbyId, systemsJson) => ({ type: 'SET_GAME_CONFIGURATION', payload: { chatLobbyId, systemsJson } });
-export const getGameConfiguration = (chatLobbyId) => ({ type: 'GET_GAME_CONFIGURATION', chatLobbyId });
-export const getGameConfigurationResponse = (payload) => ({ type: 'GET_GAME_CONFIGURATION_RESPONSE', payload });
-
-// export const updateGame = (json, player) => ({ type: 'SET_GAME', data: json, player });
-
-///////////////////////////
-// Inbound Only Messages //
-///////////////////////////
-
-export const systemMessageNewMessage = payload => ({ type: 'SYSTEM_MESSAGE_NEW_MESSAGE', payload });
-export const systemMessageUserJoinedChat = (payload) => ({ type: 'SYSTEM_MESSAGE_USER_JOINED_CHAT', payload });
-export const systemMessageUserLeftChat = (payload) => ({ type: 'SYSTEM_MESSAGE_USER_LEFT_CHAT', payload });
-export const systemMessageChatUserList = (payload) => ({ type: 'SYSTEM_MESSAGE_CHAT_USER_LIST', payload });
 
 ///////////////////////////////////////
 // Non-Networked store manipulations //
@@ -110,6 +214,7 @@ const initialState = {
     chatLobbyId: '',
     chatLobbyUsers: [],
     authenticationStatus: 'UNAUTHENTICATED',
+    seedOnServer: '',
     systemsJson: null,
 };
 
@@ -138,6 +243,8 @@ export const websocketReducer = (state = { ...initialState }, action) => {
             return { ...state, chatLobbyUsers: action.payload };
         case 'AUTHENTICATE_RESPONSE':
             return { ...state, authenticationStatus: action.status };
+        case 'SET_GAME_CONFIGURATION_RESPONSE':
+            return { ...state, seedOnServer: action.seed };
         case 'GET_GAME_CONFIGURATION_RESPONSE':
             return { ...state,
                 systemsJson: action.payload.systemsJson,

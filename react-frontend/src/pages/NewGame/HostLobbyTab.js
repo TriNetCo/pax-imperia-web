@@ -2,7 +2,7 @@ import ChatLobby from '../ChatPage/ChatLobby';
 import {useEffect, useContext} from 'react';
 import {GameDataContext} from 'src/app/GameDataContextProvider';
 import {useSelector, useDispatch} from 'react-redux';
-import {selectWebsocket, setGameConfiguration} from '../../modules/websocket';
+import {selectWebsocket, act} from '../../modules/websocket';
 
 const HostLobbyTab = () => {
     const dispatch = useDispatch();
@@ -38,7 +38,7 @@ const HostLobbyTab = () => {
 
     const uploadGameData = () => {
         const systemsJson = data.galaxyWidget.exportGalaxyDataToJson();
-        dispatch(setGameConfiguration(websocket.chatLobbyId, systemsJson));
+        dispatch(act('SET_GAME_CONFIGURATION')(websocket.chatLobbyId, systemsJson));
     };
 
     return (
