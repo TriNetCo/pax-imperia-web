@@ -1,16 +1,75 @@
+import * as actions from './websocket';
+
+/*
+* Summary of How Convoluted Redux Websocket Middleware Works:
+*
+* onMessage will run whenever this client receives a message from the server
+* then it will dispatch an action to the store, which will be handled by the reducer
+* the reducer will then update the state of the store
+* the store will then update the state of the component
+* for the component to re-render, it must be connected to the store
+* this is done by doing a `websocket = useSelector(selectWebsocket)` in the component
+* websocket.messages will be an array of all messages that the react client has received
+* see react-frontend/src/pages/ChatPage/ChatLobby.js for an example
+*/
+
+
+///////////////////
+// Local Actions //
+///////////////////
+
 export const wsConnect = host => ({ type: 'WS_CONNECT', host });
 export const wsDisconnect = host => ({ type: 'WS_DISCONNECT', host });
-
 export const wsConnected = host => ({ type: 'WS_CONNECTED', host });
 export const wsDisconnected = host => ({ type: 'WS_DISCONNECTED', host });
 export const wsError = host => ({ type: 'WS_ERROR', host });
+
+
+////////////////
+// BETTER WAY //
+////////////////
+
+// short for action to make dispatch calls less hideous and avoid name collisions
+export const actionTable = {
+    'AUTHENTICATE': { // also AUTHENTICATE_RESPONSE
+        action: (email, displayName, token) =>
+            ({ type: 'AUTHENTICATE', email, displayName, token }),
+
+        middlewareSend: (action, socket) => {
+            socket.send(JSON.stringify({
+                command: 'AUTHENTICATE',
+                payload: {
+                    email: action.email,
+                    displayName: action.displayName,
+                    token: action.token }
+            }));
+        },
+
+        responseAction: (status) => ({ type: 'AUTHENTICATE_RESPONSE', status }),
+
+        middlewareRecieve: (store, message) => {
+            store.dispatch(responseAct('AUTHENTICATE')(message.payload.status));
+        },
+
+    }
+};
+
+// allows `dispatch(act('AUTHENTICATE')(email, displayName, token))` syntax
+export const act = (key) => {
+    return actionTable[key].action;
+};
+
+export const responseAct = (key) => {
+    return actionTable[key].responseAction;
+};
+
 
 /////////////////////////////////////
 // Outbound Messages and Responses //
 /////////////////////////////////////
 
-export const authenticate = (email, displayName, token) => ({ type: 'AUTHENTICATE', email, displayName, token });
-export const authenticateResponse = (status) => ({ type: 'AUTHENTICATE_RESPONSE', status });
+// export const authenticate = (email, displayName, token) => ({ type: 'AUTHENTICATE', email, displayName, token });
+// export const authenticateResponse = (status) => ({ type: 'AUTHENTICATE_RESPONSE', status });
 export const newMessage = payload => ({ type: 'NEW_MESSAGE', payload });
 export const joinChatLobby = (user, chatLobbyId) => ({ type: 'JOIN_CHAT_LOBBY', user, chatLobbyId });
 export const joinChatLobbyResponse = (chatLobbyId, chatLobbyUsers) => ({ type: 'JOIN_CHAT_LOBBY_RESPONSE', chatLobbyId, chatLobbyUsers });
@@ -25,10 +84,10 @@ export const getGameConfigurationResponse = (payload) => ({ type: 'GET_GAME_CONF
 // Inbound Only Messages //
 ///////////////////////////
 
+export const newMessageFromServer = payload => ({ type: 'NEW_MESSAGE_FROM_SERVER', payload });
 export const systemMessageUserJoinedChat = (payload) => ({ type: 'SYSTEM_MESSAGE_USER_JOINED_CHAT', payload });
 export const systemMessageUserLeftChat = (payload) => ({ type: 'SYSTEM_MESSAGE_USER_LEFT_CHAT', payload });
 export const systemMessageChatUserList = (payload) => ({ type: 'SYSTEM_MESSAGE_CHAT_USER_LIST', payload });
-export const newMessageFromServer = payload => ({ type: 'NEW_MESSAGE_FROM_SERVER', payload });
 
 ///////////////////////////////////////
 // Non-Networked store manipulations //
@@ -41,11 +100,15 @@ const initialState = {
     status: null,
     host: null,
     messages: [],
-    chatLobbyId: null,
+    chatLobbyId: '',
     chatLobbyUsers: [],
     authenticationStatus: 'UNAUTHENTICATED',
     systemsJson: null,
 };
+
+/////////////
+// REDUCER //
+/////////////
 
 export const websocketReducer = (state = { ...initialState }, action) => {
     switch (action.type) {

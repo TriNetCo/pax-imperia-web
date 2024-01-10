@@ -20,7 +20,7 @@ const UserCard = () => {
         const photoURL = await lookupMsAzureProfilePhoto(userContext.tokenFromProvider);
         if (photoURL != null) {
             userContext.photoURL = photoURL;
-            console.debug('set photoURL to ' + photoURL);
+            // console.debug('set photoURL to ' + photoURL);
         }
     };
 
@@ -30,7 +30,7 @@ const UserCard = () => {
         if (userContext.providerId === 'microsoft.com') {
             asyncEffect();
             doneWithPhotoLookups = true;
-            console.debug('set doneWithPhotoLookups');
+            // console.debug('set doneWithPhotoLookups');
         }
     }, [userContext]);
 

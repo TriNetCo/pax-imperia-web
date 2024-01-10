@@ -63,16 +63,6 @@ const ChatLobby = ({closeModal}) => {
         }
     };
 
-    const downloadGameData = () => {
-        if (!websocket.chatLobbyId) {
-            alert('No chatLobbyId.  Disco?');
-            return;
-        }
-
-        // This will populate websocket.systemsJson
-        dispatch(getGameConfiguration(websocket.chatLobbyId));
-    };
-
     const leaveLobby = () => {
         dispatch(leaveChatLobby());
         history.push('/new_game');

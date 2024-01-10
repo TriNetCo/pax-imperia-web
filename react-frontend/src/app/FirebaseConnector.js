@@ -78,8 +78,6 @@ const FirebaseConnector = ({children, azureAuth}) => {
     const userContext = useContext(UserContext);
 
     useEffect(() => {
-        console.debug('socket connector is attaching');
-
         if (AppConfig.APP_ENV === 'local-test') {
             // TODO: Add application logic for after successful authentication here
             return;

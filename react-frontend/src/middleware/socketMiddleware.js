@@ -1,17 +1,9 @@
-/*
-* Summary of How Convoluted Redux Websocket Middleware Works:
-*
-* onMessage will run whenever this client receives a message from the server
-* then it will dispatch an action to the store, which will be handled by the reducer
-* the reducer will then update the state of the store
-* the store will then update the state of the component
-* for the component to re-render, it must be connected to the store
-* this is done by doing a `websocket = useSelector(selectWebsocket)` in the component
-* websocket.messages will be an array of all messages that the react client has received
-* see react-frontend/src/pages/ChatPage/ChatLobby.js for an example
-*/
-
 import * as actions from '../modules/websocket';
+import { actionTable } from '../modules/websocket';
+
+////////////////
+// MIDDLEWARE //
+////////////////
 
 const socketMiddleware = () => {
     let socket = null;
@@ -27,7 +19,16 @@ const socketMiddleware = () => {
 
     const onMessage = store => (event) => {
         const message = JSON.parse(event.data);
-        console.debug('receiving server message ' + message.command);
+        // console.debug('receiving server message ' + message.command);
+
+        const actionKey = message.command.replace('_RESPONSE', '');
+        const middlewareRecieve = actionTable[actionKey]?.middlewareRecieve;
+
+        if (middlewareRecieve) {
+            console.debug('receiving server message ' + message.command);
+            middlewareRecieve(store, message);
+            return;
+        }
 
         switch (message.command) {
             case 'SYSTEM_MESSAGE_CHAT_USER_LIST':
@@ -45,10 +46,10 @@ const socketMiddleware = () => {
                     store.dispatch(actions.joinChatLobbyResponse(message.payload.chatLobbyId, message.payload.chatLobbyUsers));
                 }
                 break;
-            case 'AUTHENTICATE_RESPONSE':
-                console.debug('AUTHENTICATE_RESPONSE', message.payload.status);
-                store.dispatch(actions.authenticateResponse(message.payload.status));
-                break;
+            // case 'AUTHENTICATE_RESPONSE':
+            //     console.debug('AUTHENTICATE_RESPONSE', message.payload.status);
+            //     store.dispatch(actions.authenticateResponse(message.payload.status));
+            //     break;
             case 'GET_GAME_CONFIGURATION_RESPONSE':
                 console.debug('GET_GAME_CONFIGURATION_RESPONSE', message.payload);
                 window.newGameData = message.payload; // TODO: remove.  This is for debugging the last message since I don't have testing setup for this
@@ -72,6 +73,15 @@ const socketMiddleware = () => {
 
     // the middleware part of this function
     return store => next => action => {
+
+        const middlewareSend = actionTable[action.type]?.middlewareSend;
+
+        if (middlewareSend) {
+            console.debug('Middleware Sending: ', action.type);
+            middlewareSend(action, socket);
+            return;
+        }
+
         switch (action.type) {
             case 'WS_CONNECT':
                 if (socket !== null) {
@@ -117,13 +127,13 @@ const socketMiddleware = () => {
                     payload: { }
                 }));
                 break;
-            case 'AUTHENTICATE':
-                console.debug('authenticating ', action.email);
-                socket.send(JSON.stringify({
-                    command: 'AUTHENTICATE',
-                    payload: { email: action.email, displayName: action.displayName, token: action.token }
-                }));
-                break;
+            // case 'AUTHENTICATE':
+            //     console.debug('authenticating ', action.email);
+            //     socket.send(JSON.stringify({
+            //         command: 'AUTHENTICATE',
+            //         payload: { email: action.email, displayName: action.displayName, token: action.token }
+            //     }));
+            //     break;
             case 'SET_GAME_CONFIGURATION':
                 console.debug('sending game configuration ', action.payload);
                 socket.send(JSON.stringify({

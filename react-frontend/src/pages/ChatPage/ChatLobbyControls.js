@@ -1,7 +1,7 @@
 import {useState, useContext} from 'react';
 import UserContext from '../../app/UserContext';
 import {useSelector, useDispatch} from 'react-redux';
-import {selectWebsocket, joinChatLobby, authenticate} from '../../modules/websocket';
+import {selectWebsocket, joinChatLobby, act} from '../../modules/websocket';
 
 
 const ChatLobbyControls = () => {
@@ -20,7 +20,7 @@ const ChatLobbyControls = () => {
     };
 
     const handleAuthenticateClick = () => {
-        dispatch(authenticate(userContext.email, userContext.displayName, userContext.token));
+        dispatch(act('AUTHENTICATE')(userContext.email, userContext.displayName, userContext.token));
     };
 
     return (
