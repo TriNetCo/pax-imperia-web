@@ -47,7 +47,7 @@ export const actionTable = {
 
     'AUTHENTICATE': {
 
-        // 1. The action is called to initiate the messaging cycle
+        // 1. The action is called to initiate the messaging cycle, e.g. dispatch(act('AUTHENTICATE')(email, displayName, token))
         action: (email, displayName, token) =>
             ({ type: 'AUTHENTICATE', payload: { email, displayName, token } }),
 
@@ -58,37 +58,30 @@ export const actionTable = {
         // 3. The middleware will fire this function when an AUTHENTICATE_RESPONSE message
         // comes in which will then dispatch the responseAction leading to the reducer
         // dealing with the rest
-        middlewareRecieve: (store, message) => {
-            store.dispatch(responseAct(message.type)(message.payload.authStatus));
-        },
+        // AUTHENTICATE_RESPONSE
+        middlewareRecieve: (store, message) => { store.dispatch(message); },
 
         // 4. Responses to AUTHENTICATE are defined here, but will come in as
-        // type AUTHENTICATE_RESPONSE
-        responseAction: (authStatus) => ({ type: 'AUTHENTICATE_RESPONSE', payload: {authStatus} }),
+        // It turned out this extra action definition wasn't helpful since we
+        // can dispatch the messages raw from the server
+        // responseAction: (authStatus) => ({ type: 'AUTHENTICATE_RESPONSE', payload: {authStatus} }),
 
         // 5. Inbound messages will often hit the reducer impacting it's state.
-        responseReducer: (state, action) => ({ ...state, authStatus: action.payload.authStatus })
+        responseReducer: (state, action) => ({ ...state, ...action.payload })
 
     },
 
     'JOIN_CHAT_LOBBY': {
         action: (user, chatLobbyId) => ({ type: 'JOIN_CHAT_LOBBY', payload: { user, chatLobbyId } }),
 
+        // JOIN_CHAT_LOBBY_RESPONSE
         middlewareRecieve: (store, message) => {
-            if (message.payload.status === 'success') {
-                store.dispatch(responseAct(message.type)(
-                    message.payload.chatLobbyId,
-                    message.payload.chatLobbyUsers
-                ));
+            if (message.status === 'success') {
+                store.dispatch(message);
             }
         },
 
-        responseAction: (chatLobbyId, chatLobbyUsers) =>
-            ({ type: 'JOIN_CHAT_LOBBY_RESPONSE', chatLobbyId, chatLobbyUsers }),
-
-        responseReducer: (state, action) => ({ ...state,
-            chatLobbyId: action.chatLobbyId,
-            chatLobbyUsers: action.chatLobbyUsers })
+        responseReducer: (state, action) => ({ ...state, ...action.payload })
 
     },
 
@@ -98,13 +91,11 @@ export const actionTable = {
         responseAction: (payload) => ({ type: 'GET_GAME_CONFIGURATION_RESPONSE', payload }),
 
         middlewareRecieve: (store, message) => {
-            console.log('not really implemented');
-            store.dispatch(responseAct(message.type)(message.payload));
+            console.log('GET_GAME_CONFIGURATION_RESPONSE not really implemented');
+            store.dispatch(message);
         },
 
-        responseReducer: (state, action) => ({ ...state,
-            systemsJson: action.payload.systemsJson,
-            time: action.payload.time })
+        responseReducer: (state, action) => ({ ...state, ...action.payload })
 
     },
 
@@ -114,11 +105,9 @@ export const actionTable = {
 
         responseAction: (payload) => ({ type: 'SET_GAME_CONFIGURATION_RESPONSE', payload }),
 
-        middlewareRecieve: (store, message) => {
-            store.dispatch(responseAct(message.type)(message.payload));
-        },
+        middlewareRecieve: (store, message) => { store.dispatch(message); },
 
-        responseReducer: (state, action) => ({ ...state, seedOnServer: action.seed })
+        responseReducer: (state, action) => ({ ...state, ...action.payload })
 
     },
 
@@ -143,52 +132,41 @@ export const actionTable = {
     'SYSTEM_MESSAGE_NEW_MESSAGE': {
         responseAction: (payload) => ({ type: 'SYSTEM_MESSAGE_NEW_MESSAGE', payload }),
 
-        middlewareRecieve: (store, message) => {
-            store.dispatch(responseAct(message.type)(message.payload));
-        },
+        middlewareRecieve: (store, message) => { store.dispatch(message); },
 
         responseReducer: (state, action) => ({ ...state,
             messages: [...state.messages, action.payload] })
-
     },
 
     'SYSTEM_MESSAGE_USER_JOINED_CHAT': {
         responseAction: (payload) => ({ type: 'SYSTEM_MESSAGE_USER_JOINED_CHAT', payload }),
 
-        middlewareRecieve: (store, message) => {
-            store.dispatch(responseAct(message.type)(message.payload));
-        },
+        middlewareRecieve: (store, message) => { store.dispatch(message); },
 
         responseReducer: (state, action) => ({ ...state,
-            chatLobbyUsers: [ action.payload.displayName , ...state.chatLobbyUsers ] })
+            chatLobbyUsers: [ ...state.chatLobbyUsers, action.payload.displayName ] })
 
     },
 
     'SYSTEM_MESSAGE_USER_LEFT_CHAT': {
         responseAction: (payload) => ({ type: 'SYSTEM_MESSAGE_USER_LEFT_CHAT', payload }),
 
-        middlewareRecieve: (store, message) => {
-            store.dispatch(responseAct(message.type)(message.payload));
-        },
+        middlewareRecieve: (store, message) => { store.dispatch(message); },
 
         responseReducer: (state, action) => {
             const chatLobbyUsers = state.chatLobbyUsers.filter( user =>
                 user !== action.payload.displayName);
-            return { ...state, chatLobbyUsers: [ ...chatLobbyUsers ] };
+            return { ...state, chatLobbyUsers };
         }
 
     },
 
-    'SYSTEM_MESSAGE_CHAT_USER_LIST': {
-        responseAction: (payload) => ({ type: 'SYSTEM_MESSAGE_CHAT_USER_LIST', payload }),
-
-        middlewareRecieve: (store, message) => {
-            store.dispatch(responseAct(message.type)(message.payload));
-        },
-
-        responseReducer: (state, action) => ({ ...state, chatLobbyUsers: action.payload })
-
-    },
+    // This would only be useful in a UDP setup
+    // 'SYSTEM_MESSAGE_CHAT_USER_LIST': {
+    //     responseAction: (payload) => ({ type: 'SYSTEM_MESSAGE_CHAT_USER_LIST', payload }),
+    //     middlewareRecieve: (store, message) => { store.dispatch(message); },
+    //     responseReducer: (state, action) => ({ ...state, ...action.payload })
+    // },
 
 };
 

@@ -7,6 +7,7 @@ import (
 type Message struct {
 	User    string                 `json:"user"`
 	Type    string                 `json:"type"`
+	Status  string                 `json:"status"`
 	Payload map[string]interface{} `json:"payload"`
 }
 

@@ -59,12 +59,12 @@ func findOrCreateChatRoom(chatLobbyId string) ChatRoom {
 
 func respondToJoiner(conn WebSocketConnection, chatRoom ChatRoom) {
 	var response = Message{
-		Type: "JOIN_CHAT_LOBBY_RESPONSE",
+		Type:   "JOIN_CHAT_LOBBY_RESPONSE",
+		Status: "success",
 		Payload: map[string]interface{}{
-			"status":         "success",
 			"chatLobbyId":    chatRoom.ChatLobbyId,
 			"chatLobbyUsers": GetChatLobbyUsers(chatRoom),
-			"message":        "Joined chat lobby",
+			// "message":        "Joined chat lobby",
 		},
 	}
 

@@ -18,11 +18,12 @@ func handleGetGameConfiguration(conn WebSocketConnection, message Message) {
 	}
 
 	var response = Message{
-		Type: "GET_GAME_CONFIGURATION_RESPONSE",
+		Type:   "GET_GAME_CONFIGURATION_RESPONSE",
+		Status: "success",
 		Payload: map[string]interface{}{
-			"status":      "success",
-			"systemsJson": chatRoom.Game.SystemsJson,
-			"time":        "5.00",
+			"systemsJson":  chatRoom.Game.SystemsJson,
+			"seedOnServer": "abc",
+			"time":         "5.00",
 		},
 	}
 	conn.WriteJSON(response)
@@ -52,6 +53,15 @@ func handleSetGameConfiguration(conn WebSocketConnection, message Message) {
 	}
 
 	chatRooms[chatLobbyId] = chatRoom
+
+	var response = Message{
+		Type:   "SET_GAME_CONFIGURATION_RESPONSE",
+		Status: "success",
+		Payload: map[string]interface{}{
+			"seedOnServer": "abc",
+		},
+	}
+	conn.WriteJSON(response)
 
 	fmt.Println("Game configuration set")
 }

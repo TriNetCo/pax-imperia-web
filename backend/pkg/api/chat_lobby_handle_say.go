@@ -23,10 +23,15 @@ func handleSay(conn WebSocketConnection, message Message) error {
 		return fmt.Errorf("Error: Sender attempted to send to a chatRoom they're not in, %s", sender.Email)
 	}
 
-	// Ensure no one is spoofing their name
-	message.Payload["user"] = sender.DisplayName
-	message.Type = "SYSTEM_MESSAGE_NEW_MESSAGE"
+	relayMessage := Message{
+		Type: "SYSTEM_MESSAGE_NEW_MESSAGE",
+		Payload: map[string]interface{}{
+			"user":    sender.DisplayName,
+			"Email":   sender.Email,
+			"message": message.Payload["message"],
+		},
+	}
 
-	SendMessageToAllChatroomParticipants(chatRoom, message)
+	SendMessageToAllChatroomParticipants(chatRoom, relayMessage)
 	return nil
 }
