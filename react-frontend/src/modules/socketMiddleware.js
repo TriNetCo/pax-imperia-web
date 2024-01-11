@@ -1,18 +1,11 @@
-import * as actions from '../modules/websocket';
-import { actionTable } from '../modules/websocket';
+import * as actions from './websocket';
+import { actionTable, extractActionKey } from './websocket';
 
 ////////////////
 // MIDDLEWARE //
 ////////////////
 
-function extractActionKey(commandName) {
-    const responseSuffix = '_RESPONSE';
-    if (commandName.endsWith(responseSuffix))
-        return commandName.replace(responseSuffix, '');
-    return commandName;
-}
-
-const socketMiddleware = () => {
+const socketMiddleware = (websocketFactory) => {
     let socket = null;
 
     const onOpen = store => (event) => {
@@ -20,6 +13,10 @@ const socketMiddleware = () => {
         store.dispatch(actions.wsConnected(event.target.url));
     };
 
+    // If we ever close our connection, in production, this represents
+    // a connection problem so we should attempt a reconnection.
+    // For development we don't always start the backend service, so
+    // no such reconnect code is defined yet
     const onClose = (store, host) => (event) => {
         store.dispatch(actions.wsDisconnected(host));
     };
@@ -28,8 +25,7 @@ const socketMiddleware = () => {
         const message = JSON.parse(event.data);
         // console.debug('receiving server message ' + message.command);
 
-        const actionKey = extractActionKey(message.command);
-        const middlewareRecieve = actionTable[actionKey]?.middlewareRecieve;
+        const middlewareRecieve = actionTable[extractActionKey(message.command)]?.middlewareRecieve;
 
         if (middlewareRecieve) {
             console.debug('receiving server message ' + message.command);
@@ -38,7 +34,7 @@ const socketMiddleware = () => {
         }
     };
 
-    // the middleware part of this function
+    // the 'middleware' part of this function
     return store => next => action => {
 
         const middlewareSend = actionTable[action.type]?.middlewareSend;
@@ -55,13 +51,10 @@ const socketMiddleware = () => {
                     socket.close();
                 }
 
-                // connect to the remote host
-                socket = new WebSocket(action.host);
-
-                // websocket handlers
+                socket           = websocketFactory(action.host);
                 socket.onmessage = onMessage(store);
-                socket.onclose = onClose(store, action.host);
-                socket.onopen = onOpen(store);
+                socket.onclose   = onClose(store, action.host);
+                socket.onopen    = onOpen(store);
 
                 // this interupts the dispatch event for WS_CONNECT completly, so it never hits a reducer...
                 // But the onopen callback should be fired, where the store will be set to update
@@ -80,4 +73,4 @@ const socketMiddleware = () => {
     };
 };
 
-export default socketMiddleware();
+export default socketMiddleware;

@@ -2,8 +2,12 @@ import { configureStore } from '@reduxjs/toolkit';
 import counterReducer from '../features/counter/counterSlice';
 import usersReducer from '../features/users/usersSlice';
 import lobbiesReducer from '../features/lobbies/lobbiesSlice';
-import socketMiddleware from '../middleware/socketMiddleware';
+import socketMiddleware from '../modules/socketMiddleware';
 import { websocketReducer } from '../modules/websocket';
+
+const websocketFactory = (host) => {
+    return new WebSocket(host);
+};
 
 export const store = configureStore({
     reducer: {
@@ -13,5 +17,5 @@ export const store = configureStore({
         websocket: websocketReducer
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(socketMiddleware),
+        getDefaultMiddleware().concat(socketMiddleware(websocketFactory)),
 });

@@ -81,11 +81,14 @@ const ChatLobby = ({closeModal}) => {
                     <button className="leave-lobby-btn" onClick={leaveLobby}>Leave Lobby</button> }
             </div>
 
-            { (websocket.status !== 'WS_CONNECTED') ?
+            { (websocket.status !== 'UNCONNECTED') &&
+              (websocket.status !== 'WS_CONNECTED') ?
                 <div>Connection Status: { websocket.status } </div> : '' }
 
-            {/* <div>Connection Status: { websocket.status } </div> */}
-            {/* <div>Authentication Status: { websocket.authenticationStatus } </div> */}
+            { (websocket.status === 'WS_CONNECTED') &&
+              (websocket.authStatus !== 'AUTHENTICATED') ?
+                <div>Authentication Status: { websocket.authStatus } </div> : '' }
+
             {/* <div>websocket.systemsJson: { !websocket.systemsJson ? 'NULL' : 'POPULATED' }</div> */}
 
             {/* <div>

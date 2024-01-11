@@ -21,13 +21,13 @@ func TestHandleAuthenticate(t *testing.T) {
 		{
 			"valid authentication",
 			`{"displayName": "Alice", "email": "alice@example.com", "token": "valid_token"}`,
-			Message{Command: "AUTHENTICATE_RESPONSE", Payload: map[string]interface{}{"status": "AUTHENTICATED"}},
+			Message{Command: "AUTHENTICATE_RESPONSE", Payload: map[string]interface{}{"authStatus": "AUTHENTICATED"}},
 			false,
 		},
 		{
 			"invalid authentication, missing token",
 			`{"displayName": "Bob", "email": "bob@example.com", "token": "invalid_token"}`,
-			Message{Command: "AUTHENTICATE_RESPONSE", Payload: map[string]interface{}{"status": "UNAUTHENTICATED"}},
+			Message{Command: "AUTHENTICATE_RESPONSE", Payload: map[string]interface{}{"authStatus": "UNAUTHENTICATED"}},
 			true,
 		},
 	}

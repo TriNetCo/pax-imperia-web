@@ -8,13 +8,15 @@ import ChatLobby from './ChatLobby';
 const rootReducer = { websocket: websocketReducer };
 
 describe("ChatLobby tests", () => {
+    let mockWebSocket;
+    let sendSpy;
 
-  beforeEach(() => {
-    console.debug = jest.fn()
-  })
+    beforeEach(() => {
+        console.debug = jest.fn()
+    });
 
   test('clicking send on ChatLobby clears out the input box', () => {
-    const { getByText, getByTestId } = render(<ChatLobby />, {
+    const { getByText, getByTestId, sendSpy } = render(<ChatLobby />, {
       rootReducer: rootReducer,
     });
 
@@ -23,7 +25,21 @@ describe("ChatLobby tests", () => {
 
     expect(input.value).toEqual('hello world')
     fireEvent.click(getByText("Send"));
+
+    // it clears the chat message that was typed in
     expect(input.value).toEqual('')
+
+    // send was called correctly
+    expect(sendSpy).toHaveBeenCalledWith(JSON.stringify(
+        {
+            "command": "NEW_MESSAGE",
+            "payload": {
+                "message": "hello world",
+                "user": "Anonymous",
+                "chatLobbyId": ""
+            }
+        }
+    ));
   });
 
 });

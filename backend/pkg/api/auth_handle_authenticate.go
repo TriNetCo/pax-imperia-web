@@ -24,7 +24,7 @@ func handleAuthenticate(conn WebSocketConnection, client ClientData, message Mes
 	var response = Message{
 		Command: "AUTHENTICATE_RESPONSE",
 		Payload: map[string]interface{}{
-			"status": authStatus,
+			"authStatus": authStatus,
 		},
 	}
 

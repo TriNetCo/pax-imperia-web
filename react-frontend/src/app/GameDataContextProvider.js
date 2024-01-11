@@ -14,6 +14,8 @@ export const connectAndJoin = (dispatch) => {
     // This is where we start using the websocket middleware...
     dispatch(wsConnect(host));
 };
+
+// This is unused but some pattern around load balancing may leverage this
 export const disconnect = (dispatch) => {
     dispatch(wsDisconnect());
 };

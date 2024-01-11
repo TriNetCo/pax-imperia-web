@@ -6,7 +6,7 @@ import AppConfig from '../AppConfig';
 
 // TODO: This will likely be injected from somewhere else
 export const applicationLogicToCallOnAuthInit = () => {
-    console.log('TODO: add application logic');
+    // console.log('TODO: add application logic');
 };
 
 export const popupSuccessHandler = (userContext) => {

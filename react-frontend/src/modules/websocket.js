@@ -18,18 +18,27 @@ import * as actions from './websocket';
 // Local Actions //
 ///////////////////
 
+// Dispatching this action begins the app opening a websocket connection
 export const wsConnect = host => ({ type: 'WS_CONNECT', host });
-export const wsDisconnect = host => ({ type: 'WS_DISCONNECT', host });
+
+// When the connection is actually established from wsConnect,
+// this action is dispatched so the store knows the connection status
 export const wsConnected = host => ({ type: 'WS_CONNECTED', host });
+
+// This isn't used, but would be required for load balancing
+export const wsDisconnect = host => ({ type: 'WS_DISCONNECT', host });
 export const wsDisconnected = host => ({ type: 'WS_DISCONNECTED', host });
-export const wsError = host => ({ type: 'WS_ERROR', host });
+
+export const setChatLobbyId = (chatLobbyId) => ({ type: 'SET_CHAT_LOBBY_ID', chatLobbyId });
 
 
-////////////////
-// BETTER WAY //
-////////////////
-
-// short for action to make dispatch calls less hideous and avoid name collisions
+/////////////////
+// actionTable //
+/////////////////
+//
+// All websocket message routing and functionality is defined here
+// (exluding reducers atm due to time constraints and uncertainty)
+//
 export const actionTable = {
 
     //////////////////////////////////////
@@ -40,16 +49,13 @@ export const actionTable = {
 
         // 1. The action is called to initiate the messaging cycle
         action: (email, displayName, token) =>
-            ({ type: 'AUTHENTICATE', email, displayName, token }),
+            ({ type: 'AUTHENTICATE', payload: { email, displayName, token } }),
 
-        // 2. Once the action is disptached, this middlwareSend function is invoked by middleware
+        // 2. Once the action is disptached, this function is invoked by middleware
         middlewareSend: (action, socket) => {
             socket.send(JSON.stringify({
                 command: action.type,
-                payload: {
-                    email: action.email,
-                    displayName: action.displayName,
-                    token: action.token }
+                payload: action.payload
             }));
         },
 
@@ -57,12 +63,15 @@ export const actionTable = {
         // comes in which will then dispatch the responseAction leading to the reducer
         // dealing with the rest
         middlewareRecieve: (store, message) => {
-            store.dispatch(responseAct(message.command)(message.payload.status));
+            store.dispatch(responseAct(message.command)(message.payload.authStatus));
         },
 
-        // 4. Responses AUTHENTICATE are defined here, but will come in as
+        // 4. Responses to AUTHENTICATE are defined here, but will come in as
         // type AUTHENTICATE_RESPONSE
-        responseAction: (status) => ({ type: 'AUTHENTICATE_RESPONSE', status }),
+        responseAction: (authStatus) => ({ type: 'AUTHENTICATE_RESPONSE', payload: {authStatus} }),
+
+        // 5. Inbound messages will often hit the reducer impacting it's state.
+        responseReducer: (state, action) => ({ ...state, authStatus: action.payload.authStatus })
 
     },
 
@@ -76,13 +85,21 @@ export const actionTable = {
             }));
         },
 
-        responseAction: (chatLobbyId, chatLobbyUsers) => ({ type: 'JOIN_CHAT_LOBBY_RESPONSE', chatLobbyId, chatLobbyUsers }),
-
         middlewareRecieve: (store, message) => {
             if (message.payload.status === 'success') {
-                store.dispatch(responseAct(message.command)(message.payload.chatLobbyId, message.payload.chatLobbyUsers));
+                store.dispatch(responseAct(message.command)(
+                    message.payload.chatLobbyId,
+                    message.payload.chatLobbyUsers
+                ));
             }
         },
+
+        responseAction: (chatLobbyId, chatLobbyUsers) =>
+            ({ type: 'JOIN_CHAT_LOBBY_RESPONSE', chatLobbyId, chatLobbyUsers }),
+
+        responseReducer: (state, action) => ({ ...state,
+            chatLobbyId: action.chatLobbyId,
+            chatLobbyUsers: action.chatLobbyUsers })
 
     },
 
@@ -103,6 +120,10 @@ export const actionTable = {
             store.dispatch(responseAct(message.command)(message.payload));
         },
 
+        responseReducer: (state, action) => ({ ...state,
+            systemsJson: action.payload.systemsJson,
+            time: action.payload.time })
+
     },
 
     'SET_GAME_CONFIGURATION': {
@@ -121,6 +142,8 @@ export const actionTable = {
         middlewareRecieve: (store, message) => {
             store.dispatch(responseAct(message.command)(message.payload));
         },
+
+        responseReducer: (state, action) => ({ ...state, seedOnServer: action.seed })
 
     },
 
@@ -162,6 +185,9 @@ export const actionTable = {
         middlewareRecieve: (store, message) => {
             store.dispatch(responseAct(message.command)(message.payload));
         },
+
+        responseReducer: (state, action) => ({ ...state, messages: [...state.messages, action.payload] })
+
     },
 
     'SYSTEM_MESSAGE_USER_JOINED_CHAT': {
@@ -170,6 +196,10 @@ export const actionTable = {
         middlewareRecieve: (store, message) => {
             store.dispatch(responseAct(message.command)(message.payload));
         },
+
+        responseReducer: (state, action) => ({ ...state,
+            chatLobbyUsers: [ action.payload.displayName , ...state.chatLobbyUsers ] })
+
     },
 
     'SYSTEM_MESSAGE_USER_LEFT_CHAT': {
@@ -178,6 +208,13 @@ export const actionTable = {
         middlewareRecieve: (store, message) => {
             store.dispatch(responseAct(message.command)(message.payload));
         },
+
+        responseReducer: (state, action) => {
+            const chatLobbyUsers = state.chatLobbyUsers.filter(user =>
+                user !== action.payload.displayName);
+            return { ...state, chatLobbyUsers: [...chatLobbyUsers ] };
+        }
+
     },
 
     'SYSTEM_MESSAGE_CHAT_USER_LIST': {
@@ -186,6 +223,9 @@ export const actionTable = {
         middlewareRecieve: (store, message) => {
             store.dispatch(responseAct(message.command)(message.payload));
         },
+
+        responseReducer: (state, action) => ({ ...state, chatLobbyUsers: action.payload })
+
     },
 
 };
@@ -199,62 +239,54 @@ export const responseAct = (key) => {
     return actionTable[key.replace(/_RESPONSE$/, '')].responseAction;
 };
 
+export function extractActionKey(commandName) {
+    const responseSuffix = '_RESPONSE';
+    if (commandName.endsWith(responseSuffix))
+        return commandName.replace(responseSuffix, '');
+    return commandName;
+}
 
 ///////////////////////////////////////
 // Non-Networked store manipulations //
 ///////////////////////////////////////
 
-export const setChatLobbyId = (chatLobbyId) => ({ type: 'SET_CHAT_LOBBY_ID', chatLobbyId });
-
 const initialState = {
     time: null,
-    status: null,
+    status: 'UNCONNECTED',
     host: null,
     messages: [],
     chatLobbyId: '',
     chatLobbyUsers: [],
-    authenticationStatus: 'UNAUTHENTICATED',
+    authStatus: 'UNAUTHENTICATED',
     seedOnServer: '',
     systemsJson: null,
 };
+
 
 /////////////
 // REDUCER //
 /////////////
 
 export const websocketReducer = (state = { ...initialState }, action) => {
+
+    const responseReducer = actionTable[extractActionKey(action.type)]?.responseReducer;
+    if (responseReducer) {
+        console.debug('Middleware Reducing: ', action.type);
+        return responseReducer(state, action);
+    }
+
     switch (action.type) {
         case 'WS_CONNECTED':
             return { ...state, host: action.host, status: 'WS_CONNECTED' };
         case 'WS_DISCONNECTED':
             return { ...state, status: 'WS_DISCONNECTED' };
-        case 'SET_GAME':
-            return { ...state, game: action.data, current_player: action.player };
-        case 'SYSTEM_MESSAGE_NEW_MESSAGE':
-            return { ...state, messages: [...state.messages, action.payload] };
-        case 'JOIN_CHAT_LOBBY_RESPONSE':
-            return { ...state, chatLobbyId: action.chatLobbyId, chatLobbyUsers: action.chatLobbyUsers };
-        case 'SYSTEM_MESSAGE_USER_JOINED_CHAT':
-            return { ...state, chatLobbyUsers: [...state.chatLobbyUsers, action.payload.displayName ] };
-        case 'SYSTEM_MESSAGE_USER_LEFT_CHAT':
-            const chatLobbyUsers = state.chatLobbyUsers.filter(user => user !== action.payload.displayName);
-            return { ...state, chatLobbyUsers: [...chatLobbyUsers ] };
-        case 'SYSTEM_MESSAGE_CHAT_USER_LIST':
-            return { ...state, chatLobbyUsers: action.payload };
-        case 'AUTHENTICATE_RESPONSE':
-            return { ...state, authenticationStatus: action.status };
-        case 'SET_GAME_CONFIGURATION_RESPONSE':
-            return { ...state, seedOnServer: action.seed };
-        case 'GET_GAME_CONFIGURATION_RESPONSE':
-            return { ...state,
-                systemsJson: action.payload.systemsJson,
-                time: action.payload.time };
         case 'SET_CHAT_LOBBY_ID':
             return { ...state,
                 chatLobbyId: action.chatLobbyId
             };
         default:
-            console.log('websocketReducer: default action: ' + action.type);
+            if (!action.type.startsWith('@@redux'))
+                console.log('websocketReducer: default action: ' + action.type);
             return state;
     }
 };
