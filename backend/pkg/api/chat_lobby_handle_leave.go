@@ -15,7 +15,7 @@ func HandleLeaveChatLobby(conn WebSocketConnection) {
 	}
 
 	var userLeaveAnnouncement = Message{
-		Command: "SYSTEM_MESSAGE_USER_LEFT_CHAT",
+		Type: "SYSTEM_MESSAGE_USER_LEFT_CHAT",
 		Payload: map[string]interface{}{
 			"status":      "success",
 			"chatLobbyId": chatRoom.ChatLobbyId,

@@ -25,7 +25,7 @@ func handleSay(conn WebSocketConnection, message Message) error {
 
 	// Ensure no one is spoofing their name
 	message.Payload["user"] = sender.DisplayName
-	message.Command = "SYSTEM_MESSAGE_NEW_MESSAGE"
+	message.Type = "SYSTEM_MESSAGE_NEW_MESSAGE"
 
 	SendMessageToAllChatroomParticipants(chatRoom, message)
 	return nil

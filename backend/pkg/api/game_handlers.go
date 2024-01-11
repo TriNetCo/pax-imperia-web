@@ -18,7 +18,7 @@ func handleGetGameConfiguration(conn WebSocketConnection, message Message) {
 	}
 
 	var response = Message{
-		Command: "GET_GAME_CONFIGURATION_RESPONSE",
+		Type: "GET_GAME_CONFIGURATION_RESPONSE",
 		Payload: map[string]interface{}{
 			"status":      "success",
 			"systemsJson": chatRoom.Game.SystemsJson,

@@ -24,7 +24,7 @@ describe('sendMessage middleware', () => {
         store.dispatch(act('NEW_MESSAGE')(msg))
 
         expect(sendSpy).toHaveBeenCalledWith(JSON.stringify({
-            "command": "NEW_MESSAGE",
+            "type": "NEW_MESSAGE",
             payload: msg
         }));
 

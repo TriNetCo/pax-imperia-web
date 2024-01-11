@@ -59,7 +59,7 @@ func findOrCreateChatRoom(chatLobbyId string) ChatRoom {
 
 func respondToJoiner(conn WebSocketConnection, chatRoom ChatRoom) {
 	var response = Message{
-		Command: "JOIN_CHAT_LOBBY_RESPONSE",
+		Type: "JOIN_CHAT_LOBBY_RESPONSE",
 		Payload: map[string]interface{}{
 			"status":         "success",
 			"chatLobbyId":    chatRoom.ChatLobbyId,
@@ -77,7 +77,7 @@ func respondToJoiner(conn WebSocketConnection, chatRoom ChatRoom) {
 
 func announceUserJoinedChat(conn WebSocketConnection, chatRoom ChatRoom) {
 	var userJoinAnnouncement = Message{
-		Command: "SYSTEM_MESSAGE_USER_JOINED_CHAT",
+		Type: "SYSTEM_MESSAGE_USER_JOINED_CHAT",
 		Payload: map[string]interface{}{
 			"status":      "success",
 			"chatLobbyId": chatRoom.ChatLobbyId,

@@ -21,13 +21,13 @@ func TestHandleAuthenticate(t *testing.T) {
 		{
 			"valid authentication",
 			`{"displayName": "Alice", "email": "alice@example.com", "token": "valid_token"}`,
-			Message{Command: "AUTHENTICATE_RESPONSE", Payload: map[string]interface{}{"authStatus": "AUTHENTICATED"}},
+			Message{Type: "AUTHENTICATE_RESPONSE", Payload: map[string]interface{}{"authStatus": "AUTHENTICATED"}},
 			false,
 		},
 		{
 			"invalid authentication, missing token",
 			`{"displayName": "Bob", "email": "bob@example.com", "token": "invalid_token"}`,
-			Message{Command: "AUTHENTICATE_RESPONSE", Payload: map[string]interface{}{"authStatus": "UNAUTHENTICATED"}},
+			Message{Type: "AUTHENTICATE_RESPONSE", Payload: map[string]interface{}{"authStatus": "UNAUTHENTICATED"}},
 			true,
 		},
 	}
@@ -42,7 +42,7 @@ func TestHandleAuthenticate(t *testing.T) {
 			var payload map[string]interface{}
 			json.Unmarshal([]byte(tt.messagePayload), &payload)
 			message := Message{
-				Command: "AUTHENTICATE",
+				Type:    "AUTHENTICATE",
 				Payload: payload,
 			}
 

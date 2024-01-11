@@ -54,7 +54,7 @@ export const actionTable = {
         // 2. Once the action is disptached, this function is invoked by middleware
         middlewareSend: (action, socket) => {
             socket.send(JSON.stringify({
-                command: action.type,
+                type: action.type,
                 payload: action.payload
             }));
         },
@@ -63,7 +63,7 @@ export const actionTable = {
         // comes in which will then dispatch the responseAction leading to the reducer
         // dealing with the rest
         middlewareRecieve: (store, message) => {
-            store.dispatch(responseAct(message.command)(message.payload.authStatus));
+            store.dispatch(responseAct(message.type)(message.payload.authStatus));
         },
 
         // 4. Responses to AUTHENTICATE are defined here, but will come in as
@@ -80,14 +80,14 @@ export const actionTable = {
 
         middlewareSend: (action, socket) => {
             socket.send(JSON.stringify({
-                command: action.type,
+                type: action.type,
                 payload: { user: action.user, chatLobbyId: action.chatLobbyId }
             }));
         },
 
         middlewareRecieve: (store, message) => {
             if (message.payload.status === 'success') {
-                store.dispatch(responseAct(message.command)(
+                store.dispatch(responseAct(message.type)(
                     message.payload.chatLobbyId,
                     message.payload.chatLobbyUsers
                 ));
@@ -108,7 +108,7 @@ export const actionTable = {
 
         middlewareSend: (action, socket) => {
             socket.send(JSON.stringify({
-                command: action.type,
+                type: action.type,
                 payload: { chatLobbyId: action.chatLobbyId }
             }));
         },
@@ -117,7 +117,7 @@ export const actionTable = {
 
         middlewareRecieve: (store, message) => {
             console.log('not really implemented');
-            store.dispatch(responseAct(message.command)(message.payload));
+            store.dispatch(responseAct(message.type)(message.payload));
         },
 
         responseReducer: (state, action) => ({ ...state,
@@ -132,7 +132,7 @@ export const actionTable = {
 
         middlewareSend: (action, socket) => {
             socket.send(JSON.stringify({
-                command: action.type,
+                type: action.type,
                 payload: action.payload
             }));
         },
@@ -140,7 +140,7 @@ export const actionTable = {
         responseAction: (payload) => ({ type: 'SET_GAME_CONFIGURATION_RESPONSE', payload }),
 
         middlewareRecieve: (store, message) => {
-            store.dispatch(responseAct(message.command)(message.payload));
+            store.dispatch(responseAct(message.type)(message.payload));
         },
 
         responseReducer: (state, action) => ({ ...state, seedOnServer: action.seed })
@@ -157,7 +157,7 @@ export const actionTable = {
 
         middlewareSend: (action, socket) => {
             socket.send(JSON.stringify({
-                command: action.type,
+                type: action.type,
                 payload: action.payload,
             }));
         },
@@ -169,7 +169,7 @@ export const actionTable = {
 
         middlewareSend: (action, socket) => {
             socket.send(JSON.stringify({
-                command: action.type
+                type: action.type
             }));
         },
     },
@@ -183,7 +183,7 @@ export const actionTable = {
         responseAction: (payload) => ({ type: 'SYSTEM_MESSAGE_NEW_MESSAGE', payload }),
 
         middlewareRecieve: (store, message) => {
-            store.dispatch(responseAct(message.command)(message.payload));
+            store.dispatch(responseAct(message.type)(message.payload));
         },
 
         responseReducer: (state, action) => ({ ...state, messages: [...state.messages, action.payload] })
@@ -194,7 +194,7 @@ export const actionTable = {
         responseAction: (payload) => ({ type: 'SYSTEM_MESSAGE_USER_JOINED_CHAT', payload }),
 
         middlewareRecieve: (store, message) => {
-            store.dispatch(responseAct(message.command)(message.payload));
+            store.dispatch(responseAct(message.type)(message.payload));
         },
 
         responseReducer: (state, action) => ({ ...state,
@@ -206,7 +206,7 @@ export const actionTable = {
         responseAction: (payload) => ({ type: 'SYSTEM_MESSAGE_USER_LEFT_CHAT', payload }),
 
         middlewareRecieve: (store, message) => {
-            store.dispatch(responseAct(message.command)(message.payload));
+            store.dispatch(responseAct(message.type)(message.payload));
         },
 
         responseReducer: (state, action) => {
@@ -221,7 +221,7 @@ export const actionTable = {
         responseAction: (payload) => ({ type: 'SYSTEM_MESSAGE_CHAT_USER_LIST', payload }),
 
         middlewareRecieve: (store, message) => {
-            store.dispatch(responseAct(message.command)(message.payload));
+            store.dispatch(responseAct(message.type)(message.payload));
         },
 
         responseReducer: (state, action) => ({ ...state, chatLobbyUsers: action.payload })
@@ -239,11 +239,11 @@ export const responseAct = (key) => {
     return actionTable[key.replace(/_RESPONSE$/, '')].responseAction;
 };
 
-export function extractActionKey(commandName) {
+export function extractActionKey(actionType) {
     const responseSuffix = '_RESPONSE';
-    if (commandName.endsWith(responseSuffix))
-        return commandName.replace(responseSuffix, '');
-    return commandName;
+    if (actionType.endsWith(responseSuffix))
+        return actionType.replace(responseSuffix, '');
+    return actionType;
 }
 
 ///////////////////////////////////////

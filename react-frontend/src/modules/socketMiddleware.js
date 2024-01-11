@@ -23,12 +23,12 @@ const socketMiddleware = (websocketFactory) => {
 
     const onMessage = store => (event) => {
         const message = JSON.parse(event.data);
-        // console.debug('receiving server message ' + message.command);
+        // console.debug('receiving server message ' + message.type);
 
-        const middlewareRecieve = actionTable[extractActionKey(message.command)]?.middlewareRecieve;
+        const middlewareRecieve = actionTable[extractActionKey(message.type)]?.middlewareRecieve;
 
         if (middlewareRecieve) {
-            console.debug('receiving server message ' + message.command);
+            console.debug('receiving server message ' + message.type);
             middlewareRecieve(store, message);
             return;
         }

@@ -22,7 +22,7 @@ func TestHandleSay(t *testing.T) {
 		{
 			"valid say",
 			`{"chatLobbyId": "1234", "message": "hello world", "user": "Its Me", "Email": "me@example.com"}`,
-			Message{Command: "SYSTEM_MESSAGE_NEW_MESSAGE", Payload: map[string]interface{}{"chatLobbyId": "1234", "message": "hello world", "user": "Its Me", "Email": "me@example.com"}},
+			Message{Type: "SYSTEM_MESSAGE_NEW_MESSAGE", Payload: map[string]interface{}{"chatLobbyId": "1234", "message": "hello world", "user": "Its Me", "Email": "me@example.com"}},
 			true,
 			false,
 		},
@@ -45,7 +45,7 @@ func TestHandleSay(t *testing.T) {
 			mockWsConn := testutils.MockWsConnection{}
 			var wsConn WebSocketConnection = &mockWsConn
 
-			if tt.mockWsResponse.Command != "" {
+			if tt.mockWsResponse.Type != "" {
 				mockWsConn.On("WriteJSON", tt.mockWsResponse).Return(nil)
 			}
 
@@ -65,7 +65,7 @@ func TestHandleSay(t *testing.T) {
 			var payload map[string]interface{} = make(map[string]interface{})
 			json.Unmarshal([]byte(tt.messagePayload), &payload)
 			message := Message{
-				Command: "NEW_MESSAGE",
+				Type:    "NEW_MESSAGE",
 				Payload: payload,
 			}
 

@@ -22,7 +22,7 @@ func handleAuthenticate(conn WebSocketConnection, client ClientData, message Mes
 	clients[conn] = client
 
 	var response = Message{
-		Command: "AUTHENTICATE_RESPONSE",
+		Type: "AUTHENTICATE_RESPONSE",
 		Payload: map[string]interface{}{
 			"authStatus": authStatus,
 		},

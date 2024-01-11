@@ -32,7 +32,7 @@ describe("ChatLobby tests", () => {
     // send was called correctly
     expect(sendSpy).toHaveBeenCalledWith(JSON.stringify(
         {
-            "command": "NEW_MESSAGE",
+            "type": "NEW_MESSAGE",
             "payload": {
                 "message": "hello world",
                 "user": "Anonymous",

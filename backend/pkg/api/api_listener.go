@@ -55,12 +55,12 @@ func ListenToClientMessages(conn WebSocketConnection) {
 			fmt.Println("error:", err)
 		}
 		// fmt.Println("Client email: ", client.Email)
-		// fmt.Println("Message: ", message.Command)
+		// fmt.Println("Message: ", message.Type)
 		// fmt.Println("Payload: ", message.Payload)
 
 		dataMux.Lock()
 
-		switch message.Command {
+		switch message.Type {
 		case "AUTHENTICATE":
 			handleAuthenticate(conn, client, message)
 		case "JOIN_CHAT_LOBBY":
@@ -74,7 +74,7 @@ func ListenToClientMessages(conn WebSocketConnection) {
 		case "GET_GAME_CONFIGURATION":
 			handleGetGameConfiguration(conn, message)
 		default:
-			fmt.Println("ERROR: Unknown command, " + message.Command)
+			fmt.Println("ERROR: Unknown message type, " + message.Type)
 		}
 
 		dataMux.Unlock()
