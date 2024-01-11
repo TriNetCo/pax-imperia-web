@@ -9,8 +9,7 @@ describe('sendMessage middleware', () => {
     let mockWebSocket;
     let sendSpy;
 
-    it('dispatches the correct action and sends message via WebSocket', () => {
-
+    it('NEW_MESSAGE dispatches send to WebSocket', () => {
         // Render your component with the mocked context
         const { sendSpy, store } = render(<ChatLobby />, { rootReducer })
 
@@ -27,9 +26,16 @@ describe('sendMessage middleware', () => {
             "type": "NEW_MESSAGE",
             payload: msg
         }));
+    });
 
-        // expect(middlewareActionLeger.length).toEqual(2)
-        // expect(middlewareActionLeger[0].type).toEqual('WS_CONNECT')
-        // expect(middlewareActionLeger[1].type).toEqual('NEW_MESSAGE')
+    it('LEAVE_CHAT_LOBBY dispatches send to WebSocket', () => {
+        // Render your component with the mocked context
+        const { sendSpy, store } = render(<ChatLobby />, { rootReducer })
+
+        store.dispatch(act('LEAVE_CHAT_LOBBY')())
+
+        expect(sendSpy).toHaveBeenCalledWith(JSON.stringify({
+            "type": "LEAVE_CHAT_LOBBY"
+        }));
     });
 });

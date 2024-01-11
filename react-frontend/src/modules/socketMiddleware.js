@@ -37,11 +37,11 @@ const socketMiddleware = (websocketFactory) => {
     // the 'middleware' part of this function
     return store => next => action => {
 
-        const middlewareSend = actionTable[action.type]?.middlewareSend;
+        const hasActionToSend = actionTable[action.type]?.action;
 
-        if (middlewareSend) {
+        if (hasActionToSend) {
             console.debug('Middleware Sending: ', action.type);
-            middlewareSend(action, socket);
+            socket.send(JSON.stringify(action));
             return;
         }
 

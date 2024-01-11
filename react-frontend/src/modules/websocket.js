@@ -51,13 +51,9 @@ export const actionTable = {
         action: (email, displayName, token) =>
             ({ type: 'AUTHENTICATE', payload: { email, displayName, token } }),
 
-        // 2. Once the action is disptached, this function is invoked by middleware
-        middlewareSend: (action, socket) => {
-            socket.send(JSON.stringify({
-                type: action.type,
-                payload: action.payload
-            }));
-        },
+        // 2. Once the action is disptached, the middleware will receive the 'AUTHENTICATE'
+        //  which will lookup the action defined above and in it's presence send to the socket
+        // middlewareSend: (action, socket) => socket.send(JSON.stringify(action)),
 
         // 3. The middleware will fire this function when an AUTHENTICATE_RESPONSE message
         // comes in which will then dispatch the responseAction leading to the reducer
@@ -76,14 +72,7 @@ export const actionTable = {
     },
 
     'JOIN_CHAT_LOBBY': {
-        action: (user, chatLobbyId) => ({ type: 'JOIN_CHAT_LOBBY', user, chatLobbyId }),
-
-        middlewareSend: (action, socket) => {
-            socket.send(JSON.stringify({
-                type: action.type,
-                payload: { user: action.user, chatLobbyId: action.chatLobbyId }
-            }));
-        },
+        action: (user, chatLobbyId) => ({ type: 'JOIN_CHAT_LOBBY', payload: { user, chatLobbyId } }),
 
         middlewareRecieve: (store, message) => {
             if (message.payload.status === 'success') {
@@ -104,14 +93,7 @@ export const actionTable = {
     },
 
     'GET_GAME_CONFIGURATION': {
-        action: (chatLobbyId) => ({ type: 'GET_GAME_CONFIGURATION', chatLobbyId }),
-
-        middlewareSend: (action, socket) => {
-            socket.send(JSON.stringify({
-                type: action.type,
-                payload: { chatLobbyId: action.chatLobbyId }
-            }));
-        },
+        action: (chatLobbyId) => ({ type: 'GET_GAME_CONFIGURATION', payload: { chatLobbyId } }),
 
         responseAction: (payload) => ({ type: 'GET_GAME_CONFIGURATION_RESPONSE', payload }),
 
@@ -130,13 +112,6 @@ export const actionTable = {
         action: (chatLobbyId, systemsJson) =>
             ({ type: 'SET_GAME_CONFIGURATION', payload: { chatLobbyId, systemsJson } }),
 
-        middlewareSend: (action, socket) => {
-            socket.send(JSON.stringify({
-                type: action.type,
-                payload: action.payload
-            }));
-        },
-
         responseAction: (payload) => ({ type: 'SET_GAME_CONFIGURATION_RESPONSE', payload }),
 
         middlewareRecieve: (store, message) => {
@@ -154,24 +129,10 @@ export const actionTable = {
 
     'NEW_MESSAGE': {
         action: (payload) => ({ type: 'NEW_MESSAGE', payload }),
-
-        middlewareSend: (action, socket) => {
-            socket.send(JSON.stringify({
-                type: action.type,
-                payload: action.payload,
-            }));
-        },
-
     },
 
     'LEAVE_CHAT_LOBBY': {
         action: () => ({ type: 'LEAVE_CHAT_LOBBY' }),
-
-        middlewareSend: (action, socket) => {
-            socket.send(JSON.stringify({
-                type: action.type
-            }));
-        },
     },
 
 
@@ -186,7 +147,8 @@ export const actionTable = {
             store.dispatch(responseAct(message.type)(message.payload));
         },
 
-        responseReducer: (state, action) => ({ ...state, messages: [...state.messages, action.payload] })
+        responseReducer: (state, action) => ({ ...state,
+            messages: [...state.messages, action.payload] })
 
     },
 
@@ -210,9 +172,9 @@ export const actionTable = {
         },
 
         responseReducer: (state, action) => {
-            const chatLobbyUsers = state.chatLobbyUsers.filter(user =>
+            const chatLobbyUsers = state.chatLobbyUsers.filter( user =>
                 user !== action.payload.displayName);
-            return { ...state, chatLobbyUsers: [...chatLobbyUsers ] };
+            return { ...state, chatLobbyUsers: [ ...chatLobbyUsers ] };
         }
 
     },
