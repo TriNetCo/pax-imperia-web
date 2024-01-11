@@ -5,6 +5,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 import { UserContextProvider } from '../src/app/UserContextProvider';
+import GameDataContextProvider from "src/app/GameDataContextProvider";
 
 
 function render(ui, { rootReducer, ...renderOptions } = {}) {
@@ -15,14 +16,20 @@ function render(ui, { rootReducer, ...renderOptions } = {}) {
     signOutMicrosoft: () => {},
   }
 
+  const gameData = {
+    injectReactGarbage: () => { },
+  };
+
   function Wrapper({ children }) {
 
     return (
       <Provider store={store}>
         <UserContextProvider azureAuth={azureAuthMock}>
-          <Router>
-            {children}
-          </Router>
+            <GameDataContextProvider gameData={gameData}>
+                <Router>
+                    {children}
+                </Router>
+            </GameDataContextProvider>
         </UserContextProvider>
       </Provider>
     );

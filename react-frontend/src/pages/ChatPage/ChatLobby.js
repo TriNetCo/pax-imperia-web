@@ -99,7 +99,8 @@ const ChatLobby = ({closeModal}) => {
             <ChatMessages />
             <div className="chat-input">
                 <input type="text" value={msgToSend} onChange={handleMessageChange}
-                    onKeyDown={handleEnterKey} placeholder="Type a message..." />
+                    onKeyDown={handleEnterKey} placeholder="Type a message..."
+                    data-testid="msg-field" />
                 <button onClick={sendMessage}>Send</button>
             </div>
         </div>
