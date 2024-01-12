@@ -3,10 +3,12 @@ import {useEffect, useContext} from 'react';
 import {GameDataContext} from 'src/app/GameDataContextProvider';
 import {useSelector, useDispatch} from 'react-redux';
 import {act, selectWebsocket} from '../../../modules/websocket';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
+import Modal from 'src/features/Modal/Modal';
 
 const JoinLobbyTab = () => {
     const dispatch = useDispatch();
+    const history = useHistory();
     let { lobbyId } = useParams();
     const websocket = useSelector(selectWebsocket);
     const { data } = useContext(GameDataContext);
@@ -29,7 +31,18 @@ const JoinLobbyTab = () => {
 
     // Download the game data once we've joined the lobby
     useEffect( () => {
-        if (!websocket.chatLobbyId) return;
+        if (websocket.chatLobbyId === '') return;
+        if (websocket.chatLobbyId === 'lobby_not_found') {
+            // show error using modal
+            document.getElementById('modal').style.display = 'block';
+            window.modalShown = true;
+            data.modal.msgBox({
+                title: 'Error', body: 'Lobby does not exist.',
+                cb: () => {
+                    history.push('/lobbies');
+                }});
+            return;
+        }
         dispatch(act('GET_GAME_CONFIGURATION')(websocket.chatLobbyId));
     }, [websocket.chatLobbyId]);
 
@@ -39,6 +52,8 @@ const JoinLobbyTab = () => {
 
     return (
         <>
+            <Modal />
+
             <ChatLobby />
         </>
     );

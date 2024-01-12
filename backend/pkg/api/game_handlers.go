@@ -30,12 +30,14 @@ func handleGetGameConfiguration(conn *WebSocketConnection, message Message) {
 	fmt.Println("Game configuration sent")
 }
 
-func handleSetGameConfiguration(conn *WebSocketConnection, message Message) {
+// TODO: make this function not require lobby notions
+func handleSetGameConfiguration(conn *WebSocketConnection, message *Message) {
 	// The client will generate the game configuration and send it to the server
 	// We will need to store that configuration in the chat room
 	// The server will then send the game configuration to all other clients in the chat room
 	chatLobbyId := message.Payload["chatLobbyId"].(string)
 
+	// get chatRoom
 	chatRoom, exists := chatRooms[chatLobbyId]
 	if !exists {
 		fmt.Println("Chat Room not found")

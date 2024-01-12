@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sync"
+	"time"
 
 	. "github.com/trinetco/pax-imperia-clone/pkg/models"
 )
@@ -30,14 +31,17 @@ func ListenToClientMessages(conn WebSocketConnection) {
 
 	dataMux.Lock()
 
-	// this map is kind of confusing, but we create a key for the client using the connection pointer, and
-	// set the value to true a struct containing the client's email and display name
-	// we can access the connection pointer later to send messages to the client by iterating over the map
+	// this map is kind of confusing, but we create a key for the client using
+	// the connection pointer, and  set the value to true a struct containing the
+	// client's email and display name we can access the connection pointer later
+	// to send messages to the client by iterating over the map
 	// weird syntax, but it works
 	// we could use an array of connections, but this is more efficient???
 	var client = ClientData{}
 	clients[&conn] = client
 	dataMux.Unlock()
+
+	var message Message
 
 	for {
 		_, msg, err := conn.ReadMessage()
@@ -46,14 +50,27 @@ func ListenToClientMessages(conn WebSocketConnection) {
 			fmt.Println(err)
 			break
 		}
+
+		startTime := time.Now()
+
 		// fmt.Println("Received Message:", string(msg))
 
-		// We need to parse the json message into a struct
-		var message Message
-		err = json.Unmarshal(msg, &message)
-		if err != nil {
+		// check the first character of the msg to see if it is a json message
+		if string(msg[0]) == "{" {
+			fmt.Println("Received json message")
+		}
+
+		//////////////////////////////////////////////////////////////////////////////
+		// TODO  Make it so I can follow a custom message protocol to make it
+		// more efficient to receive the large payloads.  e.g. if first char is "s"
+		// then it's a systemsJson message for setting the game configuration
+		//////////////////////////////////////////////////////////////////////////////
+
+		// Parse the json message into a struct
+		if err = json.Unmarshal(msg, &message); err != nil {
 			fmt.Println("error:", err)
 		}
+
 		// fmt.Println("Client email: ", client.Email)
 		// fmt.Println("Message: ", message.Type)
 		// fmt.Println("Payload: ", message.Payload)
@@ -72,7 +89,7 @@ func ListenToClientMessages(conn WebSocketConnection) {
 		case "NEW_MESSAGE":
 			handleSay(&conn, message)
 		case "SET_GAME_CONFIGURATION":
-			handleSetGameConfiguration(&conn, message)
+			handleSetGameConfiguration(&conn, &message)
 		case "GET_GAME_CONFIGURATION":
 			handleGetGameConfiguration(&conn, message)
 		default:
@@ -80,6 +97,11 @@ func ListenToClientMessages(conn WebSocketConnection) {
 		}
 
 		dataMux.Unlock()
+
+		// Print performance metrics
+		elapsedTime := time.Since(startTime)
+		width := 12
+		fmt.Printf("%-*s -> %s done\n", width, elapsedTime, message.Type)
 	}
 }
 

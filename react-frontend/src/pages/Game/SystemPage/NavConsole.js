@@ -1,19 +1,31 @@
 import {IconButton} from '@mui/material';
-import Modal from 'src/shared/Modal/Modal';
+import Modal from 'src/features/Modal/Modal';
 import {useHistory} from 'react-router-dom';
-import React from 'react';
+import React, { useContext } from 'react';
+import { GameDataContext } from 'src/app/GameDataContextProvider';
 
 
 const NavConsole = () => {
     const history = useHistory();
+    const { data, updateData } = useContext(GameDataContext);
 
     const handleCloseSystemView = () => {
         history.push('/systems');
     };
 
     const showChat = () => {
-        document.getElementById('modal').style.display = 'block';
-        window.modalShown = true;
+
+        data.modal.show('CHAT_LOBBY');
+
+        // data.modal.type = 'CHAT_LOBBY';
+        // updateData(); // todo put this inside data
+    };
+
+    const showLog = () => {
+        data.modal.msgBox({
+            title: 'Log',
+            body: 'The system is down.',
+        });
     };
 
 
@@ -29,7 +41,7 @@ const NavConsole = () => {
                 <button className="green-button">[Military]</button>
                 <span>|</span>
                 <button className="green-button" onClick={showChat}>[Chat]</button>
-                <button className="green-button">[Log]</button>
+                <button className="green-button" onClick={showLog}>[Log]</button>
             </div>
 
             <div className="console-message" id="time"></div>

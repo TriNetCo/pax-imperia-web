@@ -9,13 +9,19 @@ import (
 
 func HandleJoinChatLobby(conn *WebSocketConnection, message Message) {
 	// fmt.Println("Chat Room ID:", chatLobbyId)
-	chatLobbyId, error := validateInputs(message)
-	if error != nil {
-		fmt.Println(error)
+	chatLobbyId, err := validateInputs(message)
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
 
-	chatRoom := findOrCreateChatRoom(chatLobbyId, conn)
+	// TODO: I probably broke my app by changing this to throw an error rather than make one little thing
+	chatRoom, err := findChatRoom(chatLobbyId, conn)
+	if err != nil {
+		fmt.Println(err)
+		respondFailToJoiner(conn)
+		return
+	}
 
 	// Check if the client has already joined the lobby
 	if _, clientFound := chatRoom.Clients[conn]; clientFound {
@@ -23,15 +29,19 @@ func HandleJoinChatLobby(conn *WebSocketConnection, message Message) {
 		return
 	}
 
-	// Add the joining client to the chat room
-	chatRoom.Clients[conn] = clients[conn]
-	chatRooms[chatLobbyId] = chatRoom
+	JoinClientToChatRoom(conn, &chatRoom)
 
-	respondToJoiner(conn, chatRoom)
+	respondSuccessToJoiner(conn, chatRoom)
 
 	announceUserJoinedChat(conn, chatRoom)
 
 	fmt.Printf("Client joined lobby: %s -> %s\n", clients[conn].DisplayName, chatLobbyId)
+}
+
+func JoinClientToChatRoom(conn *WebSocketConnection, chatRoom *ChatRoom) {
+	client := clients[conn]
+	client.ChatLobbyId = chatRoom.ChatLobbyId
+	chatRoom.Clients[conn] = client
 }
 
 func validateInputs(message Message) (string, error) {
@@ -45,22 +55,20 @@ func validateInputs(message Message) (string, error) {
 	return chatLobbyId, nil
 }
 
-func findOrCreateChatRoom(chatLobbyId string, conn *WebSocketConnection) ChatRoom {
+func findChatRoom(chatLobbyId string, conn *WebSocketConnection) (ChatRoom, error) {
 	chatRoom, exists := chatRooms[chatLobbyId]
 
 	if !exists {
-		fmt.Printf("Creating lobby: %s\n", chatLobbyId)
-
-		chatRoom = MakeChatRoom(chatLobbyId, false, conn)
+		msg := "Error: Chat Room not found"
+		return chatRoom, fmt.Errorf(msg)
 	}
 
-	return chatRoom
+	return chatRoom, nil
 }
 
-func respondToJoiner(conn *WebSocketConnection, chatRoom ChatRoom) {
+func respondSuccessToJoiner(conn *WebSocketConnection, chatRoom ChatRoom) {
 	var response = Message{
-		Type:   "JOIN_CHAT_LOBBY_RESPONSE",
-		Status: "success",
+		Type: "JOIN_CHAT_LOBBY_RESPONSE",
 		Payload: map[string]interface{}{
 			"chatLobbyId":    chatRoom.ChatLobbyId,
 			"chatLobbyUsers": GetChatLobbyUsers(chatRoom),
@@ -69,6 +77,17 @@ func respondToJoiner(conn *WebSocketConnection, chatRoom ChatRoom) {
 
 	if serverConfiguration.VerboseMode {
 		util.DebugPrintStruct(response)
+	}
+
+	(*conn).WriteJSON(response)
+}
+
+func respondFailToJoiner(conn *WebSocketConnection) {
+	var response = Message{
+		Type: "JOIN_CHAT_LOBBY_RESPONSE",
+		Payload: map[string]interface{}{
+			"chatLobbyId": "lobby_not_found",
+		},
 	}
 
 	(*conn).WriteJSON(response)

@@ -40,13 +40,13 @@ func HandleCreateChatLobby(conn *WebSocketConnection, message Message) error {
 		fmt.Println(err)
 		return err
 	}
-
-	// Add the joining client to the chat room
-	chatRoom.Clients[conn] = clients[conn]
 	chatRooms[chatLobbyId] = chatRoom
 
+	// Join the client to the chat room
+	JoinClientToChatRoom(conn, &chatRoom)
+
 	// Fire back response to client
-	respondToJoiner(conn, chatRoom)
+	respondSuccessToJoiner(conn, chatRoom)
 
 	fmt.Printf("Client created lobby: %s -> %s\n", clients[conn].DisplayName, chatLobbyId)
 	return nil

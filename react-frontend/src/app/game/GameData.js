@@ -5,10 +5,14 @@ import { Galaxy } from 'pax-imperia-js/script/models/galaxy';
 import { GameStateInterface } from 'pax-imperia-js/script/gameStateInterface/gameStateInterface';
 import AppConfig from 'src/AppConfig';
 import Lobby from './Lobby';
+import ModalManager from 'src/features/Modal/modalManager';
 
 export default class GameData {
 
     websocket;
+
+    /** @type {ModalManager} */
+    modal;
 
     /** @type {Lobby} */
     lobby;
@@ -31,6 +35,8 @@ export default class GameData {
 
     constructor(lobby) {
         this.lobby = lobby ? lobby : new Lobby();
+        this.modal = new ModalManager();
+        window.modal = this.modal;
 
         this.configureSeed();
 
@@ -71,6 +77,8 @@ export default class GameData {
         this.lobby.dispatch = garbage.dispatch;
         this.lobby.websocket = garbage.websocket;
         this.lobby.userContext = garbage.userContext;
+        this.updateData = garbage.updateData;
+        this.modal.updateData = garbage.updateData;
     }
 
     // Globalize classes for debugging

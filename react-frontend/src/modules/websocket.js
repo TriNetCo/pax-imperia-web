@@ -96,9 +96,7 @@ export const actionTable = {
 
         // JOIN_CHAT_LOBBY_RESPONSE
         middlewareRecieve: (store, message) => {
-            if (message.status === 'success') {
-                store.dispatch(message);
-            }
+            store.dispatch(message);
         },
 
         responseReducer: (state, action) => ({ ...state, ...action.payload })
@@ -117,7 +115,7 @@ export const actionTable = {
 
     'SET_GAME_CONFIGURATION': {
         action: (chatLobbyId, systemsJson) =>
-            ({ type: 'SET_GAME_CONFIGURATION', payload: { chatLobbyId, systemsJson } }),
+            ({ type: 'SET_GAME_CONFIGURATION', payload: { chatLobbyId, systemsJson} }),
 
         responseAction: (payload) => ({ type: 'SET_GAME_CONFIGURATION_RESPONSE', payload }),
 

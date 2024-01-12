@@ -249,7 +249,10 @@ export class SpaceViewDomManager {
 
     clickInfoMoji(targetType, targetId) {
         if (targetType == 'planet') {
-            alert('TODO: Make it so an overlay pops up with the planet\'s info. ' + targetId);
+            window.modal.msgBox({
+                title: 'Planet Info',
+                body: 'TODO: Make it so an overlay pops up with the planet\'s info. ' + targetId,
+            });
         }
     }
 
