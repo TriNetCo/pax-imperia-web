@@ -1,5 +1,5 @@
 import * as actions from './websocket';
-import { actionTable, extractActionKey } from './websocket';
+import {actionTable, extractActionKey, act} from './websocket';
 
 ////////////////
 // MIDDLEWARE //
@@ -8,9 +8,13 @@ import { actionTable, extractActionKey } from './websocket';
 const socketMiddleware = (websocketFactory) => {
     let socket = null;
 
-    const onOpen = store => (event) => {
+    const onOpen = (store, authData) => (event) => {
         console.debug('websocket open', event.target.url);
         store.dispatch(actions.wsConnected(event.target.url));
+
+        if (authData) {
+            store.dispatch(act('AUTHENTICATE')(authData.email, authData.displayName, authData.token));
+        }
     };
 
     // If we ever close our connection, in production, this represents
@@ -54,7 +58,7 @@ const socketMiddleware = (websocketFactory) => {
                 socket           = websocketFactory(action.host);
                 socket.onmessage = onMessage(store);
                 socket.onclose   = onClose(store, action.host);
-                socket.onopen    = onOpen(store);
+                socket.onopen    = onOpen(store, action.authData);
 
                 // this interupts the dispatch event for WS_CONNECT completly, so it never hits a reducer...
                 // But the onopen callback should be fired, where the store will be set to update

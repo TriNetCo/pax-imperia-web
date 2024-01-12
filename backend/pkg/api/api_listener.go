@@ -63,6 +63,8 @@ func ListenToClientMessages(conn WebSocketConnection) {
 		switch message.Type {
 		case "AUTHENTICATE":
 			handleAuthenticate(conn, client, message)
+		case "CREATE_CHAT_LOBBY":
+			HandleCreateChatLobby(conn, message)
 		case "JOIN_CHAT_LOBBY":
 			HandleJoinChatLobby(conn, message)
 		case "LEAVE_CHAT_LOBBY":

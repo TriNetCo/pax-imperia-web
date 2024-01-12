@@ -9,11 +9,11 @@ const NewGameBreadCrumb = () => {
     const { data } = useContext(GameDataContext);
 
     const stepOneLabel = () => {
-        return data.galaxyCustomizations.lobbyType === 'multiplayer' ? 'Lobby' : 'Players';
+        return data.gameCustomizations.lobbyType === 'multiplayer' ? 'Lobby' : 'Players';
     };
 
     const stepOnePath = () => {
-        return data.galaxyCustomizations.lobbyType === 'multiplayer' ? '/new_game/lobbies' : '/new_game';
+        return data.gameCustomizations.lobbyType === 'multiplayer' ? '/new_game/lobbies' : '/new_game';
     };
 
     return (

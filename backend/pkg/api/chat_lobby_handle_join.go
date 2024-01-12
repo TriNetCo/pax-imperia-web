@@ -51,7 +51,7 @@ func findOrCreateChatRoom(chatLobbyId string) ChatRoom {
 	if !exists {
 		fmt.Printf("Creating lobby: %s\n", chatLobbyId)
 
-		chatRoom = MakeChatRoom(chatLobbyId)
+		chatRoom = MakeChatRoom(chatLobbyId, false)
 	}
 
 	return chatRoom
@@ -64,7 +64,6 @@ func respondToJoiner(conn WebSocketConnection, chatRoom ChatRoom) {
 		Payload: map[string]interface{}{
 			"chatLobbyId":    chatRoom.ChatLobbyId,
 			"chatLobbyUsers": GetChatLobbyUsers(chatRoom),
-			// "message":        "Joined chat lobby",
 		},
 	}
 

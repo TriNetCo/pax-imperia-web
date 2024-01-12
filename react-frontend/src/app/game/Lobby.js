@@ -1,10 +1,10 @@
-import {act, setChatLobbyId} from '../../modules/websocket';
+import {act} from '../../modules/websocket';
 
 export default class Lobby {
 
     chatLobbyId;
 
-    createOrJoinLobby(chatLobbyId) {
+    joinLobby(chatLobbyId) {
         const userContext = this.userContext;
         const dispatch = this.dispatch;
 
@@ -15,8 +15,6 @@ export default class Lobby {
 
         const {displayName, email, token} = this.getValidFields(userContext);
 
-        dispatch(setChatLobbyId(chatLobbyId));
-        dispatch(act('AUTHENTICATE')(email, displayName, token));
         dispatch(act('JOIN_CHAT_LOBBY')(email, chatLobbyId));
 
         this.chatLobbyId = chatLobbyId;

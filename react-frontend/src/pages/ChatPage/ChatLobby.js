@@ -8,6 +8,8 @@ import ChatLobbyUsers from './ChatLobbyUsers';
 import { GameDataContext } from 'src/app/GameDataContextProvider';
 import PropTypes from 'prop-types';
 
+import './ChatLobby.css';
+
 const ChatLobby = ({closeModal}) => {
     const history = useHistory();
     const [msgToSend, setMsgToSend] = useState('');

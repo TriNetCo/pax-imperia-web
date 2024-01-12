@@ -13,17 +13,17 @@ const JoinLobbyTab = () => {
     const chatLobbyId = lobbyId;
 
     useEffect( () => {
-        data.galaxyCustomizations.lobbyType = 'multiplayer';
+        data.gameCustomizations.lobbyType = 'multiplayer';
     }, []);
 
     // Whenever our websocket.status changes to WS_CONNECTED
-    // imediately createOrJoinLobby
+    // imediately joinLobby
     useEffect( () => {
         if (websocket.status !== 'WS_CONNECTED') return;
 
         // If we already have a lobby, just reconnect to it if our connection was interupted
         // Don't rebuild the actual lobby (unless it vanished?)
-        createOrJoinLobby(chatLobbyId);
+        joinLobby(chatLobbyId);
     }, [websocket.status]);
 
     // Download the game data once we've joined the lobby
@@ -32,8 +32,8 @@ const JoinLobbyTab = () => {
         dispatch(act('GET_GAME_CONFIGURATION')(websocket.chatLobbyId));
     }, [websocket.chatLobbyId]);
 
-    const createOrJoinLobby = (chatLobbyId) => {
-        data.lobby.createOrJoinLobby(chatLobbyId);
+    const joinLobby = (chatLobbyId) => {
+        data.lobby.joinLobby(chatLobbyId);
     };
 
     return (

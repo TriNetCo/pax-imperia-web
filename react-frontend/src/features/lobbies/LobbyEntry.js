@@ -10,7 +10,7 @@ const LobbyEntry = ({lobby}) => {
 
     const handleJoinClicked = () => {
         // navigate to /games/lobby.id
-        data.galaxyCustomizations.lobbyType = 'multiplayer';
+        data.gameCustomizations.lobbyType = 'multiplayer';
         history.push(`/new_game/lobbies/${lobby.chatLobbyId}`);
     };
 

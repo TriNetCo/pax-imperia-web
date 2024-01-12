@@ -1,9 +1,28 @@
 import { useHistory } from 'react-router-dom';
 import { GameDataContext } from 'src/app/GameDataContextProvider';
-import { useContext } from 'react';
+import {useContext, useState} from 'react';
+import Checkbox from '@mui/material/Checkbox';
+import Button from '@mui/material/Button';
+import InputLabel from '@mui/material/InputLabel';
+
+import { createTheme } from '@mui/material/styles';
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            light: '#5A6D8D',
+            main: '#5e6d8b',
+            dark: '#b26a00',
+            contrastText: '#fff',
+        },
+    },
+}); // #ffc400
+
+// header bg:  #232a39
+// border: #5e6d8b
 
 // eslint-disable-next-line react/prop-types
-const NiceButton = ({path, callback, children}) => {
+const NiceButton = ({path, callback, label, children}) => {
     const history = useHistory();
 
     const handleClick = () => {
@@ -15,35 +34,58 @@ const NiceButton = ({path, callback, children}) => {
 
     return (
         <div>
-            <button onClick={handleClick}>
-                {children}
-            </button>
+            <Button theme={theme} variant="contained" onClick={handleClick}>
+                {label}
+            </Button>
+            {children}
         </div>
     );
 };
 
+
 const SingleOrMultiplayerPage = () => {
     const { data } = useContext(GameDataContext);
+    const [isPrivate, setIsPrivate] = useState(false);
+
+    const handlePrivateChange = (event) => {
+        data.gameCustomizations.isPrivate = event.target.checked;
+        setIsPrivate(event.target.checked);
+    };
 
     // TODO: move to useEffect on singleplayer page
     const createSingleplayerLobby = () => {
         data.initNewGame();
-        data.galaxyCustomizations.lobbyType = 'singleplayer';
+        data.gameCustomizations.lobbyType = 'singleplayer';
     };
 
     return (
-        <div className="players-menu">
-            <NiceButton path="/new_game/colonizer_config" callback={ createSingleplayerLobby }>
-                Singleplayer
-            </NiceButton>
+        <div className="players-menu-flex">
+            <div className="players-menu-item left"></div>
+            <div className="players-menu-item middle">
+                <NiceButton
+                    label="Singleplayer"
+                    path="/new_game/colonizer_config"
+                    callback={ createSingleplayerLobby }>
+                </NiceButton>
 
-            <NiceButton path="/new_game/lobbies">
-                Host Multiplayer
-            </NiceButton>
+                <NiceButton path="/new_game/lobbies" label="Host Multiplayer">
+                    <span style={{ 'marginLeft': '20px', 'color': '#232a39' }}>
+                        Private?
+                    </span>
 
-            <NiceButton path="/lobbies">
-                Join Multiplayer
-            </NiceButton>
+                    <Checkbox
+                        checked={isPrivate}
+                        onClick={handlePrivateChange}
+                        theme={theme}
+                    />
+                </NiceButton>
+
+                <NiceButton
+                    label="Join Multiplayer"
+                    path="/lobbies">
+                </NiceButton>
+            </div>
+            <div className="players-menu-item right"></div>
         </div>
     );
 };

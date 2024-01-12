@@ -11,23 +11,17 @@ const HostLobbyTab = () => {
     const chatLobbyId = '1234';
 
     useEffect( () => {
-        data.galaxyCustomizations.isLobbyKing = true;
-        data.galaxyCustomizations.lobbyType = 'multiplayer';
+        data.gameCustomizations.isLobbyKing = true;
+        data.gameCustomizations.lobbyType = 'multiplayer';
     }, []);
 
-    // Whenever our websocket.status changes to WS_CONNECTED
-    // imediately createOrJoinLobby
+    // Whenever our websocket.status changes to WS_CONNECTED (or we load this page)
+    // imediately create the lobby
     useEffect( () => {
         if (websocket.status !== 'WS_CONNECTED') return;
 
-        // If we already have a lobby, just reconnect to it if our connection was interupted
-        // Don't rebuild the actual lobby (unless it vanished?)
-        createOrJoinLobby(chatLobbyId);
+        dispatch(act('CREATE_CHAT_LOBBY')(data.gameCustomizations.isPrivate));
     }, [websocket.status]);
-
-    const createOrJoinLobby = (chatLobbyId) => {
-        data.lobby.createOrJoinLobby(chatLobbyId);
-    };
 
     // After we create the lobby, upload our galaxy's data to it
     useEffect( () => {

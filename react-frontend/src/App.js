@@ -5,7 +5,6 @@ import GameDashboardPage from './pages/GameDashboardPage';
 import DebugPage from './pages/DebugPage/DebugPage';
 import SystemPage from './pages/SystemPage/SystemPage';
 import LoginPage from './pages/LoginPage/LoginPage';
-import ChatPage from './pages/ChatPage/ChatPage';
 import UsersPage from './features/users/UsersPage';
 import LandingPage from './pages/LandingPage/LandingPage';
 import NewGameLayout from './pages/NewGame/NewGamePage';
@@ -28,7 +27,6 @@ function App() {
                 <Route exact path="/debug" component={DebugPage} />
                 <Route exact path="/users" component={UsersPage} />
                 <Route exact path="/about" component={AboutPage} />
-                <Route exact path="/chat" component={ChatPage} />
                 <Route exact path="/preferences" component={PreferencesPage} />
 
                 <Route exact path="/lobbies" component={LobbiesPage} />

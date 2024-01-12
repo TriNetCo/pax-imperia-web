@@ -1,5 +1,4 @@
 import { useHistory } from 'react-router-dom';
-import NewGameBreadCrumb from './NewGameBreadCrumb';
 import {GameDataContext} from 'src/app/GameDataContextProvider';
 import {useContext} from 'react';
 
@@ -9,7 +8,7 @@ const ColonizerConfigPage = () => {
     const history = useHistory();
 
     const handleDefaultClick = () => {
-        data.galaxyCustomizations.species = 'telepathic';
+        data.gameCustomizations.species = 'telepathic';
         history.push('/new_game/galaxy_config');
     };
 

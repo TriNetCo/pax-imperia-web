@@ -28,14 +28,16 @@ type ChatRoom struct {
 	Clients     map[WebSocketConnection]ClientData `json:"clients"`
 	Game        Game                               `json:"game"`
 	ChatLobbyId string                             `json:"chatLobbyId"`
+	IsPrivate   bool                               `json:"isPrivate"`
 	LobbyKing   *WebSocketConnection               `json:"lobbyKing"`
 }
 
-func MakeChatRoom(chatLobbyId string) ChatRoom {
+func MakeChatRoom(chatLobbyId string, isPrivate bool) ChatRoom {
 	return ChatRoom{
 		Name:        chatLobbyId,
 		Clients:     make(map[WebSocketConnection]ClientData),
 		ChatLobbyId: chatLobbyId,
+		IsPrivate:   isPrivate,
 	}
 }
 
@@ -48,6 +50,7 @@ type ChatRoomJSON struct {
 	Name        string   `json:"name"`
 	Clients     []string `json:"clients"`
 	ChatLobbyId string   `json:"chatLobbyId"`
+	IsPrivate   bool     `json:"isPrivate"`
 	LobbyKing   string   `json:"lobbyKing"`
 }
 
@@ -56,6 +59,7 @@ func (chatRoom ChatRoom) ToJSON() ChatRoomJSON {
 		Name:        chatRoom.Name,
 		Clients:     make([]string, 0, len(chatRoom.Clients)),
 		ChatLobbyId: chatRoom.ChatLobbyId,
+		IsPrivate:   chatRoom.IsPrivate,
 		LobbyKing:   fmt.Sprintf("%p", chatRoom.LobbyKing), // Convert pointer to string
 	}
 
@@ -64,7 +68,6 @@ func (chatRoom ChatRoom) ToJSON() ChatRoomJSON {
 	}
 
 	return tempRoom
-
 }
 
 type User struct {

@@ -7,12 +7,26 @@ import UserContext from './UserContext';
 
 export const GameDataContext = React.createContext(null);
 
-export const connectAndJoin = (dispatch) => {
+export const connectAndJoin = (dispatch, userContext) => {
     const websocketPort = '3001';
     const host = `ws://127.0.0.1:${websocketPort}/websocket`;
 
     // This is where we start using the websocket middleware...
-    dispatch(wsConnect(host));
+    let authData = {
+        email: userContext.email,
+        displayName: userContext.displayName,
+        token: userContext.token,
+    };
+
+    if (!authData.displayName) {
+        authData = {
+            email: 'anonymous@example.com',
+            displayName: 'anonymous',
+            token: 'anonymous',
+        };
+    }
+
+    dispatch(wsConnect(host, authData));
 };
 
 // This is unused but some pattern around load balancing may leverage this
@@ -32,7 +46,7 @@ const GameDataContextProvider = ({children, gameData}) => {
     };
 
     useEffect( () => {
-        connectAndJoin(dispatch);
+        connectAndJoin(dispatch, userContext);
     }, []);
 
     gameData.injectReactGarbage({dispatch, userContext, websocket});

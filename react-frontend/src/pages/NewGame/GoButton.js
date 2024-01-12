@@ -8,9 +8,9 @@ const GoButton = () => {
     const { data } = useContext(GameDataContext);
 
     const handlePlayButtonClicked = () => {
-        if (data.galaxyCustomizations.lobbyType == 'multiplayer') {
+        if (data.gameCustomizations.lobbyType == 'multiplayer') {
 
-            if (data.galaxyCustomizations.isLobbyKing) {
+            if (data.gameCustomizations.isLobbyKing) {
                 launchMultiplayerGame();
             }
             return;
@@ -31,7 +31,7 @@ const GoButton = () => {
     };
 
     const readyButtonInstead = () => {
-        return data.galaxyCustomizations.isLobbyKing ? '' : 'ready-button-instead';
+        return data.gameCustomizations.isLobbyKing ? '' : 'ready-button-instead';
     };
 
 

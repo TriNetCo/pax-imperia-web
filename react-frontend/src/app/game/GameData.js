@@ -25,7 +25,7 @@ export default class GameData {
     // /** @type {SpaceViewWidget} */
     spaceViewWidget;
 
-    galaxyCustomizations = {};
+    gameCustomizations = {};
 
     seed;
 

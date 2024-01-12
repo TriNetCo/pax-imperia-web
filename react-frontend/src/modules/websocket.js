@@ -19,7 +19,7 @@ import * as actions from './websocket';
 ///////////////////
 
 // Dispatching this action begins the app opening a websocket connection
-export const wsConnect = host => ({ type: 'WS_CONNECT', host });
+export const wsConnect = (host, authData) => ({ type: 'WS_CONNECT', host, authData });
 
 // When the connection is actually established from wsConnect,
 // this action is dispatched so the store knows the connection status
@@ -28,8 +28,6 @@ export const wsConnected = host => ({ type: 'WS_CONNECTED', host });
 // This isn't used, but would be required for load balancing
 export const wsDisconnect = host => ({ type: 'WS_DISCONNECT', host });
 export const wsDisconnected = host => ({ type: 'WS_DISCONNECTED', host });
-
-export const setChatLobbyId = (chatLobbyId) => ({ type: 'SET_CHAT_LOBBY_ID', chatLobbyId });
 
 
 /////////////////
@@ -71,6 +69,14 @@ export const actionTable = {
 
     },
 
+    'CREATE_CHAT_LOBBY': {
+        action: (isPrivate) => ({ type: 'CREATE_CHAT_LOBBY', payload: { isPrivate } }),
+
+        middlewareRecieve: (store, message) => { store.dispatch(message); },
+
+        responseReducer: (state, action) => ({ ...state, ...action.payload })
+    },
+
     'JOIN_CHAT_LOBBY': {
         action: (user, chatLobbyId) => ({ type: 'JOIN_CHAT_LOBBY', payload: { user, chatLobbyId } }),
 
@@ -90,10 +96,7 @@ export const actionTable = {
 
         responseAction: (payload) => ({ type: 'GET_GAME_CONFIGURATION_RESPONSE', payload }),
 
-        middlewareRecieve: (store, message) => {
-            console.log('GET_GAME_CONFIGURATION_RESPONSE not really implemented');
-            store.dispatch(message);
-        },
+        middlewareRecieve: (store, message) => { store.dispatch(message); },
 
         responseReducer: (state, action) => ({ ...state, ...action.payload })
 

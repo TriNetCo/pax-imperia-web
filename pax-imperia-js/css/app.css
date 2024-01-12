@@ -143,3 +143,26 @@ html, body {
 .players-menu div a:visited {
     color: #00E;
 }
+
+
+.players-menu-flex {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-around;
+    align-items: center;
+    align-content: center;
+}
+
+
+.players-menu-item.left {
+    flex: 1;
+}
+
+.players-menu-item.middle {
+    flex-grow: 1;
+}
+
+.players-menu-item.right {
+    flex-shrink: 1;
+}
+
