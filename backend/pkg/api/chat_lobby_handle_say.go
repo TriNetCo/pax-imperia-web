@@ -27,7 +27,7 @@ func handleSay(conn WebSocketConnection, message Message) error {
 		Type: "SYSTEM_MESSAGE_NEW_MESSAGE",
 		Payload: map[string]interface{}{
 			"user":    sender.DisplayName,
-			"Email":   sender.Email,
+			"email":   sender.Email,
 			"message": message.Payload["message"],
 		},
 	}

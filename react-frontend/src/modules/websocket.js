@@ -1,5 +1,3 @@
-import * as actions from './websocket';
-
 /*
 * Summary of How Convoluted Redux Websocket Middleware Works:
 *

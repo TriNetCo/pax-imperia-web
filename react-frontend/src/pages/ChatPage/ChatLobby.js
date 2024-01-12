@@ -31,7 +31,7 @@ const ChatLobby = ({closeModal}) => {
         const outboundMsg = {
             message: msgToSend,
             user: userContext.displayName ? userContext.displayName : 'Anonymous',
-            userEmail: userContext.email,
+            email: userContext.email,
             chatLobbyId: websocket.chatLobbyId,
         };
         dispatch(act('NEW_MESSAGE')(outboundMsg));

@@ -21,14 +21,14 @@ func TestHandleSay(t *testing.T) {
 		/////////////////////////
 		{
 			"valid say",
-			`{"chatLobbyId": "1234", "message": "hello world", "user": "Its Me", "Email": "me@example.com"}`,
-			Message{Type: "SYSTEM_MESSAGE_NEW_MESSAGE", Payload: map[string]interface{}{"chatLobbyId": "1234", "message": "hello world", "user": "Its Me", "Email": "me@example.com"}},
+			`{"chatLobbyId": "1234", "message": "hello world", "user": "Its Me", "email": "me@example.com"}`,
+			Message{Type: "SYSTEM_MESSAGE_NEW_MESSAGE", Payload: map[string]interface{}{"message": "hello world", "user": "Its Me", "email": "me@example.com"}},
 			true,
 			false,
 		},
 		{
 			"invalid say, not in a chatroom",
-			`{"chatLobbyId": "1234", "message": "hello world", "user": "Its Me", "Email": "me@example.com"}`,
+			`{"chatLobbyId": "1234", "message": "hello world", "user": "Its Me", "email": "me@example.com"}`,
 			Message{},
 			false,
 			true,
@@ -42,32 +42,34 @@ func TestHandleSay(t *testing.T) {
 			// Setup Test
 			//
 
-			mockWsConn := testutils.MockWsConnection{}
-			var wsConn WebSocketConnection = &mockWsConn
-
-			if tt.mockWsResponse.Type != "" {
-				mockWsConn.On("WriteJSON", tt.mockWsResponse).Return(nil)
-			}
-
-			chatLobbyId := "1234"
-			chatRoom := MakeChatRoom(chatLobbyId)
-
-			// put client in chatRoom
-			if tt.putClientInChatRoom {
-				client := ClientData{}
-				client.DisplayName = "Its Me"
-				chatRoom.Clients[wsConn] = client
-			}
-
-			// Put chatRoom in chatRooms
-			chatRooms[chatLobbyId] = chatRoom
-
+			// Extract message to send from test definition
 			var payload map[string]interface{} = make(map[string]interface{})
 			json.Unmarshal([]byte(tt.messagePayload), &payload)
 			message := Message{
 				Type:    "NEW_MESSAGE",
 				Payload: payload,
 			}
+
+			// Mock WebSocketConnection
+			mockWsConn := testutils.MockWsConnection{}
+			var wsConn WebSocketConnection = &mockWsConn
+			if tt.mockWsResponse.Type != "" {
+				mockWsConn.On("WriteJSON", tt.mockWsResponse).Return(nil)
+			}
+
+			chatLobbyId := payload["chatLobbyId"].(string)
+			chatRoom := MakeChatRoom(chatLobbyId, false)
+
+			// put client in chatRoom
+			if tt.putClientInChatRoom {
+				client := ClientData{}
+				client.DisplayName = payload["user"].(string)
+				client.Email = payload["email"].(string)
+				chatRoom.Clients[wsConn] = client
+			}
+
+			// Put chatRoom in chatRooms
+			chatRooms[chatLobbyId] = chatRoom
 
 			///////////////////////////////////////
 			// Call the function being tested... //
