@@ -11,6 +11,22 @@
 * see react-frontend/src/pages/ChatPage/ChatLobby.js for an example
 */
 
+const blankGameState = () => ({
+    time: null,
+    messages: [],
+    chatLobbyId: '',
+    chatLobbyUsers: [],
+    seedOnServer: '',
+    systemsJson: null,
+});
+
+const websocketInitialState = {
+    status: 'UNCONNECTED',
+    host: null,
+    authStatus: 'UNAUTHENTICATED',
+    ...blankGameState(),
+};
+
 
 ///////////////////
 // Local Actions //
@@ -86,7 +102,6 @@ export const actionTable = {
         },
 
         responseReducer: (state, action) => ({ ...state, ...action.payload })
-
     },
 
     'GET_GAME_CONFIGURATION': {
@@ -123,6 +138,9 @@ export const actionTable = {
 
     'LEAVE_CHAT_LOBBY': {
         action: () => ({ type: 'LEAVE_CHAT_LOBBY' }),
+
+        actionReducer: (state) => ({ ...state, ...blankGameState() })
+
     },
 
 
@@ -187,28 +205,12 @@ export function extractActionKey(actionType) {
     return actionType;
 }
 
-///////////////////////////////////////
-// Non-Networked store manipulations //
-///////////////////////////////////////
-
-const initialState = {
-    time: null,
-    status: 'UNCONNECTED',
-    host: null,
-    messages: [],
-    chatLobbyId: '',
-    chatLobbyUsers: [],
-    authStatus: 'UNAUTHENTICATED',
-    seedOnServer: '',
-    systemsJson: null,
-};
-
 
 /////////////
 // REDUCER //
 /////////////
 
-export const websocketReducer = (state = { ...initialState }, action) => {
+export const websocketReducer = (state = { ...websocketInitialState }, action) => {
 
     const responseReducer = actionTable[extractActionKey(action.type)]?.responseReducer;
     if (responseReducer) {
@@ -216,15 +218,17 @@ export const websocketReducer = (state = { ...initialState }, action) => {
         return responseReducer(state, action);
     }
 
+    const actionReducer = actionTable[action.type]?.actionReducer;
+    if (actionReducer) {
+        console.debug('Middleware Reducing: ', action.type);
+        return actionReducer(state, action);
+    }
+
     switch (action.type) {
         case 'WS_CONNECTED':
             return { ...state, host: action.host, status: 'WS_CONNECTED' };
         case 'WS_DISCONNECTED':
             return { ...state, status: 'WS_DISCONNECTED' };
-        case 'SET_CHAT_LOBBY_ID':
-            return { ...state,
-                chatLobbyId: action.chatLobbyId
-            };
         default:
             if (!action.type.startsWith('@@redux'))
                 console.log('websocketReducer: default action: ' + action.type);

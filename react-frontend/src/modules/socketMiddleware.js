@@ -46,7 +46,10 @@ const socketMiddleware = (websocketFactory) => {
         if (hasActionToSend) {
             console.debug('Middleware Sending: ', action.type);
             socket.send(JSON.stringify(action));
-            return;
+            const hasActionToReduce = actionTable[action.type]?.actionReducer;
+            if (!hasActionToReduce) {
+                return;
+            }
         }
 
         switch (action.type) {

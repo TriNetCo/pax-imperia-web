@@ -8,7 +8,6 @@ const HostLobbyTab = () => {
     const dispatch = useDispatch();
     const websocket = useSelector(selectWebsocket);
     const { data } = useContext(GameDataContext);
-    const chatLobbyId = '1234';
 
     useEffect( () => {
         data.initNewGame();
