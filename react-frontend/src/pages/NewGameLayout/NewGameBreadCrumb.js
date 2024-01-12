@@ -1,7 +1,7 @@
 import NavItem from './NavItem';
 import {GameDataContext} from 'src/app/GameDataContextProvider';
 import {useContext} from 'react';
-import GoButton from './GoButton';
+import ReadySetGoButton from './ReadySetGoButton';
 
 // Here's the code for a breadcrumb display that shows the new game creation process
 const NewGameBreadCrumb = () => {
@@ -24,7 +24,7 @@ const NewGameBreadCrumb = () => {
                     <NavItem text="Species Design" path="/new_game/species_design" />
                     <NavItem text="Galaxy Config" path="/new_game/galaxy_config" />
 
-                    <GoButton />
+                    <ReadySetGoButton />
 
                 </ol>
             </nav>

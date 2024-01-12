@@ -3,7 +3,7 @@ import {GameDataContext} from 'src/app/GameDataContextProvider';
 import {useContext} from 'react';
 
 
-const GoButton = () => {
+const ReadySetGoButton = () => {
     const history = useHistory();
     const { data } = useContext(GameDataContext);
 
@@ -41,4 +41,4 @@ const GoButton = () => {
     );
 };
 
-export default GoButton;
+export default ReadySetGoButton;
