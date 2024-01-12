@@ -1,9 +1,8 @@
 import UserCard from 'src/shared/UserCard/UserCard';
 import './LobbiesPage.css';
-import LobbyEntry from './LobbyEntry';
 import {bindActionCreators} from '@reduxjs/toolkit';
 import {connect} from 'react-redux';
-import * as lobbySliceActions from '../lobbies/lobbiesSlice';
+import * as lobbySliceActions from 'src/features/Lobbies/lobbiesSlice';
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import LobbiesListing from './LobbiesListing';

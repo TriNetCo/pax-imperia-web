@@ -1,6 +1,6 @@
 import React from 'react';
 import './Modal.css';
-import ChatLobby from 'src/pages/ChatPage/ChatLobby';
+import ChatLobby from 'src/features/ChatLobby/ChatLobby';
 
 const Modal = () => {
     const ref = React.createRef();;

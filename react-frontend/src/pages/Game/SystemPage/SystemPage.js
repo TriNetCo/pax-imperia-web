@@ -1,11 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import SpaceView from '../../features/space_view/SpaceView';
-import { Button, IconButton } from '@mui/material';
-import {useHistory} from 'react-router-dom';
-import Galaxy from 'src/features/galaxy/Galaxy';
-import UserCard from 'src/shared/UserCard/UserCard';
-import Modal from 'src/shared/Modal/Modal';
+import SpaceView from 'src/features/SpaceView/SpaceView';
+import Galaxy from 'src/features/Galaxy/Galaxy';
 import NavConsole from './NavConsole';
 
 const SystemPage = () => {
@@ -25,7 +21,6 @@ const SystemPage = () => {
     return (
         <div className="page-wrap">
             <div id="app-parent" className="system-app-parent">
-
 
                 <div id="ultra-container">
 

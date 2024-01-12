@@ -1,14 +1,14 @@
-import {Link, Switch, Route} from 'react-router-dom';
+import {Switch, Route} from 'react-router-dom';
 import NewGameBreadCrumb from './NewGameBreadCrumb';
-import ColonizerConfigPage from './ColonizerConfigPage';
-import SpeciesDesignPage from './SpeciesDesignPage';
-import GalaxyConfigPage from './GalaxyConfigPage';
-import GameDashboardPage from '../GameDashboardPage';
-import './NewGamePage.css';
+import ColonizerConfigPage from './ColonizerConfigTab/ColonizerConfigTab';
+import SpeciesDesignTab from './SpeciesDesignTab/SpeciesDesignTab';
+import GalaxyConfigPage from './GalaxyConfigTab/GalaxyConfigTab';
+import GameDashboardPage from '../game/DashboardPage/DashboardPage';
 import UserCard from 'src/shared/UserCard/UserCard';
-import SingleOrMultiplayerPage from './SingleOrMultiplayerPage';
-import HostLobbyTab from './HostLobbyTab';
-import JoinLobbyTab from './JoinLobbyTab';
+import SessionChoiceTab from './SessionChoiceTab/SessionChoiceTab';
+import HostLobbyTab from './SessionChoiceTab/HostLobbyTab';
+import JoinLobbyTab from './SessionChoiceTab/JoinLobbyTab';
+import './NewGameLayout.css';
 
 const NewGameLayout = () => {
     return (
@@ -19,10 +19,10 @@ const NewGameLayout = () => {
 
                 <NewGameBreadCrumb />
                 <Switch>
-                    <Route exact path="/new_game" component={SingleOrMultiplayerPage} />
+                    <Route exact path="/new_game" component={SessionChoiceTab} />
 
                     <Route path="/new_game/colonizer_config" component={ColonizerConfigPage} />
-                    <Route path="/new_game/species_design" component={SpeciesDesignPage} />
+                    <Route path="/new_game/species_design" component={SpeciesDesignTab} />
                     <Route path="/new_game/galaxy_config" component={GalaxyConfigPage} />
 
                     <Route exact path="/new_game/lobbies" component={HostLobbyTab} />

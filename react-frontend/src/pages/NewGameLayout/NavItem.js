@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
+
 const NavItem = ({ text, path, altPath }) => {
     const location = useLocation();
 

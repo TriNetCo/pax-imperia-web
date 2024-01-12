@@ -1,7 +1,7 @@
 import { bindActionCreators } from '@reduxjs/toolkit';
 import React from 'react';
 import { connect } from 'react-redux';
-import * as userSliceActions from './usersSlice';
+import * as userSliceActions from 'src/features/Users/usersSlice';
 import UserList from './UserList';
 import PropTypes from 'prop-types';
 

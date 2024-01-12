@@ -1,17 +1,17 @@
 import React from 'react';
 import './App.css';
 import { Route, Switch } from 'react-router-dom';
-import GameDashboardPage from './pages/GameDashboardPage';
+import GameDashboardPage from './pages/game/DashboardPage/DashboardPage';
 import DebugPage from './pages/DebugPage/DebugPage';
-import SystemPage from './pages/SystemPage/SystemPage';
+import SystemPage from './pages/game/SystemPage/SystemPage';
 import LoginPage from './pages/LoginPage/LoginPage';
-import UsersPage from './features/users/UsersPage';
+import UsersPage from './features/Users/UsersPage/UsersPage';
 import LandingPage from './pages/LandingPage/LandingPage';
-import NewGameLayout from './pages/NewGame/NewGamePage';
-import AboutPage from './pages/AboutPage';
+import NewGameLayout from './pages/NewGameLayout/NewGameLayout';
+import AboutPage from './pages/AboutPage/AboutPage';
 import usePageTracking from './app/usePageTracking';
 import PreferencesPage from './pages/PreferencesPage/PreferencesPage';
-import LobbiesPage from './features/lobbies/LobbiesPage';
+import LobbiesPage from './features/Lobbies/LobbiesPage/LobbiesPage';
 
 function App() {
     usePageTracking();

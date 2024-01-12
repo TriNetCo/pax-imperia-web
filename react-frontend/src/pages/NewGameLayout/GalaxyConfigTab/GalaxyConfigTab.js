@@ -1,5 +1,5 @@
 import { GameDataContext } from 'src/app/GameDataContextProvider';
-import Galaxy from '../../features/galaxy/Galaxy';
+import Galaxy from '../../../features/Galaxy/Galaxy';
 import { useContext } from 'react';
 import {useHistory} from 'react-router-dom';
 

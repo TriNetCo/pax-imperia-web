@@ -1,5 +1,5 @@
 
-const SpeciesDesignPage = () => {
+const SpeciesDesignTab = () => {
     return (
         <>
             <h1>SpeciesDesignPage</h1>
@@ -7,4 +7,4 @@ const SpeciesDesignPage = () => {
     );
 };
 
-export default SpeciesDesignPage;
+export default SpeciesDesignTab;

@@ -1,12 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import Galaxy from '../features/galaxy/Galaxy';
-import { useDispatch } from 'react-redux';
+import Galaxy from 'src/features/Galaxy/Galaxy';
 import UserCard from 'src/shared/UserCard/UserCard';
 
 const GameDashboardPage = () => {
-    const dispatch = useDispatch();
 
     return (
         <div className="page-wrap">

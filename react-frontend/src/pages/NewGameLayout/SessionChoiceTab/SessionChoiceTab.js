@@ -3,7 +3,6 @@ import { GameDataContext } from 'src/app/GameDataContextProvider';
 import {useContext, useState} from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
-import InputLabel from '@mui/material/InputLabel';
 
 import { createTheme } from '@mui/material/styles';
 
@@ -43,7 +42,7 @@ const NiceButton = ({path, callback, label, children}) => {
 };
 
 
-const SingleOrMultiplayerPage = () => {
+const SessionChoiceTab = () => {
     const { data } = useContext(GameDataContext);
     const [isPrivate, setIsPrivate] = useState(false);
 
@@ -68,11 +67,12 @@ const SingleOrMultiplayerPage = () => {
                     callback={ createSingleplayerLobby }>
                 </NiceButton>
 
-                <NiceButton path="/new_game/lobbies" label="Host Multiplayer">
+                <NiceButton
+                    label="Host Multiplayer"
+                    path="/new_game/lobbies" >
                     <span style={{ 'marginLeft': '20px', 'color': '#232a39' }}>
                         Private?
                     </span>
-
                     <Checkbox
                         checked={isPrivate}
                         onClick={handlePrivateChange}
@@ -90,4 +90,4 @@ const SingleOrMultiplayerPage = () => {
     );
 };
 
-export default SingleOrMultiplayerPage;
+export default SessionChoiceTab;

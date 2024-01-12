@@ -6,7 +6,6 @@ import React from 'react';
 
 const NavConsole = () => {
     const history = useHistory();
-    const modal = React.createRef();;
 
     const handleCloseSystemView = () => {
         history.push('/systems');

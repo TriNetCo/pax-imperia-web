@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, screen } from '../../tools/test-utils';
-import ChatLobby from 'src/pages/ChatPage/ChatLobby';
+import ChatLobby from 'src/features/ChatLobby/ChatLobby';
 import {act, websocketReducer, wsConnect} from './websocket';
 
 const rootReducer = { websocket: websocketReducer };

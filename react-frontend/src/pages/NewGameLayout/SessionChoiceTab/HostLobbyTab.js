@@ -1,8 +1,8 @@
-import ChatLobby from '../ChatPage/ChatLobby';
+import ChatLobby from '../../../features/ChatLobby/ChatLobby';
 import {useEffect, useContext} from 'react';
 import {GameDataContext} from 'src/app/GameDataContextProvider';
 import {useSelector, useDispatch} from 'react-redux';
-import {selectWebsocket, act} from '../../modules/websocket';
+import {selectWebsocket, act} from '../../../modules/websocket';
 
 const HostLobbyTab = () => {
     const dispatch = useDispatch();

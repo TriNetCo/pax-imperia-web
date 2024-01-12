@@ -1,4 +1,3 @@
-import {Link, useHistory} from 'react-router-dom';
 import NavItem from './NavItem';
 import {GameDataContext} from 'src/app/GameDataContextProvider';
 import {useContext} from 'react';
