@@ -58,7 +58,7 @@ func TestHandleSay(t *testing.T) {
 			}
 
 			chatLobbyId := payload["chatLobbyId"].(string)
-			chatRoom := MakeChatRoom(chatLobbyId, false)
+			chatRoom := MakeChatRoom(chatLobbyId, false, &conn)
 
 			// put client in chatRoom
 			if tt.putClientInChatRoom {

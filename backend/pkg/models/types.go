@@ -32,11 +32,12 @@ type ChatRoom struct {
 	LobbyKing   *WebSocketConnection                `json:"lobbyKing"`
 }
 
-func MakeChatRoom(chatLobbyId string, isPrivate bool) ChatRoom {
+func MakeChatRoom(chatLobbyId string, isPrivate bool, conn *WebSocketConnection) ChatRoom {
 	return ChatRoom{
 		Name:        chatLobbyId,
 		Clients:     make(map[*WebSocketConnection]ClientData),
 		ChatLobbyId: chatLobbyId,
+		LobbyKing:   conn,
 		IsPrivate:   isPrivate,
 	}
 }

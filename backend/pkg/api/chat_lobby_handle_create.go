@@ -8,6 +8,8 @@ import (
 	"github.com/trinetco/pax-imperia-clone/pkg/util"
 )
 
+var chatRoomIdLength = 6
+
 // ChatLobbyErrorSlice type to hold a slice of error strings.
 type ChatLobbyErrorSlice []string
 
@@ -17,6 +19,8 @@ func (e ChatLobbyErrorSlice) Error() string {
 }
 
 func HandleCreateChatLobby(conn *WebSocketConnection, message Message) error {
+
+	// Handle input validation
 	isPrivate, err := validateCreateChatLobbyInputs(message)
 	if err != nil {
 		fmt.Println(err)
@@ -70,8 +74,7 @@ func CreateChatRoom(chatLobbyId string, isPrivate bool, conn *WebSocketConnectio
 
 	fmt.Printf("Creating lobby: %s\n", chatLobbyId)
 
-	chatRoom := MakeChatRoom(chatLobbyId, isPrivate)
-	chatRoom.LobbyKing = conn
+	chatRoom := MakeChatRoom(chatLobbyId, isPrivate, conn)
 	return chatRoom, nil
 }
 
@@ -80,7 +83,7 @@ func generateChatLobbyId() (string, error) {
 	// this loop is to make sure we don't generate a chatLobbyId that already exists
 	maxTries := 10
 	for i := 0; i < maxTries; i++ {
-		chatLobbyId := util.GenerateRandomString(20)
+		chatLobbyId := util.GenerateRandomString(chatRoomIdLength)
 
 		if _, exists := chatRooms[chatLobbyId]; !exists {
 			return chatLobbyId, nil

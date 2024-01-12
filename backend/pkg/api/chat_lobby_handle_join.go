@@ -51,8 +51,7 @@ func findOrCreateChatRoom(chatLobbyId string, conn *WebSocketConnection) ChatRoo
 	if !exists {
 		fmt.Printf("Creating lobby: %s\n", chatLobbyId)
 
-		chatRoom = MakeChatRoom(chatLobbyId, false)
-		chatRoom.LobbyKing = conn
+		chatRoom = MakeChatRoom(chatLobbyId, false, conn)
 	}
 
 	return chatRoom
