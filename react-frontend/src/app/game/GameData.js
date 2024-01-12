@@ -37,7 +37,20 @@ export default class GameData {
         this.continueExistingGame();
 
         // add storedPreferences to gameSettings
-        const gameSettings = this.loadUserPreferences();
+        this.gameSettings = this.loadUserPreferences();
+    }
+
+    /**
+     * Resets all game data to default values.
+     */
+    clear() {
+        this.lobby = new Lobby();
+        this.configureSeed();
+        this.galaxy = null;
+        this.gameStateInterface = null;
+        this.galaxyWidget = null;
+        this.spaceViewWidget = null;
+        this.gameCustomizations = {};
     }
 
     initNewGame() {

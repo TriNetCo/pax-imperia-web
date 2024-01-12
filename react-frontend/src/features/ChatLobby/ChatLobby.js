@@ -67,13 +67,14 @@ const ChatLobby = ({closeModal}) => {
 
     const leaveLobby = () => {
         dispatch(act('LEAVE_CHAT_LOBBY')());
+        data.clear();
         history.push('/new_game');
     };
 
     return (
         <div className="chat-lobby">
-            { closeModal ? <span className="close" onClick={closeModal}>&times;</span> : '' }
-
+            { closeModal ?
+                <span className="close" onClick={closeModal}>&times;</span> : '' }
 
             <div className="lobby-label">
                 Lobby ID:

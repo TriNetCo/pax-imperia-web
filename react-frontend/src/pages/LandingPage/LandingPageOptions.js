@@ -21,6 +21,7 @@ const LandingPageOptions = () => {
     };
 
     const quickplayClicked = () => {
+        data.initNewGame();
         data.gameStateInterface.startClock();
         history.push('/systems');
     };

@@ -25,7 +25,6 @@ import GameData from './app/game/GameData';
 console.log(`Loaded version ${AppConfig.BUILD_VERSION}`);
 
 const gameData = new GameData();
-gameData.initNewGame();
 
 const azureAuth = new AzureAuth();
 
