@@ -52,7 +52,7 @@ func TestHandleSay(t *testing.T) {
 
 			// Mock WebSocketConnection
 			mockWsConn := testutils.MockWsConnection{}
-			var wsConn WebSocketConnection = &mockWsConn
+			var conn WebSocketConnection = &mockWsConn
 			if tt.mockWsResponse.Type != "" {
 				mockWsConn.On("WriteJSON", tt.mockWsResponse).Return(nil)
 			}
@@ -65,7 +65,7 @@ func TestHandleSay(t *testing.T) {
 				client := ClientData{}
 				client.DisplayName = payload["user"].(string)
 				client.Email = payload["email"].(string)
-				chatRoom.Clients[wsConn] = client
+				chatRoom.Clients[&conn] = client
 			}
 
 			// Put chatRoom in chatRooms
@@ -74,7 +74,7 @@ func TestHandleSay(t *testing.T) {
 			///////////////////////////////////////
 			// Call the function being tested... //
 			///////////////////////////////////////
-			err := handleSay(wsConn, message)
+			err := handleSay(&conn, message)
 
 			//
 			// Do validations

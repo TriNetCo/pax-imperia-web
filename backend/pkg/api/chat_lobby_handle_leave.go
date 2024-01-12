@@ -6,7 +6,7 @@ import (
 	. "github.com/trinetco/pax-imperia-clone/pkg/models"
 )
 
-func HandleLeaveChatLobby(conn WebSocketConnection) {
+func HandleLeaveChatLobby(conn *WebSocketConnection) {
 	chatRoom := getChatRoomOfClient(conn)
 
 	if chatRoom.ChatLobbyId == "" {
@@ -35,7 +35,7 @@ func HandleLeaveChatLobby(conn WebSocketConnection) {
 	SendMessageToAllChatroomParticipants(chatRoom, userLeaveAnnouncement)
 }
 
-func getChatRoomOfClient(conn WebSocketConnection) ChatRoom {
+func getChatRoomOfClient(conn *WebSocketConnection) ChatRoom {
 	for _, chatRoom := range chatRooms {
 		if _, clientFound := chatRoom.Clients[conn]; clientFound {
 			return chatRoom

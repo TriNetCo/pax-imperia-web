@@ -24,24 +24,24 @@ type Game struct {
 }
 
 type ChatRoom struct {
-	Name        string                             `json:"name"`
-	Clients     map[WebSocketConnection]ClientData `json:"clients"`
-	Game        Game                               `json:"game"`
-	ChatLobbyId string                             `json:"chatLobbyId"`
-	IsPrivate   bool                               `json:"isPrivate"`
-	LobbyKing   *WebSocketConnection               `json:"lobbyKing"`
+	Name        string                              `json:"name"`
+	Clients     map[*WebSocketConnection]ClientData `json:"clients"`
+	Game        Game                                `json:"game"`
+	ChatLobbyId string                              `json:"chatLobbyId"`
+	IsPrivate   bool                                `json:"isPrivate"`
+	LobbyKing   *WebSocketConnection                `json:"lobbyKing"`
 }
 
 func MakeChatRoom(chatLobbyId string, isPrivate bool) ChatRoom {
 	return ChatRoom{
 		Name:        chatLobbyId,
-		Clients:     make(map[WebSocketConnection]ClientData),
+		Clients:     make(map[*WebSocketConnection]ClientData),
 		ChatLobbyId: chatLobbyId,
 		IsPrivate:   isPrivate,
 	}
 }
 
-func (h ChatRoom) RemoveClient(conn WebSocketConnection) {
+func (h ChatRoom) RemoveClient(conn *WebSocketConnection) {
 	fmt.Println("Removing client from chat room")
 	delete(h.Clients, conn)
 }

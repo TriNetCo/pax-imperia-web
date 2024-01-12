@@ -13,7 +13,7 @@ type ServerConfiguration struct {
 }
 
 var serverConfiguration = ServerConfiguration{}
-var clients = make(map[WebSocketConnection]ClientData)
+var clients = make(map[*WebSocketConnection]ClientData)
 var chatRooms = make(map[string]ChatRoom)
 var dataMux sync.Mutex
 
@@ -23,7 +23,7 @@ var dataMux sync.Mutex
 func ListenToClientMessages(conn WebSocketConnection) {
 	defer func() {
 		dataMux.Lock()
-		cleanUpDeadConnection(conn)
+		cleanUpDeadConnection(&conn)
 		dataMux.Unlock()
 		conn.Close()
 	}()
@@ -36,7 +36,7 @@ func ListenToClientMessages(conn WebSocketConnection) {
 	// weird syntax, but it works
 	// we could use an array of connections, but this is more efficient???
 	var client = ClientData{}
-	clients[conn] = client
+	clients[&conn] = client
 	dataMux.Unlock()
 
 	for {
@@ -62,19 +62,19 @@ func ListenToClientMessages(conn WebSocketConnection) {
 
 		switch message.Type {
 		case "AUTHENTICATE":
-			handleAuthenticate(conn, client, message)
+			handleAuthenticate(&conn, client, message)
 		case "CREATE_CHAT_LOBBY":
-			HandleCreateChatLobby(conn, message)
+			HandleCreateChatLobby(&conn, message)
 		case "JOIN_CHAT_LOBBY":
-			HandleJoinChatLobby(conn, message)
+			HandleJoinChatLobby(&conn, message)
 		case "LEAVE_CHAT_LOBBY":
-			HandleLeaveChatLobby(conn)
+			HandleLeaveChatLobby(&conn)
 		case "NEW_MESSAGE":
-			handleSay(conn, message)
+			handleSay(&conn, message)
 		case "SET_GAME_CONFIGURATION":
-			handleSetGameConfiguration(conn, message)
+			handleSetGameConfiguration(&conn, message)
 		case "GET_GAME_CONFIGURATION":
-			handleGetGameConfiguration(conn, message)
+			handleGetGameConfiguration(&conn, message)
 		default:
 			fmt.Println("ERROR: Unknown message type, " + message.Type)
 		}
@@ -84,7 +84,7 @@ func ListenToClientMessages(conn WebSocketConnection) {
 }
 
 // This method is called when a client disconnects from the server.
-func cleanUpDeadConnection(conn WebSocketConnection) {
+func cleanUpDeadConnection(conn *WebSocketConnection) {
 
 	// Check any chat rooms the client is in and remove them from the chat room
 	for _, chatRoom := range chatRooms {

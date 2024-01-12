@@ -36,6 +36,7 @@ func TestHandleAuthenticate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockWsConn := &MockWsConnection{}
 			mockWsConn.On("WriteJSON", tt.mockWsResponse).Return(nil)
+			conn := WebSocketConnection(mockWsConn)
 
 			client := ClientData{}
 
@@ -49,7 +50,7 @@ func TestHandleAuthenticate(t *testing.T) {
 			///////////////////////////////////////
 			// Call the function being tested... //
 			///////////////////////////////////////
-			err := handleAuthenticate(mockWsConn, client, message)
+			err := handleAuthenticate(&conn, client, message)
 
 			if tt.expectError && err == nil {
 				t.Errorf("Expected an error, but got none")

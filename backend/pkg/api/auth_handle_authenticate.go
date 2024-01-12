@@ -6,7 +6,7 @@ import (
 	. "github.com/trinetco/pax-imperia-clone/pkg/models"
 )
 
-func handleAuthenticate(conn WebSocketConnection, client ClientData, message Message) error {
+func handleAuthenticate(conn *WebSocketConnection, client ClientData, message Message) error {
 	keys := []string{"displayName", "email", "token"}
 	values, ok := extractFromPayload(message.Payload, keys...)
 	if !ok {
@@ -28,7 +28,7 @@ func handleAuthenticate(conn WebSocketConnection, client ClientData, message Mes
 		},
 	}
 
-	conn.WriteJSON(response)
+	(*conn).WriteJSON(response)
 
 	if authStatus == "UNAUTHENTICATED" {
 		fmt.Printf("Client failed to authenticate: %s\n", values["displayName"])

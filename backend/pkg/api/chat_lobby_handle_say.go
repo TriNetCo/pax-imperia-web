@@ -6,7 +6,7 @@ import (
 	. "github.com/trinetco/pax-imperia-clone/pkg/models"
 )
 
-func handleSay(conn WebSocketConnection, message Message) error {
+func handleSay(conn *WebSocketConnection, message Message) error {
 	chatLobbyId, ok := tryExtractFromPayload(message.Payload, "chatLobbyId")
 	if !ok {
 		return fmt.Errorf("failed to extract chatLobbyId from payload")

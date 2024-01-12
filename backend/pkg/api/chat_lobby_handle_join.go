@@ -7,7 +7,7 @@ import (
 	"github.com/trinetco/pax-imperia-clone/pkg/util"
 )
 
-func HandleJoinChatLobby(conn WebSocketConnection, message Message) {
+func HandleJoinChatLobby(conn *WebSocketConnection, message Message) {
 	// fmt.Println("Chat Room ID:", chatLobbyId)
 	chatLobbyId, error := validateInputs(message)
 	if error != nil {
@@ -15,7 +15,7 @@ func HandleJoinChatLobby(conn WebSocketConnection, message Message) {
 		return
 	}
 
-	chatRoom := findOrCreateChatRoom(chatLobbyId)
+	chatRoom := findOrCreateChatRoom(chatLobbyId, conn)
 
 	// Check if the client has already joined the lobby
 	if _, clientFound := chatRoom.Clients[conn]; clientFound {
@@ -45,19 +45,20 @@ func validateInputs(message Message) (string, error) {
 	return chatLobbyId, nil
 }
 
-func findOrCreateChatRoom(chatLobbyId string) ChatRoom {
+func findOrCreateChatRoom(chatLobbyId string, conn *WebSocketConnection) ChatRoom {
 	chatRoom, exists := chatRooms[chatLobbyId]
 
 	if !exists {
 		fmt.Printf("Creating lobby: %s\n", chatLobbyId)
 
 		chatRoom = MakeChatRoom(chatLobbyId, false)
+		chatRoom.LobbyKing = conn
 	}
 
 	return chatRoom
 }
 
-func respondToJoiner(conn WebSocketConnection, chatRoom ChatRoom) {
+func respondToJoiner(conn *WebSocketConnection, chatRoom ChatRoom) {
 	var response = Message{
 		Type:   "JOIN_CHAT_LOBBY_RESPONSE",
 		Status: "success",
@@ -71,10 +72,10 @@ func respondToJoiner(conn WebSocketConnection, chatRoom ChatRoom) {
 		util.DebugPrintStruct(response)
 	}
 
-	conn.WriteJSON(response)
+	(*conn).WriteJSON(response)
 }
 
-func announceUserJoinedChat(conn WebSocketConnection, chatRoom ChatRoom) {
+func announceUserJoinedChat(conn *WebSocketConnection, chatRoom ChatRoom) {
 	var userJoinAnnouncement = Message{
 		Type: "SYSTEM_MESSAGE_USER_JOINED_CHAT",
 		Payload: map[string]interface{}{

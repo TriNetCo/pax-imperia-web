@@ -16,7 +16,7 @@ func (e ChatLobbyErrorSlice) Error() string {
 	return strings.Join(e, "; ")
 }
 
-func HandleCreateChatLobby(conn WebSocketConnection, message Message) error {
+func HandleCreateChatLobby(conn *WebSocketConnection, message Message) error {
 	isPrivate, err := validateCreateChatLobbyInputs(message)
 	if err != nil {
 		fmt.Println(err)
@@ -31,7 +31,7 @@ func HandleCreateChatLobby(conn WebSocketConnection, message Message) error {
 	}
 
 	// Create the chat room
-	chatRoom, err := CreateChatRoom(chatLobbyId, isPrivate)
+	chatRoom, err := CreateChatRoom(chatLobbyId, isPrivate, conn)
 	if err != nil {
 		fmt.Println(err)
 		return err
@@ -62,7 +62,7 @@ func validateCreateChatLobbyInputs(message Message) (isPrivate bool, e error) {
 	return
 }
 
-func CreateChatRoom(chatLobbyId string, isPrivate bool) (ChatRoom, error) {
+func CreateChatRoom(chatLobbyId string, isPrivate bool, conn *WebSocketConnection) (ChatRoom, error) {
 	if _, exists := chatRooms[chatLobbyId]; exists {
 		msg := "a ChatRoom with that chatLobbyId already exists"
 		return ChatRoom{}, fmt.Errorf(msg)
@@ -71,6 +71,7 @@ func CreateChatRoom(chatLobbyId string, isPrivate bool) (ChatRoom, error) {
 	fmt.Printf("Creating lobby: %s\n", chatLobbyId)
 
 	chatRoom := MakeChatRoom(chatLobbyId, isPrivate)
+	chatRoom.LobbyKing = conn
 	return chatRoom, nil
 }
 

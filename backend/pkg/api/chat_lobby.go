@@ -33,19 +33,19 @@ func GetChatLobbyUsers(chatRoom ChatRoom) []string {
 
 func SendMessageToAllChatroomParticipants(chatRoom ChatRoom, message Message) {
 	for client := range chatRoom.Clients {
-		if err := client.WriteJSON(message); err != nil {
+		if err := (*client).WriteJSON(message); err != nil {
 			log.Println(err)
 			cleanUpDeadConnection(client)
 		}
 	}
 }
 
-func SendMessageToAllButOneChatroomParticipant(chatRoom ChatRoom, message Message, excluded WebSocketConnection) {
+func SendMessageToAllButOneChatroomParticipant(chatRoom ChatRoom, message Message, excluded *WebSocketConnection) {
 	for client := range chatRoom.Clients {
 		if client == excluded {
 			continue
 		}
-		if err := client.WriteJSON(message); err != nil {
+		if err := (*client).WriteJSON(message); err != nil {
 			log.Println(err)
 			cleanUpDeadConnection(client)
 		}
