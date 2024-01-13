@@ -3,11 +3,12 @@ import './Modal.css';
 import ChatLobby from 'src/features/ChatLobby/ChatLobby';
 import { GameDataContext } from 'src/app/GameDataContextProvider';
 import ModalMessage from './ModalMessage';
+import { ModalContext } from 'src/app/ModalContextProvider';
 
 
 const Modal = () => {
     const ref = React.createRef();
-    const { data } = useContext(GameDataContext);
+    const { modal } = useContext(ModalContext);
 
     const closeModal = () => {
         // So this gets setup whenever msgBox is called... yw!
@@ -26,14 +27,14 @@ const Modal = () => {
     };
 
     const modalSwitch = () => {
-        switch (data.modal.type) {
+        switch (modal.type) {
             case 'CHAT_LOBBY':
                 return (
                     <ChatLobby closeModal={closeModal} />
                 );
             case 'MESSAGE':
                 return (
-                    <ModalMessage message={data.modal.message} onClose={closeModal} />
+                    <ModalMessage message={modal.message} onClose={closeModal} />
                 );
             default:
                 return (

@@ -21,6 +21,9 @@ const root = createRoot(container);
 
 import AppConfig from './AppConfig';
 import GameData from './app/game/GameData';
+import Modal from './features/Modal/Modal';
+import ModalContextProvider from './app/ModalContextProvider';
+import ModalManager from './features/Modal/modalManager';
 
 console.log(`Loaded version ${AppConfig.BUILD_VERSION}`);
 
@@ -30,16 +33,21 @@ gameData.gameStateInterface.startClock();
 
 const azureAuth = new AzureAuth();
 
+const modal = new ModalManager();
+window.modal = modal;
+
 root.render(
     <Provider store={store}>
         <UserContextProvider azureAuth={azureAuth}>
             <GameDataContextProvider gameData={gameData}>
                 <FirebaseConnector azureAuth={azureAuth}>
-                    {/* <React.StrictMode> */}
-                    <Router basename={process.env.REACT_APP_PUBLIC_SUFIX}>
-                        <App />
-                    </Router>
-                    {/* </React.StrictMode> */}
+                    <ModalContextProvider injectedModal={modal}>
+                        {/* <React.StrictMode> */}
+                        <Router basename={process.env.REACT_APP_PUBLIC_SUFIX}>
+                            <App />
+                        </Router>
+                        {/* </React.StrictMode> */}
+                    </ModalContextProvider>
                 </FirebaseConnector>
             </GameDataContextProvider>
         </UserContextProvider>

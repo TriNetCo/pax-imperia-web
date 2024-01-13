@@ -4,7 +4,7 @@ import {GameDataContext} from 'src/app/GameDataContextProvider';
 import {useSelector, useDispatch} from 'react-redux';
 import {act, selectWebsocket} from '../../../modules/websocket';
 import { useParams, useHistory } from 'react-router-dom';
-import Modal from 'src/features/Modal/Modal';
+import { ModalContext } from 'src/app/ModalContextProvider';
 
 const JoinLobbyTab = () => {
     const dispatch = useDispatch();
@@ -12,6 +12,7 @@ const JoinLobbyTab = () => {
     let { lobbyId } = useParams();
     const websocket = useSelector(selectWebsocket);
     const { data } = useContext(GameDataContext);
+    const { modal } = useContext(ModalContext);
     const chatLobbyId = lobbyId;
 
     useEffect( () => {
@@ -35,7 +36,7 @@ const JoinLobbyTab = () => {
             // show error using modal
             document.getElementById('modal').style.display = 'block';
             window.modalShown = true;
-            data.modal.msgBox({
+            modal.msgBox({
                 title: 'Error', body: 'Lobby not found.',
                 cb: () => {
                     history.push('/lobbies');
@@ -51,7 +52,6 @@ const JoinLobbyTab = () => {
 
     return (
         <>
-            <Modal />
 
             <ChatLobby />
         </>

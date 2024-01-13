@@ -2,6 +2,10 @@
 
 class ModalManager {
 
+    injectReactGarbage({refreshModal}) {
+        this.refreshModal = refreshModal;
+    }
+
     /**
      * Displays a message box.
      *
@@ -22,14 +26,14 @@ class ModalManager {
 
         window.modalShown = true;
         document.getElementById('modal').style.display = 'block';
-        this.updateData();
+        this.refreshModal();
     };
 
     show(type) {
         this.type = type;
         window.modalShown = true;
         document.getElementById('modal').style.display = 'block';
-        this.updateData();
+        this.refreshModal();
     }
 }
 

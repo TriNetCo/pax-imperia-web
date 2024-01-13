@@ -3,26 +3,23 @@ import Modal from 'src/features/Modal/Modal';
 import {useHistory} from 'react-router-dom';
 import React, { useContext } from 'react';
 import { GameDataContext } from 'src/app/GameDataContextProvider';
+import {ModalContext} from 'src/app/ModalContextProvider';
 
 
 const NavConsole = () => {
     const history = useHistory();
-    const { data, updateData } = useContext(GameDataContext);
+    const { modal } = useContext(ModalContext);
 
     const handleCloseSystemView = () => {
         history.push('/systems');
     };
 
     const showChat = () => {
-
-        data.modal.show('CHAT_LOBBY');
-
-        // data.modal.type = 'CHAT_LOBBY';
-        // updateData(); // todo put this inside data
+        modal.show('CHAT_LOBBY');
     };
 
     const showLog = () => {
-        data.modal.msgBox({
+        modal.msgBox({
             title: 'Log',
             body: 'The system is down.',
         });
@@ -31,7 +28,6 @@ const NavConsole = () => {
 
     return (
         <div id="nav-console" className="flex-container">
-            <Modal />
             <div className="console-message" id="console-message">
                 <button className="green-button">[Research]</button>
                 <button className="green-button">[Domestic Policy]</button>
