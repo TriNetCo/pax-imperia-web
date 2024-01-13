@@ -1,7 +1,7 @@
 import React from 'react';
-import { render, fireEvent, screen } from '../../tools/test-utils';
+import { render, act } from '../../tools/test-utils';
 import ChatLobby from 'src/features/ChatLobby/ChatLobby';
-import {act, websocketReducer, wsConnect} from './websocket';
+import {act as myact, websocketReducer, wsConnect} from './websocket';
 
 const rootReducer = { websocket: websocketReducer };
 
@@ -20,7 +20,7 @@ describe('sendMessage middleware', () => {
             "chatLobbyId": ""
         }
 
-        store.dispatch(act('NEW_MESSAGE')(msg))
+        store.dispatch(myact('NEW_MESSAGE')(msg))
 
         expect(sendSpy).toHaveBeenCalledWith(JSON.stringify({
             "type": "NEW_MESSAGE",
@@ -32,7 +32,10 @@ describe('sendMessage middleware', () => {
         // Render your component with the mocked context
         const { sendSpy, store } = render(<ChatLobby />, { rootReducer })
 
-        store.dispatch(act('LEAVE_CHAT_LOBBY')())
+        act(() => {
+            store.dispatch(myact('LEAVE_CHAT_LOBBY')())
+        })
+
 
         expect(sendSpy).toHaveBeenCalledWith(JSON.stringify({
             "type": "LEAVE_CHAT_LOBBY"

@@ -79,13 +79,4 @@ GameDataContextProvider.propTypes = {
     gameData: PropTypes.object,
 };
 
-function mapDispatchToProps(dispatch) {
-    return {
-        actions: {
-            wsConnect: bindActionCreators(wsConnect, dispatch),
-            wsDisconnect: bindActionCreators(wsDisconnect, dispatch),
-        },
-    };
-}
-
-export default connect(mapDispatchToProps)(GameDataContextProvider);
+export default GameDataContextProvider;

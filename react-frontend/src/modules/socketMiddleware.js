@@ -9,7 +9,6 @@ const socketMiddleware = (websocketFactory) => {
     let socket = null;
 
     const onOpen = (store, authData) => (event) => {
-        console.debug('websocket open', event.target.url);
         store.dispatch(actions.wsConnected(event.target.url));
 
         if (authData) {
@@ -27,12 +26,11 @@ const socketMiddleware = (websocketFactory) => {
 
     const onMessage = store => (event) => {
         const message = JSON.parse(event.data);
-        // console.debug('receiving server message ' + message.type);
+        console.debug('receiving server message ' + message.type);
 
         const middlewareRecieve = actionTable[extractActionKey(message.type)]?.middlewareRecieve;
 
         if (middlewareRecieve) {
-            console.debug('receiving server message ' + message.type);
             middlewareRecieve(store, message);
             return;
         }

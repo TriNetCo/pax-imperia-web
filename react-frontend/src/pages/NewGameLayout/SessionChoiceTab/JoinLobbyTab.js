@@ -37,7 +37,7 @@ const JoinLobbyTab = () => {
             document.getElementById('modal').style.display = 'block';
             window.modalShown = true;
             data.modal.msgBox({
-                title: 'Error', body: 'Lobby does not exist.',
+                title: 'Error', body: 'Lobby not found.',
                 cb: () => {
                     history.push('/lobbies');
                 }});
