@@ -20,7 +20,7 @@ const GalaxyConfigPage = () => {
             <div>
                 <div id="lower-console"></div>
 
-                <Galaxy />
+                <Galaxy noTouch={true} />
             </div>
 
             <button onClick={handleRegenerateSystemBtn}>

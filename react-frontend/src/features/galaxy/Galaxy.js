@@ -5,7 +5,7 @@ import { GameDataContext } from '../../app/GameDataContextProvider';
 import { useHistory } from 'react-router-dom';
 import { GalaxyWidget } from 'pax-imperia-js/script/widgets/galaxy/galaxyWidget';
 
-const Galaxy = ({canvasWidth, canvasHeight}) => {
+const Galaxy = ({canvasWidth, canvasHeight, noTouch}) => {
     const history = useHistory();
     const ref = useRef();
     const { gameData: data } = useContext(GameDataContext);
@@ -17,7 +17,9 @@ const Galaxy = ({canvasWidth, canvasHeight}) => {
         const galaxyWidget = data.galaxyWidget;
         const canvas = ref.current;
 
-        const systemClickHandler = path => history.push(path);
+        const systemClickHandler = noTouch ?
+            () => {} :
+            path => history.push(path);
 
         const overrideConfig = {
             'canvasWidth': canvasWidth,
@@ -52,6 +54,7 @@ const Galaxy = ({canvasWidth, canvasHeight}) => {
 Galaxy.propTypes = {
     canvasWidth:  PropTypes.number,
     canvasHeight: PropTypes.number,
+    noTouch: PropTypes.bool,
 };
 
 export default Galaxy;

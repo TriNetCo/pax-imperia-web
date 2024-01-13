@@ -47,12 +47,14 @@ export class GalaxyWidget {
             fps: this.fps,
             gameStateInterface: this.gameStateInterface,
         });
+
         this.galaxyDomManager = new GalaxyDomManager(
             cx,
             this.galaxy,
             this.galaxyDrawer,
             systemClickHandler,
-            this.mouse)
+            this.mouse);
+
         this.galaxyDomManager.attachDomEventsToCode();
     }
 
