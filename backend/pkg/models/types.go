@@ -26,18 +26,18 @@ type Game struct {
 }
 
 type ChatRoom struct {
-	Name        string                              `json:"name"`
-	Clients     map[*WebSocketConnection]ClientData `json:"clients"`
-	Game        Game                                `json:"game"`
-	ChatLobbyId string                              `json:"chatLobbyId"`
-	IsPrivate   bool                                `json:"isPrivate"`
-	LobbyKing   *WebSocketConnection                `json:"lobbyKing"`
+	Name        string                               `json:"name"`
+	Clients     map[*WebSocketConnection]*ClientData `json:"clients"`
+	Game        Game                                 `json:"game"`
+	ChatLobbyId string                               `json:"chatLobbyId"`
+	IsPrivate   bool                                 `json:"isPrivate"`
+	LobbyKing   *WebSocketConnection                 `json:"lobbyKing"`
 }
 
-func MakeChatRoom(chatLobbyId string, isPrivate bool, conn *WebSocketConnection) ChatRoom {
-	return ChatRoom{
+func MakeChatRoom(chatLobbyId string, isPrivate bool, conn *WebSocketConnection) *ChatRoom {
+	return &ChatRoom{
 		Name:        chatLobbyId,
-		Clients:     make(map[*WebSocketConnection]ClientData),
+		Clients:     make(map[*WebSocketConnection]*ClientData),
 		ChatLobbyId: chatLobbyId,
 		LobbyKing:   conn,
 		IsPrivate:   isPrivate,

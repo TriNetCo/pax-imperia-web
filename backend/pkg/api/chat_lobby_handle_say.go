@@ -19,11 +19,11 @@ func handleSay(conn *WebSocketConnection, message Message) error {
 
 	// Ensure this user is in the chatRoom
 	sender := chatRoom.Clients[conn]
-	if sender.DisplayName == "" {
-		return fmt.Errorf("Error: Sender attempted to send to a chatRoom they're not in, %s", sender.Email)
+	if sender == nil {
+		return fmt.Errorf("Error: Sender attempted to send to a chatRoom they're not in, %s", *conn)
 	}
 
-	relayMessage := Message{
+	relayMessage := &Message{
 		Type: "SYSTEM_MESSAGE_NEW_MESSAGE",
 		Payload: map[string]interface{}{
 			"user":    sender.DisplayName,

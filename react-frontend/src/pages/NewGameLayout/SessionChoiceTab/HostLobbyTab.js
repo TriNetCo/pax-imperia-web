@@ -18,7 +18,8 @@ const HostLobbyTab = () => {
     // Whenever our websocket.status changes to WS_CONNECTED (or we load this page)
     // imediately create the lobby
     useEffect( () => {
-        if (websocket.status !== 'WS_CONNECTED') return;
+        if (websocket.status !== 'WS_CONNECTED' ||
+            websocket.chatLobbyId) return;
 
         dispatch(act('CREATE_CHAT_LOBBY')(data.gameCustomizations.isPrivate));
     }, [websocket.status]);

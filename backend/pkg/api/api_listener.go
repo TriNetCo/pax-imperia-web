@@ -14,8 +14,8 @@ type ServerConfiguration struct {
 }
 
 var serverConfiguration = ServerConfiguration{}
-var clients = make(map[*WebSocketConnection]ClientData)
-var chatRooms = make(map[string]ChatRoom)
+var clients = make(map[*WebSocketConnection]*ClientData)
+var chatRooms = make(map[string]*ChatRoom)
 var dataMux sync.Mutex
 
 /* This is the main websocket handler for the server.  Whenever a message
@@ -29,15 +29,14 @@ func ListenToClientMessages(conn WebSocketConnection) {
 		conn.Close()
 	}()
 
-	dataMux.Lock()
-
 	// this map is kind of confusing, but we create a key for the client using
 	// the connection pointer, and  set the value to true a struct containing the
 	// client's email and display name we can access the connection pointer later
 	// to send messages to the client by iterating over the map
 	// weird syntax, but it works
 	// we could use an array of connections, but this is more efficient???
-	var client = ClientData{}
+	dataMux.Lock()
+	var client = &ClientData{}
 	clients[&conn] = client
 	dataMux.Unlock()
 
@@ -52,23 +51,18 @@ func ListenToClientMessages(conn WebSocketConnection) {
 		}
 
 		startTime := time.Now()
-
 		// fmt.Println("Received Message:", string(msg))
 
 		// check the first character of the msg to see if it is a json message
-		if string(msg[0]) == "{" {
+		if string(msg[0]) == "s" {
+			message.Type = "SET_GAME_CONFIGURATION"
 			fmt.Println("Received json message")
-		}
-
-		//////////////////////////////////////////////////////////////////////////////
-		// TODO  Make it so I can follow a custom message protocol to make it
-		// more efficient to receive the large payloads.  e.g. if first char is "s"
-		// then it's a systemsJson message for setting the game configuration
-		//////////////////////////////////////////////////////////////////////////////
-
-		// Parse the json message into a struct
-		if err = json.Unmarshal(msg, &message); err != nil {
-			fmt.Println("error:", err)
+		} else {
+			// Parse the json message into a struct
+			if err = json.Unmarshal(msg, &message); err != nil {
+				fmt.Println("error:", err)
+				return
+			}
 		}
 
 		// fmt.Println("Client email: ", client.Email)
@@ -89,7 +83,7 @@ func ListenToClientMessages(conn WebSocketConnection) {
 		case "NEW_MESSAGE":
 			handleSay(&conn, message)
 		case "SET_GAME_CONFIGURATION":
-			handleSetGameConfiguration(&conn, &message)
+			handleSetGameConfiguration(&conn, &msg)
 		case "GET_GAME_CONFIGURATION":
 			handleGetGameConfiguration(&conn, message)
 		default:

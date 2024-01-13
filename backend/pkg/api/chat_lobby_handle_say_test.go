@@ -54,7 +54,7 @@ func TestHandleSay(t *testing.T) {
 			mockWsConn := testutils.MockWsConnection{}
 			var conn WebSocketConnection = &mockWsConn
 			if tt.mockWsResponse.Type != "" {
-				mockWsConn.On("WriteJSON", tt.mockWsResponse).Return(nil)
+				mockWsConn.On("WriteJSON", &tt.mockWsResponse).Return(nil)
 			}
 
 			chatLobbyId := payload["chatLobbyId"].(string)
@@ -62,7 +62,7 @@ func TestHandleSay(t *testing.T) {
 
 			// put client in chatRoom
 			if tt.putClientInChatRoom {
-				client := ClientData{}
+				client := &ClientData{}
 				client.DisplayName = payload["user"].(string)
 				client.Email = payload["email"].(string)
 				chatRoom.Clients[&conn] = client

@@ -15,7 +15,6 @@ const JoinLobbyTab = () => {
     const chatLobbyId = lobbyId;
 
     useEffect( () => {
-        data.initNewGame();
         data.gameCustomizations.lobbyType = 'multiplayer';
     }, []);
 

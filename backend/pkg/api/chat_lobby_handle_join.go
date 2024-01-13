@@ -15,7 +15,6 @@ func HandleJoinChatLobby(conn *WebSocketConnection, message Message) {
 		return
 	}
 
-	// TODO: I probably broke my app by changing this to throw an error rather than make one little thing
 	chatRoom, err := findChatRoom(chatLobbyId, conn)
 	if err != nil {
 		fmt.Println(err)
@@ -29,19 +28,13 @@ func HandleJoinChatLobby(conn *WebSocketConnection, message Message) {
 		return
 	}
 
-	JoinClientToChatRoom(conn, &chatRoom)
+	JoinClientToChatRoom(conn, chatRoom)
 
 	respondSuccessToJoiner(conn, chatRoom)
 
 	announceUserJoinedChat(conn, chatRoom)
 
 	fmt.Printf("Client joined lobby: %s -> %s\n", clients[conn].DisplayName, chatLobbyId)
-}
-
-func JoinClientToChatRoom(conn *WebSocketConnection, chatRoom *ChatRoom) {
-	client := clients[conn]
-	client.ChatLobbyId = chatRoom.ChatLobbyId
-	chatRoom.Clients[conn] = client
 }
 
 func validateInputs(message Message) (string, error) {
@@ -55,7 +48,7 @@ func validateInputs(message Message) (string, error) {
 	return chatLobbyId, nil
 }
 
-func findChatRoom(chatLobbyId string, conn *WebSocketConnection) (ChatRoom, error) {
+func findChatRoom(chatLobbyId string, conn *WebSocketConnection) (*ChatRoom, error) {
 	chatRoom, exists := chatRooms[chatLobbyId]
 
 	if !exists {
@@ -66,7 +59,7 @@ func findChatRoom(chatLobbyId string, conn *WebSocketConnection) (ChatRoom, erro
 	return chatRoom, nil
 }
 
-func respondSuccessToJoiner(conn *WebSocketConnection, chatRoom ChatRoom) {
+func respondSuccessToJoiner(conn *WebSocketConnection, chatRoom *ChatRoom) {
 	var response = Message{
 		Type: "JOIN_CHAT_LOBBY_RESPONSE",
 		Payload: map[string]interface{}{
@@ -93,8 +86,8 @@ func respondFailToJoiner(conn *WebSocketConnection) {
 	(*conn).WriteJSON(response)
 }
 
-func announceUserJoinedChat(conn *WebSocketConnection, chatRoom ChatRoom) {
-	var userJoinAnnouncement = Message{
+func announceUserJoinedChat(conn *WebSocketConnection, chatRoom *ChatRoom) {
+	var userJoinAnnouncement = &Message{
 		Type: "SYSTEM_MESSAGE_USER_JOINED_CHAT",
 		Payload: map[string]interface{}{
 			"status":      "success",

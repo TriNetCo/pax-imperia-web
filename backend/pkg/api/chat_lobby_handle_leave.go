@@ -7,39 +7,24 @@ import (
 )
 
 func HandleLeaveChatLobby(conn *WebSocketConnection) {
-	chatRoom := getChatRoomOfClient(conn)
+	client := clients[conn]
 
-	if chatRoom.ChatLobbyId == "" {
-		fmt.Println("ChatLobbyId not found, can't leave")
+	if client.ChatLobbyId == "" {
+		fmt.Println("WARN: ChatLobbyId not found, can't leave")
 		return
 	}
 
-	var userLeaveAnnouncement = Message{
+	var userLeaveAnnouncement = &Message{
 		Type: "SYSTEM_MESSAGE_USER_LEFT_CHAT",
 		Payload: map[string]interface{}{
 			"status":      "success",
-			"chatLobbyId": chatRoom.ChatLobbyId,
-			"displayName": clients[conn].DisplayName,
-			"email":       clients[conn].Email,
+			"chatLobbyId": client.ChatLobbyId,
+			"displayName": client.DisplayName,
+			"email":       client.Email,
 		},
 	}
 
-	chatRoom.RemoveClient(conn)
-
-	// if the room is now empty, delete the room
-	if len(chatRoom.Clients) == 0 {
-		delete(chatRooms, chatRoom.ChatLobbyId)
-		return
-	}
+	chatRoom := RemoveClientFromCurrentChatRoom(conn)
 
 	SendMessageToAllChatroomParticipants(chatRoom, userLeaveAnnouncement)
-}
-
-func getChatRoomOfClient(conn *WebSocketConnection) ChatRoom {
-	for _, chatRoom := range chatRooms {
-		if _, clientFound := chatRoom.Clients[conn]; clientFound {
-			return chatRoom
-		}
-	}
-	return ChatRoom{}
 }

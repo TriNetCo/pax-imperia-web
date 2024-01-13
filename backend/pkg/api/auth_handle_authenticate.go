@@ -6,7 +6,7 @@ import (
 	. "github.com/trinetco/pax-imperia-clone/pkg/models"
 )
 
-func handleAuthenticate(conn *WebSocketConnection, client ClientData, message Message) error {
+func handleAuthenticate(conn *WebSocketConnection, client *ClientData, message Message) error {
 	keys := []string{"displayName", "email", "token"}
 	values, ok := extractFromPayload(message.Payload, keys...)
 	if !ok {
@@ -19,7 +19,6 @@ func handleAuthenticate(conn *WebSocketConnection, client ClientData, message Me
 	client.Email = values["email"]
 	client.Token = values["token"]
 	client.AuthStatus = authStatus
-	clients[conn] = client
 
 	var response = Message{
 		Type: "AUTHENTICATE_RESPONSE",
@@ -39,7 +38,7 @@ func handleAuthenticate(conn *WebSocketConnection, client ClientData, message Me
 	return nil
 }
 
-// TODO: check authentication.go for a better implementation
+// Check auth.go for a better implementation, this is stubbed for development
 func simpleValidateToken(token string) string {
 	if token == "invalid_token" {
 		return "UNAUTHENTICATED"

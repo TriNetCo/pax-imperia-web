@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -23,7 +24,7 @@ func ChatRoomsToJSON() []ChatRoomJSON {
 	return tempChatRooms
 }
 
-func GetChatLobbyUsers(chatRoom ChatRoom) []string {
+func GetChatLobbyUsers(chatRoom *ChatRoom) []string {
 	displayNames := make([]string, 0)
 	for client := range chatRoom.Clients {
 		displayNames = append(displayNames, clients[client].DisplayName)
@@ -31,7 +32,7 @@ func GetChatLobbyUsers(chatRoom ChatRoom) []string {
 	return displayNames
 }
 
-func SendMessageToAllChatroomParticipants(chatRoom ChatRoom, message Message) {
+func SendMessageToAllChatroomParticipants(chatRoom *ChatRoom, message *Message) {
 	for client := range chatRoom.Clients {
 		if err := (*client).WriteJSON(message); err != nil {
 			log.Println(err)
@@ -40,7 +41,7 @@ func SendMessageToAllChatroomParticipants(chatRoom ChatRoom, message Message) {
 	}
 }
 
-func SendMessageToAllButOneChatroomParticipant(chatRoom ChatRoom, message Message, excluded *WebSocketConnection) {
+func SendMessageToAllButOneChatroomParticipant(chatRoom *ChatRoom, message *Message, excluded *WebSocketConnection) {
 	for client := range chatRoom.Clients {
 		if client == excluded {
 			continue
@@ -50,4 +51,40 @@ func SendMessageToAllButOneChatroomParticipant(chatRoom ChatRoom, message Messag
 			cleanUpDeadConnection(client)
 		}
 	}
+}
+
+func RemoveClientFromCurrentChatRoom(conn *WebSocketConnection) *ChatRoom {
+
+	// Check if the client is in a chatRoom
+	if clients[conn].ChatLobbyId == "" {
+		return nil
+	}
+
+	// get the client's chatRoom
+	chatRoom, exists := chatRooms[clients[conn].ChatLobbyId]
+	if !exists {
+		return nil
+	}
+
+	chatRoom.RemoveClient(conn)
+
+	// delete the chatRoom if the chatRoom is now empty
+	if len(chatRoom.Clients) == 0 {
+		delete(chatRooms, chatRoom.ChatLobbyId)
+		return nil
+	}
+
+	return chatRoom
+}
+
+func JoinClientToChatRoom(conn *WebSocketConnection, chatRoom *ChatRoom) {
+
+	// Remove client from their current lobby if applicable
+	RemoveClientFromCurrentChatRoom(conn)
+
+	client := clients[conn]
+	client.ChatLobbyId = chatRoom.ChatLobbyId
+	chatRoom.Clients[conn] = client
+
+	fmt.Println("Client joined chat room " + client.ChatLobbyId)
 }

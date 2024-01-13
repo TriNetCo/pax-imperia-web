@@ -7,10 +7,6 @@ import (
 )
 
 func handleGetGameConfiguration(conn *WebSocketConnection, message Message) {
-	// The client will request the game configuration from the server
-	// The server will send the game configuration to the client
-	// The client will then display the game configuration to the user
-
 	chatRoom, exists := chatRooms[message.Payload["chatLobbyId"].(string)]
 	if !exists {
 		fmt.Println("Chat Room not found")
@@ -30,31 +26,21 @@ func handleGetGameConfiguration(conn *WebSocketConnection, message Message) {
 	fmt.Println("Game configuration sent")
 }
 
-// TODO: make this function not require lobby notions
-func handleSetGameConfiguration(conn *WebSocketConnection, message *Message) {
-	// The client will generate the game configuration and send it to the server
-	// We will need to store that configuration in the chat room
-	// The server will then send the game configuration to all other clients in the chat room
-	chatLobbyId := message.Payload["chatLobbyId"].(string)
+func handleSetGameConfiguration(conn *WebSocketConnection, msg *[]byte) {
 
-	// get chatRoom
-	chatRoom, exists := chatRooms[chatLobbyId]
+	// get chatroom from connection
+	client := clients[conn]
+	chatRoom, exists := chatRooms[client.ChatLobbyId]
 	if !exists {
-		fmt.Println("Chat Room not found")
+		fmt.Println("WARN: Set game data called by client with no chatRoom " + client.ChatLobbyId)
 		return
 	}
 
-	systemsJson, ok := tryExtractFromPayload(message.Payload, "systemsJson")
-	if !ok {
-		return
-	}
-
+	// slurp up the data into the Game struct
 	chatRoom.Game = Game{
-		Id:          chatLobbyId,
-		SystemsJson: systemsJson,
+		Id:          client.ChatLobbyId,
+		SystemsJson: string((*msg)[1:]),
 	}
-
-	chatRooms[chatLobbyId] = chatRoom
 
 	var response = Message{
 		Type:   "SET_GAME_CONFIGURATION_RESPONSE",

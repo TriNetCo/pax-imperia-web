@@ -38,7 +38,7 @@ func TestHandleAuthenticate(t *testing.T) {
 			mockWsConn.On("WriteJSON", tt.mockWsResponse).Return(nil)
 			conn := WebSocketConnection(mockWsConn)
 
-			client := ClientData{}
+			client := &ClientData{}
 
 			var payload map[string]interface{}
 			json.Unmarshal([]byte(tt.messagePayload), &payload)

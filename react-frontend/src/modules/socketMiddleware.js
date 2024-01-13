@@ -43,7 +43,14 @@ const socketMiddleware = (websocketFactory) => {
 
         if (hasActionToSend) {
             console.debug('Middleware Sending: ', action.type);
-            socket.send(JSON.stringify(action));
+
+            // check if the action is a largePayload message, if so, send it as a string
+            if (action.largePayload) {
+                socket.send(action.largePayload);
+            } else {
+                socket.send(JSON.stringify(action));
+            }
+
             const hasActionToReduce = actionTable[action.type]?.actionReducer;
             if (!hasActionToReduce) {
                 return;

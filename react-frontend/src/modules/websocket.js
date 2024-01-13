@@ -115,7 +115,7 @@ export const actionTable = {
 
     'SET_GAME_CONFIGURATION': {
         action: (chatLobbyId, systemsJson) =>
-            ({ type: 'SET_GAME_CONFIGURATION', payload: { chatLobbyId, systemsJson} }),
+            ({ type: 'SET_GAME_CONFIGURATION', largePayload: 's' + systemsJson }),
 
         responseAction: (payload) => ({ type: 'SET_GAME_CONFIGURATION_RESPONSE', payload }),
 

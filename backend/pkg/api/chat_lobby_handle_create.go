@@ -43,7 +43,7 @@ func HandleCreateChatLobby(conn *WebSocketConnection, message Message) error {
 	chatRooms[chatLobbyId] = chatRoom
 
 	// Join the client to the chat room
-	JoinClientToChatRoom(conn, &chatRoom)
+	JoinClientToChatRoom(conn, chatRoom)
 
 	// Fire back response to client
 	respondSuccessToJoiner(conn, chatRoom)
@@ -66,10 +66,10 @@ func validateCreateChatLobbyInputs(message Message) (isPrivate bool, e error) {
 	return
 }
 
-func CreateChatRoom(chatLobbyId string, isPrivate bool, conn *WebSocketConnection) (ChatRoom, error) {
+func CreateChatRoom(chatLobbyId string, isPrivate bool, conn *WebSocketConnection) (*ChatRoom, error) {
 	if _, exists := chatRooms[chatLobbyId]; exists {
 		msg := "a ChatRoom with that chatLobbyId already exists"
-		return ChatRoom{}, fmt.Errorf(msg)
+		return &ChatRoom{}, fmt.Errorf(msg)
 	}
 
 	fmt.Printf("Creating lobby: %s\n", chatLobbyId)
