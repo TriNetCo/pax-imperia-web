@@ -4,7 +4,7 @@ import {GameDataContext} from '../../app/GameDataContextProvider';
 import PropTypes from 'prop-types';
 
 const SpaceView = ({canvasFullScreen}) => {
-    const { data, updateData } = useContext(GameDataContext);
+    const { gameData: data, updateData } = useContext(GameDataContext);
     let spaceViewWidget = data.spaceViewWidget;
     let galaxyWidget = data.galaxyWidget;
     let requestId;

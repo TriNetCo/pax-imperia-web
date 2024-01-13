@@ -3,7 +3,7 @@ import {GameDataContext} from 'src/app/GameDataContextProvider';
 import {useContext} from 'react';
 
 const ColonizerConfigPage = () => {
-    const { data, updateData } = useContext(GameDataContext);
+    const { gameData: data, updateData } = useContext(GameDataContext);
 
     const history = useHistory();
 

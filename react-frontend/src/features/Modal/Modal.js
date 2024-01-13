@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import './Modal.css';
 import ChatLobby from 'src/features/ChatLobby/ChatLobby';
-import { GameDataContext } from 'src/app/GameDataContextProvider';
 import ModalMessage from './ModalMessage';
 import { ModalContext } from 'src/app/ModalContextProvider';
+import Planet from 'src/features/game/Planet/Planet';
 
 
 const Modal = () => {
@@ -35,6 +35,10 @@ const Modal = () => {
             case 'MESSAGE':
                 return (
                     <ModalMessage message={modal.message} onClose={closeModal} />
+                );
+            case 'OBJECT_INFO':
+                return (
+                    <Planet entity={modal.objectInfoEntity} onClose={closeModal} />
                 );
             default:
                 return (

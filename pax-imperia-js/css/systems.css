@@ -352,6 +352,7 @@ ul.sidebar-list {
 
 .left-menu-thumbnail .right-side span.infomoji {
     display: none;
+    cursor: pointer;
 }
 
 .selected-thumbnail.left-menu-thumbnail .right-side .infomoji {

@@ -1,7 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { connectAndJoin, disconnect } from '../../app/GameDataContextProvider';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectWebsocket, act } from '../../modules/websocket';
+import { selectWebsocket, act, connectAndJoin, disconnect } from '../../modules/websocket';
 import UserContext from '../../app/UserContext';
 import { useHistory } from 'react-router-dom';
 import { getAuthOutput } from '../../app/AzureAuth';
@@ -16,10 +15,6 @@ export default function DebugPage() {
     const [msgToSend, setMsgToSend] = useState('');
     const websocket = useSelector(selectWebsocket);
 
-    useEffect(() => {
-    // doStuff();
-    }, [userContext]);
-
     const sendMessage = () => {
         setWebsocketConsole(websocketConsole + 'sent: ' + msgToSend + '\n');
         dispatch(act('NEW_MESSAGE')(msgToSend));
@@ -30,7 +25,7 @@ export default function DebugPage() {
     };
 
     const openConnection = () => {
-        connectAndJoin(dispatch);
+        connectAndJoin(dispatch, userContext);
     };
 
     const closeConnection = () => {

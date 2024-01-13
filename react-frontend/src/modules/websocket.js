@@ -1,3 +1,5 @@
+import {extractAuthData} from '../app/UserContext';
+
 /*
 * Summary of How Convoluted Redux Websocket Middleware Works:
 *
@@ -25,6 +27,24 @@ const websocketInitialState = {
     host: null,
     authStatus: 'UNAUTHENTICATED',
     ...blankGameState(),
+};
+
+//////////////////////
+// Exported Helpers //
+//////////////////////
+
+export const connectAndJoin = (dispatch, userContext) => {
+    const websocketPort = '3001';
+    const host = `ws://127.0.0.1:${websocketPort}/websocket`;
+    const authData = extractAuthData(userContext);
+
+    // This is where we start using the websocket middleware...
+    dispatch(wsConnect(host, authData));
+};
+
+// This is unused but some pattern around load balancing may leverage this
+export const disconnect = (dispatch) => {
+    dispatch(wsDisconnect());
 };
 
 

@@ -48,7 +48,29 @@ export class Planet extends Entity {
             const colonyLogs = this.colony.update(elapsedTime);
             logs.push(...colonyLogs);
         }
+
+        ///////////////////////////////////////////////
+        // HACK: Tell react about a potential change //
+        ///////////////////////////////////////////////
+
+        if (typeof window !== 'undefined') {
+            const modalEntity = window.modal.objectInfoEntity;
+            if (modalEntity?.id == this.id) {
+                window.modal.updateEntity(this.presentData());
+            }
+        }
+
         return logs;
+    }
+
+    presentData() {
+        return {
+            id: this.id,
+            type: this.type,
+            name: this.name,
+            atmosphere: this.atmosphere,
+            colony: this.colony?.presentData(),
+        }
     }
 
     getPosition(elapsedTime) {
@@ -98,4 +120,5 @@ export class Planet extends Entity {
         }
         return html;
     }
+
 }

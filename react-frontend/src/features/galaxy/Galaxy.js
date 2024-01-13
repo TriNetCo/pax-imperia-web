@@ -8,7 +8,7 @@ import { GalaxyWidget } from 'pax-imperia-js/script/widgets/galaxy/galaxyWidget'
 const Galaxy = ({canvasWidth, canvasHeight}) => {
     const history = useHistory();
     const ref = useRef();
-    const { data } = useContext(GameDataContext);
+    const { gameData: data } = useContext(GameDataContext);
 
     useEffect(() => {
         if (data === null) return; // for testing...

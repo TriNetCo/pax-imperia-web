@@ -8,7 +8,7 @@ import { GameDataContext } from 'src/app/GameDataContextProvider';
 
 const LandingPageOptions = () => {
     const userContext = useContext(UserContext);
-    const {data} = useContext(GameDataContext);
+    const {gameData: data} = useContext(GameDataContext);
     const history = useHistory();
 
     const handleLoginAsGuest = () => {

@@ -5,7 +5,7 @@ import ReadySetGoButton from './ReadySetGoButton';
 
 // Here's the code for a breadcrumb display that shows the new game creation process
 const NewGameBreadCrumb = () => {
-    const { data } = useContext(GameDataContext);
+    const { gameData: data } = useContext(GameDataContext);
 
     const stepOneLabel = () => {
         return data.gameCustomizations.lobbyType === 'multiplayer' ? 'Lobby' : 'Players';

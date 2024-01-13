@@ -15,7 +15,6 @@ import Modal from '../features/Modal/Modal';
 export const ModalContext = React.createContext(null);
 
 const ModalContextProvider = ({children, injectedModal}) => {
-    const [_modal] = useState(injectedModal); // is this redundant?
     const [key, setKey] = useState(0);
 
     const refreshModal = () => {
@@ -25,7 +24,7 @@ const ModalContextProvider = ({children, injectedModal}) => {
     injectedModal.injectReactGarbage({refreshModal});
 
     return (
-        <ModalContext.Provider value={{modal: _modal, updateData: refreshModal, key}}>
+        <ModalContext.Provider value={{modal: injectedModal, updateData: refreshModal, key}}>
             <Modal />
             {children}
         </ModalContext.Provider>

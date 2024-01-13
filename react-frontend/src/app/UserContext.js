@@ -172,5 +172,23 @@ export const createUserContext = ({ azureAuth } = {}) => {
     return dataShell;
 };
 
+// This code is so unsafe this static function is the only gaurenteed way to dodge bugs
+export const extractAuthData = (userContext) => {
+    let authData = {
+        email: userContext.email,
+        displayName: userContext.displayName,
+        token: userContext.token,
+    };
+
+    if (!authData.displayName) {
+        authData = {
+            email: 'anonymous@example.com',
+            displayName: 'anonymous',
+            token: 'anonymous',
+        };
+    }
+    return authData;
+};
+
 let UserContext = React.createContext();
 export default UserContext;

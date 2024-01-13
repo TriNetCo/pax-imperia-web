@@ -18,6 +18,7 @@ export class Colony {
      */
     constructor(params) {
         this.id = params.id;
+        this.type = 'colony';
         this.playerId = params.playerId;
         this.planetId = params.planetId;
         this.startTime = params.startTime;
@@ -66,6 +67,19 @@ export class Colony {
             buildingQueue: this.buildingQueue,
             workAllocation: this.workAllocation,
         });
+    }
+
+    presentData() {
+        return {
+            id: this.id,
+            type: this.type,
+            population: this.presentPopulation(),
+            wood: this.presentWood(),
+            food: this.presentFood(),
+            // buildings: this.buildings,
+            // buildingQueue: this.buildingQueue,
+            // workAllocation: this.workAllocation,
+        }
     }
 
     setCapacities() {
@@ -118,6 +132,7 @@ export class Colony {
 
         const newLogs = this.newLogs;
         this.newLogs = [];
+
         // only return logs for the current player
         if (this.playerId == 1) { return newLogs; }
         return [];
@@ -217,11 +232,23 @@ export class Colony {
         });
     }
 
+    presentPopulation() {
+        return Math.floor(this.population || 0);
+    }
+
+    presentFood() {
+        return Math.floor(this.resources.food || 0);
+    }
+
+    presentWood() {
+        return Math.floor(this.resources.wood || 0);
+    }
+
     getColonyStatsHtml() {
         const html = `
-            <div>Population: ${Math.floor(this.population)} / ${this.housingCapacities.people}</div>
-            <div>Food: ${Math.floor(this.resources.food)} / ${this.resourceCapacities.food}</div>
-            <div>Wood: ${Math.floor(this.resources.wood)} / ${this.resourceCapacities.wood}</div>
+            <div>Population: ${this.presentPopulation()} / ${this.housingCapacities.people}</div>
+            <div>Food: ${this.presentFood()} / ${this.resourceCapacities.food}</div>
+            <div>Wood: ${this.presentWood()} / ${this.resourceCapacities.wood}</div>
             <br/>`;
         return html;
     }

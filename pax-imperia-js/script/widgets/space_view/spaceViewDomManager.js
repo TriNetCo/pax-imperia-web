@@ -249,10 +249,8 @@ export class SpaceViewDomManager {
 
     clickInfoMoji(targetType, targetId) {
         if (targetType == 'planet') {
-            window.modal.msgBox({
-                title: 'Planet Info',
-                body: 'TODO: Make it so an overlay pops up with the planet\'s info. ' + targetId,
-            });
+            const planet = this.system.planets.find(x => x.id === targetId);
+            window.modal.showObjectInfo(planet.presentData());
         }
     }
 

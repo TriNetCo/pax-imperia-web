@@ -11,7 +11,7 @@ const JoinLobbyTab = () => {
     const history = useHistory();
     let { lobbyId } = useParams();
     const websocket = useSelector(selectWebsocket);
-    const { data } = useContext(GameDataContext);
+    const { gameData: data } = useContext(GameDataContext);
     const { modal } = useContext(ModalContext);
     const chatLobbyId = lobbyId;
 

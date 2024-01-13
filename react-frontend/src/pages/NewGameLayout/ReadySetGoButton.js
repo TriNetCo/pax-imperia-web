@@ -5,7 +5,7 @@ import {useContext} from 'react';
 
 const ReadySetGoButton = () => {
     const history = useHistory();
-    const { data } = useContext(GameDataContext);
+    const { gameData: data } = useContext(GameDataContext);
 
     const handlePlayButtonClicked = () => {
         if (data.gameCustomizations.lobbyType == 'multiplayer') {

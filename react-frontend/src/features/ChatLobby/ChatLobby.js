@@ -16,7 +16,7 @@ const ChatLobby = ({closeModal}) => {
     const dispatch = useDispatch();
     const websocket = useSelector(selectWebsocket);
     const userContext = useContext(UserContext);
-    const { data } = useContext(GameDataContext);
+    const { gameData: data } = useContext(GameDataContext);
 
     // Whenever websocket.systemsJson changes to something, import
     // that to our galaxyWidget automatically

@@ -7,7 +7,7 @@ import {selectWebsocket, act} from '../../../modules/websocket';
 const HostLobbyTab = () => {
     const dispatch = useDispatch();
     const websocket = useSelector(selectWebsocket);
-    const { data } = useContext(GameDataContext);
+    const { gameData: data } = useContext(GameDataContext);
 
     useEffect( () => {
         data.initNewGame();

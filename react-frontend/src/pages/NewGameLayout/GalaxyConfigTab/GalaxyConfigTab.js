@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import {useHistory} from 'react-router-dom';
 
 const GalaxyConfigPage = () => {
-    const { data, updateData } = useContext(GameDataContext);
+    const { gameData: data, updateData } = useContext(GameDataContext);
     const history = useHistory();
 
     const handleRegenerateSystemBtn = () => {

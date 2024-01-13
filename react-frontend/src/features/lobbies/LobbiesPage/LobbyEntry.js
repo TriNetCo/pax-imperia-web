@@ -6,7 +6,7 @@ import {useContext} from 'react';
 
 const LobbyEntry = ({lobby}) => {
     const history = useHistory();
-    const { data } = useContext(GameDataContext);
+    const { gameData: data } = useContext(GameDataContext);
 
     const handleJoinClicked = () => {
         // navigate to /games/lobby.id

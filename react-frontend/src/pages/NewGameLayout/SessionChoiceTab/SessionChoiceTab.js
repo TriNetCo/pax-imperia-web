@@ -43,7 +43,7 @@ const NiceButton = ({path, callback, label, children}) => {
 
 
 const SessionChoiceTab = () => {
-    const { data } = useContext(GameDataContext);
+    const { gameData: data } = useContext(GameDataContext);
     const [isPrivate, setIsPrivate] = useState(false);
 
     const handlePrivateChange = (event) => {
