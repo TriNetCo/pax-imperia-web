@@ -25,6 +25,9 @@ func HandleLeaveChatLobby(conn *WebSocketConnection) {
 	}
 
 	chatRoom := RemoveClientFromCurrentChatRoom(conn)
+	if chatRoom == nil {
+		return
+	}
 
 	SendMessageToAllChatroomParticipants(chatRoom, userLeaveAnnouncement)
 }
