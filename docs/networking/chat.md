@@ -5,6 +5,7 @@
 ###### Outbound Messages: Client
 - [x] AUTHENTICATE
 - [x] NEW_MESSAGE
+- [x] CREATE_CHAT_LOBBY
 - [x] JOIN_CHAT_LOBBY
 - [x] LEAVE_CHAT_LOBBY
 - [x] SET_GAME_CONFIGURATION
@@ -29,20 +30,19 @@ sequenceDiagram
     a->>s: AUTHENTICATE
     s-->>a: AUTHENTICATE_RESPONSE!
 
-    note over a: Generates Lobby UUID
-    a->>s: JOIN_CHAT_LOBBY
+    a->>s: CREATE_CHAT_LOBBY
     activate s
-    note over s: Creates new lobby (if none exists) <br> and puts client into lobby
+    note over s: Creates new lobby <br> and puts client into lobby
     s-->>a:  JOIN_CHAT_LOBBY_RESPONSE
     deactivate s
-    a->>s: SET_GAME_CONFIGURATION
+    a->>s: SET_GAME_CONFIGURATION (special non-json message)
     note over s: Server sets game configuration
 
     b->>s: JOIN_CHAT_LOBBY
     activate s
     note over s: Joins Client B to lobby
-    s-)b: JOIN_CHAT_LOBBY_RESPONSE
     s-)a: SYSTEM_MESSAGE_USER_JOINED_CHAT
+    s-)b: JOIN_CHAT_LOBBY_RESPONSE
     deactivate s
 
     b->>s: GET_GAME_CONFIGURATION
@@ -58,6 +58,7 @@ sequenceDiagram
     activate s
     note over s: Joins Client B to lobby
     s-)a: SYSTEM_MESSAGE_USER_JOINED_CHAT
+    s-)b: JOIN_CHAT_LOBBY_RESPONSE
     deactivate s
 
     b->>s: GET_GAME_CONFIGURATION
