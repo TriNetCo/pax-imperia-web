@@ -23,5 +23,6 @@
           "--color"
         ]
     },
+    "testing.automaticallyOpenTestResults": "neverOpen",
 
 }

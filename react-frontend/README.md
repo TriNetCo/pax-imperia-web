@@ -4,6 +4,12 @@ This is the react app.  It imports the javascript library for Pax and loads all 
 
 For notes on content, see [references](references.md).
 
+
+## Development Note
+
+This project is currently on hold.  The gitlab instance is more up-to-date (full screen graphics, bug fixes, etc).  Due to bitrot inherant to JS, this project will not build via GitHub actions.  Likely the component packaging (pax-imperia-js) needs to be revisited. 
+
+
 ## Setup
 
 ###### For Windows
