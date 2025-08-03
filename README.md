@@ -1,4 +1,4 @@
-# Pax Imperia Clone
+# Pax Imperia Web
 
 ![pax-imperia-js](https://github.com/trinetco/pax-imperia-clone/actions/workflows/pax-imperia-js.yml/badge.svg)
 ![react-frontend](https://github.com/trinetco/pax-imperia-clone/actions/workflows/react-frontend.yml/badge.svg)
